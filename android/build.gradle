@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/google' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
+//        google()
+//        jcenter()
+//        mavenCentral()
+        // hms
+//        maven { url 'http://developer.huawei.com/repo/' }
+        // fcm
+//        maven { url "https://maven.google.com" }
+
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+//        classpath 'com.android.tools.build:gradle:7.0.0'
+        // fcm
+//        classpath 'com.google.gms:google-services:4.3.4'
+        // hms
+//        classpath 'com.huawei.agconnect:agcp:1.4.1.300'
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/google' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
+//        google()
+//        jcenter()
+//        mavenCentral()
+        // hms
+//        maven { url 'http://developer.huawei.com/repo/' }
+        // fcm
+//        maven { url "https://maven.google.com" }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

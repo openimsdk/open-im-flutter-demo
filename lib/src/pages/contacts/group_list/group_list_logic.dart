@@ -1,0 +1,70 @@
+import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:get/get.dart';
+import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
+import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
+
+class GroupListLogic extends GetxController {
+  var index = 0.obs;
+  var iCreatedList = <GroupInfo>[].obs;
+  var iJoinedList = <GroupInfo>[].obs;
+  var list = <GroupInfo>[];
+
+  void getJoinedGroupList() async {
+    list = await OpenIM.iMManager.groupManager.getJoinedGroupList();
+    list.forEach((e) {
+      if (e.ownerId == OpenIM.iMManager.uid) {
+        iCreatedList.add(e);
+      } else {
+        iJoinedList.add(e);
+      }
+    });
+  }
+
+  void toGroupChat(GroupInfo info) {
+    AppNavigator.startChat(
+      gid: info.groupID,
+      name: info.groupName,
+      icon: info.faceUrl,
+    );
+    // Get.toNamed(AppRoutes.CHAT, arguments: {
+    //   'gid': info.groupID,
+    //   'name': info.groupName,
+    //   'icon': info.faceUrl,
+    // });
+  }
+
+  void createGroup() {
+    AppNavigator.startSelectContacts(
+      action: SelAction.CRATE_GROUP,
+      defaultCheckedUidList: [OpenIM.iMManager.uid],
+    );
+    // Get.toNamed(
+    //   AppRoutes.SELECT_CONTACTS,
+    //   arguments: {
+    //     'action': SelAction.CRATE_GROUP,
+    //     'uidList': [OpenIM.iMManager.uid]
+    //   },
+    // );
+  }
+
+  void searchGroup() {
+    AppNavigator.startSearchGroup(list: list);
+    // Get.toNamed(AppRoutes.SEARCH_GROUP, arguments: list);
+  }
+
+  void switchTab(i) {
+    index.value = i;
+  }
+
+  @override
+  void onReady() {
+    getJoinedGroupList();
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+  }
+}
