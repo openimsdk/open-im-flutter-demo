@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/call_controller.dart';
 import 'package:openim_enterprise_chat/src/widgets/qrcode_view.dart';
 
 import 'app_pages.dart';
