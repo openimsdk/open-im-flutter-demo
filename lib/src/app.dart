@@ -7,7 +7,6 @@ import 'package:openim_enterprise_chat/src/routes/app_pages.dart';
 import 'package:openim_enterprise_chat/src/utils/logger_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/app_view.dart';
 
-import 'core/controller/call_controller.dart';
 import 'core/controller/im_controller.dart';
 import 'core/controller/jpush_controller.dart';
 import 'core/controller/permission_controller.dart';
