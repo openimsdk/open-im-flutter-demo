@@ -6,7 +6,6 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:openim_enterprise_chat/src/core/controller/call_controller.dart';
 import 'package:openim_enterprise_chat/src/pages/chat/group_setup/group_member_manager/member_list/member_list_logic.dart';
 import 'package:openim_enterprise_chat/src/res/images.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
