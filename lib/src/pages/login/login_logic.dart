@@ -2,7 +2,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/common/apis.dart';
-import 'package:openim_enterprise_chat/src/core/controller/call_controller.dart';
 import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
 import 'package:openim_enterprise_chat/src/core/controller/jpush_controller.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
