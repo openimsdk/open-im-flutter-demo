@@ -1,6 +1,6 @@
 # OpenIM
 
-A OpenIM flutter demo, Support android and ios.
+A OpenIM flutter demo, support android and ios.
 
 ## Getting Started
   1. git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
