@@ -34,16 +34,20 @@ class Config {
   /// 秘钥
   static const secret = 'tuoyun';
 
-  // static const HOST = '//10.102.2.61';
-  static const HOST = '//47.112.160.66';
-  // static const HOST = '//1.14.194.38';
-  // static const HOST = '//120.24.45.199';
-  static const BASE_URL = 'http:$HOST:10000';
+  // static const BASE_URL = "https://open-im.rentsoft.cn";
+
+  // static const BASE_URL = 'http://10.102.2.61:10000';
+  static const BASE_URL = 'http://47.112.160.66:10000';
+  // static const BASE_URL = 'http://1.14.194.38:10000';
+  // static const BASE_URL = 'http://120.24.45.199:10000';
 
   /// sdk配置的api地址
-  static const IP_API = 'http:$HOST:10000';
+  static const IP_API = BASE_URL;
 
   /// sdk配置的web socket地址
-  static const IP_WS = 'ws:$HOST:17778';
+  // static const IP_WS = 'wss://open-im.rentsoft.cn/wss';
+// static const IP_WS = 'ws://10.102.2.61:17778';
+static const IP_WS = 'ws://47.112.160.66:17778';
+// static const IP_WS = 'ws://1.14.194.38:17778';
+// static const IP_WS = 'ws://120.24.45.199:17778';
 }
-

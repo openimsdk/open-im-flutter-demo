@@ -56,10 +56,6 @@ PODS:
     - Flutter
   - flutter_openim_sdk (0.0.1):
     - Flutter
-  - flutter_webrtc (0.2.2):
-    - Flutter
-    - Libyuv (= 1703)
-    - WebRTC-SDK (= 92.4515.07)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -88,7 +84,6 @@ PODS:
   - libwebp/mux (1.2.1):
     - libwebp/demux
   - libwebp/webp (1.2.1)
-  - Libyuv (1703)
   - Mantle (2.1.6):
     - Mantle/extobjc (= 2.1.6)
   - Mantle/extobjc (2.1.6)
@@ -127,7 +122,6 @@ PODS:
     - Flutter
   - wakelock (0.0.1):
     - Flutter
-  - WebRTC-SDK (92.4515.07)
 
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
@@ -139,7 +133,6 @@ DEPENDENCIES:
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_openim_sdk (from `.symlinks/plugins/flutter_openim_sdk/ios`)
-  - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -165,7 +158,6 @@ SPEC REPOS:
     - JCore
     - JPush
     - libwebp
-    - Libyuv
     - Mantle
     - MTBBarcodeScanner
     - OrderedSet
@@ -173,7 +165,6 @@ SPEC REPOS:
     - SDWebImageWebPCoder
     - SwiftyGif
     - TOCropViewController
-    - WebRTC-SDK
 
 EXTERNAL SOURCES:
   audio_session:
@@ -194,8 +185,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_openim_sdk:
     :path: ".symlinks/plugins/flutter_openim_sdk/ios"
-  flutter_webrtc:
-    :path: ".symlinks/plugins/flutter_webrtc/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_gallery_saver:
@@ -241,7 +230,6 @@ SPEC CHECKSUMS:
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_openim_sdk: fb45777c3d642ea4921f6687c8a4fac41c025eda
-  flutter_webrtc: 6b71a1fc1d931a3dfe879e578ea10e2e6cd84f53
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
@@ -251,7 +239,6 @@ SPEC CHECKSUMS:
   jpush_flutter: d5fd523a73277ed66d453fc7ac1c981d1fa525e2
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
-  Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
@@ -270,7 +257,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  WebRTC-SDK: 540a44f2e30e89c75e331d5c4a372253ba668233
 
 PODFILE CHECKSUM: 6a027b6c926211726afdb5aa905d2de7dbbbcb71
 

@@ -166,7 +166,7 @@ class ChatLogic extends GetxController {
     // 自定义消息点击事件
     clickSubject.listen((index) {
       print('index:$index');
-      parseClickEvent(messageList.elementAt(index));
+      parseClickEvent(indexOfMessage(index));
     });
 
     // 输入框监听
@@ -198,35 +198,6 @@ class ChatLogic extends GetxController {
         icon.value = value.icon ?? '';
       }
     });
-    //
-    // itemPositionsListener.itemPositions.addListener(() {
-    //   var positions = itemPositionsListener.itemPositions.value;
-    //   int? min;
-    //   int? max;
-    //   if (positions.isNotEmpty) {
-    //     // Determine the first visible item by finding the item with the
-    //     // smallest trailing edge that is greater than 0.  i.e. the first
-    //     // item whose trailing edge in visible in the viewport.
-    //     min = positions
-    //         .where((ItemPosition position) => position.itemTrailingEdge > 0)
-    //         .reduce((ItemPosition min, ItemPosition position) =>
-    //     position.itemTrailingEdge < min.itemTrailingEdge
-    //         ? position
-    //         : min)
-    //         .index;
-    //     // Determine the last visible item by finding the item with the
-    //     // greatest leading edge that is less than 1.  i.e. the last
-    //     // item whose leading edge in visible in the viewport.
-    //     max = positions
-    //         .where((ItemPosition position) => position.itemLeadingEdge < 1)
-    //         .reduce((ItemPosition max, ItemPosition position) =>
-    //     position.itemLeadingEdge > max.itemLeadingEdge
-    //         ? position
-    //         : max)
-    //         .index;
-    //   }
-    //   print('min:$min     max:$max');
-    // });
     super.onInit();
   }
 
@@ -234,19 +205,9 @@ class ChatLogic extends GetxController {
     if (null != uid && uid!.isNotEmpty) {
       AppNavigator.startChatSetup(
           uid: uid!, name: name.value, icon: icon.value);
-      // Get.toNamed(AppRoutes.CHAT_SETUP, arguments: {
-      //   'uid': uid,
-      //   'name': name.value,
-      //   'icon': icon.value,
-      // });
     } else if (null != gid && gid!.isNotEmpty) {
       AppNavigator.startGroupSetup(
           gid: gid!, name: name.value, icon: icon.value);
-      // Get.toNamed(AppRoutes.GROUP_SETUP, arguments: {
-      //   'gid': gid,
-      //   'name': name.value,
-      //   'icon': icon.value,
-      // });
     }
   }
 
@@ -273,7 +234,7 @@ class ChatLogic extends GetxController {
         .getHistoryMessageList(
           userID: uid,
           groupID: gid,
-          count: 100,
+          count: 20,
         )
         .then((list) => messageList..assignAll(list))
         .whenComplete(() => scrollBottom());
@@ -366,7 +327,7 @@ class ChatLogic extends GetxController {
   /// 转发
   void sendForwardMsg(int index, {String? userId, String? groupId}) async {
     var message = await OpenIM.iMManager.messageManager.createForwardMessage(
-      message: messageList.elementAt(index),
+      message: indexOfMessage(index),
     );
     _sendMessage(message, userId: userId, groupId: groupId);
   }
@@ -482,7 +443,7 @@ class ChatLogic extends GetxController {
       quoteMsg = null;
       quoteContent.value = '';
     } else {
-      quoteMsg = messageList.elementAt(index);
+      quoteMsg = indexOfMessage(index);
       var name = quoteMsg!.senderNickName;
       quoteContent.value = "$name：${IMUtil.parseMsg(quoteMsg!)}";
     }
@@ -490,7 +451,7 @@ class ChatLogic extends GetxController {
 
   /// 删除消息
   void deleteMsg(int index) {
-    var message = messageList.elementAt(index);
+    var message = indexOfMessage(index);
     OpenIM.iMManager.messageManager
         .deleteMessageFromLocalStorage(message: message)
         .then((value) => messageList.remove(message));
@@ -507,7 +468,7 @@ class ChatLogic extends GetxController {
 
   /// 撤回消息
   void revokeMsg(int index) async {
-    var message = messageList.elementAt(index);
+    var message = indexOfMessage(index);
     await OpenIM.iMManager.messageManager.revokeMessage(
       message: message,
     );
@@ -519,10 +480,7 @@ class ChatLogic extends GetxController {
   void forward(int index) async {
     var result =
         await AppNavigator.startSelectContacts(action: SelAction.FORWARD);
-    // var result = await Get.toNamed(
-    //   AppRoutes.SELECT_CONTACTS,
-    //   arguments: {'action': SelAction.FORWARD},
-    // );
+
     if (null != result) {
       sendForwardMsg(index, userId: result['uId'], groupId: result['gId']);
     }
@@ -530,7 +488,10 @@ class ChatLogic extends GetxController {
 
   /// 标记消息为已读
   void markC2CMessageAsRead(int index, Message message, bool visible) {
-    if (isSingleChat && visible) {
+    if (isSingleChat &&
+        visible &&
+        !message.isRead! &&
+        message.sendID != OpenIM.iMManager.uid) {
       OpenIM.iMManager.messageManager.markC2CMessageAsRead(
         userID: uid!,
         messageIDList: [message.clientMsgID!],
@@ -550,10 +511,6 @@ class ChatLogic extends GetxController {
               var result = await AppNavigator.startSelectContacts(
                 action: SelAction.FORWARD,
               );
-              // var result = await Get.toNamed(
-              //   AppRoutes.SELECT_CONTACTS,
-              //   arguments: {'action': SelAction.FORWARD},
-              // );
               if (null != result) {
                 sendMergeMsg(userId: result['uId'], groupId: result['gId']);
               }
@@ -580,7 +537,7 @@ class ChatLogic extends GetxController {
   }
 
   void multiSelMsg(int index, bool checked) {
-    var msg = messageList.elementAt(index);
+    var msg = indexOfMessage(index);
     if (checked) {
       multiSelList.add(msg);
       multiSelList.sort((a, b) {
@@ -638,10 +595,12 @@ class ChatLogic extends GetxController {
   void onTapCamera() async {
     final AssetEntity? entity = await CameraPicker.pickFromCamera(
       Get.context!,
+      enableRecording: true,
     );
     _handleAssets(entity);
   }
 
+  /// 打开系统文件浏览器
   void onTapFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -649,30 +608,16 @@ class ChatLogic extends GetxController {
       // allowedExtensions: ['jpg', 'pdf', 'doc'],
     );
     if (result != null) {
-      // PlatformFile file = result.files.first;
-      // print(file.name);
-      // print(file.bytes);
-      // print(file.size);
-      // print(file.extension);
-      // print(file.path);
       for (var file in result.files) {
         sendFile(filePath: file.path, fileName: file.name);
       }
     } else {
       // User canceled the picker
     }
-    // if (result != null) {
-    //   List<File> files = result.paths.map((path) => File(path)).toList();
-    // } else {
-    //   // User canceled the picker
-    // }
   }
 
+  /// 名片
   void onTapCarte() async {
-    // var result = await Get.toNamed(
-    //   AppRoutes.SELECT_CONTACTS,
-    //   arguments: {'action': SelAction.CARTE},
-    // );
     var result =
         await AppNavigator.startSelectContacts(action: SelAction.CARTE);
     if (null != result) {
@@ -686,6 +631,7 @@ class ChatLogic extends GetxController {
 
   void _handleAssets(AssetEntity? asset) async {
     if (null != asset) {
+      print('--------assets type-----${asset.type}');
       var path = (await asset.file)!.path;
       switch (asset.type) {
         case AssetType.image:
@@ -744,7 +690,7 @@ class ChatLogic extends GetxController {
 
   /// 点击引用消息
   void onTapQuoteMsg(index) {
-    var msg = messageList.elementAt(index);
+    var msg = indexOfMessage(index);
     parseClickEvent(msg.quoteElem!.quoteMessage!);
   }
 
@@ -759,7 +705,7 @@ class ChatLogic extends GetxController {
 
   /// 群聊天长按头像为@用户
   void onLongPressLeftAvatar(int index) {
-    var msg = messageList.elementAt(index);
+    var msg = indexOfMessage(index);
     if (isGroupChat) {
       var uid = msg.sendID!;
       var uname = msg.senderNickName;
@@ -786,7 +732,7 @@ class ChatLogic extends GetxController {
   }
 
   void onTapLeftAvatar(int index) {
-    var msg = messageList.elementAt(index);
+    var msg = indexOfMessage(index);
     var info = ContactsInfo.fromJson({
       'uid': msg.sendID!,
       'name': msg.senderNickName,
@@ -858,6 +804,10 @@ class ChatLogic extends GetxController {
     }
   }
 
+  void copy(index) {}
+
+  Message indexOfMessage(int index) => messageList.elementAt(index);
+
   @override
   void onClose() {
     // inputCtrl.dispose();
@@ -871,7 +821,7 @@ class ChatLogic extends GetxController {
   }
 
 // String? getShowTime(int index) {
-//   var info = messageList.elementAt(index);
+//   var info = indexOfMessage(index);
 //   if (info.contentType != MessageType.text) {
 //     return null;
 //   }

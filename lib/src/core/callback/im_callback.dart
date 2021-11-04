@@ -38,7 +38,8 @@ class IMCallback {
   // Function(int count)? onUnreadMsgCountChanged;
 
   //
-  var conversationSubject = BehaviorSubject<List<ConversationInfo>>();
+  var conversationAddedSubject = BehaviorSubject<List<ConversationInfo>>();
+  var conversationChangedSubject = BehaviorSubject<List<ConversationInfo>>();
 
   // 未读消息数
   var unreadMsgCountEventSubject = BehaviorSubject<int>();
@@ -165,14 +166,14 @@ class IMCallback {
     // if (null != onConversationChanged) {
     //   onConversationChanged!(list);
     // }
-    conversationSubject.addSafely(list);
+    conversationChangedSubject.addSafely(list);
   }
 
   void newConversation(List<ConversationInfo> list) {
     // if (null != onNewConversation) {
     //   onNewConversation!(list);
     // }
-    conversationSubject.addSafely(list);
+    conversationAddedSubject.addSafely(list);
   }
 
   void applicationProcessed(String groupId, GroupMembersInfo opUser,
@@ -244,6 +245,8 @@ class IMCallback {
     friendInfoChangedSubject.close();
     selfInfoUpdatedSubject.close();
     groupInfoUpdatedSubject.close();
+    conversationAddedSubject.close();
+    conversationChangedSubject.close();
   }
 
   final initLogic = Get.find<AppInitLogic>();

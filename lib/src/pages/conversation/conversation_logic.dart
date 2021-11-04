@@ -16,8 +16,12 @@ class ConversationLogic extends GetxController {
 
   @override
   void onInit() {
-    imLogic.conversationSubject.listen((newList) {
+    imLogic.conversationAddedSubject.listen((newList) {
       // getAllConversationList();
+      // list.addAll(newList);
+      list.insertAll(0, newList);
+    });
+    imLogic.conversationChangedSubject.listen((newList) {
       list.assignAll(newList);
     });
     super.onInit();

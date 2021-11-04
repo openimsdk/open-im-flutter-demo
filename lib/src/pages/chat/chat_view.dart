@@ -16,7 +16,7 @@ class ChatPage extends StatelessWidget {
   Widget _itemView(index, local) => ChatItemView(
         index: index,
         localizations: local,
-        message: logic.messageList.elementAt(index),
+        message: logic.indexOfMessage(index),
         isSingleChat: logic.isSingleChat,
         clickSubject: logic.clickSubject,
         msgSendStatusSubject: logic.msgSendStatusSubject,
@@ -27,7 +27,9 @@ class ChatPage extends StatelessWidget {
         onMultiSelChanged: (checked) {
           logic.multiSelMsg(index, checked);
         },
-        onTapCopyMenu: () {},
+        onTapCopyMenu: () {
+          logic.copy(index);
+        },
         onTapDelMenu: () {
           logic.deleteMsg(index);
         },
@@ -72,7 +74,7 @@ class ChatPage extends StatelessWidget {
               backgroundColor: PageStyle.c_FFFFFF,
               appBar: EnterpriseTitleBar.chatTitle(
                 title: logic.name.value,
-                subTitle: 'xxx技术有限公司',
+                subTitle: logic.typing.value ? '正在输入...':'xxx技术有限公司',
                 onClickCallBtn: () => logic.call(),
                 onClickMoreBtn: () => logic.chatSetup(),
                 leftButton: logic.multiSelMode.value ? StrRes.cancel : null,
@@ -132,73 +134,4 @@ class ChatPage extends StatelessWidget {
       ),
     );
   }
-// @override
-// Widget build(BuildContext context) {
-//   return WillPopScope(
-//     onWillPop: () async {
-//       return logic.exit();
-//     },
-//     child: ChatVoiceRecordLayout(
-//       builder: (bar, local) => Scaffold(
-//         backgroundColor: PageStyle.c_FFFFFF,
-//         body: Column(
-//           children: [
-//             Obx(() => EnterpriseTitleBar.chatTitle(
-//                   title: logic.name.value,
-//                   subTitle: 'xxx技术有限公司',
-//                   onClickCallBtn: () {},
-//                   onClickMoreBtn: () => logic.chatSetup(),
-//                   leftButton: logic.multiSelMode.value ? StrRes.cancel : null,
-//                   onClose: () => logic.exit(),
-//                 )),
-//             Expanded(
-//               child: Obx(() => TouchCloseSoftKeyboard(
-//                     onTouch: () => logic.closeToolbox(),
-//                     child: ListView.builder(
-//                       itemCount: logic.messageList.length,
-//                       padding: EdgeInsets.zero,
-//                       controller: logic.autoCtrl,
-//                       itemBuilder: (_, index) => Obx(() => AutoScrollTag(
-//                             key: ValueKey(index),
-//                             controller: logic.autoCtrl,
-//                             index: index,
-//                             child: _itemView(index, local),
-//                           )),
-//                     ),
-//                   )),
-//             ),
-//             Obx(() => ChatInputBoxView(
-//                   controller: logic.inputCtrl,
-//                   allAtMap: logic.atUserMappingMap,
-//                   toolbox: ChatToolsView(
-//                     localizations: local,
-//                     onTapAlbum: () => logic.onTapAlbum(),
-//                     onTapCamera: () => logic.onTapCamera(),
-//                     onTapCarte: () => logic.onTapCarte(),
-//                     onTapFile: () => logic.onTapFile(),
-//                     onTapLocation: () => logic.onTapLocation(),
-//                     onTapVideoCall: () => logic.call(),
-//                     onTapVoiceInput: () {},
-//                   ),
-//                   multiOpToolbox: ChatMultiSelToolbox(
-//                     onDelete: () => logic.mergeDelete(),
-//                     onMergeForward: () => logic.mergeForward(),
-//                   ),
-//                   onSubmitted: (v) => logic.sendTextMsg(),
-//                   forceCloseToolboxSub: logic.forceCloseToolbox,
-//                   voiceRecordBar: bar,
-//                   quoteContent: logic.quoteContent.value,
-//                   onClearQuote: () => logic.setQuoteMsg(-1),
-//                   multiMode: logic.multiSelMode.value,
-//                   focusNode: logic.focusNode,
-//                 )),
-//           ],
-//         ),
-//       ),
-//       onCompleted: (sec, path) {
-//         logic.sendVoice(duration: sec, path: path);
-//       },
-//     ),
-//   );
-// }
 }

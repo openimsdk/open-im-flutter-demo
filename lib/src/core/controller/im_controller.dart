@@ -86,6 +86,12 @@ class IMController extends GetxController with IMCallback {
         onReceiveJoinApplication: receiveJoinApplication,
       ));
 
+    // ios no support
+    if (Platform.isAndroid) {
+      // sdk log set
+      // OpenIM.iMManager.setSdkLog(enable: false);
+    }
+
     initializedSubject.sink.add(true);
   }
 

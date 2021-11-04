@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
@@ -18,16 +20,17 @@ class JPushController extends GetxController {
     try {
       //Map<String, dynamic> message
       jPush.addEventHandler(onReceiveNotification: (message) async {
-        print("flutter onReceiveNotification: $message");
+        print("jpush flutter onReceiveNotification: ${json.encode(message)}");
       }, onOpenNotification: (message) async {
-        print("flutter onOpenNotification: $message");
+        print("jpush flutter onOpenNotification: ${json.encode(message)}");
       }, onReceiveMessage: (message) async {
-        print("flutter onReceiveMessage: $message");
+        print("jpush flutter onReceiveMessage: ${json.encode(message)}");
       }, onReceiveNotificationAuthorization: (message) async {
-        print("flutter onReceiveNotificationAuthorization: $message");
+        print(
+            "jpush flutter onReceiveNotificationAuthorization: ${json.encode(message)}");
       });
     } on PlatformException {
-      print("Failed to get platform version.");
+      print("jpush Failed to get platform version.");
     }
 
     jPush.setup(
@@ -45,7 +48,7 @@ class JPushController extends GetxController {
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     jPush.getRegistrationID().then((rid) {
-      print("flutter get registration id : $rid");
+      print("jpush flutter get registration id : $rid");
     });
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -67,91 +70,91 @@ class JPushController extends GetxController {
         badge: 5,
         extra: {"fa": "0"});
     jPush.sendLocalNotification(localNotification).then((res) {
-      print("flutter sendLocalNotification :$res");
+      print("jpush flutter sendLocalNotification :$res");
     });
   }
 
   void getLaunchAppNotification() {
     jPush.getLaunchAppNotification().then((map) {
-      print("flutter getLaunchAppNotification success:$map");
+      print("jpush flutter getLaunchAppNotification success:$map");
     }).catchError((error) {
-      print("flutter getLaunchAppNotification error: $error");
+      print("jpush flutter getLaunchAppNotification error: $error");
     });
   }
 
   void setTags() {
     jPush.setTags(["lala", "haha"]).then((map) {
       var tags = map['tags'];
-      print("set tags success: $map $tags");
+      print("jpush set tags success: $map $tags");
     }).catchError((error) {
-      print("set tags error: $error");
+      print("jpush set tags error: $error");
     });
   }
 
   void addTags() {
     jPush.addTags(["lala", "haha"]).then((map) {
       var tags = map['tags'];
-      print("addTags success: $map $tags");
+      print("jpush addTags success: $map $tags");
     }).catchError((error) {
-      print("addTags error: $error");
+      print("jpush addTags error: $error");
     });
   }
 
   void deleteTags() {
     jPush.deleteTags(["lala", "haha"]).then((map) {
       var tags = map['tags'];
-      print("deleteTags success: $map $tags");
+      print("jpush deleteTags success: $map $tags");
     }).catchError((error) {
-      print("deleteTags error: $error");
+      print("jpush deleteTags error: $error");
     });
   }
 
   void getAllTags() {
     jPush.getAllTags().then((map) {
-      print("getAllTags success: $map");
+      print("jpush getAllTags success: $map");
     }).catchError((error) {
-      print("getAllTags error: $error");
+      print("jpush getAllTags error: $error");
     });
   }
 
   void cleanAllTags() {
     jPush.cleanTags().then((map) {
       var tags = map['tags'];
-      print("cleanTags success: $map $tags");
+      print("jpush cleanTags success: $map $tags");
     }).catchError((error) {
-      print("cleanTags error: $error");
+      print("jpush cleanTags error: $error");
     });
   }
 
   void setAlias() {
     jPush.setAlias("thealias11").then((map) {
-      print("setAlias success: $map");
+      print("jpush setAlias success: $map");
     }).catchError((error) {
-      print("setAlias error: $error");
+      print("jpush setAlias error: $error");
     });
   }
 
   void deleteAlias() {
     jPush.deleteAlias().then((map) {
-      print("deleteAlias success: $map");
+      print("jpush deleteAlias success: $map");
     }).catchError((error) {
-      print("deleteAlias error: $error");
+      print("jpush deleteAlias error: $error");
     });
   }
 
   void setBadge() {
     jPush.setBadge(66).then((map) {
-      print("setBadge success: $map");
+      print("jpush setBadge success: $map");
     }).catchError((error) {
-      print("setBadge error: $error");
+      print("jpush setBadge error: $error");
     });
   }
 
   void isNotificationEnabled() {
     jPush.isNotificationEnabled().then((bool value) {
-      print("通知授权是否打开: $value");
+      print("jpush 通知授权是否打开: $value");
     }).catchError((onError) {
-      print("通知授权是否打开: ${onError.toString()}");
+      print("jpush 通知授权是否打开: ${onError.toString()}");
     });
   }
 
@@ -160,20 +163,20 @@ class JPushController extends GetxController {
   }
 
   Future login(String uid) async {
-   /* await jPush.setAlias(uid).then((map) {
-      print("setAlias success: $map");
+    await jPush.setAlias(uid).then((map) {
+      print("jpush setAlias success: $map");
     }).catchError((error) {
-      print("setAlias error: $error");
-    });*/
+      print("jpush setAlias error: $error");
+    });
     return true;
   }
 
   Future logout() async {
-    /*await jPush.deleteAlias().then((map) async {
-      print("deleteAlias success: $map");
+    await jPush.deleteAlias().then((map) async {
+      print("jpush deleteAlias success: $map");
     }).catchError((error) {
-      print("deleteAlias error: $error");
-    });*/
+      print("jpush deleteAlias error: $error");
+    });
     return true;
   }
 }

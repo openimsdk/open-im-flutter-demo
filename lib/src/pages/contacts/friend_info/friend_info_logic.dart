@@ -140,22 +140,25 @@ class FriendInfoLogic extends GetxController {
   }
 
   void getFriendInfo() async {
+    // var list = await OpenIM.iMManager.getUsersInfo([info.value.uid]);
     var list = await OpenIM.iMManager.friendshipManager.getFriendsInfo(
       uidList: [info.value.uid],
     );
-    var user = list.first;
-    info.update((val) {
-      val?.name = user.name;
-      val?.icon = user.icon;
-      val?.comment = user.comment;
-      val?.gender = user.gender;
-      val?.mobile = user.mobile;
-      val?.birth = user.birth;
-      val?.email = user.email;
-      val?.isInBlackList = user.isInBlackList;
-      val?.ex = user.ex;
-      // val?.flag = user.flag;
-    });
+    if (list.isNotEmpty) {
+      var user = list.first;
+      info.update((val) {
+        val?.name = user.name;
+        val?.icon = user.icon;
+        val?.comment = user.comment;
+        val?.gender = user.gender;
+        val?.mobile = user.mobile;
+        val?.birth = user.birth;
+        val?.email = user.email;
+        val?.isInBlackList = user.isInBlackList;
+        val?.ex = user.ex;
+        // val?.flag = user.flag;
+      });
+    }
   }
 
   void recommendFriend() async {

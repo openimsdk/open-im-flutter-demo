@@ -32,7 +32,7 @@ class ContactsLogic extends GetxController {
     //   getFriendApplicationList();
     // };
 
-    imLogic.conversationSubject.listen((list) {
+    imLogic.conversationChangedSubject.listen((list) {
       var uList = <UserInfo>[];
       list.forEach((e) {
         if (e.isSingleChat) {

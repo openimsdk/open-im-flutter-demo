@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:openim_enterprise_chat/src/common/config.dart';
 import 'package:openim_enterprise_chat/src/models/api_resp.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'dio_logger.dart';
 
@@ -16,17 +17,16 @@ var dio = Dio();
 class HttpUtil {
   HttpUtil._();
 
-  // static final diaLogger = HttpFormatter();
 
   static void init() {
     // add interceptors
     dio
-      // ..interceptors.add(PrettyDioLogger(
-      //   requestHeader: true,
-      //   requestBody: true,
-      //   responseHeader: true,
-      // ))
-      ..interceptors.add(HttpFormatter())
+      ..interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: true,
+      ))
+      // ..interceptors.add(HttpFormatter())
       ..interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
         // Do something before request is sent
         return handler.next(options); //continue
