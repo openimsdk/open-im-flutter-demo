@@ -8,6 +8,8 @@ class DataPersistence {
   static const _FREQUENT_CONTACTS = "%s_frequentContacts";
   static const _CALL_RECORDS = "%s_callRecords";
   static const _LOGIN_INFO = 'loginCertificate';
+  static const _AT_USER_INFO = '%s_atUserInfo';
+  static const _SERVER = "server";
 
   DataPersistence._();
 
@@ -49,5 +51,25 @@ class DataPersistence {
       getKey(_CALL_RECORDS),
       (v) => CallRecords.fromJson(v.cast()),
     );
+  }
+
+  static Future<bool?> putAtUserMap(String gid, Map<String, String> atMap) {
+    return SpUtil.putObject(sprintf(_AT_USER_INFO, [gid]), atMap);
+  }
+
+  static Map? getAtUserMap(String gid) {
+    return SpUtil.getObject(sprintf(_AT_USER_INFO, [gid]));
+  }
+
+  static void removeAtUserMap(String gid) {
+    SpUtil.remove(sprintf(_AT_USER_INFO, [gid]));
+  }
+
+  static Future<bool?> putServerConfig(Map<String, String> config) {
+    return SpUtil.putObject(_SERVER, config);
+  }
+
+  static Map? getServerConfig() {
+    return SpUtil.getObject(_SERVER);
   }
 }

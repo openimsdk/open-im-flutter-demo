@@ -75,7 +75,7 @@ class GroupSetupLogic extends GetxController {
 
   void modifyGroupName() {
     if(info.value.ownerId != OpenIM.iMManager.uid){
-      IMWidget.showToast('只有群组能修改');
+      IMWidget.showToast('只有群主能修改');
       return;
     }
     AppNavigator.startGroupNameSet(info: info);
@@ -84,7 +84,7 @@ class GroupSetupLogic extends GetxController {
 
   void editGroupAnnouncement() {
     if(info.value.ownerId != OpenIM.iMManager.uid){
-      IMWidget.showToast('只有群组能修改');
+      IMWidget.showToast('只有群主能修改');
       return;
     }
     AppNavigator.startEditAnnouncement(info: info);

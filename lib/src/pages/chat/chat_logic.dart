@@ -15,12 +15,16 @@ import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
 import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
+import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
+import 'package:openim_enterprise_chat/src/utils/date_util.dart';
 import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/bottom_sheet_view.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 import 'package:openim_enterprise_chat/src/widgets/preview_merge_msg.dart';
 import 'package:rxdart/rxdart.dart' as rx;
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -68,8 +72,12 @@ class ChatLogic extends GetxController {
     topRight: Radius.circular(30),
   );
 
-  var atUserMappingMap = <String, String>{};
+  var atUserNameMappingMap = <String, String>{};
+  var atUserInfoMappingMap = <String, UserInfo>{};
   var curMsgAtUser = <String>[];
+
+  var _uuid = Uuid();
+  var listViewKey = '1124'.obs;
 
   bool isCurrentChat(Message message) {
     var senderId = message.sendID;
@@ -81,12 +89,17 @@ class ChatLogic extends GetxController {
   }
 
   void scrollBottom() {
-    var index = messageList.length - 1;
-    if (index > 0)
-      // todo
-      Future.delayed(Duration(milliseconds: 400), () {
-        autoCtrl.scrollToIndex(index /*,duration: Duration(milliseconds: 1)*/);
-      });
+    // var index = messageList.length - 1;
+    // if (index > 0)
+    //   // todo
+    //   Future.delayed(Duration(milliseconds: 400), () {
+    //     autoCtrl.scrollToIndex(index /*,duration: Duration(milliseconds: 1)*/);
+    //   });
+    print('---------------offset---------${autoCtrl.offset}');
+    // 重置listview替代滚动效果
+    if (autoCtrl.offset != 0) {
+      listViewKey.value = _uuid.v4();
+    }
   }
 
   @override
@@ -129,6 +142,7 @@ class ChatLogic extends GetxController {
           }
         } else {
           if (!messageList.contains(message)) {
+            // messageList.insert(0, message);
             messageList.add(message);
             scrollBottom();
           }
@@ -163,6 +177,12 @@ class ChatLogic extends GetxController {
       );
     };
 
+    // 有新成员进入
+    imLogic.onMemberEnter = (groupId, list) {
+      if (groupId == gid) {
+        _putMemberInfo(list);
+      }
+    };
     // 自定义消息点击事件
     clickSubject.listen((index) {
       print('index:$index');
@@ -222,21 +242,36 @@ class ChatLogic extends GetxController {
       var result = await OpenIM.iMManager.groupManager.getGroupMemberList(
         groupId: gid!,
       );
-      result.data?.forEach((member) {
-        atUserMappingMap[member.userId!] = member.nickName!;
-      });
-      atUserMappingMap[OpenIM.iMManager.uid] = StrRes.you;
+      _putMemberInfo(result.data);
     }
   }
 
+  /// 记录群成员信息
+  void _putMemberInfo(List<GroupMembersInfo>? list) {
+    list?.forEach((member) {
+      atUserNameMappingMap[member.userId!] = member.nickName!;
+      atUserInfoMappingMap[member.userId!] = UserInfo(
+        uid: member.userId!,
+        name: member.nickName,
+        icon: member.faceUrl,
+      );
+    });
+    atUserNameMappingMap[OpenIM.iMManager.uid] = StrRes.you;
+    atUserInfoMappingMap[OpenIM.iMManager.uid] = OpenIM.iMManager.uInfo;
+    DataPersistence.putAtUserMap(gid!, atUserNameMappingMap);
+  }
+
+  /// 获取历史聊天记录
   void getHistoryMsgList() {
     OpenIM.iMManager.messageManager
         .getHistoryMessageList(
           userID: uid,
           groupID: gid,
-          count: 20,
+          count: 100,
         )
+        // .then((list) => IMUtil.calChatTimeInterval(list))
         .then((list) => messageList..assignAll(list))
+    // .then((list) => messageList..assignAll(list.reversed))
         .whenComplete(() => scrollBottom());
   }
 
@@ -387,6 +422,7 @@ class ChatLogic extends GetxController {
   void _sendMessage(Message message, {String? userId, String? groupId}) {
     log('send : ${json.encode(message)}');
     if (null == userId && null == groupId) {
+      // messageList.insert(0, message);
       messageList.add(message);
       scrollBottom();
     }
@@ -743,6 +779,19 @@ class ChatLogic extends GetxController {
     // Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
   }
 
+  void clickAtText(id) {
+    if (null != atUserInfoMappingMap[id]) {
+      AppNavigator.startFriendInfo(info: atUserInfoMappingMap[id]);
+    }
+  }
+
+  void clickUrlText(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+    // await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+  }
+
   /// 读取草稿
   void readDraftText() {
     var draftText = Get.arguments['draftText'];
@@ -755,7 +804,7 @@ class ChatLogic extends GetxController {
       print('text:$text  atMap:$atMap');
       atMap.forEach((key, value) {
         if (!curMsgAtUser.contains(key)) curMsgAtUser.add(key);
-        atUserMappingMap.putIfAbsent(key, () => value);
+        atUserNameMappingMap.putIfAbsent(key, () => value);
       });
       inputCtrl.text = text;
       inputCtrl.selection = TextSelection.fromPosition(TextPosition(
@@ -777,7 +826,7 @@ class ChatLogic extends GetxController {
   String createDraftText() {
     var atMap = <String, dynamic>{};
     curMsgAtUser.forEach((uid) {
-      atMap[uid] = atUserMappingMap[uid];
+      atMap[uid] = atUserNameMappingMap[uid];
     });
     return json.encode({
       'text': inputCtrl.text,
@@ -804,9 +853,15 @@ class ChatLogic extends GetxController {
     }
   }
 
-  void copy(index) {}
+  void copy(index) {
+    var msg = indexOfMessage(index);
+    IMUtil.copy(text: msg.content!);
+  }
 
-  Message indexOfMessage(int index) => messageList.elementAt(index);
+  Message indexOfMessage(int index) =>
+      IMUtil.calChatTimeInterval(messageList).reversed.elementAt(index);
+
+  ValueKey itemKey(int index) => ValueKey(indexOfMessage(index).clientMsgID!);
 
   @override
   void onClose() {
@@ -820,23 +875,11 @@ class ChatLogic extends GetxController {
     super.onClose();
   }
 
-// String? getShowTime(int index) {
-//   var info = indexOfMessage(index);
-//   if (info.contentType != MessageType.text) {
-//     return null;
-//   }
-//   if (null == lastTime) {
-//     lastTime = info.sendTime!;
-//     return DateUtil.getChatTime(lastTime);
-//   } else {
-//     // nanosecond to milliseconds
-//     var last = DateUtil.getDateTimeByMs(lastTime ~/ (1000 * 1000));
-//     var now = DateUtil.getDateTimeByMs(info.sendTime! ~/ (1000 * 1000));
-//     if (now.difference(last).inMinutes > 5) {
-//       lastTime = info.sendTime!;
-//       return DateUtil.getChatTime(lastTime);
-//     }
-//   }
-//   return null;
-// }
+  String? getShowTime(int index) {
+    var info = indexOfMessage(index);
+    if (info.ext == true) {
+      return DateUtil.getChatTime(info.sendTime!);
+    }
+    return null;
+  }
 }

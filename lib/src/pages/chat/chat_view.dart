@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
 import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
 import 'package:openim_enterprise_chat/src/widgets/touch_close_keyboard.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 import 'chat_logic.dart';
 
@@ -14,16 +12,18 @@ class ChatPage extends StatelessWidget {
   final logic = Get.find<ChatLogic>();
 
   Widget _itemView(index, local) => ChatItemView(
+        key: logic.itemKey(index),
         index: index,
         localizations: local,
         message: logic.indexOfMessage(index),
+        timeStr: logic.getShowTime(index),
         isSingleChat: logic.isSingleChat,
         clickSubject: logic.clickSubject,
         msgSendStatusSubject: logic.msgSendStatusSubject,
         msgSendProgressSubject: logic.msgSendProgressSubject,
         multiSelMode: logic.multiSelMode.value,
         multiList: logic.multiSelList.value,
-        allAtMap: logic.atUserMappingMap,
+        allAtMap: logic.atUserNameMappingMap,
         onMultiSelChanged: (checked) {
           logic.multiSelMsg(index, checked);
         },
@@ -57,7 +57,12 @@ class ChatPage extends StatelessWidget {
           logic.onTapLeftAvatar(index);
         },
         onTapRightAvatar: () {},
-        onClickAtText: (v) {},
+        onClickAtText: (uid) {
+          logic.clickAtText(uid);
+        },
+        onClickUrlText: (url) {
+          logic.clickUrlText(url);
+        },
         onTapQuoteMsg: () {
           logic.onTapQuoteMsg(index);
         },
@@ -74,7 +79,7 @@ class ChatPage extends StatelessWidget {
               backgroundColor: PageStyle.c_FFFFFF,
               appBar: EnterpriseTitleBar.chatTitle(
                 title: logic.name.value,
-                subTitle: logic.typing.value ? '正在输入...':'xxx技术有限公司',
+                subTitle: logic.typing.value ? '正在输入...' : 'xxx技术有限公司',
                 onClickCallBtn: () => logic.call(),
                 onClickMoreBtn: () => logic.chatSetup(),
                 leftButton: logic.multiSelMode.value ? StrRes.cancel : null,
@@ -86,22 +91,35 @@ class ChatPage extends StatelessWidget {
                     Expanded(
                       child: TouchCloseSoftKeyboard(
                         onTouch: () => logic.closeToolbox(),
-                        child: ListView.builder(
-                          itemCount: logic.messageList.length,
-                          padding: EdgeInsets.only(top: 10.h),
-                          controller: logic.autoCtrl,
-                          itemBuilder: (_, index) => Obx(() => AutoScrollTag(
-                                key: ValueKey(index),
-                                controller: logic.autoCtrl,
-                                index: index,
-                                child: _itemView(index, local),
-                              )),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: ListView.builder(
+                            key: ObjectKey(logic.listViewKey.value),
+                            reverse: true,
+                            shrinkWrap: true,
+                            itemCount: logic.messageList.length,
+                            // padding: EdgeInsets.only(top: 10.h),
+                            controller: logic.autoCtrl,
+                            itemBuilder: (_, index) =>
+                                Obx(() => _itemView(index, local)),
+                          ),
                         ),
+                        // child: ListView.builder(
+                        //   itemCount: logic.messageList.length,
+                        //   padding: EdgeInsets.only(top: 10.h),
+                        //   controller: logic.autoCtrl,
+                        //   itemBuilder: (_, index) => Obx(() => AutoScrollTag(
+                        //         key: ValueKey(index),
+                        //         controller: logic.autoCtrl,
+                        //         index: index,
+                        //         child: _itemView(index, local),
+                        //       )),
+                        // ),
                       ),
                     ),
                     ChatInputBoxView(
                       controller: logic.inputCtrl,
-                      allAtMap: logic.atUserMappingMap,
+                      allAtMap: logic.atUserNameMappingMap,
                       toolbox: ChatToolsView(
                         localizations: local,
                         onTapAlbum: () => logic.onTapAlbum(),

@@ -49,6 +49,7 @@ class ConversationPage extends StatelessWidget {
                       isCircleAvatar: !logic.isGroupChat(index),
                       title: logic.getShowName(index),
                       content: logic.getMsgContent(index),
+                      allAtMap: logic.getAtUserMap(index),
                       contentPrefix: logic.getPrefixText(index),
                       timeStr: logic.getTime(index),
                       unreadCount: logic.getUnreadCount(index),

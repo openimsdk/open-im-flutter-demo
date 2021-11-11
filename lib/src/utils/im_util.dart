@@ -23,6 +23,7 @@ import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'date_util.dart';
 import 'http_util.dart';
 
 class IMUtil {
@@ -388,6 +389,25 @@ class IMUtil {
 
   static bool isNoEmpty(String? value) {
     return null != value && value.trim().isNotEmpty;
+  }
+
+  static List<Message> calChatTimeInterval(List<Message> list) {
+    var nanoseconds = list.first.sendTime!;
+    list.first.ext = true;
+    var lastShowTimeStamp = nanoseconds ~/ (1000 * 1000);
+    for (var i = 1; i < list.length; i++) {
+      var index = i + 1;
+      if (index <= list.length - 1) {
+        var date1 = DateUtil.getDateTimeByMs(lastShowTimeStamp);
+        var milliseconds = list.elementAt(index).sendTime! ~/ (1000 * 1000);
+        var date2 = DateUtil.getDateTimeByMs(milliseconds);
+        if (date2.difference(date1).inMinutes > 5) {
+          lastShowTimeStamp = milliseconds;
+          list.elementAt(index).ext = true;
+        }
+      }
+    }
+    return list;
   }
 }
 

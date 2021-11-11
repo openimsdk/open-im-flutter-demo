@@ -35,7 +35,7 @@ packages:
       name: audio_session
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.6"
+    version: "0.1.6+1"
   azlistview:
     dependency: "direct main"
     description:
@@ -314,16 +314,16 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "2ce0a28a4435c06e659faa93424916114ee4b49f"
+      resolved-ref: d4bc4f7ae2ccbd7690ef5fff27d4d165b32f8469
       url: "https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git"
     source: git
-    version: "0.0.9+6"
+    version: "1.0.2"
   flutter_openim_widget:
     dependency: "direct main"
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "354550213a1333357daf17dd220d0f7869fb7130"
+      resolved-ref: bcd8c2226109f7b2bc600720e1ae1e2e4d148f0b
       url: "https://github.com/hrxiang/flutter_openim_widget.git"
     source: git
     version: "0.0.1"
@@ -717,6 +717,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.0.1"
+  pull_to_refresh:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   qr:
     dependency: transitive
     description:
@@ -925,6 +932,48 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0+1"
+  url_launcher:
+    dependency: "direct main"
+    description:
+      name: url_launcher
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "6.0.12"
+  url_launcher_linux:
+    dependency: transitive
+    description:
+      name: url_launcher_linux
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
+  url_launcher_macos:
+    dependency: transitive
+    description:
+      name: url_launcher_macos
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
+  url_launcher_platform_interface:
+    dependency: transitive
+    description:
+      name: url_launcher_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.4"
+  url_launcher_web:
+    dependency: transitive
+    description:
+      name: url_launcher_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.4"
+  url_launcher_windows:
+    dependency: transitive
+    description:
+      name: url_launcher_windows
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
   uuid:
     dependency: "direct main"
     description:

@@ -7,6 +7,7 @@ import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
 import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
+import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
 import 'package:openim_enterprise_chat/src/utils/date_util.dart';
 
 class ConversationLogic extends GetxController {
@@ -46,21 +47,9 @@ class ConversationLogic extends GetxController {
         name: info.showName,
         icon: info.faceUrl,
         draftText: info.draftText);
-    // var draftText = await Get.toNamed(
-    //   AppRoutes.CHAT,
-    //   // () => ChatPage(),
-    //   // binding: ChatBinding(),
-    //   arguments: {
-    //     "uid": info.userID,
-    //     "gid": info.groupID,
-    //     "name": info.showName,
-    //     "icon": info.faceUrl,
-    //     "draftText": info.draftText
-    //   },
-    // );
+
     markMessageHasRead(index);
-    // Get.toNamed(AppRoutes.CHAT);
-    // if (null != draftText && draftText != "") {}
+
     print('draftText:$draftText');
     setConversationDraft(
       cid: info.conversationID,
@@ -128,7 +117,7 @@ class ConversationLogic extends GetxController {
       }
     } else if (info.latestMsg?.contentType == MessageType.at_text) {
       try {
-        Map map = json.decode(info.latestMsg?.content?.trim() ?? '');
+        Map map = json.decode(info.latestMsg!.content!);
         String text = map['text'];
         // bool isAtSelf = map['isAtSelf'];
         bool isAtSelf = text.contains('@${OpenIM.iMManager.uid} ');
@@ -140,6 +129,16 @@ class ConversationLogic extends GetxController {
     return prefix;
   }
 
+  Map<String, String> getAtUserMap(int index) {
+    var info = list.elementAt(index);
+    if (info.isGroupChat) {
+      Map<String, String> map =
+          DataPersistence.getAtUserMap(info.groupID!)?.cast() ?? {};
+      return map;
+    }
+    return {};
+  }
+
   /// 解析消息内容
   String getMsgContent(int index) {
     var info = list.elementAt(index);
@@ -147,11 +146,11 @@ class ConversationLogic extends GetxController {
       var map = json.decode(info.draftText!);
       String text = map['text'];
       if (text.isNotEmpty) {
-        Map<String, dynamic> atMap = map['at'];
-        print('text:$text  atMap:$atMap');
-        atMap.forEach((uid, uname) {
-          text = text.replaceAll(uid, uname);
-        });
+        // Map<String, dynamic> atMap = map['at'];
+        // print('text:$text  atMap:$atMap');
+        // atMap.forEach((uid, uname) {
+        //   text = text.replaceAll(uid, uname);
+        // });
         return text;
       }
     }
@@ -180,7 +179,7 @@ class ConversationLogic extends GetxController {
       try {
         Map map = json.decode(text);
         text = map['text'];
-        text = text.replaceAll('@${OpenIM.iMManager.uid} ', '');
+        // text = text.replaceAll('@${OpenIM.iMManager.uid} ', '');
         return text;
       } catch (e) {}
       return text;
@@ -260,13 +259,6 @@ class ConversationLogic extends GetxController {
       action: SelAction.CRATE_GROUP,
       defaultCheckedUidList: [OpenIM.iMManager.uid],
     );
-    // Get.toNamed(
-    //   AppRoutes.SELECT_CONTACTS,
-    //   arguments: {
-    //     'action': SelAction.CRATE_GROUP,
-    //     'uidList': [OpenIM.iMManager.uid]
-    //   },
-    // );
   }
 
   void toScanQrcode() {
