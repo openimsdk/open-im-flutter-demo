@@ -11,10 +11,9 @@ import 'chat_logic.dart';
 class ChatPage extends StatelessWidget {
   final logic = Get.find<ChatLogic>();
 
-  Widget _itemView(index, local) => ChatItemView(
+  Widget _itemView(index) => ChatItemView(
         key: logic.itemKey(index),
         index: index,
-        localizations: local,
         message: logic.indexOfMessage(index),
         timeStr: logic.getShowTime(index),
         isSingleChat: logic.isSingleChat,
@@ -75,7 +74,7 @@ class ChatPage extends StatelessWidget {
         return logic.exit();
       },
       child: ChatVoiceRecordLayout(
-        builder: (bar, local) => Obx(() => Scaffold(
+        builder: (bar) => Obx(() => Scaffold(
               backgroundColor: PageStyle.c_FFFFFF,
               appBar: EnterpriseTitleBar.chatTitle(
                 title: logic.name.value,
@@ -101,7 +100,7 @@ class ChatPage extends StatelessWidget {
                             // padding: EdgeInsets.only(top: 10.h),
                             controller: logic.autoCtrl,
                             itemBuilder: (_, index) =>
-                                Obx(() => _itemView(index, local)),
+                                Obx(() => _itemView(index)),
                           ),
                         ),
                         // child: ListView.builder(
@@ -121,14 +120,14 @@ class ChatPage extends StatelessWidget {
                       controller: logic.inputCtrl,
                       allAtMap: logic.atUserNameMappingMap,
                       toolbox: ChatToolsView(
-                        localizations: local,
                         onTapAlbum: () => logic.onTapAlbum(),
                         onTapCamera: () => logic.onTapCamera(),
                         onTapCarte: () => logic.onTapCarte(),
                         onTapFile: () => logic.onTapFile(),
                         onTapLocation: () => logic.onTapLocation(),
                         onTapVideoCall: () => logic.call(),
-                        onTapVoiceInput: () {},
+                        onStopVoiceInput: () {},
+                        onStartVoiceInput: () {},
                       ),
                       multiOpToolbox: ChatMultiSelToolbox(
                         onDelete: () => logic.mergeDelete(),

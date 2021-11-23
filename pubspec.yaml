@@ -43,9 +43,7 @@ dependencies:
 #  scrollable_positioned_list: ^0.2.0-nullsafety.0
   scroll_to_index: ^2.0.0
 #  image_gallery_saver: ^1.6.9
-  image_gallery_saver:
-    git:
-      url: https://github.com/hui-z/image_gallery_saver.git
+  image_gallery_saver: ^1.7.1
 #  fluttertoast: ^8.0.8
   flutter_easyloading: ^3.0.3
   wechat_assets_picker: ^6.2.3
@@ -61,7 +59,7 @@ dependencies:
   flutter_openim_widget:
     git:
       url: https://github.com/hrxiang/flutter_openim_widget.git
-  #    path: flutter_openim_widget
+#    path: ../flutter_openim_widget
   image_cropper: ^1.4.1
   dotted_decoration: ^2.0.0
   package_info_plus: ^1.0.6
@@ -71,7 +69,7 @@ dependencies:
 #  dio_logger: ^4.0.8+8
   logger: ^1.1.0
 #  dio_http_formatter: ^2.0.0
-  jpush_flutter: ^2.1.5
+  jpush_flutter: 2.1.5
 #  animate_do: ^2.0.0
   animated_text_kit: ^4.2.1
   focus_detector: ^2.0.0
