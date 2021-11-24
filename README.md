@@ -1,6 +1,10 @@
 # OpenIM
-
 A OpenIM flutter demo, support android and ios.
+
+
+# ![App](https://www.pgyer.com/app/qrcode/OpenIM)
+
+
 
 ## Getting Started
   1. git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
