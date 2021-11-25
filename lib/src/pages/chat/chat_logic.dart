@@ -645,7 +645,7 @@ class ChatLogic extends GetxController {
     );
     if (result != null) {
       for (var file in result.files) {
-        sendFile(filePath: file.path, fileName: file.name);
+        sendFile(filePath: file.path!, fileName: file.name);
       }
     } else {
       // User canceled the picker
