@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 
@@ -7,18 +8,20 @@ class SetupPwdLogic extends GetxController {
   var pwdCtrl = TextEditingController();
   var showPwdClearBtn = false.obs;
   var obscureText = true.obs;
-  late String phoneNumber;
-  late String areaCode;
+  String? phoneNumber;
+  String? areaCode;
+  String? email;
   late String verifyCode;
 
   void nextStep() {
     if (pwdCtrl.text.length < 6 || pwdCtrl.text.length > 20) {
-      IMWidget.showToast('密码格式不正确');
+      IMWidget.showToast(StrRes.pwdFormatError);
       return;
     }
     AppNavigator.startRegisterSetupSelfInfo(
       areaCode: areaCode,
       phoneNumber: phoneNumber,
+      email: email,
       verifyCode: verifyCode,
       password: pwdCtrl.text,
     );
@@ -33,6 +36,7 @@ class SetupPwdLogic extends GetxController {
   void onInit() {
     phoneNumber = Get.arguments['phoneNumber'];
     areaCode = Get.arguments['areaCode'];
+    email = Get.arguments['email'];
     verifyCode = Get.arguments['verifyCode'];
     super.onInit();
   }

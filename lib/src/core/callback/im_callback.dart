@@ -1,7 +1,7 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/widgets/app_view.dart';
+import 'package:openim_enterprise_chat/src/core/controller/app_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 class IMCallback {
@@ -15,6 +15,7 @@ class IMCallback {
 
   Function(UserInfo u)? onBlackListAdd;
   Function(UserInfo u)? onBlackListDeleted;
+
   // Function(UserInfo u)? onFriendApplicationListAccept;
   // Function(UserInfo u)? onFriendApplicationListAdded;
   // Function(UserInfo u)? onFriendApplicationListDeleted;
@@ -22,11 +23,12 @@ class IMCallback {
   // Function(UserInfo u)? onFriendInfoChanged;
   // Function(UserInfo u)? onFriendListAdded;
   // Function(UserInfo u)? onFriendListDeleted;
-  // Function(String gid, GroupMembersInfo op, int agreeOrReject, String opReason)?
-  //     onApplicationProcessed;
+  Function(String gid, GroupMembersInfo op, int agreeOrReject, String opReason)?
+      onGroupApplicationProcessed;
+
   // Function(String gid)? onGroupCreated;
   // Function(String gid, GroupInfo info)? onGroupInfoChanged;
-  Function(String gid, List<GroupMembersInfo> list)? onMemberEnter;
+  // Function(String gid, List<GroupMembersInfo> list)? onMemberEnter;
   Function(String gid, GroupMembersInfo op, List<GroupMembersInfo> list)?
       onMemberInvited;
   Function(String gid, GroupMembersInfo op, List<GroupMembersInfo> list)?
@@ -35,6 +37,7 @@ class IMCallback {
 
   Function(String gid, GroupMembersInfo info, String opReason)?
       onReceiveJoinApplication;
+
   // Function(int count)? onUnreadMsgCountChanged;
 
   //
@@ -68,6 +71,14 @@ class IMCallback {
 
   var initializedSubject = BehaviorSubject<bool>();
 
+  var memberEnterSubject = BehaviorSubject<Map<String, dynamic>>();
+
+  var onKickedOfflineSubject = BehaviorSubject();
+
+  void kickedOffline() {
+    onKickedOfflineSubject.add("");
+  }
+
   void selfInfoUpdated(UserInfo u) {
     // if (null != onSelfInfoUpdated) {
     //   onSelfInfoUpdated!(u);
@@ -76,40 +87,28 @@ class IMCallback {
   }
 
   void recvMessageRevoked(String id) {
-    if (null != onRecvMessageRevoked) {
-      onRecvMessageRevoked!(id);
-    }
+    onRecvMessageRevoked?.call(id);
   }
 
   void recvC2CReadReceipt(List<HaveReadInfo> list) {
-    if (null != onRecvC2CReadReceipt) {
-      onRecvC2CReadReceipt!(list);
-    }
+    onRecvC2CReadReceipt?.call(list);
   }
 
   void recvNewMessage(Message msg) {
     initLogic.showNotification(msg);
-    if (null != onRecvNewMessage) {
-      onRecvNewMessage!(msg);
-    }
+    onRecvNewMessage?.call(msg);
   }
 
   void progressCallback(String msgId, int progress) {
-    if (null != onMsgSendProgress) {
-      onMsgSendProgress!(msgId, progress);
-    }
+    onMsgSendProgress?.call(msgId, progress);
   }
 
   void blackListAdd(UserInfo u) {
-    if (null != onBlackListAdd) {
-      onBlackListAdd!(u);
-    }
+    onBlackListAdd?.call(u);
   }
 
   void blackListDeleted(UserInfo u) {
-    if (null != onBlackListDeleted) {
-      onBlackListDeleted!(u);
-    }
+    onBlackListDeleted?.call(u);
   }
 
   void friendApplicationListAccept(UserInfo u) {
@@ -178,9 +177,7 @@ class IMCallback {
 
   void applicationProcessed(String groupId, GroupMembersInfo opUser,
       int agreeOrReject, String opReason) {
-    // if (null != onApplicationProcessed) {
-    //   onApplicationProcessed!(groupId, opUser, agreeOrReject, opReason);
-    // }
+    onGroupApplicationProcessed?.call(groupId, opUser, agreeOrReject, opReason);
   }
 
   void groupCreated(String groupId) {
@@ -197,36 +194,24 @@ class IMCallback {
   }
 
   void memberEnter(String groupId, List<GroupMembersInfo> list) {
-    if (null != onMemberEnter) {
-      onMemberEnter!(groupId, list);
-    }
+    // onMemberEnter?.call(groupId, list);
+    memberEnterSubject.add({"groupId": groupId, "list": list});
   }
 
-  void memberInvited(
-      String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
-    if (null != onMemberInvited) {
-      onMemberInvited!(groupId, opUser, list);
-    }
+  void memberInvited(String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
+    onMemberInvited?.call(groupId, opUser, list);
   }
 
-  void memberKicked(
-      String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
-    if (null != onMemberKicked) {
-      onMemberKicked!(groupId, opUser, list);
-    }
+  void memberKicked(String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
+    onMemberKicked?.call(groupId, opUser, list);
   }
 
   void memberLeave(String groupId, GroupMembersInfo info) {
-    if (null != onMemberLeave) {
-      onMemberLeave!(groupId, info);
-    }
+    onMemberLeave?.call(groupId, info);
   }
 
-  void receiveJoinApplication(
-      String groupId, GroupMembersInfo info, String opReason) {
-    if (null != onReceiveJoinApplication) {
-      onReceiveJoinApplication!(groupId, info, opReason);
-    }
+  void receiveJoinApplication(String groupId, GroupMembersInfo info, String opReason) {
+    onReceiveJoinApplication?.call(groupId, info, opReason);
   }
 
   void totalUnreadMsgCountChanged(int count) {
@@ -247,7 +232,9 @@ class IMCallback {
     groupInfoUpdatedSubject.close();
     conversationAddedSubject.close();
     conversationChangedSubject.close();
+    memberEnterSubject.close();
+    onKickedOfflineSubject.close();
   }
 
-  final initLogic = Get.find<AppInitLogic>();
+  final initLogic = Get.find<AppController>();
 }

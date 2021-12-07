@@ -13,6 +13,10 @@ class AddFriendLogic extends GetxController {
     // Get.toNamed(AppRoutes.MY_QRCODE);
   }
 
+  void toScanQrcode() {
+    AppNavigator.startScanQrcode();
+  }
+
   @override
   void onReady() {
     // TODO: implement onReady

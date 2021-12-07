@@ -5,7 +5,7 @@ import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
 import 'package:openim_enterprise_chat/src/res/images.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/utils/debounce_button.dart';
+import 'package:openim_enterprise_chat/src/widgets/debounce_button.dart';
 import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
 import 'package:openim_enterprise_chat/src/widgets/image_button.dart';
 import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';

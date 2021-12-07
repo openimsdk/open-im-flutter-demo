@@ -61,7 +61,7 @@ class NewFriendLogic extends GetxController {
       acceptFriendApplication(index);
     } else if (info.isAgreed) {
       //
-
+      AppNavigator.startFriendInfo(info: info);
     }
   }
 

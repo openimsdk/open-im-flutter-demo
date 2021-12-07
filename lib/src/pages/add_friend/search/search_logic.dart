@@ -5,20 +5,48 @@ import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:rxdart/rxdart.dart';
 
+enum SearchType {
+  user,
+  group,
+}
+
 class AddFriendBySearchLogic extends GetxController {
   var searchCtrl = TextEditingController();
   var focusNode = FocusNode();
-  var resultSub = PublishSubject<List<UserInfo>>();
+  var resultSub = PublishSubject<String>();
+  var searchType = SearchType.user;
+  UserInfo? userInfo;
+  GroupInfo? groupInfo;
 
   /// 根据用户id查询用户信息
   void search() async {
-    var list = await OpenIM.iMManager.getUsersInfo([searchCtrl.text]);
-    resultSub.addSafely(list);
+    if (isSearchUser) {
+      var list = await OpenIM.iMManager.getUsersInfo([searchCtrl.text]);
+      if (list.isNotEmpty) {
+        userInfo = list.first;
+        resultSub.addSafely(userInfo!.uid);
+      } else {
+        resultSub.addSafely("");
+      }
+    } else {
+      var list = await OpenIM.iMManager.groupManager.getGroupsInfo(
+        gidList: [searchCtrl.text],
+      );
+      if (list.isNotEmpty) {
+        groupInfo = list.first;
+        resultSub.addSafely(groupInfo!.groupID);
+      } else {
+        resultSub.addSafely("");
+      }
+    }
   }
 
-  void viewUserInfo(UserInfo info) {
-    AppNavigator.startFriendInfo(info: info);
-    // Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
+  void viewInfo() {
+    if (isSearchUser) {
+      AppNavigator.startFriendInfo(info: userInfo!);
+    } else {
+      AppNavigator.startSearchAddGroup(info: groupInfo!);
+    }
   }
 
   @override
@@ -26,7 +54,7 @@ class AddFriendBySearchLogic extends GetxController {
     searchCtrl.addListener(() {
       if (searchCtrl.text.isEmpty) {
         focusNode.requestFocus();
-        resultSub.addSafely([]);
+        resultSub.addSafely("");
       }
     });
     super.onReady();
@@ -39,4 +67,12 @@ class AddFriendBySearchLogic extends GetxController {
     resultSub.close();
     super.onClose();
   }
+
+  @override
+  void onInit() {
+    searchType = Get.arguments['searchType'] ?? SearchType.user;
+    super.onInit();
+  }
+
+  bool get isSearchUser => searchType == SearchType.user;
 }

@@ -7,6 +7,20 @@ class AddContactsLogic extends GetxController {
     // Get.toNamed(AppRoutes.JOIN_GROUP);
   }
 
+  void toSearchPage() {
+    AppNavigator.startAddFriendBySearch();
+    // Get.toNamed(AppRoutes.ADD_FRIEND_BY_SEARCH);
+  }
+
+  void toScanQrcode() {
+    AppNavigator.startScanQrcode();
+  }
+
+  void crateGroup(){
+    AppNavigator.createGroup();
+  }
+
+
   @override
   void onReady() {
     // TODO: implement onReady

@@ -1,4 +1,4 @@
-import 'package:flutter_openim_widget/ui/util/permission_util.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -12,6 +12,8 @@ class PermissionController extends GetxController {
       Permission.microphone,
       Permission.speech,
       Permission.location,
+      // Permission.photos,
+      Permission.notification,
     ]);
     super.onInit();
   }

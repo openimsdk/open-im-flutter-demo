@@ -1,5 +1,8 @@
+import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/widgets/qrcode_view.dart';
+import 'package:openim_enterprise_chat/src/pages/add_friend/search/search_logic.dart';
+import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
+import 'package:openim_enterprise_chat/src/widgets/qr_view.dart';
 
 import 'app_pages.dart';
 
@@ -8,41 +11,47 @@ class AppNavigator {
     Get.offAllNamed(AppRoutes.LOGIN);
   }
 
-  static void startRegister() {
-    Get.toNamed(AppRoutes.REGISTER);
+  static void startRegister(String way) {
+    Get.toNamed(AppRoutes.REGISTER, arguments: {'registerWay': way});
   }
 
-  static void startRegisterVerifyPhone({
-    required String phoneNumber,
-    required String areaCode,
+  static void startRegisterVerifyPhoneOrEmail({
+    String? email,
+    String? phoneNumber,
+    String? areaCode,
   }) {
     Get.toNamed(AppRoutes.REGISTER_VERIFY_PHONE, arguments: {
       'phoneNumber': phoneNumber,
       'areaCode': areaCode,
+      'email': email,
     });
   }
 
   static void startRegisterSetupPwd({
-    required String phoneNumber,
-    required String areaCode,
+    String? phoneNumber,
+    String? areaCode,
+    String? email,
     required String verifyCode,
   }) {
     Get.toNamed(AppRoutes.REGISTER_SETUP_PWD, arguments: {
       'phoneNumber': phoneNumber,
       'areaCode': areaCode,
+      'email': email,
       'verifyCode': verifyCode,
     });
   }
 
   static void startRegisterSetupSelfInfo({
-    required String phoneNumber,
-    required String areaCode,
+    String? phoneNumber,
+    String? areaCode,
+    String? email,
     required String verifyCode,
     required String password,
   }) {
     Get.toNamed(AppRoutes.REGISTER_SETUP_SELF_INFO, arguments: {
       'phoneNumber': phoneNumber,
       'areaCode': areaCode,
+      'email': email,
       'verifyCode': verifyCode,
       'password': password,
     });
@@ -116,7 +125,7 @@ class AppNavigator {
     dynamic defaultCheckedUidList,
     dynamic excludeUidList,
   }) {
-   return Get.toNamed<T>(
+    return Get.toNamed<T>(
       AppRoutes.SELECT_CONTACTS,
       arguments: {
         'action': action,
@@ -146,6 +155,21 @@ class AppNavigator {
     return Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
   }
 
+  /// 扫一扫进去
+  static Future<T?>? startFriendInfo2<T>({required dynamic info}) {
+    return Get.offAndToNamed(AppRoutes.FRIEND_INFO, arguments: info);
+    // return Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
+  }
+
+  static Future<T?>? startSearchAddGroup<T>({required dynamic info}) {
+    return Get.toNamed(AppRoutes.SEARCH_ADD_GROUP, arguments: info);
+  }
+
+  static Future<T?>? startSearchAddGroup2<T>({required dynamic info}) {
+    return Get.offAndToNamed(AppRoutes.SEARCH_ADD_GROUP, arguments: info);
+    // return Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
+  }
+
   static void startFriendIDCode({required dynamic info}) {
     Get.toNamed(AppRoutes.FRIEND_ID_CODE, arguments: info);
   }
@@ -163,7 +187,17 @@ class AppNavigator {
   }
 
   static void startAddFriendBySearch() {
-    Get.toNamed(AppRoutes.ADD_FRIEND_BY_SEARCH);
+    Get.toNamed(
+      AppRoutes.ADD_FRIEND_BY_SEARCH,
+      arguments: {'searchType': SearchType.user},
+    );
+  }
+
+  static void startAddGroupBySearch() {
+    Get.toNamed(
+      AppRoutes.ADD_FRIEND_BY_SEARCH,
+      arguments: {'searchType': SearchType.group},
+    );
   }
 
   static Future<T?>? startAcceptFriendRequest<T>({dynamic apply}) {
@@ -284,19 +318,30 @@ class AppNavigator {
     Get.to(() => QrcodeView());
   }
 
-  // static void startGroupCall({
-  //   required String gid,
-  //   required String senderUid,
-  //   required List<String> receiverIds,
-  //   required String type,
-  //   required CallState state,
-  // }) {
-  //   Get.toNamed(AppRoutes.GROUP_CALL, arguments: {
-  //     'gid': gid,
-  //     'senderUid': senderUid,
-  //     'receiverIds': receiverIds,
-  //     'type': type,
-  //     'state': state,
-  //   });
-  // }
+  static Future<T?>? startLanguageSetup<T>() {
+    return Get.toNamed(AppRoutes.LANGUAGE_SETUP);
+  }
+
+  static void createGroup() => startSelectContacts(
+        action: SelAction.CRATE_GROUP,
+        defaultCheckedUidList: [OpenIM.iMManager.uid],
+      );
+
+  static void applyEnterGroup(dynamic info) {
+    Get.toNamed(AppRoutes.APPLY_ENTER_GROUP, arguments: info);
+  }
+
+  static void startGroupApplication() {
+    Get.toNamed(AppRoutes.GROUP_APPLICATION);
+  }
+
+  static Future<T?>? startHandleGroupApplication<T>(
+    GroupInfo gInfo,
+    GroupApplicationInfo aInfo,
+  ) {
+    return Get.toNamed(AppRoutes.HANDLE_GROUP_APPLICATION, arguments: {
+      'aInfo': aInfo,
+      'gInfo': gInfo,
+    });
+  }
 }

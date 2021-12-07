@@ -73,19 +73,28 @@ class GroupSetupPage extends StatelessWidget {
                   _buildItemView(
                     label: StrRes.notDisturb,
                     showSwitchBtn: true,
-                    on: true,
-                    onClickSwitchBtn: () {},
+                    on: logic.notDisturb.value,
+                    onClickSwitchBtn: logic.toggleNotDisturb,
                   ),
+                  if (logic.notDisturb.value)
+                    _buildItemView(
+                      label: StrRes.groupMessageSettings,
+                      showArrow: true,
+                      value: logic.messageSet.value == 0
+                          ? StrRes.receiveMessageButNotPrompt
+                          : StrRes.blockGroupMessages,
+                      onTap: logic.messageSetting,
+                    ),
                   _buildItemView(
                     label: StrRes.chatTop,
                     showSwitchBtn: true,
-                    on: false,
-                    onClickSwitchBtn: () {},
+                    on: logic.topContacts.value,
+                    onClickSwitchBtn: () => logic.toggleTopContacts(),
                   ),
                   _buildItemView(
                     label: StrRes.clearHistory,
                     showArrow: true,
-                    onTap: () {},
+                    onTap: () => logic.clearChatHistory(),
                   ),
                   SizedBox(height: 12.h),
                   _buildItemView(

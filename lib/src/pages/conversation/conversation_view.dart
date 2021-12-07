@@ -25,26 +25,34 @@ class ConversationPage extends StatelessWidget {
           // resizeToAvoidBottomInset: false,
           // appBar: AppBar(),
           appBar: EnterpriseTitleBar.conversationTitle(
-            title: 'xx信息技术（成都）有限公司',
-            subTitle: imLogic.userInfo.value.getShowName(),
+            // title: 'xx信息技术（成都）有限公司',
+            // subTitle: imLogic.userInfo.value.getShowName(),
             avatarUrl: imLogic.userInfo.value.icon,
             actions: _buildActions(),
-          ),
-          body: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: SearchBox(
-                  enabled: false,
-                  margin: EdgeInsets.fromLTRB(22.w, 11.h, 22.w, 5.h),
-                  padding: EdgeInsets.symmetric(horizontal: 13.w),
+            subTitleView: Row(
+              children: [
+                Text(
+                  imLogic.userInfo.value.getShowName(),
+                  style: PageStyle.ts_333333_18sp,
                 ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => GestureDetector(
-                    onTap: () => logic.toChat(index),
-                    behavior: HitTestBehavior.translucent,
-                    child: ConversationItemView(
+                _onlineView(),
+              ],
+            ),
+          ),
+          body: SlidableAutoCloseBehavior(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SearchBox(
+                    enabled: false,
+                    margin: EdgeInsets.fromLTRB(22.w, 11.h, 22.w, 5.h),
+                    padding: EdgeInsets.symmetric(horizontal: 13.w),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => ConversationItemView(
+                      onTap: () => logic.toChat(index),
                       avatarUrl: logic.getAvatar(index),
                       isCircleAvatar: !logic.isGroupChat(index),
                       title: logic.getShowName(index),
@@ -90,13 +98,19 @@ class ConversationPage extends StatelessWidget {
                           onTap: () => logic.deleteConversation(index),
                         ),
                       ],
+                      patterns: <MatchPattern>[
+                        MatchPattern(
+                          type: PatternType.AT,
+                          style: PageStyle.ts_666666_13sp,
+                        ),
+                      ],
                       // isCircleAvatar: false,
                     ),
+                    childCount: logic.list.length,
                   ),
-                  childCount: logic.list.length,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -136,6 +150,11 @@ class ConversationPage extends StatelessWidget {
               onTap: () => logic.toAddFriend(),
             ),
             PopMenuInfo(
+              text: StrRes.addGroup,
+              icon: ImageRes.ic_popAddGroup,
+              onTap: () => logic.toAddGroup(),
+            ),
+            PopMenuInfo(
               text: StrRes.launchGroup,
               icon: ImageRes.ic_popLaunchGroup,
               onTap: () => logic.createGroup(),
@@ -151,4 +170,22 @@ class ConversationPage extends StatelessWidget {
           ),
         ),
       ];
+
+  Widget _onlineView() => Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 8.w, right: 4.w, top: 2.h),
+            width: 6.h,
+            height: 6.h,
+            decoration: BoxDecoration(
+              color: PageStyle.c_10CC64,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Text(
+            StrRes.online,
+            style: PageStyle.ts_333333_12sp,
+          ),
+        ],
+      );
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
 import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
@@ -12,7 +11,6 @@ import 'my_qrcode_logic.dart';
 
 class MyQrcodePage extends StatelessWidget {
   final logic = Get.find<MyQrcodeLogic>();
-  final imLogic = Get.find<IMController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +46,13 @@ class MyQrcodePage extends StatelessWidget {
                     children: [
                       AvatarView(
                         size: 58.h,
-                        url: imLogic.userInfo.value.icon,
+                        url: logic.imLogic.userInfo.value.icon,
                       ),
                       SizedBox(
                         width: 13.w,
                       ),
                       Text(
-                        imLogic.userInfo.value.getShowName(),
+                        logic.imLogic.userInfo.value.getShowName(),
                         style: PageStyle.ts_000000_20sp,
                       )
                     ],
@@ -90,7 +88,7 @@ class MyQrcodePage extends StatelessWidget {
                         ),
                       ),
                       child: QrImage(
-                        data: imLogic.userInfo.value.uid,
+                        data: logic.buildQRContent(),
                         size: 176.h,
                         backgroundColor: Colors.white,
                       ),

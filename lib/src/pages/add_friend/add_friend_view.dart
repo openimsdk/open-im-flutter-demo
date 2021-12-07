@@ -51,7 +51,7 @@ class AddFriendPage extends StatelessWidget {
             title: StrRes.scan,
             desc: StrRes.scanQrcodeCarte,
             alignment: Alignment.topCenter,
-          ),
+            onTap: () => logic.toScanQrcode()),
         ],
       ),
     );

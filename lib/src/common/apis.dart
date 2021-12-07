@@ -4,6 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_enterprise_chat/src/common/urls.dart';
 import 'package:openim_enterprise_chat/src/models/login_certificate.dart';
+import 'package:openim_enterprise_chat/src/models/online_status.dart';
+import 'package:openim_enterprise_chat/src/models/upgrade_info.dart';
+import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/utils/http_util.dart';
 import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
@@ -23,14 +26,16 @@ class Apis {
 
   /// login
   static Future<LoginCertificate> login({
-    required String areaCode,
-    required String phoneNumber,
+    String? areaCode,
+    String? phoneNumber,
+    String? email,
     required String password,
   }) async {
     try {
       var data = await HttpUtil.post(Urls.login, data: {
         "areaCode": areaCode,
         'phoneNumber': phoneNumber,
+        'email': email,
         'password': IMUtil.generateMD5(password),
         'platform': _platform,
       });
@@ -61,8 +66,9 @@ class Apis {
 
   /// register
   static Future<LoginCertificate> register({
-    required String areaCode,
-    required String phoneNumber,
+    String? areaCode,
+    String? phoneNumber,
+    String? email,
     required String password,
     required String verificationCode,
   }) async {
@@ -70,6 +76,7 @@ class Apis {
       var data = await HttpUtil.post(Urls.register, data: {
         "areaCode": areaCode,
         'phoneNumber': phoneNumber,
+        'email': email,
         'password': IMUtil.generateMD5(password),
         'verificationCode': verificationCode,
       });
@@ -102,17 +109,19 @@ class Apis {
 
   /// 获取验证码
   static Future<bool> requestVerificationCode({
-    required String areaCode,
-    required String phoneNumber,
+    String? areaCode,
+    String? phoneNumber,
+    String? email,
   }) async {
     return HttpUtil.post(
       Urls.getVerificationCode,
       data: {
         "areaCode": areaCode,
         "phoneNumber": phoneNumber,
+        "email": email,
       },
     ).then((value) {
-      IMWidget.showToast('发送成功');
+      IMWidget.showToast(StrRes.sentSuccessfully);
       return true;
     }).catchError((e) {
       print('e:$e');
@@ -124,8 +133,9 @@ class Apis {
 
   /// 校验验证码
   static Future<dynamic> checkVerificationCode({
-    required String areaCode,
-    required String phoneNumber,
+    String? areaCode,
+    String? phoneNumber,
+    String? email,
     required String verificationCode,
   }) {
     return HttpUtil.post(
@@ -133,6 +143,7 @@ class Apis {
       data: {
         "phoneNumber": phoneNumber,
         "areaCode": areaCode,
+        "email": email,
         "verificationCode": verificationCode,
       },
     );
@@ -178,5 +189,41 @@ class Apis {
       print('e:$e');
     }
     return false;
+  }
+
+  static Future<UpgradeInfoV2> checkUpgradeV2() {
+    return dio.post<Map<String, dynamic>>(
+      'https://www.pgyer.com/apiv2/app/check',
+      options: Options(
+        contentType: 'application/x-www-form-urlencoded',
+      ),
+      data: {
+        '_api_key': 'a8d237955358a873cb9472d6df198490',
+        'appKey': 'ae0f3138d2c3ca660039945ffd70adb6',
+      },
+    ).then((resp) {
+      Map<String, dynamic> map = resp.data!;
+      if (map['code'] == 0) {
+        return UpgradeInfoV2.fromJson(map['data']);
+      }
+      return Future.error(map);
+    });
+  }
+
+  static Future<List<OnlineStatus>> onlineStatus(
+      {required List<String> uidList}) {
+    return dio.post<Map<String, dynamic>>(Urls.onlineStatus, data: {
+      "operationID": "sdfasfasfdasfda",
+      "secret": Config.secret,
+      "userIDList": uidList
+    }).then((resp) {
+      Map<String, dynamic> map = resp.data!;
+      if (map['errCode'] == 0) {
+        return (map['successResult'] as List)
+            .map((e) => OnlineStatus.fromJson(e))
+            .toList();
+      }
+      return Future.error(map);
+    });
   }
 }

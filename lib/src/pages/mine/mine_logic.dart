@@ -3,12 +3,14 @@ import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
 import 'package:openim_enterprise_chat/src/core/controller/jpush_controller.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
+import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
 import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/custom_dialog.dart';
+import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:openim_enterprise_chat/src/widgets/loading_view.dart';
 
 class MineLogic extends GetxController {
   final imLogic = Get.find<IMController>();
-  // final callLogic = Get.find<CallController>();
   final jPushLogic = Get.find<JPushController>();
 
   // Rx<UserInfo>? userInfo;
@@ -47,11 +49,24 @@ class MineLogic extends GetxController {
       title: StrRes.confirmLogout,
     ));
     if (confirm == true) {
-      await imLogic.logout();
-      // await callLogic.logout();
-      await jPushLogic.logout();
-      AppNavigator.startLogin();
+      try {
+        await LoadingView.singleton.wrap(asyncFunction: () async {
+          await imLogic.logout();
+          await DataPersistence.removeLoginCertificate();
+          await jPushLogic.logout();
+        });
+        AppNavigator.startLogin();
+      } catch (e) {
+        // AppNavigator.startLogin();
+        IMWidget.showToast('e:$e');
+      }
     }
+  }
+
+  void kickedOffline() async {
+    await DataPersistence.removeLoginCertificate();
+    await jPushLogic.logout();
+    AppNavigator.startLogin();
   }
 
   @override
@@ -59,6 +74,10 @@ class MineLogic extends GetxController {
     // imLogic.selfInfoUpdatedSubject.listen((value) {
     //   userInfo?.value = value;
     // });
+    imLogic.onKickedOfflineSubject.listen((value) {
+      // Get.snackbar('提示!', '你的账号已在其他设备登录，请及时修改密码。');
+      // kickedOffline();
+    });
     super.onInit();
   }
 

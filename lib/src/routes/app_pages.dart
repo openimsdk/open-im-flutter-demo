@@ -9,8 +9,6 @@ import 'package:openim_enterprise_chat/src/pages/add_friend/send_friend_request/
 import 'package:openim_enterprise_chat/src/pages/add_friend/send_friend_request/send_friend_request_view.dart';
 import 'package:openim_enterprise_chat/src/pages/call/call_records/call_records_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/call/call_records/call_records_view.dart';
-import 'package:openim_enterprise_chat/src/pages/call/group/call_binding.dart';
-import 'package:openim_enterprise_chat/src/pages/call/group/call_view.dart';
 import 'package:openim_enterprise_chat/src/pages/chat/chat_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/chat/chat_setup/chat_setup_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/chat/chat_setup/chat_setup_view.dart';
@@ -37,6 +35,8 @@ import 'package:openim_enterprise_chat/src/pages/chat/group_setup/qrcode/qrcode_
 import 'package:openim_enterprise_chat/src/pages/chat/group_setup/qrcode/qrcode_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/add/add_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/add/add_view.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/apply_enter_group/apply_enter_group_binding.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/apply_enter_group/apply_enter_group_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/friend_info/friend_info_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/friend_info/friend_info_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/friend_info/id_code/id_code_binding.dart';
@@ -47,6 +47,10 @@ import 'package:openim_enterprise_chat/src/pages/contacts/friend_list/friend_lis
 import 'package:openim_enterprise_chat/src/pages/contacts/friend_list/friend_list_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/friend_list/search_friend/search_friend_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/friend_list/search_friend/search_friend_view.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/group_application/group_application_binding.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/group_application/group_application_view.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/group_application/handle_application/handle_application_binding.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/group_application/handle_application/handle_application_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/group_list/group_list_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/group_list/group_list_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/group_list/search_group/search_group_binding.dart';
@@ -55,6 +59,8 @@ import 'package:openim_enterprise_chat/src/pages/contacts/join_group/join_group_
 import 'package:openim_enterprise_chat/src/pages/contacts/join_group/join_group_view.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/new_friend/new_friend_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/contacts/new_friend/new_friend_view.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/search_add_group/search_add_group_binding.dart';
+import 'package:openim_enterprise_chat/src/pages/contacts/search_add_group/search_add_group_view.dart';
 import 'package:openim_enterprise_chat/src/pages/home/home_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/home/home_view.dart';
 import 'package:openim_enterprise_chat/src/pages/login/login_binding.dart';
@@ -73,6 +79,8 @@ import 'package:openim_enterprise_chat/src/pages/mine/my_info/my_info_binding.da
 import 'package:openim_enterprise_chat/src/pages/mine/my_info/my_info_view.dart';
 import 'package:openim_enterprise_chat/src/pages/mine/my_qrcode/my_qrcode_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/mine/my_qrcode/my_qrcode_view.dart';
+import 'package:openim_enterprise_chat/src/pages/mine/setup_language/setup_language_binding.dart';
+import 'package:openim_enterprise_chat/src/pages/mine/setup_language/setup_language_view.dart';
 import 'package:openim_enterprise_chat/src/pages/mine/setup_username/setup_name_binding.dart';
 import 'package:openim_enterprise_chat/src/pages/mine/setup_username/setup_name_view.dart';
 import 'package:openim_enterprise_chat/src/pages/register/register_binding.dart';
@@ -324,10 +332,30 @@ class AppPages {
       page: () => CallRecordsPage(),
       binding: CallRecordsBinding(),
     ),
-    // GetPage(
-    //   name: AppRoutes.GROUP_CALL,
-    //   page: () => GroupCallPage(),
-    //   binding: GroupCallBinding(),
-    // ),
+    GetPage(
+      name: AppRoutes.LANGUAGE_SETUP,
+      page: () => SetupLanguagePage(),
+      binding: SetupLanguageBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.SEARCH_ADD_GROUP,
+      page: () => SearchAddGroupPage(),
+      binding: SearchAddGroupBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.APPLY_ENTER_GROUP,
+      page: () => ApplyEnterGroupPage(),
+      binding: ApplyEnterGroupBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.GROUP_APPLICATION,
+      page: () => GroupApplicationPage(),
+      binding: GroupApplicationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.HANDLE_GROUP_APPLICATION,
+      page: () => HandleGroupApplicationPage(),
+      binding: HandleGroupApplicationBinding(),
+    ),
   ];
 }

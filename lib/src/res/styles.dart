@@ -21,6 +21,9 @@ class PageStyle {
   static const c_D8D8D8 = Color(0xFFD8D8D8);
   static const c_333333 = Color(0xFF333333);
   static const c_898989 = Color(0xFF898989);
+  static const c_418AE5 = Color(0xFF418AE5);
+  static const c_10CC64 = Color(0xFF10CC64);
+  static const c_959595 = Color(0xFF959595);
 
   static var c_D8D8D8_opacity40p = Color(0xFFD8D8D8).withOpacity(0.4);
   static var c_000000_opacity40p = Color(0xFF000000).withOpacity(0.4);
@@ -73,6 +76,10 @@ class PageStyle {
 
   static var ts_000000_12sp = TextStyle(
     fontSize: 12.sp,
+    color: Color(0xFF000000),
+  );
+  static var ts_000000_13sp = TextStyle(
+    fontSize: 13.sp,
     color: Color(0xFF000000),
   );
   static var ts_000000_14sp = TextStyle(
@@ -165,6 +172,11 @@ class PageStyle {
     fontSize: 14.sp,
     color: Color(0xFF1B72EC),
   );
+  static var ts_1B72EC_14sp_underline = TextStyle(
+    fontSize: 14.sp,
+    color: Color(0xFF1B72EC),
+    decoration: TextDecoration.underline,
+  );
   static var ts_1B72EC_16sp = TextStyle(
     fontSize: 16.sp,
     color: Color(0xFF1B72EC),
@@ -186,6 +198,10 @@ class PageStyle {
   static var ts_1B61D6_14sp = TextStyle(
     color: Color(0xFF1B61D6),
     fontSize: 14.sp,
+  );
+  static var ts_1B61D6_16sp = TextStyle(
+    color: Color(0xFF1B61D6),
+    fontSize: 16.sp,
   );
   static var ts_1B61D6_18sp = TextStyle(
     color: Color(0xFF1B61D6),
@@ -267,9 +283,23 @@ class PageStyle {
     color: Color(0xFFEDEDED),
     fontSize: 14.sp,
   );
+  static var ts_898989_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFF898989),
+  );
 
   static var ts_898989_18sp = TextStyle(
     fontSize: 18.sp,
     color: Color(0xFF898989),
+  );
+
+  static var ts_9F9F9F_16sp = TextStyle(
+    fontSize: 16.sp,
+    color: Color(0xFF9F9F9F),
+  );
+
+  static var ts_ADADAD_18sp = TextStyle(
+    fontSize: 18.sp,
+    color: Color(0xFFADADAD),
   );
 }

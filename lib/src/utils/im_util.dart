@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:azlistview/azlistview.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
@@ -22,9 +24,23 @@ import 'package:openim_enterprise_chat/src/pages/chat/chat_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sprintf/sprintf.dart';
 
-import 'date_util.dart';
 import 'http_util.dart';
+
+/// 间隔时间完成某事
+class IntervalDo {
+  DateTime? last;
+
+  void run({required Function() fuc, int milliseconds = 0}) {
+    DateTime now = DateTime.now();
+    if (null == last ||
+        now.difference(last ?? now).inMilliseconds > milliseconds) {
+      last = now;
+      fuc();
+    }
+  }
+}
 
 class IMUtil {
   IMUtil._();
@@ -54,7 +70,7 @@ class IMUtil {
         toolbarTitle: 'Cropper',
         toolbarColor: Colors.deepOrange,
         toolbarWidgetColor: Colors.white,
-        initAspectRatio: CropAspectRatioPreset.original,
+        initAspectRatio: CropAspectRatioPreset.square,
         lockAspectRatio: false,
       ),
       iosUiSettings: IOSUiSettings(
@@ -215,7 +231,7 @@ class IMUtil {
               onDownload: (url) async {
                 print(url);
                 // await onDownload?.call(url, cachePath);
-                IMWidget.showToast("开始下载");
+                IMWidget.showToast(StrRes.startDownload);
                 await dio.download(
                   url,
                   cachePath,
@@ -230,7 +246,8 @@ class IMUtil {
                 );
                 final result = await ImageGallerySaver.saveFile(cachePath);
                 print(result);
-                IMWidget.showToast("文件已保存至${result['filePath']}");
+                IMWidget.showToast(
+                    sprintf(StrRes.fileSaveToPath, [result['filePath']]));
                 String? mimeType = mime(fileName);
                 if (null != mimeType && mimeType.contains('video')) {
                   openVideo(
@@ -271,12 +288,12 @@ class IMUtil {
         url: url,
         file: file,
         onDownload: (url) async {
-          IMWidget.showToast("开始下载");
+          IMWidget.showToast(StrRes.startDownload);
           var response = await dio.get(
             url,
             options: Options(
               responseType: ResponseType.bytes,
-              receiveTimeout: 60 * 1000,
+              receiveTimeout: 120 * 1000,
             ),
           );
           final result = await ImageGallerySaver.saveImage(
@@ -285,7 +302,8 @@ class IMUtil {
             name: '${DateTime.now().millisecond}',
           );
           print(result);
-          IMWidget.showToast("图片已下载至${result['filePath']}");
+          IMWidget.showToast(
+              sprintf(StrRes.picSaveToPath, [result['filePath']]));
           return true;
         },
       );
@@ -296,7 +314,7 @@ class IMUtil {
         url: url,
         onDownload: (url) async {
           print(url);
-          IMWidget.showToast("开始下载");
+          IMWidget.showToast(StrRes.startDownload);
           var appDocDir = await getTemporaryDirectory();
           var name = url.substring(url.lastIndexOf('/'));
           String savePath = appDocDir.path + name;
@@ -304,11 +322,12 @@ class IMUtil {
           await dio.download(
             url,
             savePath,
-            options: Options(receiveTimeout: 60 * 1000),
+            options: Options(receiveTimeout: 120 * 1000),
           );
           final result = await ImageGallerySaver.saveFile(savePath);
           print(result);
-          IMWidget.showToast("视频已保存至${result['filePath']}");
+          IMWidget.showToast(
+              sprintf(StrRes.videoSaveToPath, [result['filePath']]));
         },
       );
 
@@ -409,18 +428,107 @@ class IMUtil {
     }
     return list;
   }
-}
 
-/// 间隔时间完成某事
-class IntervalDo {
-  DateTime? last;
+  static String getChatTimeline(int nanosecond) {
+    int milliseconds = nanosecond ~/ (1000 * 1000);
+    return TimelineUtil.formatA(
+      milliseconds,
+      languageCode: Get.locale?.languageCode ?? 'en',
+    );
+  }
 
-  void run({required Function() fuc, int milliseconds = 0}) {
-    DateTime now = DateTime.now();
-    if (null == last ||
-        now.difference(last ?? now).inMilliseconds > milliseconds) {
-      last = now;
-      fuc();
+  static String getCallTimeline(int milliseconds) {
+    if (DateUtil.yearIsEqualByMs(milliseconds, DateUtil.getNowDateMs())) {
+      return DateUtil.formatDateMs(milliseconds, format: 'MM-dd');
+    } else {
+      return DateUtil.formatDateMs(milliseconds, format: 'yyyy-MM-dd');
     }
+  }
+
+  static String seconds2HMS(int seconds) {
+    int h = 0;
+    int m = 0;
+    int s = 0;
+    int temp = seconds % 3600;
+    if (seconds > 3600) {
+      h = seconds ~/ 3600;
+      if (temp != 0) {
+        if (temp > 60) {
+          m = temp ~/ 60;
+          if (temp % 60 != 0) {
+            s = temp % 60;
+          }
+        } else {
+          s = temp;
+        }
+      }
+    } else {
+      m = seconds ~/ 60;
+      if (seconds % 60 != 0) {
+        s = seconds % 60;
+      }
+    }
+    return "${h < 10 ? '0$h' : h}:${m < 10 ? '0$m' : m}:${s < 10 ? '0$s' : s}";
+  }
+
+  ///  compress file and get file.
+  static Future<File?> compressAndGetPic(File file) async {
+    var path = file.path;
+    var name = path.substring(path.lastIndexOf("/"));
+    var targetPath = await createTempFile(fileName: name, dir: 'pic');
+    CompressFormat format = CompressFormat.jpeg;
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg")) {
+      format = CompressFormat.jpeg;
+    } else if (name.endsWith(".png")) {
+      format = CompressFormat.png;
+    } else if (name.endsWith(".heic")) {
+      format = CompressFormat.heic;
+    } else if (name.endsWith(".webp")) {
+      format = CompressFormat.webp;
+    }
+
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 100,
+      minWidth: 480,
+      minHeight: 800,
+      format: format,
+    );
+    return result;
+  }
+
+  static Future<String> createTempFile({
+    required String dir,
+    required String fileName,
+  }) async {
+    var path = (Platform.isIOS
+            ? await getTemporaryDirectory()
+            : await getExternalStorageDirectory())
+        ?.path;
+    File file = File('$path/$dir/$fileName');
+    if (!(await file.exists())) {
+      file.create(recursive: true);
+    }
+    return '$path/$dir/$fileName';
+  }
+
+  static int compareVersion(String val1, String val2) {
+    var arr1 = val1.split(".");
+    var arr2 = val2.split(".");
+    int length = arr1.length >= arr2.length ? arr1.length : arr2.length;
+    int diff = 0;
+    int v1;
+    int v2;
+    for (int i = 0; i < length; i++) {
+      v1 = i < arr1.length ? int.parse(arr1[i]) : 0;
+      v2 = i < arr2.length ? int.parse(arr2[i]) : 0;
+      diff = v1 - v2;
+      if (diff == 0)
+        continue;
+      else
+        return diff > 0 ? 1 : -1;
+    }
+    return diff;
   }
 }

@@ -2,14 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
+import 'package:openim_enterprise_chat/src/pages/conversation/conversation_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 
 class CreateGroupInChatSetupLogic extends GetxController {
   var nameCtrl = TextEditingController();
   var memberList = <ContactsInfo>[].obs;
   var avatarUrl = ''.obs;
+  var conversationLogic = Get.find<ConversationLogic>();
 
   @override
   void onInit() {
@@ -19,7 +20,7 @@ class CreateGroupInChatSetupLogic extends GetxController {
     super.onInit();
   }
 
-   completeCreation() async {
+  completeCreation() async {
     if (nameCtrl.text.trim().isEmpty) {
       IMWidget.showToast(StrRes.createGroupNameHint);
       return;
@@ -30,20 +31,17 @@ class CreateGroupInChatSetupLogic extends GetxController {
       list: memberList.map((e) => GroupMemberRole(uid: e.uid)).toList(),
     );
     print('create group : $gid');
-    AppNavigator.startChat(
+    conversationLogic.startChat(
       type: 1,
       gid: gid,
       name: nameCtrl.text,
       icon: avatarUrl.value,
     );
-    // Get.offNamedUntil(
-    //   AppRoutes.CHAT,
-    //   (route) => route.settings.name == AppRoutes.HOME,
-    //   arguments: {
-    //     "gid": gid,
-    //     "name": nameCtrl.text,
-    //     "icon": avatarUrl.value,
-    //   },
+    // AppNavigator.startChat(
+    //   type: 1,
+    //   gid: gid,
+    //   name: nameCtrl.text,
+    //   icon: avatarUrl.value,
     // );
   }
 

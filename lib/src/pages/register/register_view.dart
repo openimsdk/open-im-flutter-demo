@@ -36,15 +36,19 @@ class RegisterPage extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(left: 32.w, top: 44.h, right: 32.w),
                   child: Obx(() => PhoneInputBox(
-                        controller: logic.phoneCtrl,
+                        controller: logic.controller,
                         labelStyle: PageStyle.ts_000000_14sp,
                         hintStyle: PageStyle.ts_000000_opacity40p_18sp,
                         textStyle: PageStyle.ts_000000_18sp,
                         codeStyle: PageStyle.ts_000000_18sp,
                         arrowColor: PageStyle.c_000000,
                         clearBtnColor: PageStyle.c_000000_opacity40p,
-                        code: '+86',
-                        showClearBtn: logic.showPhoneClearBtn.value,
+                        code: logic.areaCode.value,
+                        onAreaCode: () => logic.openCountryCodePicker(),
+                        showClearBtn: logic.showClearBtn.value,
+                        inputWay: logic.isPhoneRegister
+                            ? InputWay.phone
+                            : InputWay.email,
                       )),
                 ),
                 Button(

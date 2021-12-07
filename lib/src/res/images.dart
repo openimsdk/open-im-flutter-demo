@@ -85,6 +85,7 @@ class ImageRes {
   static const ic_appCallGrey = "${_dir}ic_app_call_grey.webp";
   static const ic_sendAddFriendMsg = "${_dir}ic_send_add_msg.webp";
   static const ic_popAddFriends = "${_dir}ic_pop_add_friends.webp";
+  static const ic_popAddGroup = "${_dir}ic_pop_add_group.webp";
   static const ic_popLaunchGroup = "${_dir}ic_pop_launch_group.webp";
   static const ic_popScan = "${_dir}ic_pop_scan.webp";
   static const ic_searchUResult = "${_dir}ic_search_u_result.webp";
@@ -105,4 +106,7 @@ class ImageRes {
   static const ic_openCallVideo = "${_dir}ic_call_video_open.webp";
   static const ic_mute = "${_dir}ic_mute.webp";
   static const ic_unmute = "${_dir}ic_unmute.webp";
+  static const ic_groupApplicationNotification =
+      "${_dir}ic_group_application_notification.webp";
+  static const ic_smallCamera = "${_dir}ic_small_camera.webp";
 }

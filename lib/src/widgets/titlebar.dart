@@ -172,11 +172,13 @@ class EnterpriseTitleBar extends StatelessWidget
 
   EnterpriseTitleBar.conversationTitle({
     String? avatarUrl,
-    required String title,
-    required String subTitle,
+    String? title,
+    String? subTitle,
     TextStyle? tileStyle,
     TextStyle? subTStyle,
     List<Widget> actions = const [],
+    Widget? titleView,
+    Widget? subTitleView,
   })  : //height = 124.h,
         // topPadding = 53.h,
         height = 71.h,
@@ -200,14 +202,18 @@ class EnterpriseTitleBar extends StatelessWidget
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: tileStyle ?? PageStyle.ts_000000_12sp,
-                  ),
-                  Text(
-                    subTitle,
-                    style: subTStyle ?? PageStyle.ts_000000_18sp,
-                  ),
+                  if (null != title)
+                    Text(
+                      title,
+                      style: tileStyle ?? PageStyle.ts_333333_12sp,
+                    ),
+                  if (null != titleView) titleView,
+                  if (null != subTitle)
+                    Text(
+                      subTitle,
+                      style: subTStyle ?? PageStyle.ts_333333_18sp,
+                    ),
+                  if (null != subTitleView) subTitleView,
                 ],
               ),
             ),
@@ -226,6 +232,8 @@ class EnterpriseTitleBar extends StatelessWidget
     Function()? onClickMoreBtn,
     Function()? onClose,
     Color? backgroundColor,
+    bool showOnlineStatus = false,
+    bool online = false,
   })  : //height = height ?? 84.h,
         // topPadding = 40.h,
         height = height ?? 44.h,
@@ -285,10 +293,25 @@ class EnterpriseTitleBar extends StatelessWidget
                 title,
                 style: PageStyle.ts_333333_18sp,
               ),
-            if (null != subTitle)
-              Text(
-                subTitle,
-                style: PageStyle.ts_999999_10sp,
+            if (null != subTitle && subTitle.isNotEmpty)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (showOnlineStatus)
+                    Container(
+                      margin: EdgeInsets.only(right: 4.w, top: 2.h),
+                      width: 6.h,
+                      height: 6.h,
+                      decoration: BoxDecoration(
+                        color: online ? PageStyle.c_10CC64 : PageStyle.c_959595,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  Text(
+                    subTitle,
+                    style: PageStyle.ts_999999_10sp,
+                  )
+                ],
               ),
           ],
         );

@@ -51,6 +51,11 @@ abstract class AppRoutes {
   static const SEARCH_MEMBER = "/search_member";
   static const CALL_RECORDS = "/call_records";
   static const GROUP_CALL = "/group_call";
+  static const LANGUAGE_SETUP = "/language_setup";
+  static const SEARCH_ADD_GROUP = "/search_add_group";
+  static const APPLY_ENTER_GROUP = "/apply_enter_group";
+  static const GROUP_APPLICATION = "/group_application";
+  static const HANDLE_GROUP_APPLICATION = "/handle_group_application";
 }
 
 extension RoutesExtension on String {

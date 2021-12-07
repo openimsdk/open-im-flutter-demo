@@ -9,11 +9,18 @@ import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:openim_enterprise_chat/src/widgets/custom_dialog.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 
+import '../chat_logic.dart';
+
 class GroupSetupLogic extends GetxController {
   var imLogic = Get.find<IMController>();
+  var chatLogic = Get.find<ChatLogic>();
   late Rx<GroupInfo> info;
   var memberList = <en.GroupMembersInfo>[].obs;
   var myGroupNickname = "".obs;
+  var topContacts = false.obs;
+  var notDisturb = false.obs;
+  var messageSet = 0.obs;
+  ConversationInfo? conversationInfo;
 
   getGroupMembers() async {
     var map = await OpenIM.iMManager.groupManager.getGroupMemberListMap(
@@ -75,7 +82,7 @@ class GroupSetupLogic extends GetxController {
 
   void modifyGroupName() {
     if(info.value.ownerId != OpenIM.iMManager.uid){
-      IMWidget.showToast('只有群主能修改');
+      IMWidget.showToast(StrRes.onlyTheOwnerCanModify);
       return;
     }
     AppNavigator.startGroupNameSet(info: info);
@@ -84,7 +91,7 @@ class GroupSetupLogic extends GetxController {
 
   void editGroupAnnouncement() {
     if(info.value.ownerId != OpenIM.iMManager.uid){
-      IMWidget.showToast('只有群主能修改');
+      IMWidget.showToast(StrRes.onlyTheOwnerCanModify);
       return;
     }
     AppNavigator.startEditAnnouncement(info: info);
@@ -234,6 +241,7 @@ class GroupSetupLogic extends GetxController {
   @override
   void onReady() {
     getGroupInfo();
+    getConversationInfo();
     getGroupMembers();
     super.onReady();
   }
@@ -277,5 +285,44 @@ class GroupSetupLogic extends GetxController {
         return delButton();
       }
     }
+  }
+
+  void getConversationInfo() async {
+    conversationInfo =
+        await OpenIM.iMManager.conversationManager.getSingleConversation(
+      sourceID: info.value.groupID,
+      sessionType: 2,
+    );
+    topContacts.value = conversationInfo!.isPinned == 1;
+  }
+
+  void toggleTopContacts() async {
+    topContacts.value = !topContacts.value;
+    if (conversationInfo == null) return;
+    await OpenIM.iMManager.conversationManager.pinConversation(
+      conversationID: conversationInfo!.conversationID,
+      isPinned: topContacts.value,
+    );
+  }
+
+  void clearChatHistory() async {
+    await OpenIM.iMManager.messageManager.clearGroupHistoryMessage(
+      gid: info.value.groupID,
+    );
+    chatLogic.clearAllMessage();
+    IMWidget.showToast(StrRes.clearSuccess);
+  }
+
+  void toggleNotDisturb() {
+    notDisturb.value = !notDisturb.value;
+  }
+
+  void messageSetting() {
+    IMWidget.openMessageSettingSheet(
+      isGroup: true,
+      onTap: (index) {
+        messageSet.value = index;
+      },
+    );
   }
 }

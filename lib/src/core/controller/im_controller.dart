@@ -22,14 +22,14 @@ class IMController extends GetxController with IMCallback {
     // Initialize SDK
     await OpenIM.iMManager.initSDK(
       platform: Platform.isAndroid ? IMPlatform.android : IMPlatform.ios,
-      ipApi: Config.IP_API,
-      ipWs: Config.IP_WS,
+      ipApi: Config.imApiUrl(),
+      ipWs: Config.imWsUrl(),
       dbPath: '${(await getApplicationDocumentsDirectory()).path}/',
       listener: OnInitSDKListener(
         onConnecting: () {},
         onConnectFailed: (code, error) {},
         onConnectSuccess: () {},
-        onKickedOffline: () {},
+        onKickedOffline: kickedOffline,
         onUserSigExpired: () {},
         onSelfInfoUpdated: (u) {
           userInfo.value = u;
@@ -86,11 +86,7 @@ class IMController extends GetxController with IMCallback {
         onReceiveJoinApplication: receiveJoinApplication,
       ));
 
-    // ios no support
-    if (Platform.isAndroid) {
-      // sdk log set
-      // OpenIM.iMManager.setSdkLog(enable: false);
-    }
+    OpenIM.iMManager.enabledSDKLog(enabled: false);
 
     initializedSubject.sink.add(true);
   }

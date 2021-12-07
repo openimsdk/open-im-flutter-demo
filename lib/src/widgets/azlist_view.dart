@@ -88,6 +88,7 @@ Widget buildAzListItemView({
   bool isMultiModel = false,
   bool checked = false,
   bool enabled = true,
+  String? onlineStatus,
 }) =>
     Ink(
       child: InkWell(
@@ -124,10 +125,22 @@ Widget buildAzListItemView({
                     ),
                   ),
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    name,
-                    style: PageStyle.ts_333333_16sp,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: PageStyle.ts_333333_16sp,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (onlineStatus != null)
+                        Text(
+                          '[$onlineStatus]',
+                          style: PageStyle.ts_999999_12sp,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                    ],
                   ),
                 ),
               )

@@ -30,11 +30,15 @@ class VerifyPhonePage extends StatelessWidget {
                   EnterpriseTitleBar.backButton(left: 0),
                   SizedBox(height: 49.h),
                   Text(
-                    StrRes.verifyCodeSentToPhone,
+                    logic.isPhoneRegister
+                        ? StrRes.verifyCodeSentToPhone
+                        : StrRes.verifyCodeSentToEmail,
                     style: PageStyle.ts_333333_26sp,
                   ),
                   Text(
-                    '+${logic.areaCode} ${logic.phoneNumber}',
+                    logic.isPhoneRegister
+                        ? '${logic.areaCode} ${logic.phoneNumber}'
+                        : logic.email!,
                     style: PageStyle.ts_1D6BED_16sp,
                   ),
                   SizedBox(height: 28.h),

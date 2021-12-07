@@ -48,7 +48,7 @@ class HttpUtil {
       }));
 
     // 配置dio实例
-    dio.options.baseUrl = Config.BASE_URL;
+    dio.options.baseUrl = Config.imApiUrl();
     dio.options.connectTimeout = 30000; //30s
     dio.options.receiveTimeout = 30000;
   }

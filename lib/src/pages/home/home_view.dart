@@ -19,51 +19,51 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: PageStyle.c_FFFFFF,
       body: Obx(() => Column(
-        children: [
-          Expanded(
-            child: IndexedStack(
-              index: logic.index.value,
-              children: [
-                ConversationPage(),
-                ContactsPage(),
-                MinePage(),
-              ],
-            ),
-          ),
-          BottomBar(
-            index: logic.index.value,
-            items: [
-              BottomBarItem(
-                selectedImgRes: ImageRes.ic_tabHomeSel,
-                unselectedImgRes: ImageRes.ic_tabHomeNor,
-                label: StrRes.home,
-                imgWidth: 24.w,
-                imgHeight: 24.h,
-                onClick: (i) => logic.switchTab(i),
-                // steam: logic.imLogic.unreadMsgCountCtrl.stream,
-                count: logic.unreadMsgCount.value,
+            children: [
+              Expanded(
+                child: IndexedStack(
+                  index: logic.index.value,
+                  children: [
+                    ConversationPage(),
+                    ContactsPage(),
+                    MinePage(),
+                  ],
+                ),
               ),
-              BottomBarItem(
-                selectedImgRes: ImageRes.ic_tabContactsSel,
-                unselectedImgRes: ImageRes.ic_tabContactsNor,
-                label: StrRes.contacts,
-                imgWidth: 24.w,
-                imgHeight: 25.h,
-                onClick: (i) => logic.switchTab(i),
-                count: logic.unhandledApplicationCount.value,
-              ),
-              BottomBarItem(
-                selectedImgRes: ImageRes.ic_tabMineSel,
-                unselectedImgRes: ImageRes.ic_tabMineNor,
-                label: StrRes.mine,
-                imgWidth: 24.w,
-                imgHeight: 25.h,
-                onClick: (i) => logic.switchTab(i),
+              BottomBar(
+                index: logic.index.value,
+                items: [
+                  BottomBarItem(
+                    selectedImgRes: ImageRes.ic_tabHomeSel,
+                    unselectedImgRes: ImageRes.ic_tabHomeNor,
+                    label: StrRes.home,
+                    imgWidth: 24.w,
+                    imgHeight: 24.h,
+                    onClick: (i) => logic.switchTab(i),
+                    // steam: logic.imLogic.unreadMsgCountCtrl.stream,
+                    count: logic.unreadMsgCount.value,
+                  ),
+                  BottomBarItem(
+                    selectedImgRes: ImageRes.ic_tabContactsSel,
+                    unselectedImgRes: ImageRes.ic_tabContactsNor,
+                    label: StrRes.contacts,
+                    imgWidth: 24.w,
+                    imgHeight: 25.h,
+                    onClick: (i) => logic.switchTab(i),
+                    count: logic.unhandledCount.value,
+                  ),
+                  BottomBarItem(
+                    selectedImgRes: ImageRes.ic_tabMineSel,
+                    unselectedImgRes: ImageRes.ic_tabMineNor,
+                    label: StrRes.mine,
+                    imgWidth: 24.w,
+                    imgHeight: 25.h,
+                    onClick: (i) => logic.switchTab(i),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
-      )),
+          )),
     );
   }
 }

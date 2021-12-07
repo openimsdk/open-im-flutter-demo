@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/res/images.dart';
@@ -25,7 +24,9 @@ class AddFriendBySearchPage extends StatelessWidget {
           // margin: EdgeInsets.symmetric(vertical: 12.h, horizontal: 22.w),
           // margin: EdgeInsets.fromLTRB(12.w, 0, 0, 0),
           padding: EdgeInsets.symmetric(horizontal: 12.w),
-          hintText: StrRes.searchDescribe,
+          hintText: logic.isSearchUser
+              ? StrRes.searchUserDescribe
+              : StrRes.searchGroupDescribe,
           height: 41.h,
           clearBtn: Container(
             child: Image.asset(
@@ -40,10 +41,10 @@ class AddFriendBySearchPage extends StatelessWidget {
       ),
       body: StreamBuilder(
         stream: logic.resultSub.stream,
-        builder: (context, AsyncSnapshot<List<UserInfo>> sh) {
+        builder: (context, AsyncSnapshot<String> sh) {
           if (logic.searchCtrl.text.isNotEmpty && sh.hasData) {
             if (sh.data!.isNotEmpty) {
-              return _buildResultView(sh.data!.first);
+              return _buildResultView(sh.data!);
             }
             return _buildNoResultView();
           }
@@ -53,11 +54,11 @@ class AddFriendBySearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildResultView(UserInfo info) => Ink(
+  Widget _buildResultView(String id) => Ink(
         height: 59.h,
         color: PageStyle.c_FFFFFF,
         child: InkWell(
-          onTap: () => logic.viewUserInfo(info),
+          onTap: logic.viewInfo,
           child: Container(
             margin: EdgeInsets.only(top: 16.h),
             padding: EdgeInsets.only(left: 22.w),
@@ -77,7 +78,7 @@ class AddFriendBySearchPage extends StatelessWidget {
                     style: PageStyle.ts_333333_16sp,
                     children: [
                       TextSpan(
-                        text: info.uid,
+                        text: id,
                         style: PageStyle.ts_333333_14sp,
                       ),
                     ],
@@ -95,7 +96,9 @@ class AddFriendBySearchPage extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 29.h),
         alignment: Alignment.bottomCenter,
         child: Text(
-          StrRes.searchFriendNoResult,
+          logic.isSearchUser
+              ? StrRes.searchFriendNoResult
+              : StrRes.notFindGroup,
           style: PageStyle.ts_666666_16sp,
         ),
       );

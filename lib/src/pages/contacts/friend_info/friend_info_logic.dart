@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
+import 'package:openim_enterprise_chat/src/pages/conversation/conversation_logic.dart';
 import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
@@ -12,6 +13,7 @@ import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 class FriendInfoLogic extends GetxController {
   late Rx<UserInfo> info;
   var imLoic = Get.find<IMController>();
+  var conversationLogic = Get.find<ConversationLogic>();
 
   // var isExistChatPage = false;
 
@@ -83,21 +85,17 @@ class FriendInfoLogic extends GetxController {
   void toChat() {
     if (info.value.isFriendship) {
       print('${info.value.uid}');
-      AppNavigator.startChat(
+      // AppNavigator.startChat(
+      //   uid: info.value.uid,
+      //   name: info.value.getShowName(),
+      //   icon: info.value.icon,
+      // );
+      conversationLogic.startChat(
         uid: info.value.uid,
         name: info.value.getShowName(),
         icon: info.value.icon,
+        type: 1,
       );
-      // Get.offNamed(AppRoutes.CHAT, arguments: {
-      //   'uid': info.value.uid,
-      //   'name': info.value.getShowName(),
-      //   'icon': info.value.icon,
-      // });
-      // Get.toNamed(AppRoutes.CHAT, arguments: {
-      //   'uid': info.value.uid,
-      //   'name': info.value.getShowName(),
-      //   'icon': info.value.icon,
-      // });
     }
   }
 

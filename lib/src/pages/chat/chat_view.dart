@@ -3,8 +3,8 @@ import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
+import 'package:openim_enterprise_chat/src/widgets/chat_listview.dart';
 import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
-import 'package:openim_enterprise_chat/src/widgets/touch_close_keyboard.dart';
 
 import 'chat_logic.dart';
 
@@ -23,6 +23,7 @@ class ChatPage extends StatelessWidget {
         multiSelMode: logic.multiSelMode.value,
         multiList: logic.multiSelList.value,
         allAtMap: logic.atUserNameMappingMap,
+        delaySendingStatus: true,
         onMultiSelChanged: (checked) {
           logic.multiSelMsg(index, checked);
         },
@@ -59,12 +60,31 @@ class ChatPage extends StatelessWidget {
         onClickAtText: (uid) {
           logic.clickAtText(uid);
         },
-        onClickUrlText: (url) {
-          logic.clickUrlText(url);
-        },
         onTapQuoteMsg: () {
           logic.onTapQuoteMsg(index);
         },
+        patterns: <MatchPattern>[
+          MatchPattern(
+            type: PatternType.AT,
+            style: PageStyle.ts_1B72EC_14sp,
+            onTap: logic.clickLinkText,
+          ),
+          MatchPattern(
+            type: PatternType.EMAIL,
+            style: PageStyle.ts_1B72EC_14sp,
+            onTap: logic.clickLinkText,
+          ),
+          MatchPattern(
+            type: PatternType.URL,
+            style: PageStyle.ts_1B72EC_14sp_underline,
+            onTap: logic.clickLinkText,
+          ),
+          MatchPattern(
+            type: PatternType.PHONE,
+            style: PageStyle.ts_1B72EC_14sp,
+            onTap: logic.clickLinkText,
+          ),
+        ],
       );
 
   @override
@@ -74,46 +94,30 @@ class ChatPage extends StatelessWidget {
         return logic.exit();
       },
       child: ChatVoiceRecordLayout(
+        locale: Get.locale,
         builder: (bar) => Obx(() => Scaffold(
               backgroundColor: PageStyle.c_FFFFFF,
               appBar: EnterpriseTitleBar.chatTitle(
                 title: logic.name.value,
-                subTitle: logic.typing.value ? '正在输入...' : 'xxx技术有限公司',
+                subTitle: logic.getSubTile(),
                 onClickCallBtn: () => logic.call(),
                 onClickMoreBtn: () => logic.chatSetup(),
                 leftButton: logic.multiSelMode.value ? StrRes.cancel : null,
                 onClose: () => logic.exit(),
+                showOnlineStatus: logic.showOnlineStatus(),
+                online: logic.onlineStatus.value,
               ),
               body: SafeArea(
                 child: Column(
                   children: [
                     Expanded(
-                      child: TouchCloseSoftKeyboard(
+                      child: ChatListView(
+                        listViewKey: ObjectKey(logic.listViewKey.value),
                         onTouch: () => logic.closeToolbox(),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: ListView.builder(
-                            key: ObjectKey(logic.listViewKey.value),
-                            reverse: true,
-                            shrinkWrap: true,
-                            itemCount: logic.messageList.length,
-                            // padding: EdgeInsets.only(top: 10.h),
-                            controller: logic.autoCtrl,
-                            itemBuilder: (_, index) =>
-                                Obx(() => _itemView(index)),
-                          ),
-                        ),
-                        // child: ListView.builder(
-                        //   itemCount: logic.messageList.length,
-                        //   padding: EdgeInsets.only(top: 10.h),
-                        //   controller: logic.autoCtrl,
-                        //   itemBuilder: (_, index) => Obx(() => AutoScrollTag(
-                        //         key: ValueKey(index),
-                        //         controller: logic.autoCtrl,
-                        //         index: index,
-                        //         child: _itemView(index, local),
-                        //       )),
-                        // ),
+                        itemCount: logic.messageList.length,
+                        controller: logic.autoCtrl,
+                        onLoad: () => logic.getHistoryMsgList(),
+                        itemBuilder: (_, index) => Obx(() => _itemView(index)),
                       ),
                     ),
                     ChatInputBoxView(
@@ -126,12 +130,16 @@ class ChatPage extends StatelessWidget {
                         onTapFile: () => logic.onTapFile(),
                         onTapLocation: () => logic.onTapLocation(),
                         onTapVideoCall: () => logic.call(),
-                        onStopVoiceInput: () {},
-                        onStartVoiceInput: () {},
+                        onStopVoiceInput: () => logic.onStopVoiceInput(),
+                        onStartVoiceInput: () => logic.onStartVoiceInput(),
                       ),
                       multiOpToolbox: ChatMultiSelToolbox(
                         onDelete: () => logic.mergeDelete(),
                         onMergeForward: () => logic.mergeForward(),
+                      ),
+                      emojiView: ChatEmojiView(
+                        onAddEmoji: logic.onAddEmoji,
+                        onDeleteEmoji: logic.onDeleteEmoji,
                       ),
                       onSubmitted: (v) => logic.sendTextMsg(),
                       forceCloseToolboxSub: logic.forceCloseToolbox,

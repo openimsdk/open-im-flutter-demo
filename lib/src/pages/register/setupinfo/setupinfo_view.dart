@@ -1,13 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/res/images.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/utils/debounce_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
 import 'package:openim_enterprise_chat/src/widgets/button.dart';
-import 'package:openim_enterprise_chat/src/widgets/image_button.dart';
+import 'package:openim_enterprise_chat/src/widgets/debounce_button.dart';
 import 'package:openim_enterprise_chat/src/widgets/name_input_box.dart';
 import 'package:openim_enterprise_chat/src/widgets/touch_close_keyboard.dart';
 
@@ -46,18 +46,24 @@ class SetupSelfInfoPage extends StatelessWidget {
                   child: Container(
                     width: 311.w,
                     alignment: Alignment.center,
-                    child: Obx(() => logic.icon.isEmpty
-                        ? ImageButton(
-                            imgStrRes: ImageRes.ic_bigCamera,
-                            imgWidth: 90.h,
-                            imgHeight: 90.h,
-                            onTap: () => logic.pickerPic(),
+                    child: Obx(() => _buildAvatarButton()),
+                    /* child: Obx(() => logic.icon.isEmpty
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: ImageButton(
+                              // imgStrRes: logic.getIndexAvatar(),
+                              imgStrRes: ImageRes.ic_smallCamera,
+                              imgWidth: 90.h,
+                              imgHeight: 90.h,
+                              onTap: () => logic.pickerPic(),
+                              // package: 'flutter_openim_widget',
+                            ),
                           )
                         : AvatarView(
                             size: 90.h,
                             url: logic.icon.value,
                             onTap: () => logic.pickerPic(),
-                          )),
+                          )),*/
                   ),
                 ),
                 Positioned(
@@ -75,15 +81,15 @@ class SetupSelfInfoPage extends StatelessWidget {
                   top: 368.h,
                   width: 311.w,
                   child: Obx(() => NameInputBox(
-                        leftLabel: StrRes.yourName,
-                        leftLabelStyle: PageStyle.ts_000000_18sp,
-                        hintText: StrRes.plsWriteRealName,
-                        hintStyle: PageStyle.ts_000000_opacity40p_18sp,
-                        textStyle: PageStyle.ts_000000_18sp,
-                        controller: logic.nameCtrl,
-                        showClearBtn: logic.showNameClearBtn.value,
-                        clearBtnColor: Color(0xFF000000).withOpacity(0.4),
-                      )),
+                    leftLabel: StrRes.yourName,
+                    leftLabelStyle: PageStyle.ts_000000_18sp,
+                    hintText: StrRes.plsWriteRealName,
+                    hintStyle: PageStyle.ts_000000_opacity40p_18sp,
+                    textStyle: PageStyle.ts_000000_18sp,
+                    controller: logic.nameCtrl,
+                    showClearBtn: logic.showNameClearBtn.value,
+                    clearBtnColor: Color(0xFF000000).withOpacity(0.4),
+                  )),
                 ),
                 Positioned(
                   top: 429.h,
@@ -112,6 +118,57 @@ class SetupSelfInfoPage extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAvatarButton() {
+    late Widget child;
+    if (logic.icon.isEmpty) {
+      if (logic.avatarIndex.value == -1) {
+        child = Image.asset(
+          ImageRes.ic_smallCamera,
+          width: 46.h,
+          height: 46.h,
+        );
+      } else {
+        child = Ink(
+          height: 90.h,
+          width: 90.h,
+          decoration: BoxDecoration(
+            color: PageStyle.c_D8D8D8,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: IconUtil.assetImage(
+            indexAvatarList[logic.avatarIndex.value],
+            width: 90.h,
+            height: 90.h,
+          ),
+        );
+      }
+    } else {
+      child = CachedNetworkImage(
+        imageUrl: logic.icon.value,
+        width: 90.h,
+        height: 90.h,
+        fit: BoxFit.fill,
+      );
+    }
+    return Ink(
+      height: 90.h,
+      width: 90.h,
+      decoration: BoxDecoration(
+        color: PageStyle.c_D8D8D8,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: InkWell(
+        onTap: () => logic.pickerPic(),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Center(
+            child: child,
           ),
         ),
       ),

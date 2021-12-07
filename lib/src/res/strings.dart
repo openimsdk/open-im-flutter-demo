@@ -212,6 +212,8 @@ class StrRes {
 
   static get addFriend => 'addFriend'.tr;
 
+  static get addGroup => 'addGroup'.tr;
+
   static get searchDescribe => 'searchDescribe'.tr;
 
   static get scan => 'scan'.tr;
@@ -438,4 +440,151 @@ class StrRes {
   static get xPersonGroupVideoCalling => 'xPersonGroupVideoCalling'.tr;
 
   static get xPersonGroupVoiceCalling => 'xPersonGroupVoiceCalling'.tr;
+
+  static get languageSetup => 'languageSetup'.tr;
+
+  static get language => 'language'.tr;
+
+  static get english => 'english'.tr;
+
+  static get chinese => 'chinese'.tr;
+
+  static get followSystem => 'followSystem'.tr;
+
+  static get typing => 'typing'.tr;
+
+  static get startDownload => 'startDownload'.tr;
+
+  static get fileSaveToPath => 'fileSaveToPath'.tr;
+
+  static get picSaveToPath => 'picSaveToPath'.tr;
+
+  static get videoSaveToPath => 'videoSaveToPath'.tr;
+
+  static get callX => 'callX'.tr;
+
+  static get sentSuccessfully => 'sentSuccessfully'.tr;
+
+  static get onlyTheOwnerCanModify => 'onlyTheOwnerCanModify'.tr;
+
+  static get plsInputPhoneAndPwd => 'plsInputPhoneAndPwd'.tr;
+
+  static get plsInputRightPhone => 'plsInputRightPhone'.tr;
+
+  static get plsUploadAvatar => 'plsUploadAvatar'.tr;
+
+  static get nameNotEmpty => 'nameNotEmpty'.tr;
+
+  static get pwdFormatError => 'pwdFormatError'.tr;
+
+  static get verifyCodeError => 'verifyCodeError'.tr;
+
+  static get email => 'email'.tr;
+
+  static get plsInputEmail => 'plsInputEmail'.tr;
+
+  static get phoneRegister => 'phoneRegister'.tr;
+
+  static get emailRegister => 'emailRegister'.tr;
+
+  static get plsInputRightEmail => 'plsInputRightEmail'.tr;
+
+  static get verifyCodeSentToEmail => 'verifyCodeSentToEmail'.tr;
+
+  static get clearSuccess => 'clearSuccess'.tr;
+
+  static get googleMap => 'googleMap'.tr;
+
+  static get appleMap => 'appleMap'.tr;
+
+  static get baiduMap => 'baiduMap'.tr;
+
+  static get amapMap => 'amapMap'.tr;
+
+  static get tencentMap => 'tencentMap'.tr;
+
+  static get upgradeFind => 'upgradeFind'.tr;
+
+  static get upgradeVersion => 'upgradeVersion'.tr;
+
+  static get upgradeDescription => 'upgradeDescription'.tr;
+
+  static get upgradeIgnore => 'upgradeIgnore'.tr;
+
+  static get upgradeLater => 'upgradeLater'.tr;
+
+  static get upgradeNow => 'upgradeNow'.tr;
+
+  static get notificationChannelName => 'notificationChannelName'.tr;
+
+  static get notificationChannelDescription =>
+      'notificationChannelDescription'.tr;
+
+  static get notificationTitle => 'notificationTitle'.tr;
+
+  static get notificationBody => 'notificationBody'.tr;
+
+  static get serviceChannelName => 'serviceChannelName'.tr;
+
+  static get serviceChannelDescription => 'serviceChannelDescription'.tr;
+
+  static get serviceNotificationBody => 'serviceNotificationBody'.tr;
+
+  static get notFindGroup => 'notFindGroup'.tr;
+
+  static get groupIdJoin => 'groupIdJoin'.tr;
+
+  static get groupIdJoinHint => 'groupIdJoinHint'.tr;
+
+  static get searchUserDescribe => 'searchUserDescribe'.tr;
+
+  static get searchGroupDescribe => 'searchGroupDescribe'.tr;
+
+  static get applyJoin => 'applyJoin'.tr;
+
+  static get enterGroup => 'enterGroup'.tr;
+
+  static get enterGroupVerify => 'enterGroupVerify'.tr;
+
+  static get enterGroupHint => 'enterGroupHint'.tr;
+
+  static get groupApplicationNotification => 'groupApplicationNotification'.tr;
+
+  static get applyReason => 'applyReason'.tr;
+
+  static get approve => 'approve'.tr;
+
+  static get approved => 'approved'.tr;
+
+  static get rejected => 'rejected'.tr;
+
+  static get passGroupApplication => 'passGroupApplication'.tr;
+
+  static get rejectGroupApplication => 'rejectGroupApplication'.tr;
+
+  static get defaultAvatar => 'defaultAvatar'.tr;
+
+  static get welcomeHint => 'welcomeHint'.tr;
+
+  static get noMore => 'noMore'.tr;
+
+  static get online => 'online'.tr;
+
+  static get offline => 'offline'.tr;
+
+  static get phoneOnline => 'phoneOnline'.tr;
+
+  static get pcOnline => 'pcOnline'.tr;
+
+  static get webOnline => 'webOnline'.tr;
+
+  static get blockFriends => 'blockFriends'.tr;
+
+  static get groupMessageSettings => 'groupMessageSettings'.tr;
+
+  static get friendMessageSettings => 'friendMessageSettings'.tr;
+
+  static get receiveMessageButNotPrompt => 'receiveMessageButNotPrompt'.tr;
+
+  static get blockGroupMessages => 'blockGroupMessages'.tr;
 }

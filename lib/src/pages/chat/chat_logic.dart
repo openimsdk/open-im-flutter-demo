@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,19 +11,21 @@ import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:openim_enterprise_chat/src/common/apis.dart';
 import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
 import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
 import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/utils/date_util.dart';
 import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/bottom_sheet_view.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:openim_enterprise_chat/src/widgets/map_view.dart';
 import 'package:openim_enterprise_chat/src/widgets/preview_merge_msg.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart' as rx;
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:uri_to_file/uri_to_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -32,7 +35,9 @@ class ChatLogic extends GetxController {
   var imLogic = Get.find<IMController>();
   var inputCtrl = TextEditingController();
   var focusNode = FocusNode();
-  var autoCtrl = AutoScrollController();
+  var autoCtrl = ScrollController();
+
+  final refreshController = RefreshController();
 
   /// Click on the message to process voice playback, video playback, picture preview, etc.
   final clickSubject = rx.PublishSubject<int>();
@@ -78,6 +83,11 @@ class ChatLogic extends GetxController {
 
   var _uuid = Uuid();
   var listViewKey = '1124'.obs;
+  var _isFirstLoad = true;
+  var _lastCursorIndex = -1;
+  var onlineStatus = false.obs;
+  var onlineStatusDesc = ''.obs;
+  Timer? onlineStatusTimer;
 
   bool isCurrentChat(Message message) {
     var senderId = message.sendID;
@@ -105,7 +115,7 @@ class ChatLogic extends GetxController {
   @override
   void onReady() {
     getAtMappingMap();
-    getHistoryMsgList();
+    // getHistoryMsgList();
     readDraftText();
     super.onReady();
   }
@@ -117,6 +127,8 @@ class ChatLogic extends GetxController {
     gid = arguments['gid'];
     name.value = arguments['name'];
     icon.value = arguments['icon'];
+    // 获取在线状态
+    _startQueryOnlineStatus();
     // 新增消息监听
     imLogic.onRecvNewMessage = (Message message) {
       // 如果是当前窗口的消息
@@ -144,7 +156,7 @@ class ChatLogic extends GetxController {
           if (!messageList.contains(message)) {
             // messageList.insert(0, message);
             messageList.add(message);
-            scrollBottom();
+            // scrollBottom();
           }
         }
       }
@@ -157,18 +169,24 @@ class ChatLogic extends GetxController {
     var refresh = false;
     imLogic.onRecvC2CReadReceipt = (List<HaveReadInfo> list) {
       try {
-        var info = list.firstWhere((read) => read.uid == uid);
-        messageList.forEach((e) {
-          if (info.msgIDList?.contains(e.clientMsgID) == true) {
-            e.isRead = true;
-            refresh = true;
+        // var info = list.firstWhere((read) => read.uid == uid);
+        list.forEach((readInfo) {
+          if (readInfo.uid == uid) {
+            messageList.forEach((e) {
+              if (readInfo.msgIDList?.contains(e.clientMsgID) == true) {
+                print('===============have read clientMsgID:${e.clientMsgID}');
+                e.isRead = true;
+                // refresh = true;
+              }
+            });
+            messageList.refresh();
           }
         });
       } catch (e) {}
-      if (refresh) {
-        refresh = false;
-        messageList.refresh();
-      }
+      // if (refresh) {
+      //   refresh = false;
+      //   messageList.refresh();
+      // }
     };
     // 消息发送进度
     imLogic.onMsgSendProgress = (String msgId, int progress) {
@@ -178,11 +196,17 @@ class ChatLogic extends GetxController {
     };
 
     // 有新成员进入
-    imLogic.onMemberEnter = (groupId, list) {
+    imLogic.memberEnterSubject.stream.listen((map) {
+      var groupId = map['groupId'];
       if (groupId == gid) {
-        _putMemberInfo(list);
+        _putMemberInfo(map['list']);
       }
-    };
+    });
+    // imLogic.onMemberEnter = (groupId, list) {
+    //   if (groupId == gid) {
+    //     _putMemberInfo(list);
+    //   }
+    // };
     // 自定义消息点击事件
     clickSubject.listen((index) {
       print('index:$index');
@@ -200,6 +224,7 @@ class ChatLogic extends GetxController {
 
     // 输入框聚焦
     focusNode.addListener(() {
+      _lastCursorIndex = inputCtrl.selection.start;
       focusNodeChanged(focusNode.hasFocus);
     });
 
@@ -218,6 +243,7 @@ class ChatLogic extends GetxController {
         icon.value = value.icon ?? '';
       }
     });
+
     super.onInit();
   }
 
@@ -262,17 +288,21 @@ class ChatLogic extends GetxController {
   }
 
   /// 获取历史聊天记录
-  void getHistoryMsgList() {
-    OpenIM.iMManager.messageManager
-        .getHistoryMessageList(
-          userID: uid,
-          groupID: gid,
-          count: 100,
-        )
-        // .then((list) => IMUtil.calChatTimeInterval(list))
-        .then((list) => messageList..assignAll(list))
-    // .then((list) => messageList..assignAll(list.reversed))
-        .whenComplete(() => scrollBottom());
+  Future<bool> getHistoryMsgList() async {
+    var list = await OpenIM.iMManager.messageManager.getHistoryMessageList(
+      userID: uid,
+      groupID: gid,
+      count: 40,
+      startMsg: _isFirstLoad ? null : messageList.first,
+    );
+    if (_isFirstLoad) {
+      _isFirstLoad = false;
+      messageList..assignAll(list);
+      scrollBottom();
+    } else {
+      messageList.insertAll(0, list);
+    }
+    return list.length == 40;
   }
 
   /// 发送文字内容，包含普通内容，引用回复内容，@内容
@@ -459,9 +489,9 @@ class ChatLogic extends GetxController {
   }
 
   void _reset() {
+    inputCtrl.clear();
     setQuoteMsg(-1);
     closeMultiSelMode();
-    inputCtrl.clear();
   }
 
   /// todo
@@ -514,16 +544,18 @@ class ChatLogic extends GetxController {
 
   /// 转发
   void forward(int index) async {
-    var result =
-        await AppNavigator.startSelectContacts(action: SelAction.FORWARD);
-
-    if (null != result) {
-      sendForwardMsg(index, userId: result['uId'], groupId: result['gId']);
-    }
+    IMWidget.showToast('调试中，敬请期待!');
+    // var result =
+    //     await AppNavigator.startSelectContacts(action: SelAction.FORWARD);
+    //
+    // if (null != result) {
+    //   sendForwardMsg(index, userId: result['uId'], groupId: result['gId']);
+    // }
   }
 
   /// 标记消息为已读
   void markC2CMessageAsRead(int index, Message message, bool visible) {
+    print('mark as read：$index   ${message.clientMsgID!}   ${message.isRead}');
     if (isSingleChat &&
         visible &&
         !message.isRead! &&
@@ -537,25 +569,26 @@ class ChatLogic extends GetxController {
 
   /// 合并转发
   void mergeForward() {
-    Get.bottomSheet(
-      BottomSheetView(
-        items: [
-          SheetItem(
-            label: StrRes.mergeForward,
-            borderRadius: _borderRadius,
-            onTap: () async {
-              var result = await AppNavigator.startSelectContacts(
-                action: SelAction.FORWARD,
-              );
-              if (null != result) {
-                sendMergeMsg(userId: result['uId'], groupId: result['gId']);
-              }
-            },
-          ),
-        ],
-      ),
-      barrierColor: Colors.transparent,
-    );
+    IMWidget.showToast('调试中，敬请期待!');
+    // Get.bottomSheet(
+    //   BottomSheetView(
+    //     items: [
+    //       SheetItem(
+    //         label: StrRes.mergeForward,
+    //         borderRadius: _borderRadius,
+    //         onTap: () async {
+    //           var result = await AppNavigator.startSelectContacts(
+    //             action: SelAction.FORWARD,
+    //           );
+    //           if (null != result) {
+    //             sendMergeMsg(userId: result['uId'], groupId: result['gId']);
+    //           }
+    //         },
+    //       ),
+    //     ],
+    //   ),
+    //   barrierColor: Colors.transparent,
+    // );
   }
 
   /// 多选删除
@@ -669,6 +702,7 @@ class ChatLogic extends GetxController {
     if (null != asset) {
       print('--------assets type-----${asset.type}');
       var path = (await asset.file)!.path;
+      print('--------assets path-----$path');
       switch (asset.type) {
         case AssetType.image:
           sendPicture(path: path);
@@ -682,10 +716,22 @@ class ChatLogic extends GetxController {
             scaleW.toInt(),
             scaleH.toInt(),
           );
-          final result = await ImageGallerySaver.saveImage(data!);
+          print('-----------video thumb build success----------------');
+          final result = await ImageGallerySaver.saveImage(
+            data!,
+            isReturnImagePathOfIOS: true,
+          );
           var thumbnailPath = result['filePath'];
-          var start = thumbnailPath.indexOf('/storage');
-          thumbnailPath = thumbnailPath.substring(start);
+          print('-----------gallery saver : ${json.encode(result)}---------');
+          var filePrefix = 'file://';
+          var uriPrefix = 'content://';
+          if ('$thumbnailPath'.contains(filePrefix)) {
+            thumbnailPath = thumbnailPath.substring(filePrefix.length);
+          } else if ('$thumbnailPath'.contains(uriPrefix)) {
+            Uri uri = Uri.parse(thumbnailPath); // Parsing uri string to uri
+            File file = await toFile(uri);
+            thumbnailPath = file.path;
+          }
           sendVideo(
             videoPath: path,
             mimeType: asset.mimeType ?? CommonUtil.getMediaType(path) ?? '',
@@ -702,7 +748,7 @@ class ChatLogic extends GetxController {
 
   /// 处理消息点击事件
   void parseClickEvent(Message msg) async {
-    log("message:${json.encode(msg)}");
+    // log("message:${json.encode(msg)}");
     if (msg.contentType == MessageType.picture) {
       IMUtil.openPicture(msg);
     } else if (msg.contentType == MessageType.video) {
@@ -721,6 +767,15 @@ class ChatLogic extends GetxController {
         ),
         preventDuplicates: false,
       );
+    } else if (msg.contentType == MessageType.location) {
+      var location = msg.locationElem;
+      Map detail = json.decode(location!.description!);
+      Get.to(() => MapView(
+            latitude: location.latitude!,
+            longitude: location.longitude!,
+            addr1: detail['name'],
+            addr2: detail['addr'],
+          ));
     }
   }
 
@@ -763,6 +818,7 @@ class ChatLogic extends GetxController {
       inputCtrl.selection = TextSelection.fromPosition(TextPosition(
         offset: '$start$at'.length,
       ));
+      _lastCursorIndex = inputCtrl.selection.start;
       print('$curMsgAtUser');
     }
   }
@@ -785,7 +841,12 @@ class ChatLogic extends GetxController {
     }
   }
 
-  void clickUrlText(url) async {
+  void clickLinkText(url, type) async {
+    print('--------link  type:$type-------url: $url---');
+    if (type == PatternType.AT) {
+      clickAtText(url);
+      return;
+    }
     if (await canLaunch(url)) {
       await launch(url);
     }
@@ -828,6 +889,9 @@ class ChatLogic extends GetxController {
     curMsgAtUser.forEach((uid) {
       atMap[uid] = atUserNameMappingMap[uid];
     });
+    if (inputCtrl.text.isEmpty) {
+      return "";
+    }
     return json.encode({
       'text': inputCtrl.text,
       'at': atMap,
@@ -872,14 +936,133 @@ class ChatLogic extends GetxController {
     msgSendStatusSubject.close();
     msgSendProgressSubject.close();
     downloadProgressSubject.close();
+    onlineStatusTimer?.cancel();
     super.onClose();
   }
 
   String? getShowTime(int index) {
     var info = indexOfMessage(index);
     if (info.ext == true) {
-      return DateUtil.getChatTime(info.sendTime!);
+      return IMUtil.getChatTimeline(info.sendTime!);
     }
     return null;
   }
+
+  void clearAllMessage() {
+    messageList.clear();
+  }
+
+  void onStartVoiceInput() {
+    // SpeechToTextUtil.instance.startListening((result) {
+    //   inputCtrl.text = result.recognizedWords;
+    // });
+  }
+
+  void onStopVoiceInput() {
+    // SpeechToTextUtil.instance.stopListening();
+  }
+
+  /// 添加表情
+  void onAddEmoji(String emoji) {
+    var input = inputCtrl.text;
+    if (_lastCursorIndex != -1 && input.isNotEmpty) {
+      var part1 = input.substring(0, _lastCursorIndex);
+      var part2 = input.substring(_lastCursorIndex);
+      inputCtrl.text = '$part1$emoji$part2';
+      _lastCursorIndex = _lastCursorIndex + emoji.length;
+    } else {
+      inputCtrl.text = '$input$emoji';
+      _lastCursorIndex = emoji.length;
+    }
+    inputCtrl.selection = TextSelection.fromPosition(TextPosition(
+      offset: _lastCursorIndex,
+    ));
+  }
+
+  /// 删除表情
+  void onDeleteEmoji() {
+    final input = inputCtrl.text;
+    final emojiPattern = emojiFaces.keys
+        .toList()
+        .join('|')
+        .replaceAll('[', '\\[')
+        .replaceAll(']', '\\]');
+    final list = [atPattern, emojiPattern];
+    final pattern = '(${list.toList().join('|')})';
+    final atReg = RegExp(atPattern);
+    final emojiReg = RegExp(emojiPattern);
+    var reg = RegExp(pattern);
+    if (reg.hasMatch(input)) {
+      var match = reg.allMatches(inputCtrl.text).last;
+      var matchText = match.group(0)!;
+      var start = match.start;
+      var end = start + matchText.length;
+      // 当前处于末尾
+      if (end == input.length) {
+        if (atReg.hasMatch(matchText)) {
+          String id = matchText.replaceFirst("@", "").trim();
+          if (curMsgAtUser.remove(id)) {
+            inputCtrl.text = input.replaceRange(start, end, '');
+          } else {
+            inputCtrl.text = input.substring(0, input.length - 1);
+          }
+        } else if (emojiReg.hasMatch(matchText)) {
+          inputCtrl.text = input.replaceRange(start, end, "");
+        }
+      } else {
+        inputCtrl.text = input.substring(0, input.length - 1);
+      }
+    } else {
+      if (input.isNotEmpty) {
+        inputCtrl.text = input.substring(0, input.length - 1);
+      }
+    }
+    _lastCursorIndex = inputCtrl.text.length;
+  }
+
+  /// 用户在线状态
+  void _getOnlineStatus(List<String> uidList) {
+    Apis.onlineStatus(uidList: uidList).then((list) {
+      list.forEach((e) {
+        if (e.status == 'online') {
+          // IOSPlatformStr     = "IOS"
+          // AndroidPlatformStr = "Android"
+          // WindowsPlatformStr = "Windows"
+          // OSXPlatformStr     = "OSX"
+          // WebPlatformStr     = "Web"
+          // MiniWebPlatformStr = "MiniWeb"
+          // LinuxPlatformStr   = "Linux"
+          for (var platform in e.detailPlatformStatus!) {
+            if (platform.platform == "Android" || platform.platform == "IOS") {
+              onlineStatusDesc.value = StrRes.phoneOnline;
+            } else if (platform.platform == "Windows") {
+              onlineStatusDesc.value = StrRes.pcOnline;
+            } else if (platform.platform == "Web" ||
+                platform.platform == "MiniWeb") {
+              onlineStatusDesc.value = StrRes.webOnline;
+            } else {
+              onlineStatusDesc.value = StrRes.online;
+            }
+          }
+          onlineStatus.value = true;
+        } else {
+          onlineStatusDesc.value = StrRes.offline;
+          onlineStatus.value = false;
+        }
+      });
+    });
+  }
+
+  void _startQueryOnlineStatus() {
+    if (null != uid && uid!.isNotEmpty && onlineStatusTimer == null) {
+      _getOnlineStatus([uid!]);
+      onlineStatusTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+        _getOnlineStatus([uid!]);
+      });
+    }
+  }
+
+  String getSubTile() => typing.value ? StrRes.typing : onlineStatusDesc.value;
+
+  bool showOnlineStatus() => !typing.value && onlineStatusDesc.isNotEmpty;
 }

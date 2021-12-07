@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_enterprise_chat/src/res/images.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 
+enum InputWay { phone, email }
+
 class PhoneInputBox extends StatelessWidget {
   const PhoneInputBox({
     Key? key,
@@ -16,6 +18,8 @@ class PhoneInputBox extends StatelessWidget {
     this.arrowColor,
     this.clearBtnColor,
     this.showClearBtn = false,
+    this.inputWay = InputWay.phone,
+    this.onAreaCode,
   }) : super(key: key);
   final TextStyle labelStyle;
   final TextStyle textStyle;
@@ -26,6 +30,8 @@ class PhoneInputBox extends StatelessWidget {
   final Color? clearBtnColor;
   final bool showClearBtn;
   final TextEditingController controller;
+  final InputWay inputWay;
+  final Function()? onAreaCode;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +49,7 @@ class PhoneInputBox extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            StrRes.phoneNum,
+            inputWay == InputWay.phone ? StrRes.phoneNum : StrRes.email,
             style: labelStyle,
           ),
           SizedBox(height: 10.h),
@@ -52,7 +58,7 @@ class PhoneInputBox extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _areaCodeView(),
+                if (inputWay == InputWay.phone) _areaCodeView(),
                 Expanded(child: _textField()),
                 _clearBtn(),
               ],
@@ -65,14 +71,22 @@ class PhoneInputBox extends StatelessWidget {
   }
 
   Widget _textField() => TextField(
-        controller: controller,
-        keyboardType: TextInputType.phone,
+    controller: controller,
+        keyboardType: inputWay == InputWay.phone
+            ? TextInputType.phone
+            : TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
         style: textStyle,
         autofocus: true,
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
+        inputFormatters: inputWay == InputWay.phone
+            ? [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ]
+            : null,
         decoration: InputDecoration(
-          hintText: StrRes.plsInputPhone,
+          hintText: inputWay == InputWay.phone
+              ? StrRes.plsInputPhone
+              : StrRes.plsInputEmail,
           hintStyle: hintStyle,
           isDense: true,
           contentPadding: EdgeInsets.all(0),
@@ -81,7 +95,7 @@ class PhoneInputBox extends StatelessWidget {
       );
 
   Widget _areaCodeView() => GestureDetector(
-        onTap: () {},
+    onTap: onAreaCode,
         behavior: HitTestBehavior.translucent,
         child: Row(
           mainAxisSize: MainAxisSize.min,

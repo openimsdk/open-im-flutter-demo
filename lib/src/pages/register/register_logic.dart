@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
 
 class RegisterLogic extends GetxController {
-  var phoneCtrl = TextEditingController();
-  var showPhoneClearBtn = false.obs;
+  var controller = TextEditingController();
+  var showClearBtn = false.obs;
   var agreedProtocol = true.obs;
+  var isPhoneRegister = true;
+  var areaCode = "+86".obs;
 
   void nextStep() {
-    if (!IMUtil.isMobile(phoneCtrl.text)) {
-      IMWidget.showToast('请输入正确的手机号');
+    if (isPhoneRegister && !IMUtil.isMobile(controller.text)) {
+      IMWidget.showToast(StrRes.plsInputRightPhone);
       return;
     }
-    AppNavigator.startRegisterVerifyPhone(
-      areaCode: '86',
-      phoneNumber: phoneCtrl.text,
+    if (!isPhoneRegister && !GetUtils.isEmail(controller.text)) {
+      IMWidget.showToast(StrRes.plsInputRightEmail);
+      return;
+    }
+    AppNavigator.startRegisterVerifyPhoneOrEmail(
+      areaCode: areaCode.value,
+      phoneNumber: isPhoneRegister ? controller.text : null,
+      email: !isPhoneRegister ? controller.text : null,
     );
-    // Get.toNamed(AppRoutes.REGISTER_VERIFY_PHONE);
   }
 
   void toggleProtocol() {
@@ -27,15 +34,28 @@ class RegisterLogic extends GetxController {
 
   @override
   void onReady() {
-    phoneCtrl.addListener(() {
-      showPhoneClearBtn.value = phoneCtrl.text.isNotEmpty;
+    controller.addListener(() {
+      showClearBtn.value = controller.text.isNotEmpty;
     });
     super.onReady();
   }
 
   @override
   void onClose() {
-    phoneCtrl.dispose();
+    controller.dispose();
     super.onClose();
+  }
+
+  @override
+  void onInit() {
+    isPhoneRegister = Get.arguments['registerWay'] == "phone";
+    super.onInit();
+  }
+
+  void openCountryCodePicker() async {
+    String? code = await IMWidget.showCountryCodePicker();
+    if (null != code) {
+      areaCode.value = code;
+    }
   }
 }

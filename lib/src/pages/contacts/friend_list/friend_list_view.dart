@@ -39,11 +39,12 @@ class MyFriendListPage extends StatelessWidget {
             child: Obx(
               () => WrapAzListView<ContactsInfo>(
                 data: logic.friendList.value,
-                itemBuilder: (_, data, index) => buildAzListItemView(
-                  name: data.getShowName(),
-                  url: data.icon,
-                  onTap: () => logic.viewFriendInfo(index),
-                ),
+                itemBuilder: (_, data, index) => Obx(() => buildAzListItemView(
+                      name: data.getShowName(),
+                      url: data.icon,
+                      onTap: () => logic.viewFriendInfo(index),
+                      onlineStatus: logic.onlineStatus[data.uid],
+                    )),
               ),
             ),
           ),

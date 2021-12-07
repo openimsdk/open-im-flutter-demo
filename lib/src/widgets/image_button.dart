@@ -12,6 +12,7 @@ class ImageButton extends StatelessWidget {
     this.isInk = true,
     this.width,
     this.height,
+    this.package,
   }) : super(key: key);
   final Function()? onTap;
   final double? imgWidth;
@@ -22,6 +23,7 @@ class ImageButton extends StatelessWidget {
   final bool isInk;
   final double? width;
   final double? height;
+  final String? package;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class ImageButton extends StatelessWidget {
                   height: imgHeight,
                   child: Ink.image(
                     alignment: alignment,
-                    image: AssetImage(imgStrRes),
+                    image: AssetImage(imgStrRes, package: package),
                   ),
                 ),
               ),
@@ -55,6 +57,7 @@ class ImageButton extends StatelessWidget {
                 width: imgWidth,
                 height: imgHeight,
                 alignment: alignment,
+                package: package,
               ),
             ),
           );

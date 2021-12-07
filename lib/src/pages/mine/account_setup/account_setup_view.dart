@@ -24,12 +24,14 @@ class AccountSetupPage extends StatelessWidget {
           SizedBox(
             height: 12.h,
           ),
-          Obx(() => _buildItemView(
-                label: StrRes.notDisturbModel,
-                showSwitchBtn: true,
-                switchOn: logic.notDisturbModel.value,
-                onTap: () => logic.toggleNotDisturbModel(),
-              )),
+          Obx(
+            () => _buildItemView(
+              label: StrRes.notDisturbModel,
+              showSwitchBtn: true,
+              switchOn: logic.notDisturbModel.value,
+              onTap: () => logic.toggleNotDisturbModel(),
+            ),
+          ),
           _buildItemView(
             label: StrRes.addMyMethod,
             onTap: () => logic.setAddMyMethod(),
@@ -37,7 +39,14 @@ class AccountSetupPage extends StatelessWidget {
           _buildItemView(
             label: StrRes.blacklist,
             onTap: () => logic.blacklist(),
-          )
+          ),
+          Obx(
+            () => _buildItemView(
+              label: StrRes.language,
+              onTap: () => logic.languageSetting(),
+              value: logic.curLanguage.value,
+            ),
+          ),
         ],
       ),
     );
@@ -45,6 +54,7 @@ class AccountSetupPage extends StatelessWidget {
 
   Widget _buildItemView({
     required String label,
+    String? value,
     Function()? onTap,
     bool showSwitchBtn = false,
     bool switchOn = false,
@@ -65,12 +75,21 @@ class AccountSetupPage extends StatelessWidget {
               ),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   label,
                   style: PageStyle.ts_333333_18sp,
                 ),
                 Spacer(),
+                if (null != value)
+                  Padding(
+                    padding: EdgeInsets.only(right: 6.w),
+                    child: Text(
+                      value,
+                      style: PageStyle.ts_9F9F9F_16sp,
+                    ),
+                  ),
                 if (showSwitchBtn)
                   SwitchButton(
                     width: 42.w,

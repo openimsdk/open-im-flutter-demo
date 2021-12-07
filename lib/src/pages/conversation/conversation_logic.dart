@@ -4,16 +4,17 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
-import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
+import 'package:openim_enterprise_chat/src/pages/home/home_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/utils/date_util.dart';
+import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 
 class ConversationLogic extends GetxController {
   var popCtrl = CustomPopupMenuController();
   var list = <ConversationInfo>[].obs;
   var imLogic = Get.find<IMController>();
+  var homeLogic = Get.find<HomeLogic>();
 
   @override
   void onInit() {
@@ -39,6 +40,7 @@ class ConversationLogic extends GetxController {
     super.onClose();
   }
 
+  /// 聊天
   void toChat(int index) async {
     var info = list.elementAt(index);
     var draftText = await AppNavigator.startChat(
@@ -53,7 +55,7 @@ class ConversationLogic extends GetxController {
     print('draftText:$draftText');
     setConversationDraft(
       cid: info.conversationID,
-      draftText: draftText,
+      draftText: draftText ?? '',
     );
   }
 
@@ -154,6 +156,9 @@ class ConversationLogic extends GetxController {
         return text;
       }
     }
+
+    if (null == info.latestMsg) return "";
+
     if (info.latestMsg?.contentType == MessageType.picture) {
       return '[${StrRes.picture}]';
     } else if (info.latestMsg?.contentType == MessageType.video) {
@@ -172,7 +177,7 @@ class ConversationLogic extends GetxController {
       if (info.latestMsg?.sendID == OpenIM.iMManager.uid) {
         return '[${StrRes.you}${StrRes.revokeMsg}]';
       } else {
-        return '"[${info.latestMsg!.senderNickName}"${StrRes.revokeMsg}]';
+        return '[${info.latestMsg!.senderNickName}${StrRes.revokeMsg}]';
       }
     } else if (info.latestMsg?.contentType == MessageType.at_text) {
       String text = info.latestMsg!.content!;
@@ -230,7 +235,7 @@ class ConversationLogic extends GetxController {
   /// 时间
   String getTime(int index) {
     var info = list.elementAt(index);
-    return DateUtil.getChatTime(info.latestMsgSendTime!);
+    return IMUtil.getChatTimeline(info.latestMsgSendTime!);
   }
 
   /// 未读数
@@ -254,11 +259,16 @@ class ConversationLogic extends GetxController {
     // Get.toNamed(AppRoutes.ADD_FRIEND);
   }
 
+  void toAddGroup() {
+    AppNavigator.startAddGroupBySearch();
+  }
+
   void createGroup() {
-    AppNavigator.startSelectContacts(
-      action: SelAction.CRATE_GROUP,
-      defaultCheckedUidList: [OpenIM.iMManager.uid],
-    );
+    AppNavigator.createGroup();
+    // AppNavigator.startSelectContacts(
+    //   action: SelAction.CRATE_GROUP,
+    //   defaultCheckedUidList: [OpenIM.iMManager.uid],
+    // );
   }
 
   void toScanQrcode() {
@@ -267,5 +277,57 @@ class ConversationLogic extends GetxController {
 
   void toViewCallRecords() {
     AppNavigator.startCallRecords();
+  }
+
+  /// 从其他界面进入聊天界面（非会话界面进入聊天界面）
+  void startChat({
+    int type = 0,
+    String? uid,
+    String? gid,
+    String? name,
+    String? icon,
+    String? oldDraftText,
+    String? conversationID,
+  }) async {
+    ConversationInfo? info;
+
+    // 获取会话信息，若不存在则创建
+    if (null == conversationID) {
+      info = await OpenIM.iMManager.conversationManager.getSingleConversation(
+        sourceID: uid == null ? gid! : uid,
+        sessionType: uid == null ? 2 : 1,
+      );
+    }
+
+    // 打开聊天窗口，关闭是返回草稿
+    var newDraftText = await AppNavigator.startChat(
+      type: type,
+      uid: uid,
+      gid: gid,
+      name: name,
+      icon: icon,
+      draftText: oldDraftText ?? info?.draftText,
+    );
+
+    // 清空未读消息数
+    if (uid != null && uid.isBlank == false) {
+      OpenIM.iMManager.conversationManager.markSingleMessageHasRead(
+        userID: uid,
+      );
+    } else {
+      OpenIM.iMManager.conversationManager.markGroupMessageHasRead(
+        groupID: gid!,
+      );
+    }
+
+    // 保存草稿
+    print('draftText:$newDraftText');
+    setConversationDraft(
+      cid: conversationID ?? info!.conversationID,
+      draftText: newDraftText ?? '',
+    );
+
+    // 回到会话列表
+    // homeLogic.switchTab(0);
   }
 }

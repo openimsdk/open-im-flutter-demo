@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/models/call_records.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/utils/date_util.dart';
+import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
 import 'package:openim_enterprise_chat/src/widgets/search_box.dart';
 import 'package:openim_enterprise_chat/src/widgets/tabbar.dart';
@@ -106,7 +106,7 @@ class CallRecordsPage extends StatelessWidget {
                             : PageStyle.ts_F33E37_15sp,
                       ),
                     Text(
-                        '[${records.type == 'video' ? StrRes.video : StrRes.voice}]${DateUtil.getCallTime(records.date)}',
+                      '[${records.type == 'video' ? StrRes.video : StrRes.voice}]${IMUtil.getCallTimeline(records.date)}',
                         style: records.success
                             ? PageStyle.ts_666666_13sp
                             : PageStyle.ts_F33E37_13sp,
@@ -116,7 +116,7 @@ class CallRecordsPage extends StatelessWidget {
                 ),
                 Text(
                   records.success
-                      ? DateUtil.getCallDuration(records.duration)
+                      ? IMUtil.seconds2HMS(records.duration)
                       : (records.incomingCall
                           ? StrRes.incomingCall
                           : StrRes.outgoingCall),

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/pages/chat/chat_logic.dart';
 import 'package:openim_enterprise_chat/src/res/strings.dart';
 import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/utils/date_util.dart';
+import 'package:openim_enterprise_chat/src/utils/im_util.dart';
 import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
 
 class PreviewMergeMsg extends StatelessWidget {
@@ -155,7 +155,7 @@ class PreviewMergeMsg extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateUtil.getChatTime(message.sendTime!),
+                      IMUtil.getChatTimeline(message.sendTime!),
                       style: PageStyle.ts_999999_12sp,
                     ),
                   ],

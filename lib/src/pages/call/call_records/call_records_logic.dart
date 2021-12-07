@@ -13,7 +13,7 @@ class CallRecordsLogic extends GetxController {
 
   @override
   void onInit() {
-    list.addAll(DataPersistence.getCallRecords());
+    list.addAll(DataPersistence.getCallRecords() ?? []);
     list.forEach((element) {
       if (!element.success) {
         missedList.add(element);

@@ -7,7 +7,8 @@ import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
 class ContactsLogic extends GetxController {
   var imLogic = Get.find<IMController>();
   var friendApplicationList = <UserInfo>[];
-  var applicationCount = 0.obs;
+  var friendApplicationCount = 0.obs;
+  var groupApplicationCount = 0.obs;
   var frequentContacts = <UserInfo>[].obs;
 
   @override
@@ -107,9 +108,13 @@ class ContactsLogic extends GetxController {
     // Get.toNamed(AppRoutes.GROUP_LIST);
   }
 
+  void viewGroupApplication() {
+    AppNavigator.startGroupApplication();
+  }
+
   void getFrequentContacts() async {
     var uidList = DataPersistence.getFrequentContacts();
-    if (uidList.isNotEmpty) {
+    if (uidList != null && uidList.isNotEmpty) {
       var list = await OpenIM.iMManager.getUsersInfo(uidList);
       frequentContacts.assignAll(list);
     }

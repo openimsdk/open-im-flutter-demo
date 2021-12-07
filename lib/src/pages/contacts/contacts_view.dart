@@ -42,7 +42,14 @@ class ContactsPage extends StatelessWidget {
                 icon: ImageRes.ic_newFriend,
                 label: StrRes.newFriend,
                 onTap: () => logic.toFriendApplicationList(),
-                count: homeLogic.unhandledApplicationCount.value,
+                count: homeLogic.unhandledFriendApplicationCount.value,
+              ),
+              _buildLine(),
+              _buildGroupItem(
+                icon: ImageRes.ic_groupApplicationNotification,
+                label: StrRes.groupApplicationNotification,
+                onTap: () => logic.viewGroupApplication(),
+                count: homeLogic.unhandledGroupApplicationCount.value,
               ),
               _buildLine(),
               _buildGroupItem(

@@ -87,7 +87,7 @@ class GroupQrcodePage extends StatelessWidget {
                       ),
                     ),
                     child: QrImage(
-                      data: logic.info.groupID,
+                      data: logic.buildQRContent(),
                       size: 176.h,
                       backgroundColor: Colors.white,
                     ),

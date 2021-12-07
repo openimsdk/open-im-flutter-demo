@@ -43,6 +43,7 @@ class AboutUsPage extends StatelessWidget {
           ),
           _buildItemView(
             label: StrRes.checkVersion,
+            onTap: logic.checkUpdate,
           ),
           _buildItemView(
             label: StrRes.newFuncIntroduction,
@@ -61,11 +62,11 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildItemView({required String label}) => Ink(
+  Widget _buildItemView({required String label, Function()? onTap}) => Ink(
         color: PageStyle.c_FFFFFF,
         height: 58.h,
         child: InkWell(
-          onTap: () {},
+          onTap: onTap,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 22.w),
             decoration: BoxDecoration(

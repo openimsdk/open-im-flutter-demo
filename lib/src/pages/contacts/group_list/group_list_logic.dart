@@ -1,5 +1,6 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
+import 'package:openim_enterprise_chat/src/pages/conversation/conversation_logic.dart';
 import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 
@@ -8,6 +9,7 @@ class GroupListLogic extends GetxController {
   var iCreatedList = <GroupInfo>[].obs;
   var iJoinedList = <GroupInfo>[].obs;
   var list = <GroupInfo>[];
+  var conversationLogic = Get.find<ConversationLogic>();
 
   void getJoinedGroupList() async {
     list = await OpenIM.iMManager.groupManager.getJoinedGroupList();
@@ -21,16 +23,16 @@ class GroupListLogic extends GetxController {
   }
 
   void toGroupChat(GroupInfo info) {
-    AppNavigator.startChat(
+    // AppNavigator.startChat(
+    //   gid: info.groupID,
+    //   name: info.groupName,
+    //   icon: info.faceUrl,
+    // );
+    conversationLogic.startChat(
       gid: info.groupID,
       name: info.groupName,
       icon: info.faceUrl,
     );
-    // Get.toNamed(AppRoutes.CHAT, arguments: {
-    //   'gid': info.groupID,
-    //   'name': info.groupName,
-    //   'icon': info.faceUrl,
-    // });
   }
 
   void createGroup() {
