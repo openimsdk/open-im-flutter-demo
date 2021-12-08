@@ -73,7 +73,7 @@ class IMCallback {
 
   var memberEnterSubject = BehaviorSubject<Map<String, dynamic>>();
 
-  var onKickedOfflineSubject = BehaviorSubject();
+  var onKickedOfflineSubject = PublishSubject();
 
   void kickedOffline() {
     onKickedOfflineSubject.add("");
