@@ -48,8 +48,8 @@ dependencies:
   image_gallery_saver: ^1.7.1
   #  fluttertoast: ^8.0.8
   flutter_easyloading: ^3.0.3
-  wechat_assets_picker: ^6.2.4
-  wechat_camera_picker: ^2.6.1
+  wechat_assets_picker: ^6.3.0
+  wechat_camera_picker: ^2.6.2
   file_picker: ^4.2.7
   open_file: ^3.2.1
   permission_handler: ^8.3.0

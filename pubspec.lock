@@ -42,7 +42,7 @@ packages:
       name: async
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.8.1"
+    version: "2.8.2"
   audio_session:
     dependency: transitive
     description:
@@ -112,7 +112,7 @@ packages:
       name: characters
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   charcode:
     dependency: transitive
     description:
@@ -226,7 +226,7 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.1.3"
+    version: "6.0.1"
   extended_image_library:
     dependency: transitive
     description:
@@ -240,7 +240,7 @@ packages:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.0.0"
+    version: "9.0.0"
   extended_text_library:
     dependency: transitive
     description:
@@ -366,16 +366,20 @@ packages:
   flutter_openim_sdk:
     dependency: transitive
     description:
-      path: "../flutter_openim_sdk"
-      relative: true
-    source: path
-    version: "1.0.6"
+      path: "."
+      ref: fix-ios-simulator
+      resolved-ref: "86142d3cdccede9b5b0e39f3f946e388c0e0eff0"
+      url: "https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git"
+    source: git
+    version: "1.0.7"
   flutter_openim_widget:
     dependency: "direct main"
     description:
-      path: "../flutter_openim_widget"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "685cf6a127e66b7ebed69b66e3d1a480daf3eb2a"
+      url: "https://github.com/hrxiang/flutter_openim_widget.git"
+    source: git
     version: "0.0.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
@@ -591,7 +595,7 @@ packages:
       name: matcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.12.10"
+    version: "0.12.11"
   meta:
     dependency: transitive
     description:
@@ -795,13 +799,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.10"
-  photo_view:
-    dependency: transitive
-    description:
-      name: photo_view
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.13.0"
   pin_code_fields:
     dependency: "direct main"
     description:
@@ -1093,7 +1090,7 @@ packages:
       name: test_api
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   timezone:
     dependency: transitive
     description:
@@ -1212,7 +1209,7 @@ packages:
       name: vector_math
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   video_player:
     dependency: transitive
     description:
@@ -1282,14 +1279,14 @@ packages:
       name: wechat_assets_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.2.4"
+    version: "6.3.0"
   wechat_camera_picker:
     dependency: "direct main"
     description:
       name: wechat_camera_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.6.1"
+    version: "2.6.2"
   win32:
     dependency: transitive
     description:
@@ -1319,5 +1316,5 @@ packages:
     source: hosted
     version: "5.3.1"
 sdks:
-  dart: ">=2.14.0 <3.0.0"
-  flutter: ">=2.5.0"
+  dart: ">=2.15.0 <3.0.0"
+  flutter: ">=2.8.0"
