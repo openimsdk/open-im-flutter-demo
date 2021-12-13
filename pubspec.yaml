@@ -90,7 +90,8 @@ dependencies:
   flutter_bugly: ^0.3.3
   #  flutter_slidable: ^1.1.0
   flutter_openim_widget:
-    path: ../flutter_openim_widget
+    git:
+      url: https://github.com/hrxiang/flutter_openim_widget.git
 
 dependency_overrides:
   decimal: 1.5.0
