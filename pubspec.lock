@@ -368,16 +368,16 @@ packages:
     description:
       path: "."
       ref: fix-ios-simulator
-      resolved-ref: "86142d3cdccede9b5b0e39f3f946e388c0e0eff0"
+      resolved-ref: "22509bc10f088a066c6bb79b7dbbd98039c0f337"
       url: "https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git"
     source: git
-    version: "1.0.7"
+    version: "1.0.8"
   flutter_openim_widget:
     dependency: "direct main"
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "685cf6a127e66b7ebed69b66e3d1a480daf3eb2a"
+      resolved-ref: dd183ba6d07d053f473dedaaf921b0f81158957a
       url: "https://github.com/hrxiang/flutter_openim_widget.git"
     source: git
     version: "0.0.1"

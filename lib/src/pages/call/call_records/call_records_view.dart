@@ -105,8 +105,8 @@ class CallRecordsPage extends StatelessWidget {
                             ? PageStyle.ts_333333_15sp
                             : PageStyle.ts_F33E37_15sp,
                       ),
-                    Text(
-                      '[${records.type == 'video' ? StrRes.video : StrRes.voice}]${IMUtil.getCallTimeline(records.date)}',
+                      Text(
+                        '[${records.type == 'video' ? StrRes.video : StrRes.voice}]${IMUtil.getCallTimeline(records.date)}',
                         style: records.success
                             ? PageStyle.ts_666666_13sp
                             : PageStyle.ts_F33E37_13sp,

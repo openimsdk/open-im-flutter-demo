@@ -81,7 +81,7 @@ class GroupSetupLogic extends GetxController {
   }
 
   void modifyGroupName() {
-    if(info.value.ownerId != OpenIM.iMManager.uid){
+    if (info.value.ownerId != OpenIM.iMManager.uid) {
       IMWidget.showToast(StrRes.onlyTheOwnerCanModify);
       return;
     }
@@ -90,7 +90,7 @@ class GroupSetupLogic extends GetxController {
   }
 
   void editGroupAnnouncement() {
-    if(info.value.ownerId != OpenIM.iMManager.uid){
+    if (info.value.ownerId != OpenIM.iMManager.uid) {
       IMWidget.showToast(StrRes.onlyTheOwnerCanModify);
       return;
     }

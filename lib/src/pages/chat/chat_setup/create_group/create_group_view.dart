@@ -46,8 +46,7 @@ class CreateGroupInChatSetupPage extends StatelessWidget {
         color: PageStyle.c_FFFFFF,
         child: Row(
           children: [
-            Obx(() =>
-            logic.avatarUrl.value.isNotEmpty
+            Obx(() => logic.avatarUrl.value.isNotEmpty
                 ? AvatarView(
                     url: logic.avatarUrl.value,
                     size: 44.h,

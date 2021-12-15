@@ -36,24 +36,24 @@ class WrapAzListView<T extends ISuspensionBean> extends StatelessWidget {
         susItemBuilder: (BuildContext context, int index) {
           var model = data[index];
           return _buildTagView(model.getSuspensionTag());
-      },
-      indexBarData: SuspensionUtil.getTagIndexList(data),
-      indexBarOptions: IndexBarOptions(
-        needRebuild: true,
-        selectTextStyle: TextStyle(
-          fontSize: 12,
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-        selectItemDecoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color(0xFF333333),
-        ),
-        indexHintWidth: 96,
-        indexHintHeight: 97,
-        indexHintDecoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(ImageRes.ic_indexBarBg),
+        },
+        indexBarData: SuspensionUtil.getTagIndexList(data),
+        indexBarOptions: IndexBarOptions(
+          needRebuild: true,
+          selectTextStyle: TextStyle(
+            fontSize: 12,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+          selectItemDecoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0xFF333333),
+          ),
+          indexHintWidth: 96,
+          indexHintHeight: 97,
+          indexHintDecoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(ImageRes.ic_indexBarBg),
               fit: BoxFit.contain,
             ),
           ),

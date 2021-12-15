@@ -96,7 +96,7 @@ class IMController extends GetxController with IMCallback {
     return userInfo = user.obs;
   }
 
-  Future logout(){
+  Future logout() {
     return OpenIM.iMManager.logout();
   }
 }

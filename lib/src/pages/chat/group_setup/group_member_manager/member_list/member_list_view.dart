@@ -168,7 +168,7 @@ class _ConfirmView extends StatelessWidget {
         ],
       ),
       body: Obx(() => ListView.builder(
-        padding: EdgeInsets.only(top: 10.h),
+            padding: EdgeInsets.only(top: 10.h),
             itemCount: logic.currentCheckedList.length,
             itemBuilder: (_, index) =>
                 _buildItemView(logic.currentCheckedList.elementAt(index)),

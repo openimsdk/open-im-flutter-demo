@@ -165,7 +165,7 @@ class PhoneEmailInputBox extends StatelessWidget {
       );
 
   Widget _areaCodeView() => GestureDetector(
-    onTap: onAreaCode,
+        onTap: onAreaCode,
         behavior: HitTestBehavior.translucent,
         child: Row(
           mainAxisSize: MainAxisSize.min,

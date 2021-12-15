@@ -33,62 +33,62 @@ class GroupMemberManagerPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: BorderDirectional(
                     bottom: BorderSide(
-                    color: PageStyle.c_979797_opacity50p,
-                    width: 0.5,
+                      color: PageStyle.c_979797_opacity50p,
+                      width: 0.5,
+                    ),
+                  ),
+                ),
+                child: GestureDetector(
+                  onTap: () => logic.search(),
+                  behavior: HitTestBehavior.translucent,
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        ImageRes.ic_searchGrey,
+                        color: PageStyle.c_999999,
+                        width: 21.h,
+                        height: 21.h,
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Text(
+                        StrRes.search,
+                        style: PageStyle.ts_999999_18sp,
+                      )
+                    ],
                   ),
                 ),
               ),
-              child: GestureDetector(
-                onTap: () => logic.search(),
-                behavior: HitTestBehavior.translucent,
-                child: Row(
-                  children: [
-                    Image.asset(
-                      ImageRes.ic_searchGrey,
-                      color: PageStyle.c_999999,
-                      width: 21.h,
-                      height: 21.h,
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Text(
-                      StrRes.search,
-                      style: PageStyle.ts_999999_18sp,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: GridView.builder(
-                itemCount: logic.length(),
-                // padding: EdgeInsets.zero,
-                padding: EdgeInsets.only(
-                  left: 22.w,
-                  right: 22.w,
-                  top: 20.h,
-                  bottom: 20.h,
-                ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  // childAspectRatio: 61/42,
-                ),
-                itemBuilder: (context, index) {
-                  if (index < logic.memberList.length) {
-                    var info = logic.memberList.elementAt(index);
-                    return _buildItem(
-                      url: info.faceUrl,
-                      label: info.nickName,
-                      onTap: () => logic.viewUserInfo(index),
-                    );
-                  } else if (index == logic.memberList.length) {
-                    return _buildItem(
-                      isMember: false,
-                      btnImgRes: ImageRes.ic_memberAdd,
-                      onTap: () => logic.addMember(),
-                    );
-                  } else {
+              Expanded(
+                child: GridView.builder(
+                  itemCount: logic.length(),
+                  // padding: EdgeInsets.zero,
+                  padding: EdgeInsets.only(
+                    left: 22.w,
+                    right: 22.w,
+                    top: 20.h,
+                    bottom: 20.h,
+                  ),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+                    // childAspectRatio: 61/42,
+                  ),
+                  itemBuilder: (context, index) {
+                    if (index < logic.memberList.length) {
+                      var info = logic.memberList.elementAt(index);
+                      return _buildItem(
+                        url: info.faceUrl,
+                        label: info.nickName,
+                        onTap: () => logic.viewUserInfo(index),
+                      );
+                    } else if (index == logic.memberList.length) {
+                      return _buildItem(
+                        isMember: false,
+                        btnImgRes: ImageRes.ic_memberAdd,
+                        onTap: () => logic.addMember(),
+                      );
+                    } else {
                       return _buildItem(
                         isMember: false,
                         btnImgRes: ImageRes.ic_memberDel,

@@ -1,10 +1,12 @@
+import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:openim_enterprise_chat/src/app.dart';
 import 'package:openim_enterprise_chat/src/common/config.dart';
 
-/*Future<Null> main() async {
+Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // This captures errors reported by the Flutter framework.
   FlutterError.onError = (FlutterErrorDetails details) async {
@@ -28,9 +30,9 @@ import 'package:openim_enterprise_chat/src/common/config.dart';
       // _reportError(error, stackTrace);
     },
   );
-}*/
+}
 
 /// 使用flutter异常上报
-void main() => FlutterBugly.postCatchedException(() {
-      Config.init(() => runApp(EnterpriseChatApp()));
-    });
+// void main() => FlutterBugly.postCatchedException(() {
+//       Config.init(() => runApp(EnterpriseChatApp()));
+//     });

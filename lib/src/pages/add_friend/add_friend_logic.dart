@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
 
 class AddFriendLogic extends GetxController {
-
   void toSearchPage() {
     AppNavigator.startAddFriendBySearch();
     // Get.toNamed(AppRoutes.ADD_FRIEND_BY_SEARCH);

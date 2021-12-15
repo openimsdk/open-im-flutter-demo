@@ -91,21 +91,19 @@ class ChatLogic extends GetxController {
 
   bool isCurrentChat(Message message) {
     var senderId = message.sendID;
+    var receiverId = message.recvID;
     var groupId = message.groupID;
     var sessionType = message.sessionType;
-    var isCurSingleChat = sessionType == 1 && isSingleChat && senderId == uid;
+    var isCurSingleChat = sessionType == 1 &&
+        isSingleChat &&
+        (senderId == uid ||
+            // 其他端当前登录用户向uid发送的消息
+            senderId == OpenIM.iMManager.uid && receiverId == uid);
     var isCurGroupChat = sessionType == 2 && isGroupChat && gid == groupId;
     return isCurSingleChat || isCurGroupChat;
   }
 
   void scrollBottom() {
-    // var index = messageList.length - 1;
-    // if (index > 0)
-    //   // todo
-    //   Future.delayed(Duration(milliseconds: 400), () {
-    //     autoCtrl.scrollToIndex(index /*,duration: Duration(milliseconds: 1)*/);
-    //   });
-    print('---------------offset---------${autoCtrl.offset}');
     // 重置listview替代滚动效果
     if (autoCtrl.offset != 0) {
       listViewKey.value = _uuid.v4();
@@ -166,7 +164,6 @@ class ChatLogic extends GetxController {
       messageList.removeWhere((e) => e.clientMsgID == msgId);
     };
     // 消息已读回执监听
-    var refresh = false;
     imLogic.onRecvC2CReadReceipt = (List<HaveReadInfo> list) {
       try {
         // var info = list.firstWhere((read) => read.uid == uid);
@@ -174,19 +171,13 @@ class ChatLogic extends GetxController {
           if (readInfo.uid == uid) {
             messageList.forEach((e) {
               if (readInfo.msgIDList?.contains(e.clientMsgID) == true) {
-                print('===============have read clientMsgID:${e.clientMsgID}');
                 e.isRead = true;
-                // refresh = true;
               }
             });
             messageList.refresh();
           }
         });
       } catch (e) {}
-      // if (refresh) {
-      //   refresh = false;
-      //   messageList.refresh();
-      // }
     };
     // 消息发送进度
     imLogic.onMsgSendProgress = (String msgId, int progress) {
@@ -982,15 +973,15 @@ class ChatLogic extends GetxController {
   /// 删除表情
   void onDeleteEmoji() {
     final input = inputCtrl.text;
-    final emojiPattern = emojiFaces.keys
+    final regexEmoji = emojiFaces.keys
         .toList()
         .join('|')
         .replaceAll('[', '\\[')
         .replaceAll(']', '\\]');
-    final list = [atPattern, emojiPattern];
+    final list = [regexAt, regexEmoji];
     final pattern = '(${list.toList().join('|')})';
-    final atReg = RegExp(atPattern);
-    final emojiReg = RegExp(emojiPattern);
+    final atReg = RegExp(regexAt);
+    final emojiReg = RegExp(regexEmoji);
     var reg = RegExp(pattern);
     if (reg.hasMatch(input)) {
       var match = reg.allMatches(inputCtrl.text).last;
@@ -1032,18 +1023,21 @@ class ChatLogic extends GetxController {
           // WebPlatformStr     = "Web"
           // MiniWebPlatformStr = "MiniWeb"
           // LinuxPlatformStr   = "Linux"
+          final pList = <String>[];
           for (var platform in e.detailPlatformStatus!) {
             if (platform.platform == "Android" || platform.platform == "IOS") {
-              onlineStatusDesc.value = StrRes.phoneOnline;
+              pList.add(StrRes.phoneOnline);
             } else if (platform.platform == "Windows") {
-              onlineStatusDesc.value = StrRes.pcOnline;
-            } else if (platform.platform == "Web" ||
-                platform.platform == "MiniWeb") {
-              onlineStatusDesc.value = StrRes.webOnline;
-            } else {
-              onlineStatusDesc.value = StrRes.online;
-            }
+              pList.add(StrRes.pcOnline);
+            } else if (platform.platform == "Web") {
+              pList.add(StrRes.webOnline);
+            } else if (platform.platform == "MiniWeb") {
+              pList.add(StrRes.webMiniOnline);
+            } /* else {
+              onlineStatus[e.userID!] = StrRes.online;
+            }*/
           }
+          onlineStatusDesc.value = '${pList.join('/')}${StrRes.online}';
           onlineStatus.value = true;
         } else {
           onlineStatusDesc.value = StrRes.offline;

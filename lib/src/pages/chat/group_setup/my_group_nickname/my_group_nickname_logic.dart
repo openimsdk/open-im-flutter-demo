@@ -17,9 +17,7 @@ class MyGroupNicknameLogic extends GetxController {
     nicknameCtrl.clear();
   }
 
-  void modifyMyNickname(){
-
-  }
+  void modifyMyNickname() {}
 
   @override
   void onReady() {

@@ -198,11 +198,13 @@ class IMCallback {
     memberEnterSubject.add({"groupId": groupId, "list": list});
   }
 
-  void memberInvited(String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
+  void memberInvited(
+      String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
     onMemberInvited?.call(groupId, opUser, list);
   }
 
-  void memberKicked(String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
+  void memberKicked(
+      String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
     onMemberKicked?.call(groupId, opUser, list);
   }
 
@@ -210,7 +212,8 @@ class IMCallback {
     onMemberLeave?.call(groupId, info);
   }
 
-  void receiveJoinApplication(String groupId, GroupMembersInfo info, String opReason) {
+  void receiveJoinApplication(
+      String groupId, GroupMembersInfo info, String opReason) {
     onReceiveJoinApplication?.call(groupId, info, opReason);
   }
 

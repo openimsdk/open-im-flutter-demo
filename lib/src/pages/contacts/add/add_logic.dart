@@ -16,10 +16,9 @@ class AddContactsLogic extends GetxController {
     AppNavigator.startScanQrcode();
   }
 
-  void crateGroup(){
+  void crateGroup() {
     AppNavigator.createGroup();
   }
-
 
   @override
   void onReady() {

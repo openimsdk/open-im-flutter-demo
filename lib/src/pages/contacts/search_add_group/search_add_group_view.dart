@@ -63,13 +63,13 @@ class SearchAddGroupPage extends StatelessWidget {
                         ),
                       ])),
                 ),
-            Container(
-              height: 93.h,
-              color: PageStyle.c_FFFFFF,
-              margin: EdgeInsets.only(top: 12.h),
-              padding: EdgeInsets.symmetric(horizontal: 22.w),
-              child: Stack(
-                children: [
+                Container(
+                  height: 93.h,
+                  color: PageStyle.c_FFFFFF,
+                  margin: EdgeInsets.only(top: 12.h),
+                  padding: EdgeInsets.symmetric(horizontal: 22.w),
+                  child: Stack(
+                    children: [
                       Positioned(
                         top: 9.h,
                         child: Text(
@@ -99,9 +99,9 @@ class SearchAddGroupPage extends StatelessWidget {
                       ),
                     ],
                   ),
-            ),
-            GestureDetector(
-              onTap: logic.enterGroup,
+                ),
+                GestureDetector(
+                  onTap: logic.enterGroup,
                   child: Container(
                     height: 43.h,
                     margin: EdgeInsets.only(top: 171.h),

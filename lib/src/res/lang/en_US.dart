@@ -19,7 +19,8 @@ const Map<String, String> en_US = {
   'after': ' after',
   'resendVerifyCode': 'resend verification code',
   'plsSetupPwd': 'Please set account password',
-  'pwdExplanation': 'The login password is used to log in to the OpenIM account',
+  'pwdExplanation':
+      'The login password is used to log in to the OpenIM account',
   'pwdRule': '6-20 characters',
   'nextStep': 'Next step',
   'plsFullSelfInfo': 'Please complete personal information',
@@ -76,7 +77,8 @@ const Map<String, String> en_US = {
   "callVideo": "Video call",
   "waitingAcceptVoiceCall": "Waiting for the other party to answer…",
   "beInvitedVoiceCall": "Invites you to a voice call…",
-  "waitingAcceptVideoCall": "Waiting for the other party to accept the invitation",
+  "waitingAcceptVideoCall":
+      "Waiting for the other party to accept the invitation",
   "beInvitedVideoCall": "Invites you to a video call…",
   "callConnecting": "Connecting…",
   "convertVoice": "Go to voice call",
@@ -146,7 +148,8 @@ const Map<String, String> en_US = {
   "see": "View",
   "seeAllFriendRequests": "View all friend requests",
   "areYouSureDelFriend": "Are you sure you want to delete friends?",
-  "areYouSureAddBlacklist": "Are you sure to add your friends to the blacklist?",
+  "areYouSureAddBlacklist":
+      "Are you sure to add your friends to the blacklist?",
   "areYouSureClearAllHistory": "Whether to clear the chat history?",
   "sure": "Sure",
   "clearAll": "Empty",
@@ -180,11 +183,14 @@ const Map<String, String> en_US = {
   "groupIDTips":
       "Search for the group ID number and join the group immediately.",
   "copyGroupID": "Copy group ID",
-  "modifyGroupUserNicknameHint": "After the nickname is modified, it will only be displayed in this group, and all members of the group can see it.",
+  "modifyGroupUserNicknameHint":
+      "After the nickname is modified, it will only be displayed in this group, and all members of the group can see it.",
   "confirmDelMember": "Are you sure you want to delete group members?",
   "confirmTransferGroupToUser": "Confirm to transfer the owner to:%s？",
-  "quitGroupHint": "After exiting the group chat, you will no longer receive this group chat information.",
-  "quitGroupTransferPermissionHint": "You are the owner of the group. If you want to quit the group chat, please transfer the owner's management rights first.",
+  "quitGroupHint":
+      "After exiting the group chat, you will no longer receive this group chat information.",
+  "quitGroupTransferPermissionHint":
+      "You are the owner of the group. If you want to quit the group chat, please transfer the owner's management rights first.",
   "searchGroupHint": "Search: Group",
   "iCreateGroup": "I created",
   "iJoinGroup": "I joined",
@@ -197,7 +203,8 @@ const Map<String, String> en_US = {
   "addMyMethod": "Add my way",
   "blacklist": "Address book blacklist",
   "addMyMethodHint": "You can add me in the following ways",
-  "blacklistHint": "You will no longer receive any messages from blacklisted users.",
+  "blacklistHint":
+      "You will no longer receive any messages from blacklisted users.",
   "removeBlacklistHint": "Are you sure to remove from the blacklist?",
   "goToRate": "Go to rate",
   "checkVersion": "Check the new version",
@@ -279,12 +286,16 @@ const Map<String, String> en_US = {
   "noMore": "~It's the end~",
   "online": "Online",
   "offline": "Offline",
-  "phoneOnline": "Phone online",
-  "pcOnline": "PC online",
-  "webOnline": "Web online",
+  "phoneOnline": "Phone",
+  "pcOnline": "PC",
+  "webOnline": "Web",
+  "webMiniOnline": "MiniWeb",
   "blockFriends": "Block friends",
   "groupMessageSettings": "Group message settings",
   "friendMessageSettings": "Friend message settings",
   "receiveMessageButNotPrompt": "Receive message but don't prompt",
   "blockGroupMessages": "Block group messages",
+  "accountWarn": "Warn!",
+  "accountException":
+      "Your account has been logged in to another device, please change your password in time.",
 };

@@ -71,7 +71,7 @@ class PhoneInputBox extends StatelessWidget {
   }
 
   Widget _textField() => TextField(
-    controller: controller,
+        controller: controller,
         keyboardType: inputWay == InputWay.phone
             ? TextInputType.phone
             : TextInputType.emailAddress,
@@ -95,7 +95,7 @@ class PhoneInputBox extends StatelessWidget {
       );
 
   Widget _areaCodeView() => GestureDetector(
-    onTap: onAreaCode,
+        onTap: onAreaCode,
         behavior: HitTestBehavior.translucent,
         child: Row(
           mainAxisSize: MainAxisSize.min,

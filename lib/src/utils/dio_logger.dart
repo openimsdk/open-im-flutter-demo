@@ -97,8 +97,7 @@ class HttpFormatter extends Interceptor {
     if (_includeRequest) {
       requestString = '⤴ REQUEST ⤴\n\n';
 
-      requestString +=
-          '${requestOptions.method} ${requestOptions.path}\n';
+      requestString += '${requestOptions.method} ${requestOptions.path}\n';
 
       if (_includeRequestHeaders) {
         for (final header in (requestOptions.headers).entries) {

@@ -47,11 +47,11 @@ class AddFriendPage extends StatelessWidget {
             margin: EdgeInsets.only(left: 71.w, right: 22.w),
           ),
           _buildItemView(
-            icon: ImageRes.ic_scan,
-            title: StrRes.scan,
-            desc: StrRes.scanQrcodeCarte,
-            alignment: Alignment.topCenter,
-            onTap: () => logic.toScanQrcode()),
+              icon: ImageRes.ic_scan,
+              title: StrRes.scan,
+              desc: StrRes.scanQrcodeCarte,
+              alignment: Alignment.topCenter,
+              onTap: () => logic.toScanQrcode()),
         ],
       ),
     );

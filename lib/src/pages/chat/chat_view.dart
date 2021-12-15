@@ -80,7 +80,12 @@ class ChatPage extends StatelessWidget {
             onTap: logic.clickLinkText,
           ),
           MatchPattern(
-            type: PatternType.PHONE,
+            type: PatternType.MOBILE,
+            style: PageStyle.ts_1B72EC_14sp,
+            onTap: logic.clickLinkText,
+          ),
+          MatchPattern(
+            type: PatternType.TEL,
             style: PageStyle.ts_1B72EC_14sp,
             onTap: logic.clickLinkText,
           ),

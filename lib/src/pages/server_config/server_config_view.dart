@@ -19,17 +19,16 @@ class ServerConfigPage extends StatelessWidget {
   }) =>
       Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(4),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFF000000).withOpacity(0.15),
-              offset: Offset(0, 1),
-              spreadRadius: 0,
-              blurRadius: 4,
-            ),
-          ]
-        ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF000000).withOpacity(0.15),
+                offset: Offset(0, 1),
+                spreadRadius: 0,
+                blurRadius: 4,
+              ),
+            ]),
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(
           left: 22.w,

@@ -88,7 +88,7 @@ class PreviewMergeMsg extends StatelessWidget {
       case MessageType.merger:
         child = Container(
           // margin: EdgeInsets.only(left: 12.w),
-          padding: EdgeInsets.only(left: 16.w,top: 4.h),
+          padding: EdgeInsets.only(left: 16.w, top: 4.h),
           // decoration: BoxDecoration(
           //   borderRadius: BorderRadius.circular(4),
           //   color: PageStyle.c_979797,

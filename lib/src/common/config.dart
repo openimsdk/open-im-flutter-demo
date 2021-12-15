@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,14 +23,13 @@ class Config {
       DeviceOrientation.portraitDown,
     ]);
     // 状态栏透明（Android）
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: GetPlatform.isAndroid ? Colors.transparent : null,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
-    FlutterBugly.init(androidAppId: "4103e474e9",iOSAppId: "28849b1ca6");
+    var brightness = Platform.isAndroid ? Brightness.dark : Brightness.light;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: brightness,
+      statusBarIconBrightness: brightness,
+    ));
+    // FlutterBugly.init(androidAppId: "4103e474e9", iOSAppId: "28849b1ca6");
   }
 
   static const UI_W = 375.0;

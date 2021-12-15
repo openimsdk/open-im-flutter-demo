@@ -10,6 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sprintf/sprintf.dart';
+
 class UpgradeViewV2 extends StatefulWidget {
   final Function()? onLater;
   final Function()? onIgnore;

@@ -17,7 +17,6 @@ var dio = Dio();
 class HttpUtil {
   HttpUtil._();
 
-
   static void init() {
     // add interceptors
     dio

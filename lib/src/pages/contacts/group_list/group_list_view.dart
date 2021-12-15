@@ -49,15 +49,15 @@ class GroupListPage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 13.w),
                 ),
               ),
-            CustomTabBar(
-              labels: [StrRes.iCreateGroup, StrRes.iJoinGroup],
-              index: logic.index.value,
-              onTabChanged: (i) => logic.switchTab(i),
-            ),
-            SizedBox(
-              height: 12.h,
-            ),
-            Expanded(
+              CustomTabBar(
+                labels: [StrRes.iCreateGroup, StrRes.iJoinGroup],
+                index: logic.index.value,
+                onTabChanged: (i) => logic.switchTab(i),
+              ),
+              SizedBox(
+                height: 12.h,
+              ),
+              Expanded(
                 child: IndexedStack(
                   index: logic.index.value,
                   children: [
