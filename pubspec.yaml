@@ -48,7 +48,7 @@ dependencies:
   image_gallery_saver: ^1.7.1
   #  fluttertoast: ^8.0.8
   flutter_easyloading: ^3.0.3
-  wechat_assets_picker: ^6.3.0
+  wechat_assets_picker: ^6.3.1
   wechat_camera_picker: ^2.6.2
   file_picker: ^4.2.7
   open_file: ^3.2.1
@@ -67,7 +67,7 @@ dependencies:
   #  dio_logger: ^4.0.8+8
   logger: ^1.1.0
   #  dio_http_formatter: ^2.0.0
-  jpush_flutter: 2.1.5
+  jpush_flutter: ^2.2.0
   #  animate_do: ^2.0.0
   animated_text_kit: ^4.2.1
   focus_detector: ^2.0.0
@@ -78,7 +78,7 @@ dependencies:
   url_launcher: ^6.0.17
   sp_util: ^2.0.3
   common_utils: ^2.0.2
-  uri_to_file: ^0.1.3
+  uri_to_file: ^0.2.0
   map_launcher: ^2.1.1
   flutter_map: ^0.14.0
   #  speech_to_text: ^5.2.0
@@ -87,7 +87,7 @@ dependencies:
   flutter_image_compress: ^1.1.0
   app_installer: ^1.1.0
   r_scan: ^0.1.6+1
-  flutter_bugly: ^0.3.3
+  flutter_bugly: ^0.4.3
   #  flutter_slidable: ^1.1.0
   flutter_openim_widget:
     git:

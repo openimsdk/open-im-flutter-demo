@@ -1,4 +1,4 @@
-package io.openim.app.enterprisechat;
+package io.openim.app.demo;
 
 import io.flutter.embedding.android.FlutterActivity;
 

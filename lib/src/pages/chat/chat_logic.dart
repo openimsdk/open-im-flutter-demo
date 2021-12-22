@@ -719,8 +719,8 @@ class ChatLogic extends GetxController {
           if ('$thumbnailPath'.contains(filePrefix)) {
             thumbnailPath = thumbnailPath.substring(filePrefix.length);
           } else if ('$thumbnailPath'.contains(uriPrefix)) {
-            Uri uri = Uri.parse(thumbnailPath); // Parsing uri string to uri
-            File file = await toFile(uri);
+            // Uri uri = Uri.parse(thumbnailPath); // Parsing uri string to uri
+            File file = await toFile(thumbnailPath);
             thumbnailPath = file.path;
           }
           sendVideo(

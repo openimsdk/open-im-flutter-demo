@@ -34,7 +34,7 @@ class JPushController extends GetxController {
     }
 
     jPush.setup(
-      appKey: "cf47465a368f24c659608e7e", //你自己应用的 AppKey
+      appKey: "646f952e8310ff8c9a336dee", //你自己应用的 AppKey
       channel: "developer-default",
       production: false,
       debug: true,
