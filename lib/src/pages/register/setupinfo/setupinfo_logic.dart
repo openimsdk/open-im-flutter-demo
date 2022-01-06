@@ -89,7 +89,6 @@ class SetupSelfInfoLogic extends GetxController {
 
   syncSelfInfo(String uid) async {
     await OpenIM.iMManager.setSelfInfo(
-      uid: uid,
       name: nameCtrl.text,
       icon: icon.isEmpty ? indexAvatarList[avatarIndex.value] : icon.value,
       mobile: phoneNumber,

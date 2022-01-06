@@ -30,7 +30,7 @@ class MyInfoLogic extends GetxController {
   void openPhotoSheet() {
     IMWidget.openPhotoSheet(onData: (path, url) {
       if (url != null) {
-        OpenIM.iMManager.setSelfInfo(uid: OpenIM.iMManager.uid, icon: url);
+        OpenIM.iMManager.setSelfInfo(icon: url);
       }
     });
   }

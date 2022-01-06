@@ -141,7 +141,7 @@ class SetupSelfInfoPage extends StatelessWidget {
             color: PageStyle.c_D8D8D8,
             borderRadius: BorderRadius.circular(6),
           ),
-          child: IconUtil.assetImage(
+          child: ImageUtil.assetImage(
             indexAvatarList[logic.avatarIndex.value],
             width: 90.h,
             height: 90.h,

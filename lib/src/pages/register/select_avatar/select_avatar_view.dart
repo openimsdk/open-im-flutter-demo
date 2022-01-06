@@ -35,7 +35,7 @@ class SelectAvatarPage extends StatelessWidget {
               onTap: () {
                 Get.back(result: index);
               },
-              child: IconUtil.assetImage(indexAvatarList.elementAt(index)),
+              child: ImageUtil.assetImage(indexAvatarList.elementAt(index)),
             ),
           );
         },

@@ -240,14 +240,14 @@ packages:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.3"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.0.0"
+    version: "8.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -366,20 +366,16 @@ packages:
   flutter_openim_sdk:
     dependency: transitive
     description:
-      path: "."
-      ref: fix-ios-simulator
-      resolved-ref: "22509bc10f088a066c6bb79b7dbbd98039c0f337"
-      url: "https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git"
-    source: git
-    version: "1.0.8"
+      path: "../flutter_openim_sdk"
+      relative: true
+    source: path
+    version: "1.1.0"
   flutter_openim_widget:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: dd183ba6d07d053f473dedaaf921b0f81158957a
-      url: "https://github.com/hrxiang/flutter_openim_widget.git"
-    source: git
+      path: "../flutter_openim_widget"
+      relative: true
+    source: path
     version: "0.0.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
@@ -1216,7 +1212,7 @@ packages:
       name: video_player
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.7"
+    version: "2.2.10"
   video_player_platform_interface:
     dependency: transitive
     description:

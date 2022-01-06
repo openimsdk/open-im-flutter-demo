@@ -7,7 +7,6 @@ class SetupUserNameLogic extends GetxController {
 
   void setupName() async {
     await OpenIM.iMManager.setSelfInfo(
-      uid: OpenIM.iMManager.uid,
       name: inputCtrl.text,
     );
     Get.back(result: inputCtrl.text);

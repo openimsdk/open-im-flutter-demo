@@ -92,6 +92,8 @@ dependencies:
   flutter_openim_widget:
     git:
       url: https://github.com/hrxiang/flutter_openim_widget.git
+#  flutter_openim_widget:
+#    path: ../flutter_openim_widget
 
 dependency_overrides:
   decimal: 1.5.0
