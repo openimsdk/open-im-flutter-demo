@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
+import 'package:openim_demo/src/models/contacts_info.dart';
 
 class SearchFriendLogic extends GetxController {
   var focusNode = FocusNode();

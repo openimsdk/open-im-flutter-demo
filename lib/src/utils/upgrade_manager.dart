@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:app_installer/app_installer.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/common/apis.dart';
-import 'package:openim_enterprise_chat/src/models/upgrade_info.dart';
-import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
-import 'package:openim_enterprise_chat/src/widgets/loading_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/upgrade_view.dart';
+import 'package:openim_demo/src/common/apis.dart';
+import 'package:openim_demo/src/models/upgrade_info.dart';
+import 'package:openim_demo/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/widgets/loading_view.dart';
+import 'package:openim_demo/src/widgets/upgrade_view.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rxdart/rxdart.dart';
 

@@ -1,9 +1,9 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/radio_button.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/radio_button.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'avatar_view.dart';

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/routes/app_pages.dart';
-import 'package:openim_enterprise_chat/src/utils/logger_util.dart';
-import 'package:openim_enterprise_chat/src/widgets/app_view.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/routes/app_pages.dart';
+import 'package:openim_demo/src/utils/logger_util.dart';
+import 'package:openim_demo/src/widgets/app_view.dart';
 
 import 'core/controller/im_controller.dart';
 import 'core/controller/jpush_controller.dart';

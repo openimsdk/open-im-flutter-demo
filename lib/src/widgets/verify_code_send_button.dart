@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
 
 class VerifyCodeSendButton extends StatefulWidget {
   /// 倒计时的秒数，默认60秒。

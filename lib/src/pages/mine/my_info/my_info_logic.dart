@@ -1,7 +1,7 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
-import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class MyInfoLogic extends GetxController {
   // late Rx<UserInfo> userInfo;

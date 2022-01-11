@@ -1,7 +1,7 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/app_controller.dart';
+import 'package:openim_demo/src/core/controller/app_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 class IMCallback {

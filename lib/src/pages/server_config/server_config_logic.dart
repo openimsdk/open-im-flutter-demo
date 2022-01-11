@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/common/config.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/common/config.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class ServerConfigLogic extends GetxController {
   var checked = true.obs;

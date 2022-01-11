@@ -1,7 +1,7 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/widgets/custom_dialog.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/widgets/custom_dialog.dart';
 
 class BlacklistLogic extends GetxController {
   var blacklist = <UserInfo>[].obs;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/image_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/switch_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/avatar_view.dart';
+import 'package:openim_demo/src/widgets/image_button.dart';
+import 'package:openim_demo/src/widgets/switch_button.dart';
+import 'package:openim_demo/src/widgets/titlebar.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'group_setup_logic.dart';

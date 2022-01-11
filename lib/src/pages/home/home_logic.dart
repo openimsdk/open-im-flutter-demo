@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/core/controller/im_controller.dart';
 
 class HomeLogic extends GetxController {
   final imLogic = Get.find<IMController>();

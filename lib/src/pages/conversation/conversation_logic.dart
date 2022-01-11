@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/app_controller.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
-import 'package:openim_enterprise_chat/src/pages/home/home_logic.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/utils/im_util.dart';
+import 'package:openim_demo/src/core/controller/app_controller.dart';
+import 'package:openim_demo/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/pages/home/home_logic.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/utils/im_util.dart';
 
 class ConversationLogic extends GetxController {
   var popCtrl = CustomPopupMenuController();

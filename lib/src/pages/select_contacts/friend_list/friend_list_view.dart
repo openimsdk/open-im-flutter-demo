@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
-import 'package:openim_enterprise_chat/src/widgets/azlist_view.dart';
+import 'package:openim_demo/src/models/contacts_info.dart';
+import 'package:openim_demo/src/widgets/azlist_view.dart';
 
 import '../select_contacts_logic.dart';
 

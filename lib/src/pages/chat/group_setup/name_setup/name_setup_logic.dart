@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/core/controller/im_controller.dart';
 
 class GroupNameSetupLogic extends GetxController {
   late Rx<GroupInfo> info;

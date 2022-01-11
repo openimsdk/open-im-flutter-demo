@@ -8,9 +8,9 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
-import 'package:openim_enterprise_chat/src/widgets/qr_scan_box.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/widgets/qr_scan_box.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:r_scan/r_scan.dart';
 

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/button.dart';
-import 'package:openim_enterprise_chat/src/widgets/debounce_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/phone_email_input_box.dart';
-import 'package:openim_enterprise_chat/src/widgets/protocol_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/pwd_input_box.dart';
-import 'package:openim_enterprise_chat/src/widgets/radio_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/touch_close_keyboard.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/button.dart';
+import 'package:openim_demo/src/widgets/debounce_button.dart';
+import 'package:openim_demo/src/widgets/phone_email_input_box.dart';
+import 'package:openim_demo/src/widgets/protocol_view.dart';
+import 'package:openim_demo/src/widgets/pwd_input_box.dart';
+import 'package:openim_demo/src/widgets/radio_button.dart';
+import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
 
 import 'login_logic.dart';
 

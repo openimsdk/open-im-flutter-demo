@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/app_controller.dart';
+import 'package:openim_demo/src/core/controller/app_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutUsLogic extends GetxController {

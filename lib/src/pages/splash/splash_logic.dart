@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
-import 'package:openim_enterprise_chat/src/core/controller/jpush_controller.dart';
-import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/core/controller/jpush_controller.dart';
+import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class SplashLogic extends GetxController {
   final imLogic = Get.find<IMController>();

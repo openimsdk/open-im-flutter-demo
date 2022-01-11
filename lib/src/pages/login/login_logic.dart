@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/common/apis.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
-import 'package:openim_enterprise_chat/src/core/controller/jpush_controller.dart';
-import 'package:openim_enterprise_chat/src/pages/server_config/server_config_binding.dart';
-import 'package:openim_enterprise_chat/src/pages/server_config/server_config_view.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/routes/app_navigator.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/utils/im_util.dart';
-import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
-import 'package:openim_enterprise_chat/src/widgets/loading_view.dart';
+import 'package:openim_demo/src/common/apis.dart';
+import 'package:openim_demo/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/core/controller/jpush_controller.dart';
+import 'package:openim_demo/src/pages/server_config/server_config_binding.dart';
+import 'package:openim_demo/src/pages/server_config/server_config_view.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/utils/im_util.dart';
+import 'package:openim_demo/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/widgets/loading_view.dart';
 
 class LoginLogic extends GetxController {
   var phoneCtrl = TextEditingController();

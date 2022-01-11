@@ -1,6 +1,6 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
-import 'package:openim_enterprise_chat/src/models/call_records.dart';
-import 'package:openim_enterprise_chat/src/models/login_certificate.dart';
+import 'package:openim_demo/src/models/call_records.dart';
+import 'package:openim_demo/src/models/login_certificate.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:sprintf/sprintf.dart';
 

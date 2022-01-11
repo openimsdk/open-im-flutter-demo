@@ -5,9 +5,9 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart' as im;
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/utils/upgrade_manager.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/utils/upgrade_manager.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AppController extends GetxController with UpgradeManger {

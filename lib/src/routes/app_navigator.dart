@@ -1,8 +1,8 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/pages/add_friend/search/search_logic.dart';
-import 'package:openim_enterprise_chat/src/pages/select_contacts/select_contacts_logic.dart';
-import 'package:openim_enterprise_chat/src/widgets/qr_view.dart';
+import 'package:openim_demo/src/pages/add_friend/search/search_logic.dart';
+import 'package:openim_demo/src/pages/select_contacts/select_contacts_logic.dart';
+import 'package:openim_demo/src/widgets/qr_view.dart';
 
 import 'app_pages.dart';
 

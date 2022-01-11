@@ -3,12 +3,12 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/pages/home/home_logic.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
+import 'package:openim_demo/src/pages/home/home_logic.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/avatar_view.dart';
+import 'package:openim_demo/src/widgets/titlebar.dart';
 
 import 'contacts_logic.dart';
 

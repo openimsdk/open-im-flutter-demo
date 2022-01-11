@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/res/lang/en_US.dart';
-import 'package:openim_enterprise_chat/src/res/lang/zh_CN.dart';
+import 'package:openim_demo/src/res/lang/en_US.dart';
+import 'package:openim_demo/src/res/lang/zh_CN.dart';
 
 class TranslationService extends Translations {
   static Locale? get locale => Get.deviceLocale;

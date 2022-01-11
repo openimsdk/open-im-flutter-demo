@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/debounce_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/image_button.dart';
-import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
-import 'package:openim_enterprise_chat/src/widgets/touch_close_keyboard.dart';
+import 'package:openim_demo/src/models/contacts_info.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/debounce_button.dart';
+import 'package:openim_demo/src/widgets/avatar_view.dart';
+import 'package:openim_demo/src/widgets/image_button.dart';
+import 'package:openim_demo/src/widgets/titlebar.dart';
+import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'create_group_logic.dart';

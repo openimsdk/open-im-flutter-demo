@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
 
 enum InputWay { phone, email }
 

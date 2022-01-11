@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/common/config.dart';
-import 'package:openim_enterprise_chat/src/core/callback/im_callback.dart';
+import 'package:openim_demo/src/common/config.dart';
+import 'package:openim_demo/src/core/callback/im_callback.dart';
 import 'package:path_provider/path_provider.dart';
 
 class IMController extends GetxController with IMCallback {

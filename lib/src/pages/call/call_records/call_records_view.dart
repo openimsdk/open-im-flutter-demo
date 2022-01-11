@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/models/call_records.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/utils/im_util.dart';
-import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/search_box.dart';
-import 'package:openim_enterprise_chat/src/widgets/tabbar.dart';
-import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
+import 'package:openim_demo/src/models/call_records.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/utils/im_util.dart';
+import 'package:openim_demo/src/widgets/avatar_view.dart';
+import 'package:openim_demo/src/widgets/search_box.dart';
+import 'package:openim_demo/src/widgets/tabbar.dart';
+import 'package:openim_demo/src/widgets/titlebar.dart';
 
 import 'call_records_logic.dart';
 

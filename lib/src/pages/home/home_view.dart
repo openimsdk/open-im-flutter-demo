@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/pages/contacts/contacts_view.dart';
-import 'package:openim_enterprise_chat/src/pages/conversation/conversation_view.dart';
-import 'package:openim_enterprise_chat/src/pages/mine/mine_view.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/bottombar.dart';
+import 'package:openim_demo/src/pages/contacts/contacts_view.dart';
+import 'package:openim_demo/src/pages/conversation/conversation_view.dart';
+import 'package:openim_demo/src/pages/mine/mine_view.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/bottombar.dart';
 
 import 'home_logic.dart';
 

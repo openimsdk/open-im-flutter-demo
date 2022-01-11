@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:map_launcher/map_launcher.dart' as ml;
 import 'package:map_launcher/src/models.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
 
 import 'bottom_sheet_view.dart';
 

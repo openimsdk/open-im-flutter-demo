@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:openim_enterprise_chat/src/common/config.dart';
-import 'package:openim_enterprise_chat/src/models/api_resp.dart';
-import 'package:openim_enterprise_chat/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/common/config.dart';
+import 'package:openim_demo/src/models/api_resp.dart';
+import 'package:openim_demo/src/widgets/im_widget.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'dio_logger.dart';

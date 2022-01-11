@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
+import 'package:openim_demo/src/res/styles.dart';
 
 class BottomBar extends StatelessWidget {
   const BottomBar({

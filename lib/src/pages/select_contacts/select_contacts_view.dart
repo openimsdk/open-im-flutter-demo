@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/models/contacts_info.dart';
-import 'package:openim_enterprise_chat/src/res/images.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/res/styles.dart';
-import 'package:openim_enterprise_chat/src/widgets/avatar_view.dart';
-import 'package:openim_enterprise_chat/src/widgets/search_box.dart';
-import 'package:openim_enterprise_chat/src/widgets/tabbar.dart';
-import 'package:openim_enterprise_chat/src/widgets/titlebar.dart';
+import 'package:openim_demo/src/models/contacts_info.dart';
+import 'package:openim_demo/src/res/images.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/res/styles.dart';
+import 'package:openim_demo/src/widgets/avatar_view.dart';
+import 'package:openim_demo/src/widgets/search_box.dart';
+import 'package:openim_demo/src/widgets/tabbar.dart';
+import 'package:openim_demo/src/widgets/titlebar.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'friend_list/friend_list_view.dart';

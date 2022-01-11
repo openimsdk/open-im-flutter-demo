@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
 
 class SetupLanguageLogic extends GetxController {
   var isFollowSystem = false.obs;

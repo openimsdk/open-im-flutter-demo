@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/core/controller/im_controller.dart';
-import 'package:openim_enterprise_chat/src/widgets/qr_view.dart';
+import 'package:openim_demo/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/widgets/qr_view.dart';
 import 'package:sprintf/sprintf.dart';
 
 class MyQrcodeLogic extends GetxController {

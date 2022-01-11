@@ -1,6 +1,6 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/widgets/qr_view.dart';
+import 'package:openim_demo/src/widgets/qr_view.dart';
 
 class GroupQrcodeLogic extends GetxController {
   late GroupInfo info;

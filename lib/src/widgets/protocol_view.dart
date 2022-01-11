@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:openim_enterprise_chat/src/res/strings.dart';
-import 'package:openim_enterprise_chat/src/widgets/radio_button.dart';
+import 'package:openim_demo/src/res/strings.dart';
+import 'package:openim_demo/src/widgets/radio_button.dart';
 
 class ProtocolView extends StatelessWidget {
   const ProtocolView({

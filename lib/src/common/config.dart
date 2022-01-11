@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:get/get.dart';
-import 'package:openim_enterprise_chat/src/utils/data_persistence.dart';
-import 'package:openim_enterprise_chat/src/utils/http_util.dart';
-import 'package:openim_enterprise_chat/src/utils/speech_to_text_util.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
+import 'package:openim_demo/src/utils/http_util.dart';
+import 'package:openim_demo/src/utils/speech_to_text_util.dart';
 import 'package:sp_util/sp_util.dart';
 
 class Config {

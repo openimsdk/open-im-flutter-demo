@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
-import 'package:openim_enterprise_chat/src/app.dart';
-import 'package:openim_enterprise_chat/src/common/config.dart';
+import 'package:openim_demo/src/app.dart';
+import 'package:openim_demo/src/common/config.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
