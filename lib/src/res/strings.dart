@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:openim_demo/src/res/lang/en_US.dart';
-import 'package:openim_demo/src/res/lang/zh_CN.dart';
+import 'lang/en_US.dart';
+import 'lang/zh_CN.dart';
 
 class TranslationService extends Translations {
   static Locale? get locale => Get.deviceLocale;
@@ -51,6 +51,8 @@ class StrRes {
   static get after => 'after'.tr;
 
   static get resendVerifyCode => 'resendVerifyCode'.tr;
+
+  static get sendVerifyCode => 'sendVerifyCode'.tr;
 
   static get plsSetupPwd => 'plsSetupPwd'.tr;
 
@@ -593,4 +595,32 @@ class StrRes {
   static get accountWarn => 'accountWarn'.tr;
 
   static get accountException => 'accountException'.tr;
+
+  static get inviteMember => 'inviteMember'.tr;
+
+  static get removeMember => 'removeMember'.tr;
+
+  static get groupOwner => 'groupOwner'.tr;
+
+  static get groupAdmin => 'groupAdmin'.tr;
+
+  static get announcementHint => 'announcementHint'.tr;
+
+  static get publish => 'publish'.tr;
+
+  static get more => 'more'.tr;
+
+  static get iKnow => 'iKnow'.tr;
+
+  static get workbench => 'workbench'.tr;
+
+  static get callDuration => 'callDuration'.tr;
+
+  static get cancelled => 'cancelled'.tr;
+
+  static get cancelledByCaller => 'cancelledByCaller'.tr;
+
+  static get rejectedByCaller => 'rejectedByCaller'.tr;
+
+  static get unsupportedMessage => 'unsupportedMessage'.tr;
 }
