@@ -36,6 +36,9 @@ class _VerifyCodeSendButtonState extends State<VerifyCodeSendButton> {
     super.initState();
     _seconds = widget.sec;
     if (widget.auto) _start();
+    else {
+      _seconds = 0;
+    }
   }
 
   void _start() {
