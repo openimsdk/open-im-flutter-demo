@@ -32,8 +32,6 @@ dependencies:
   get: ^4.5.1
   shared_preferences: ^2.0.9
   path_provider: ^2.0.7
-  #  synchronized: ^3.0.0
-  #  package_info: ^2.0.2
   sprintf: ^6.0.0
   rxdart: ^0.27.3
   pin_code_fields: ^7.3.0
@@ -42,11 +40,7 @@ dependencies:
   azlistview: ^2.0.0-nullsafety.0
   lpinyin: ^2.0.3
   country_code_picker: ^2.0.2
-  #  scrollable_positioned_list: ^0.2.0-nullsafety.0
-  #  scroll_to_index: ^2.1.0
-  #  image_gallery_saver: ^1.6.9
   image_gallery_saver: ^1.7.1
-  #  fluttertoast: ^8.0.8
   flutter_easyloading: ^3.0.3
   wechat_assets_picker: ^6.3.1
   wechat_camera_picker: ^2.6.2
@@ -64,9 +58,7 @@ dependencies:
   search_keyword_text: ^0.0.1
   qr_code_scanner: ^0.6.1
   pretty_dio_logger: ^1.2.0-beta-1
-  #  dio_logger: ^4.0.8+8
   logger: ^1.1.0
-  #  dio_http_formatter: ^2.0.0
   jpush_flutter: ^2.2.0
   #  animate_do: ^2.0.0
   animated_text_kit: ^4.2.1
@@ -88,12 +80,8 @@ dependencies:
   app_installer: ^1.1.0
   r_scan: ^0.1.6+1
   flutter_bugly: ^0.4.3
-  #  flutter_slidable: ^1.1.0
-  flutter_openim_widget:
-    git:
-      url: https://github.com/hrxiang/flutter_openim_widget.git
-#  flutter_openim_widget:
-#    path: ../flutter_openim_widget
+  flutter_openim_widget: ^0.0.1
+
 
 dependency_overrides:
   decimal: 1.5.0

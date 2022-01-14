@@ -120,15 +120,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.1"
-  chewie:
-    dependency: transitive
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "94da39e6bb302a12874cb528cc6880e4dd526384"
-      url: "https://github.com/hrxiang/chewie.git"
-    source: git
-    version: "1.2.2"
   clock:
     dependency: transitive
     description:
@@ -262,6 +253,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.2"
+  fijkplayer:
+    dependency: transitive
+    description:
+      name: fijkplayer
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.1"
   file:
     dependency: transitive
     description:
@@ -366,20 +364,16 @@ packages:
   flutter_openim_sdk:
     dependency: transitive
     description:
-      path: "."
-      ref: fix-ios-simulator
-      resolved-ref: "026843db880bb804dcaef02c7cdf12f59a98117b"
-      url: "https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git"
-    source: git
+      name: flutter_openim_sdk
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "1.1.0"
   flutter_openim_widget:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "20b98880cc2c03fa6a9668cc0d7fe2f1a7eb0d21"
-      url: "https://github.com/hrxiang/flutter_openim_widget.git"
-    source: git
+      name: flutter_openim_widget
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.0.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
@@ -398,12 +392,10 @@ packages:
   flutter_slidable:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f43b7ae15b1218afe1af25a49ed23a4ba1f9068a
-      url: "https://github.com/letsar/flutter_slidable.git"
-    source: git
-    version: "1.1.0"
+      name: flutter_slidable
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.0"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -865,11 +857,9 @@ packages:
   qq_badge:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "9d6c88c5f3d7651f6a17d5dfbdc5adbd91b16425"
-      url: "https://github.com/hrxiang/QqBadge.git"
-    source: git
+      name: qq_badge
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.0.2"
   qr:
     dependency: transitive
@@ -1247,41 +1237,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.2"
-  wakelock:
-    dependency: transitive
-    description:
-      name: wakelock
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.5.6"
-  wakelock_macos:
-    dependency: transitive
-    description:
-      name: wakelock_macos
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.4.0"
-  wakelock_platform_interface:
-    dependency: transitive
-    description:
-      name: wakelock_platform_interface
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.3.0"
-  wakelock_web:
-    dependency: transitive
-    description:
-      name: wakelock_web
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.4.0"
-  wakelock_windows:
-    dependency: transitive
-    description:
-      name: wakelock_windows
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.2.0"
   wechat_assets_picker:
     dependency: "direct main"
     description:
