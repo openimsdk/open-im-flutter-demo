@@ -80,7 +80,7 @@ dependencies:
   app_installer: ^1.1.0
   r_scan: ^0.1.6+1
   flutter_bugly: ^0.4.3
-  flutter_openim_widget: ^0.0.3
+  flutter_openim_widget: ^0.0.5
 
 
 dependency_overrides:

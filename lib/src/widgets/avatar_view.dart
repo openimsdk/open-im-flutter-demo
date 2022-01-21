@@ -3,6 +3,7 @@ import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
+import 'package:uuid/uuid.dart';
 
 class AvatarView extends StatelessWidget {
   const AvatarView({
@@ -31,6 +32,7 @@ class AvatarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var uuid = Uuid().v4();
     return ChatAvatarView(
         visible: visible,
         size: size ?? 42.h,
@@ -38,7 +40,7 @@ class AvatarView extends StatelessWidget {
             (enabledPreview
                 ? () {
                     if (url != null && url!.trim().isNotEmpty) {
-                      Get.to(() => IMUtil.previewPic(id: url!, url: url));
+                      Get.to(() => IMUtil.previewPic(tag: uuid, url: url));
                     }
                   }
                 : null),

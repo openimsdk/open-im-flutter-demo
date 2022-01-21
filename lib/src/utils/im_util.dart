@@ -143,14 +143,14 @@ class IMUtil {
     replace
         ? Get.off(
             () => previewPic(
-              id: msg.clientMsgID!,
+              tag: msg.clientMsgID!,
               url: msg.pictureElem?.sourcePicture?.url,
               file: file,
             ),
           )
         : Get.to(
             () => previewPic(
-              id: msg.clientMsgID!,
+              tag: msg.clientMsgID!,
               url: msg.pictureElem?.sourcePicture?.url,
               file: file,
             ),
@@ -282,11 +282,10 @@ class IMUtil {
     // } else if (msg.contentType == MessageType.file) {}
   }
 
-  static Widget previewPic({required String id, String? url, File? file}) =>
+  static Widget previewPic({required String tag, String? url, File? file}) =>
       ChatPicturePreview(
-        tag: '${id}_${DateTime.now().microsecond}',
-        url: url,
-        file: file,
+        tag: tag,
+        picList: [PicInfo(url: url, file: file)],
         onDownload: (url) async {
           IMWidget.showToast(StrRes.startDownload);
           var response = await dio.get(
