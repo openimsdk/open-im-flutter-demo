@@ -50,7 +50,6 @@ class CreateGroupInChatSetupPage extends StatelessWidget {
                 ? AvatarView(
                     url: logic.avatarUrl.value,
                     size: 44.h,
-                    isCircle: false,
                   )
                 : ImageButton(
                     onTap: () => logic.setAvatar(),
@@ -148,7 +147,7 @@ class CreateGroupInChatSetupPage extends StatelessWidget {
           children: [
             AvatarView(
               size: 40.h,
-              url: info.icon,
+              url: info.faceURL,
             ),
             SizedBox(
               height: 6.h,

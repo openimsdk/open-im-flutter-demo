@@ -49,7 +49,7 @@ class SelectContactsLogic extends GetxController {
             var l = <ContactsInfo>[];
             list.forEach((e) {
               var info = ContactsInfo.fromJson(e);
-              if (!excludeUidList!.contains(info.uid)) {
+              if (!excludeUidList!.contains(info.userID)) {
                 l.add(info);
               }
             });
@@ -80,7 +80,7 @@ class SelectContactsLogic extends GetxController {
       case SelAction.FORWARD:
         title = StrRes.confirmSendTo;
         content = info.getShowName();
-        url = info.icon;
+        url = info.faceURL;
         type = DialogType.FORWARD;
         break;
       case SelAction.CARTE:
@@ -103,9 +103,9 @@ class SelectContactsLogic extends GetxController {
       if (confirm == true) {
         Get.back(
           result: {
-            "uId": info.uid,
+            "uId": info.userID,
             "uName": info.getShowName(),
-            "uIcon": info.icon,
+            "uIcon": info.faceURL,
           },
         );
       }
@@ -132,7 +132,7 @@ class SelectContactsLogic extends GetxController {
     // 创建群组
     if (action == SelAction.CRATE_GROUP) {
       checkedList.addAll(
-        contactsList.where((e) => defaultCheckedUidList.contains(e.uid)),
+        contactsList.where((e) => defaultCheckedUidList.contains(e.userID)),
       );
       AppNavigator.startCreateGroupInChatSetup(members: checkedList.value);
       // Get.offAndToNamed(

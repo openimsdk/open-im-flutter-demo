@@ -9,10 +9,8 @@ class GroupApplicationLogic extends GetxController {
   var imLogic = Get.find<IMController>();
 
   void getApplicationList() async {
-    var application =
-        await OpenIM.iMManager.groupManager.getGroupApplicationList();
-    if (null != application.user && application.user!.isNotEmpty)
-      list.assignAll(application.user!);
+    var l = await OpenIM.iMManager.groupManager.getRecvGroupApplicationList();
+    list.assignAll(l);
   }
 
   void getJoinedGroup() {

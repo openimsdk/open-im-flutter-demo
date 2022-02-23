@@ -64,8 +64,7 @@ class MyGroupNicknamePage extends StatelessWidget {
                     children: [
                       AvatarView(
                         size: 44.h,
-                        isCircle: false,
-                        url: OpenIM.iMManager.uInfo.icon,
+                        url: OpenIM.iMManager.uInfo.faceURL,
                       ),
                       SizedBox(
                         width: 11.w,

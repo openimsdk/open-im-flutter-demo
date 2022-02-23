@@ -22,36 +22,59 @@ class MyInfoPage extends StatelessWidget {
         title: StrRes.myInfo,
       ),
       body: Obx(
-        () => Column(
-          children: [
-            SizedBox(
-              height: 12.h,
-            ),
-            _buildItemView(
-              label: StrRes.avatar,
-              showAvatar: true,
-              url: imLogic.userInfo.value.icon,
-              onTap: () => logic.openPhotoSheet(),
-            ),
-            _buildItemView(
-              label: StrRes.nickname,
-              value: imLogic.userInfo.value.getShowName(),
-              onTap: () => logic.setupUserName(),
-            ),
-            _buildItemView(
-              label: StrRes.phoneNum,
-              value: imLogic.userInfo.value.mobile,
-            ),
-            _buildItemView(
-              label: StrRes.qrcodeCarte,
-              showQrIcon: true,
-              onTap: () => logic.myQrcode(),
-            ),
-            _buildItemView(
-              label: StrRes.idCode,
-              onTap: () => logic.myID(),
-            ),
-          ],
+        () => SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 12.h,
+              ),
+              _buildItemView(
+                label: StrRes.avatar,
+                showAvatar: true,
+                url: imLogic.userInfo.value.faceURL,
+                onTap: () => logic.openPhotoSheet(),
+              ),
+              _buildItemView(
+                label: StrRes.nickname,
+                value: imLogic.userInfo.value.getShowName(),
+                onTap: () => logic.setupUserName(),
+              ),
+              _buildItemView(
+                label: StrRes.gender,
+                value:
+                    imLogic.userInfo.value.isMale ? StrRes.man : StrRes.woman,
+                onTap: () => logic.selectGender(),
+              ),
+              _buildItemView(
+                label: StrRes.birthday,
+                value: '${imLogic.userInfo.value.birth}',
+                onTap: () => logic.openDatePicker(),
+              ),
+              // if (imLogic.userInfo.value.mobile != null &&
+              //     imLogic.userInfo.value.mobile!.isNotEmpty)
+              _buildItemView(
+                label: StrRes.phoneNum,
+                value: imLogic.userInfo.value.phoneNumber,
+                showArrow: false,
+              ),
+              // if (imLogic.userInfo.value.email != null &&
+              //     imLogic.userInfo.value.email!.isNotEmpty)
+              _buildItemView(
+                label: StrRes.email,
+                value: imLogic.userInfo.value.email,
+                showArrow: false,
+              ),
+              _buildItemView(
+                label: StrRes.qrcodeCarte,
+                showQrIcon: true,
+                onTap: () => logic.myQrcode(),
+              ),
+              _buildItemView(
+                label: StrRes.idCode,
+                onTap: () => logic.myID(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -63,6 +86,7 @@ class MyInfoPage extends StatelessWidget {
     String? url,
     bool showAvatar = false,
     bool showQrIcon = false,
+    bool showArrow = true,
     Function()? onTap,
   }) =>
       Ink(
@@ -103,14 +127,15 @@ class MyInfoPage extends StatelessWidget {
                     value,
                     style: PageStyle.ts_999999_16sp,
                   ),
-                SizedBox(
-                  width: 12.w,
-                ),
-                Image.asset(
-                  ImageRes.ic_next,
-                  width: 10.w,
-                  height: 17.h,
-                ),
+                if (showArrow)
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.w),
+                    child: Image.asset(
+                      ImageRes.ic_next,
+                      width: 10.w,
+                      height: 17.h,
+                    ),
+                  ),
               ],
             ),
           ),

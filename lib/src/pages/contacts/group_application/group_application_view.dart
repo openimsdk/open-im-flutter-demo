@@ -20,12 +20,14 @@ class GroupApplicationPage extends StatelessWidget {
         showShadow: false,
       ),
       backgroundColor: PageStyle.c_F8F8F8,
-      body: Obx(() => ListView.builder(
-            itemCount: logic.list.length,
-            itemBuilder: (_, index) => _buildItemView(
-              logic.list.elementAt(index),
-            ),
-          )),
+      body: SafeArea(
+        child: Obx(() => ListView.builder(
+              itemCount: logic.list.length,
+              itemBuilder: (_, index) => _buildItemView(
+                logic.list.elementAt(index),
+              ),
+            )),
+      ),
     );
   }
 
@@ -38,7 +40,7 @@ class GroupApplicationPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AvatarView(
-                  url: info.fromUserFaceURL,
+                  url: info.userFaceURL,
                 ),
                 SizedBox(
                   width: 18.w,
@@ -48,7 +50,7 @@ class GroupApplicationPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        info.fromUserNickName!,
+                        info.nickname!,
                         style: PageStyle.ts_333333_16sp,
                       ),
                       RichText(
@@ -82,7 +84,7 @@ class GroupApplicationPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (info.handleStatus == 0)
+                if (info.handleResult == 0)
                   GestureDetector(
                     onTap: () => logic.handle(info),
                     child: Container(
@@ -102,12 +104,12 @@ class GroupApplicationPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (info.handleStatus != 0 && info.handleResult == 1)
+                if (info.handleResult == 1)
                   Text(
                     StrRes.approved,
                     style: PageStyle.ts_418AE5_12sp,
                   ),
-                if (info.handleStatus != 0 && info.handleResult == 0)
+                if (info.handleResult == -1)
                   Text(
                     StrRes.rejected,
                     style: PageStyle.ts_898989_12sp,

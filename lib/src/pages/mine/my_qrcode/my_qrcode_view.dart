@@ -46,7 +46,7 @@ class MyQrcodePage extends StatelessWidget {
                     children: [
                       AvatarView(
                         size: 58.h,
-                        url: logic.imLogic.userInfo.value.icon,
+                        url: logic.imLogic.userInfo.value.faceURL,
                       ),
                       SizedBox(
                         width: 13.w,

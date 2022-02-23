@@ -37,14 +37,14 @@ class HandleGroupApplicationPage extends StatelessWidget {
                   children: [
                     AvatarView(
                       size: 48.h,
-                      url: logic.aInfo.fromUserFaceURL,
+                      url: logic.aInfo.userFaceURL,
                     ),
                     SizedBox(
                       width: 22.w,
                     ),
                     Expanded(
                       child: Text(
-                        logic.aInfo.fromUserNickName!,
+                        logic.aInfo.nickname!,
                         style: PageStyle.ts_333333_20sp,
                       ),
                     ),

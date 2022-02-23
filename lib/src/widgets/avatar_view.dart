@@ -15,9 +15,12 @@ class AvatarView extends StatelessWidget {
     this.text,
     this.textStyle,
     this.onLongPress,
-    this.isCircle = true,
+    this.isCircle = false,
     this.borderRadius,
     this.enabledPreview = false,
+    this.lowMemory = true,
+    this.isNineGrid = false,
+    this.nineGridUrl = const [],
   }) : super(key: key);
   final bool visible;
   final double? size;
@@ -29,18 +32,24 @@ class AvatarView extends StatelessWidget {
   final enabledPreview;
   final String? text;
   final TextStyle? textStyle;
+  final bool lowMemory;
+  final bool isNineGrid;
+  final List<String> nineGridUrl;
 
   @override
   Widget build(BuildContext context) {
-    var uuid = Uuid().v4();
-    return ChatAvatarView(
+    var tag = Uuid().v4();
+    return Hero(
+      tag: tag,
+      child: ChatAvatarView(
         visible: visible,
         size: size ?? 42.h,
         onTap: onTap ??
             (enabledPreview
                 ? () {
                     if (url != null && url!.trim().isNotEmpty) {
-                      Get.to(() => IMUtil.previewPic(tag: uuid, url: url));
+                      Get.to(() => IMUtil.previewPic(
+                          tag: tag, picList: [PicInfo(url: url)]));
                     }
                   }
                 : null),
@@ -49,6 +58,26 @@ class AvatarView extends StatelessWidget {
         textStyle: textStyle,
         onLongPress: onLongPress,
         isCircle: isCircle,
-        borderRadius: borderRadius);
+        borderRadius: borderRadius,
+        lowMemory: lowMemory,
+        isNineGrid: false,
+        nineGridUrls: [],
+      ),
+    );
   }
+
+  AvatarView.nineGrid(
+    this.visible,
+    this.size,
+    this.borderRadius,
+    this.nineGridUrl,
+  )   : lowMemory = false,
+        url = null,
+        isCircle = false,
+        enabledPreview = false,
+        isNineGrid = false,
+        text = null,
+        textStyle = null,
+        onLongPress = null,
+        onTap = null;
 }

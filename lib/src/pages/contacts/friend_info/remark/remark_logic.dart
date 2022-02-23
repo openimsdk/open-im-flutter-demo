@@ -15,7 +15,7 @@ class FriendRemarkLogic extends GetxController {
     //   return;
     // }
     OpenIM.iMManager.friendshipManager
-        .setFriendInfo(uid: info.uid, comment: inputCtrl.text.trim())
+        .setFriendRemark(uid: info.userID!, remark: inputCtrl.text.trim())
         .then(
       (value) {
         IMWidget.showToast(StrRes.saveSuccessfully);
@@ -28,7 +28,7 @@ class FriendRemarkLogic extends GetxController {
   @override
   void onInit() {
     info = Get.arguments;
-    inputCtrl.text = info.comment ?? '';
+    inputCtrl.text = info.remark ?? '';
     super.onInit();
   }
 

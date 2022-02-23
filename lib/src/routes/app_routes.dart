@@ -56,6 +56,8 @@ abstract class AppRoutes {
   static const APPLY_ENTER_GROUP = "/apply_enter_group";
   static const GROUP_APPLICATION = "/group_application";
   static const HANDLE_GROUP_APPLICATION = "/handle_group_application";
+  static const ORGANIZATION = "/organization";
+  static const FORGET_PASSWORD = "/forget_password";
 }
 
 extension RoutesExtension on String {

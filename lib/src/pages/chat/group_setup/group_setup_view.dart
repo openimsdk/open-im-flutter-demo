@@ -20,8 +20,8 @@ class GroupSetupPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: PageStyle.c_F6F6F6,
       appBar: EnterpriseTitleBar.back(
-        title: StrRes.launchGroup,
-      ),
+          // title: StrRes.launchGroup,
+          ),
       body: SafeArea(
         child: Obx(() => SingleChildScrollView(
               child: Column(
@@ -73,17 +73,17 @@ class GroupSetupPage extends StatelessWidget {
                   _buildItemView(
                     label: StrRes.notDisturb,
                     showSwitchBtn: true,
-                    on: logic.notDisturb.value,
+                    on: logic.noDisturb.value,
                     onClickSwitchBtn: logic.toggleNotDisturb,
                   ),
-                  if (logic.notDisturb.value)
+                  if (logic.noDisturb.value)
                     _buildItemView(
                       label: StrRes.groupMessageSettings,
                       showArrow: true,
-                      value: logic.messageSet.value == 0
+                      value: logic.noDisturbIndex.value == 0
                           ? StrRes.receiveMessageButNotPrompt
                           : StrRes.blockGroupMessages,
-                      onTap: logic.messageSetting,
+                      onTap: logic.noDisturbSetting,
                     ),
                   _buildItemView(
                     label: StrRes.chatTop,
@@ -127,15 +127,14 @@ class GroupSetupPage extends StatelessWidget {
                 height: 48.h,
                 child: Stack(
                   children: [
-                    if (logic.info.value.faceUrl != null &&
-                        logic.info.value.faceUrl!.isNotEmpty)
+                    if (logic.info.value.faceURL != null &&
+                        logic.info.value.faceURL!.isNotEmpty)
                       AvatarView(
                         size: 48.h,
-                        isCircle: false,
-                        url: logic.info.value.faceUrl,
+                        url: logic.info.value.faceURL,
                       ),
-                    if (logic.info.value.faceUrl == null ||
-                        logic.info.value.faceUrl!.isEmpty)
+                    if (logic.info.value.faceURL == null ||
+                        logic.info.value.faceURL!.isEmpty)
                       ImageButton(
                         imgStrRes: ImageRes.ic_uploadPhoto,
                         imgWidth: 48.h,
@@ -237,7 +236,7 @@ class GroupSetupPage extends StatelessWidget {
                           builder: (info) => Center(
                             child: AvatarView(
                               size: 36.h,
-                              url: info.faceUrl,
+                              url: info.faceURL,
                             ),
                           ),
                           addButton: () => Center(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
+import 'package:openim_demo/src/core/controller/app_controller.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
 import 'package:openim_demo/src/models/group_member_info.dart' as en;
 import 'package:openim_demo/src/pages/chat/group_setup/group_member_manager/member_list/member_list_logic.dart';
@@ -8,27 +9,29 @@ import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/widgets/custom_dialog.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
+import 'package:openim_demo/src/widgets/loading_view.dart';
 
 import '../chat_logic.dart';
 
 class GroupSetupLogic extends GetxController {
   var imLogic = Get.find<IMController>();
   var chatLogic = Get.find<ChatLogic>();
+  var appLogic = Get.find<AppController>();
   late Rx<GroupInfo> info;
   var memberList = <en.GroupMembersInfo>[].obs;
   var myGroupNickname = "".obs;
   var topContacts = false.obs;
-  var notDisturb = false.obs;
-  var messageSet = 0.obs;
+  var noDisturb = false.obs;
+  var noDisturbIndex = 0.obs;
   ConversationInfo? conversationInfo;
 
   getGroupMembers() async {
-    var map = await OpenIM.iMManager.groupManager.getGroupMemberListMap(
+    var list = await OpenIM.iMManager.groupManager.getGroupMemberListMap(
       groupId: info.value.groupID,
     );
 
-    if (map['data'] is List) {
-      var l = (map['data'] as List).map((e) => en.GroupMembersInfo.fromJson(e));
+    if (list is List) {
+      var l = list.map((e) => en.GroupMembersInfo.fromJson(e));
       memberList.assignAll(l);
       info.update((val) {
         val?.memberCount = l.length;
@@ -40,15 +43,16 @@ class GroupSetupLogic extends GetxController {
     var list = await OpenIM.iMManager.groupManager.getGroupsInfo(
       gidList: [info.value.groupID],
     );
+    if (list.isEmpty) return;
     var value = list.first;
     info.update((val) {
       val?.groupName = value.groupName;
-      val?.faceUrl = value.faceUrl;
+      val?.faceURL = value.faceURL;
       val?.notification = value.notification;
       val?.introduction = value.introduction;
       val?.memberCount = value.memberCount;
-      val?.ownerId = value.ownerId;
-      print('群组id:${value.ownerId}');
+      val?.ownerUserID = value.ownerUserID;
+      print('群组id:${value.ownerUserID}');
     });
   }
 
@@ -58,7 +62,7 @@ class GroupSetupLogic extends GetxController {
       uidList: [OpenIM.iMManager.uid],
     );
     if (list.length > 0) {
-      myGroupNickname.value = list.first.nickName ?? '';
+      myGroupNickname.value = list.first.nickname ?? '';
     }
   }
 
@@ -68,7 +72,7 @@ class GroupSetupLogic extends GetxController {
         if (url != null) {
           await _updateGroupInfo(faceUrl: url);
           info.update((val) {
-            val?.faceUrl = url;
+            val?.faceURL = url;
           });
         }
       },
@@ -81,20 +85,20 @@ class GroupSetupLogic extends GetxController {
   }
 
   void modifyGroupName() {
-    if (info.value.ownerId != OpenIM.iMManager.uid) {
+    if (info.value.ownerUserID != OpenIM.iMManager.uid) {
       IMWidget.showToast(StrRes.onlyTheOwnerCanModify);
       return;
     }
-    AppNavigator.startGroupNameSet(info: info);
+    AppNavigator.startGroupNameSet(info: info.value);
     // Get.toNamed(AppRoutes.GROUP_NAME_SETUP, arguments: info);
   }
 
   void editGroupAnnouncement() {
-    if (info.value.ownerId != OpenIM.iMManager.uid) {
+    if (info.value.ownerUserID != OpenIM.iMManager.uid) {
       IMWidget.showToast(StrRes.onlyTheOwnerCanModify);
       return;
     }
-    AppNavigator.startEditAnnouncement(info: info);
+    AppNavigator.startEditAnnouncement(info: info.value);
     // Get.toNamed(AppRoutes.GROUP_ANNOUNCEMENT_SETUP, arguments: info);
   }
 
@@ -104,7 +108,7 @@ class GroupSetupLogic extends GetxController {
   }
 
   void viewGroupMembers() async {
-    print('群组id:${info.value.ownerId}');
+    print('群组id:${info.value.ownerUserID}');
     AppNavigator.startGroupMemberManager(info: info.value);
     // await Get.toNamed(
     //   AppRoutes.GROUP_MEMBER_MANAGER,
@@ -115,7 +119,7 @@ class GroupSetupLogic extends GetxController {
 
   void transferGroup() async {
     var list = memberList;
-    list.removeWhere((e) => e.userId == info.value.ownerId);
+    list.removeWhere((e) => e.userID == info.value.ownerUserID);
     var result = await AppNavigator.startGroupMemberList(
       gid: info.value.groupID,
       list: list,
@@ -125,11 +129,11 @@ class GroupSetupLogic extends GetxController {
       GroupMembersInfo member = result;
       await OpenIM.iMManager.groupManager.transferGroupOwner(
         gid: info.value.groupID,
-        uid: member.userId!,
+        uid: member.userID!,
       );
 
       info.update((val) {
-        val?.ownerId = member.userId;
+        val?.ownerUserID = member.userID;
       });
     }
   }
@@ -154,8 +158,8 @@ class GroupSetupLogic extends GetxController {
           gid: info.value.groupID,
         );
         // 获取会话id
-        String conversationID =
-            await OpenIM.iMManager.conversationManager.getConversationID(
+        String conversationID = await OpenIM.iMManager.conversationManager
+            .getConversationIDBySessionType(
           sourceID: info.value.groupID,
           sessionType: 2,
         );
@@ -182,7 +186,7 @@ class GroupSetupLogic extends GetxController {
   }
 
   bool isMyGroup() {
-    return info.value.ownerId == OpenIM.iMManager.uid;
+    return info.value.ownerUserID == OpenIM.iMManager.uid;
   }
 
   _updateGroupInfo({
@@ -205,36 +209,34 @@ class GroupSetupLogic extends GetxController {
     info = GroupInfo(
       groupID: Get.arguments['gid'],
       groupName: Get.arguments['name'],
-      faceUrl: Get.arguments['icon'],
+      faceURL: Get.arguments['icon'],
       memberCount: 0,
     ).obs;
     imLogic.groupInfoUpdatedSubject.listen((value) {
       if (value.groupID == info.value.groupID) {
         info.update((val) {
-          val?.ownerId = value.ownerId;
+          // val?.ownerId = value.ownerId;
           val?.groupName = value.groupName;
-          val?.faceUrl = value.faceUrl;
+          val?.faceURL = value.faceURL;
           val?.notification = value.notification;
           val?.introduction = value.introduction;
           val?.memberCount = value.memberCount;
         });
       }
     });
-    // imLogic.onMemberLeave = (gid, info) {
-    //   getGroupMembers();
-    // };
-    // imLogic.onMemberKicked = (gid, info, list) {
-    //   getGroupMembers();
-    // };
-    // imLogic.onMemberInvited = (gid, info, list) {
-    //   getGroupMembers();
-    // };
-    // imLogic.onMemberEnter = (gid, info) {
-    //   getGroupMembers();
-    // };
-    // imLogic.onReceiveJoinApplication = (gid, info, opReason) {
-    //   getGroupMembers();
-    // };
+    imLogic.memberAddedSubject.listen((e) {
+      var i = en.GroupMembersInfo.fromJson(e.toJson());
+      memberList.add(i);
+      info.update((val) {
+        val?.memberCount = memberList.length;
+      });
+    });
+    imLogic.memberDeletedSubject.listen((e) {
+      memberList.removeWhere((element) => element.userID == e.userID);
+      info.update((val) {
+        val?.memberCount = memberList.length;
+      });
+    });
     super.onInit();
   }
 
@@ -243,6 +245,7 @@ class GroupSetupLogic extends GetxController {
     getGroupInfo();
     getConversationInfo();
     getGroupMembers();
+    getConversationRecvMessageOpt();
     super.onReady();
   }
 
@@ -289,11 +292,11 @@ class GroupSetupLogic extends GetxController {
 
   void getConversationInfo() async {
     conversationInfo =
-        await OpenIM.iMManager.conversationManager.getSingleConversation(
+        await OpenIM.iMManager.conversationManager.getOneConversation(
       sourceID: info.value.groupID,
       sessionType: 2,
     );
-    topContacts.value = conversationInfo!.isPinned == 1;
+    topContacts.value = conversationInfo!.isPinned!;
   }
 
   void toggleTopContacts() async {
@@ -314,15 +317,48 @@ class GroupSetupLogic extends GetxController {
   }
 
   void toggleNotDisturb() {
-    notDisturb.value = !notDisturb.value;
+    noDisturb.value = !noDisturb.value;
+    if (!noDisturb.value) noDisturbIndex.value = 0;
+    setConversationRecvMessageOpt(status: noDisturb.value ? 2 : 0);
   }
 
-  void messageSetting() {
-    IMWidget.openMessageSettingSheet(
+  void noDisturbSetting() {
+    IMWidget.openNoDisturbSettingSheet(
       isGroup: true,
       onTap: (index) {
-        messageSet.value = index;
+        setConversationRecvMessageOpt(status: index == 0 ? 2 : 1);
+        noDisturbIndex.value = index;
       },
     );
+  }
+
+  /// 消息免打扰
+  /// 1: Do not receive messages, 2: Do not notify when messages are received; 0: Normal
+  void setConversationRecvMessageOpt({int status = 2}) {
+    var id = 'group_${info.value.groupID}';
+    LoadingView.singleton.wrap(
+        asyncFunction: () =>
+            OpenIM.iMManager.conversationManager.setConversationRecvMessageOpt(
+              conversationIDList: [id],
+              status: status,
+            ).then((value) => appLogic.notDisturbMap[id] = status != 0));
+  }
+
+  /// 消息免打扰
+  /// 1: Do not receive messages, 2: Do not notify when messages are received; 0: Normal
+  /// [{"conversationId":"single_13922222222","result":0}]
+  void getConversationRecvMessageOpt() async {
+    var list = await OpenIM.iMManager.conversationManager
+        .getConversationRecvMessageOpt(
+      conversationIDList: ['group_${info.value.groupID}'],
+    );
+    if (list.isNotEmpty) {
+      var map = list.first;
+      var status = map['result'];
+      noDisturb.value = status != 0;
+      if (noDisturb.value) {
+        noDisturbIndex.value = status == 1 ? 1 : 0;
+      }
+    }
   }
 }

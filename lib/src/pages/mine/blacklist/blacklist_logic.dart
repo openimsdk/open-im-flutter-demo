@@ -7,7 +7,7 @@ class BlacklistLogic extends GetxController {
   var blacklist = <UserInfo>[].obs;
 
   void getBlacklist() async {
-    var list = await OpenIM.iMManager.friendshipManager.getBlackList();
+    var list = await OpenIM.iMManager.friendshipManager.getBlacklist();
     blacklist.addAll(list);
   }
 
@@ -16,8 +16,8 @@ class BlacklistLogic extends GetxController {
       title: StrRes.removeBlacklistHint,
     ));
     if (confirm == true) {
-      await OpenIM.iMManager.friendshipManager.deleteFromBlackList(
-        uid: info.uid,
+      await OpenIM.iMManager.friendshipManager.removeBlacklist(
+        uid: info.userID!,
       );
       blacklist.remove(info);
     } else {

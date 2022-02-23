@@ -7,7 +7,7 @@ import 'package:openim_demo/src/utils/im_util.dart';
 import 'package:openim_demo/src/widgets/custom_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 
-enum OpAction { DELETE, ADMIN_TRANSFER, GROUP_CALL }
+enum OpAction { DELETE, ADMIN_TRANSFER, GROUP_CALL, AT }
 
 class GroupMemberListLogic extends GetxController {
   var memberList = <GroupMembersInfo>[].obs;
@@ -36,11 +36,11 @@ class GroupMemberListLogic extends GetxController {
   }
 
   void _queryGroupMembers() async {
-    var map = await im.OpenIM.iMManager.groupManager.getGroupMemberListMap(
+    var list = await im.OpenIM.iMManager.groupManager.getGroupMemberListMap(
       groupId: gid,
     );
-    if (map['data'] is List) {
-      var l = (map['data'] as List).map((e) => GroupMembersInfo.fromJson(e));
+    if (list is List) {
+      var l = list.map((e) => GroupMembersInfo.fromJson(e));
       memberList.addAll(l);
       IMUtil.convertToAZList(memberList);
     }
@@ -48,7 +48,9 @@ class GroupMemberListLogic extends GetxController {
 
   void selectedMember(index) async {
     var info = memberList.elementAt(index);
-    if (action == OpAction.DELETE || action == OpAction.GROUP_CALL) {
+    if (action == OpAction.DELETE ||
+        action == OpAction.GROUP_CALL ||
+        action == OpAction.AT) {
       if (currentCheckedList.contains(info)) {
         currentCheckedList.remove(info);
       } else {
@@ -57,7 +59,7 @@ class GroupMemberListLogic extends GetxController {
       curCount.value = currentCheckedList.length;
     } else if (action == OpAction.ADMIN_TRANSFER) {
       var confirm = await Get.dialog(CustomDialog(
-        title: sprintf(StrRes.confirmTransferGroupToUser, [info.nickName]),
+        title: sprintf(StrRes.confirmTransferGroupToUser, [info.nickname]),
       ));
       if (confirm == true) {
         Get.back(result: info);
@@ -74,8 +76,8 @@ class GroupMemberListLogic extends GetxController {
       if (confirm == true) {
         Get.back(result: currentCheckedList.value);
       }
-    } else if (action == OpAction.GROUP_CALL) {
-      Get.back(result: currentCheckedList.map((e) => e.userId!).toList());
+    } else if (action == OpAction.GROUP_CALL || action == OpAction.AT) {
+      Get.back(result: currentCheckedList.map((e) => e.userID!).toList());
     }
   }
 
@@ -84,17 +86,21 @@ class GroupMemberListLogic extends GetxController {
   }
 
   bool isMultiModel() {
-    return action == OpAction.DELETE || action == OpAction.GROUP_CALL;
+    return action == OpAction.DELETE ||
+        action == OpAction.GROUP_CALL ||
+        action == OpAction.AT;
   }
 
   bool isMultiModelConfirm() {
-    return action == OpAction.GROUP_CALL;
+    return action == OpAction.GROUP_CALL || action == OpAction.AT;
   }
 
   void search() async {
     var info = await AppNavigator.startSearchMember(list: memberList.value);
     if (null != info) {
-      currentCheckedList.add(info);
+      if (!currentCheckedList.contains(info)) {
+        currentCheckedList.add(info);
+      }
       if (action == OpAction.ADMIN_TRANSFER) {
         var confirm = await Get.dialog(CustomDialog(
           title: sprintf(StrRes.confirmTransferGroupToUser, [info.nickName]),

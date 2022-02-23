@@ -1,6 +1,6 @@
 {
-    "name": "openim_enterprise_chat",
-    "short_name": "openim_enterprise_chat",
+    "name": "openim_demo",
+    "short_name": "openim_demo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

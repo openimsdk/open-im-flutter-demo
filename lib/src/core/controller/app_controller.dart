@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart' as im;
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
@@ -31,6 +32,9 @@ class AppController extends GetxController with UpgradeManger {
     String? body,
     String? payload,
   ) async {});
+
+  /// 免打扰
+  final notDisturbMap = <String, bool>{};
 
   void runningBackground(bool run) {
     print('-----App running background : $run-------------');
@@ -81,13 +85,14 @@ class AppController extends GetxController with UpgradeManger {
   }
 
   Future<void> showNotification(dynamic data) async {
-    print('-------------------showNotification-----------------');
     var id = 0;
     var showing = false;
     if (data is im.Message) {
       // id = data.seq!;
       // 排除typing消息
-      showing = data.contentType != im.MessageType.typing;
+      if (data.contentType != im.MessageType.typing) {
+        showing = await _noDisturb(data);
+      }
     }
     if (isRunningBackground && showing && Platform.isAndroid) {
       // await getAppInfo();
@@ -175,5 +180,32 @@ class AppController extends GetxController with UpgradeManger {
     // _startForegroundService();
     autoCheckVersionUpgrade();
     super.onReady();
+  }
+
+  /// 免打扰
+  Future<bool> _noDisturb(im.Message message) async {
+    var id;
+    var show = false;
+    if (message.sessionType == 1) {
+      id = 'single_${message.sendID}';
+    } else if (message.sessionType == 2) {
+      id = 'group_${message.groupID}';
+    }
+    var noDisturb = notDisturbMap[id];
+    if (null != noDisturb) {
+      show = !noDisturb;
+    } else {
+      var list = await OpenIM.iMManager.conversationManager
+          .getConversationRecvMessageOpt(
+        conversationIDList: [id],
+      );
+      if (list.isNotEmpty) {
+        var map = list.first;
+        var status = map['result'];
+        notDisturbMap[id] = status != 0;
+        show = status == 0;
+      }
+    }
+    return show;
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'lang/en_US.dart';
-import 'lang/zh_CN.dart';
+import 'package:openim_demo/src/res/lang/en_US.dart';
+import 'package:openim_demo/src/res/lang/zh_CN.dart';
 
 class TranslationService extends Translations {
   static Locale? get locale => Get.deviceLocale;
@@ -623,4 +623,22 @@ class StrRes {
   static get rejectedByCaller => 'rejectedByCaller'.tr;
 
   static get unsupportedMessage => 'unsupportedMessage'.tr;
+
+  static get gender => 'gender'.tr;
+
+  static get birthday => 'birthday'.tr;
+
+  static get man => 'man'.tr;
+
+  static get woman => 'woman'.tr;
+
+  static get personalInfo => 'personalInfo'.tr;
+
+  static get getVerificationCode => 'getVerificationCode'.tr;
+
+  static get setupNewPassword => 'setupNewPassword'.tr;
+
+  static get plsInputNewPassword => 'plsInputNewPassword'.tr;
+
+  static get confirmModify => 'confirmModify'.tr;
 }

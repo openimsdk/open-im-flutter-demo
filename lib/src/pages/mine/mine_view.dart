@@ -35,7 +35,7 @@ class MinePage extends StatelessWidget {
                     top: 63.h,
                     child: AvatarView(
                       size: 76.h,
-                      url: imLogic.userInfo.value.icon,
+                      url: imLogic.userInfo.value.faceURL,
                     ),
                   ),
                   Positioned(
@@ -54,7 +54,7 @@ class MinePage extends StatelessWidget {
                           behavior: HitTestBehavior.translucent,
                           onTap: () => logic.copyID(),
                           child: Text(
-                            'ID：${imLogic.userInfo.value.uid}',
+                            'ID：${imLogic.userInfo.value.userID}',
                             style: PageStyle.ts_FFFFFF_14sp,
                           ),
                         ),

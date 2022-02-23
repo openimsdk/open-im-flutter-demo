@@ -18,7 +18,7 @@ const Map<String, String> en_US = {
   'plsInputCode': 'Please enter verification code',
   'after': ' after',
   'resendVerifyCode': 'resend verification code',
-  'sendVerifyCode': 'Send verification code',
+  'sendVerifyCode': 'send verification code',
   'plsSetupPwd': 'Please set password',
   'pwdExplanation':
       'The login password is used to log in to the OpenIM account',
@@ -314,4 +314,13 @@ const Map<String, String> en_US = {
   "cancelledByCaller": "Cancelled by caller",
   "rejectedByCaller": "Rejected by calle",
   "unsupportedMessage": "Unsupported Message",
+  "gender": "Gender",
+  "birthday": "Birthday",
+  "man": "Man",
+  "woman": "Woman",
+  "personalInfo": "Personal Information",
+  "getVerificationCode": "Get verification code",
+  "setupNewPassword": "Please set a new account password",
+  "plsInputNewPassword": "Please enter a new password",
+  "confirmModify": "Confirm the changes",
 };

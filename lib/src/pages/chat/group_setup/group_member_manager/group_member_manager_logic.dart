@@ -1,124 +1,151 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
+import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/models/contacts_info.dart';
 import 'package:openim_demo/src/models/group_member_info.dart' as en;
 import 'package:openim_demo/src/pages/chat/group_setup/group_member_manager/member_list/member_list_logic.dart';
 import 'package:openim_demo/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/utils/deep_copy.dart';
+import 'package:openim_demo/src/utils/im_util.dart';
 
 import '../group_setup_logic.dart';
 
 class GroupMemberManagerLogic extends GetxController {
-  var memberList = <en.GroupMembersInfo>[].obs;
-  var groupSetupLogic = Get.find<GroupSetupLogic>();
-  late GroupInfo groupInfo;
+  var allList = <en.GroupMembersInfo>[].obs;
+  var _ownerList = <en.GroupMembersInfo>[];
+  var _memberList = <en.GroupMembersInfo>[];
+  var _adminList = <en.GroupMembersInfo>[];
+  var _groupSetupLogic = Get.find<GroupSetupLogic>();
+  late GroupInfo _groupInfo;
+  var _uidList = <String>[];
+  var onlineStatus = <String, String>{}.obs;
+  var popCtrl = CustomPopupMenuController();
 
   void getGroupMembers() async {
-    var map = await OpenIM.iMManager.groupManager.getGroupMemberListMap(
-      groupId: groupInfo.groupID,
+    var list = await OpenIM.iMManager.groupManager.getGroupMemberListMap(
+      groupId: _groupInfo.groupID,
     );
-    if (map['data'] is List) {
-      memberList.addAll(
-        (map['data'] as List).map((e) => en.GroupMembersInfo.fromJson(e)),
-      );
+    if (list is List) {
+      for (var e in list) {
+        var member = en.GroupMembersInfo.fromJson(e);
+        // 1普通成员, 2群组，3管理员
+        if (member.roleLevel == 1) {
+          _memberList.add(member);
+        } else if (member.roleLevel == 2) {
+          _ownerList.add(member..tagIndex = '↑');
+        } else {
+          _adminList.add(member..tagIndex = '↑');
+        }
+        _uidList.add(member.userID!);
+      }
+      // memberList.addAll(IMUtil.convertToAZList(list).cast());
+      _sortList();
     }
+    _queryOnlineStatus();
+  }
+
+  void _sortList() {
+    IMUtil.convertToAZList(allList..assignAll(_memberList));
+    allList.insertAll(0, _adminList);
+    allList.insertAll(0, _ownerList);
   }
 
   void viewUserInfo(index) {
-    var info = memberList.elementAt(index);
+    var info = allList.elementAt(index);
     AppNavigator.startFriendInfo(
       info: UserInfo(
-        uid: info.userId!,
-        name: info.nickName,
-        icon: info.faceUrl,
+        userID: info.userID!,
+        nickname: info.nickname,
+        faceURL: info.faceURL,
       ),
     );
-    // Get.toNamed(
-    //   AppRoutes.FRIEND_INFO,
-    //   arguments: UserInfo(
-    //     uid: info.userId!,
-    //     name: info.nickName,
-    //     icon: info.faceUrl,
-    //   ),
-    // );
   }
 
   void addMember() async {
-    // List<ContactsInfo> list = await Get.toNamed(
-    //   AppRoutes.SELECT_CONTACTS,
-    //   arguments: {
-    //     'action': SelAction.ADD_MEMBER,
-    //     'uidList': memberList.map((e) => e.userId).toList(),
-    //   },
-    // );
     var result = await AppNavigator.startSelectContacts(
       action: SelAction.ADD_MEMBER,
-      defaultCheckedUidList: memberList.map((e) => e.userId).toList(),
+      defaultCheckedUidList: allList.map((e) => e.userID!).toList(),
     );
 
     if (null != result) {
       List<ContactsInfo> list = result;
       await OpenIM.iMManager.groupManager.inviteUserToGroup(
-        groupId: groupInfo.groupID,
-        uidList: list.map((e) => e.uid).toList(),
+        groupId: _groupInfo.groupID,
+        uidList: list.map((e) => e.userID!).toList(),
         reason: 'Come on baby',
       );
-
       list.forEach((e) {
-        memberList.add(en.GroupMembersInfo.fromJson({
-          'groupID': groupInfo.groupID,
-          'userId': e.uid,
-          'faceUrl': e.icon,
-          'nickName': e.getShowName(),
+        _memberList.add(en.GroupMembersInfo.fromJson({
+          'groupID': _groupInfo.groupID,
+          'userID': e.userID,
+          'faceURL': e.faceURL,
+          'nickname': e.getShowName(),
         }));
+        _uidList.insert(0, e.userID!);
       });
-
-      groupSetupLogic.memberListChanged(memberList);
+      _sortList();
+      _queryOnlineStatus();
+      _groupSetupLogic.memberListChanged(allList);
     }
   }
 
   void deleteMember() async {
-    var all = memberList.value;
-    all.removeWhere((e) => e.userId == groupInfo.ownerId);
+    var all = DeepCopy.copy(
+      allList.value,
+      (v) => en.GroupMembersInfo.fromJson(v.cast()),
+    );
+    // all.removeWhere((e) => e.role == 1);
+    all.removeWhere((e) => e.userID == _groupInfo.ownerUserID);
     var result = await AppNavigator.startGroupMemberList(
-      gid: groupInfo.groupID,
+      gid: _groupInfo.groupID,
       list: all,
       action: OpAction.DELETE,
     );
     List<GroupMembersInfo>? list = result;
     if (null != list) {
+      var removeUidList = list.map((e) => e.userID!).toList();
       await OpenIM.iMManager.groupManager.kickGroupMember(
-        groupId: groupInfo.groupID,
-        uidList: list.map((e) => e.userId!).toList(),
+        groupId: _groupInfo.groupID,
+        uidList: removeUidList,
         reason: 'Get out baby',
       );
-
-      list.forEach((e) {
-        memberList.remove(e);
-      });
-
-      groupSetupLogic.memberListChanged(memberList);
+      _memberList.removeWhere((e) => removeUidList.contains(e.userID));
+      _adminList.removeWhere((e) => removeUidList.contains(e.userID));
+      _uidList.removeWhere((id) => removeUidList.contains(id));
+      _sortList();
+      _groupSetupLogic.memberListChanged(allList);
       // memberList.removeWhere((e) => list.contains(e.userId!));
       // memberList.refresh();
     }
   }
 
-  int length() {
-    var buttons = isMyGroup() ? 2 : 1;
-    return memberList.length + buttons;
-  }
+  // int length() {
+  //   var buttons = isMyGroup() ? 2 : 1;
+  //   return memberList.length + buttons;
+  // }
 
   bool isMyGroup() {
-    return groupInfo.ownerId == OpenIM.iMManager.uid;
+    return _groupInfo.ownerUserID == OpenIM.iMManager.uid;
   }
 
-  void search() {
-    AppNavigator.startSearchMember(list: memberList.value);
+  void search() async {
+    var info = await AppNavigator.startSearchMember(list: allList.value);
+    if (info != null) {
+      AppNavigator.startFriendInfo(
+        info: UserInfo(
+          userID: info.userID!,
+          nickname: info.nickname,
+          faceURL: info.faceURL,
+        ),
+      );
+    }
   }
 
   @override
   void onInit() {
-    groupInfo = Get.arguments;
+    _groupInfo = Get.arguments;
     super.onInit();
   }
 
@@ -132,5 +159,12 @@ class GroupMemberManagerLogic extends GetxController {
   void onClose() {
     // TODO: implement onClose
     super.onClose();
+  }
+
+  void _queryOnlineStatus() {
+    Apis.queryOnlineStatus(
+      uidList: _uidList,
+      onlineStatusDescCallback: (map) => onlineStatus.addAll(map),
+    );
   }
 }

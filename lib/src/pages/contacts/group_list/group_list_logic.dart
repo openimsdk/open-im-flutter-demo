@@ -14,7 +14,7 @@ class GroupListLogic extends GetxController {
   void getJoinedGroupList() async {
     list = await OpenIM.iMManager.groupManager.getJoinedGroupList();
     list.forEach((e) {
-      if (e.ownerId == OpenIM.iMManager.uid) {
+      if (e.ownerUserID == OpenIM.iMManager.uid) {
         iCreatedList.add(e);
       } else {
         iJoinedList.add(e);
@@ -31,7 +31,7 @@ class GroupListLogic extends GetxController {
     conversationLogic.startChat(
       gid: info.groupID,
       name: info.groupName,
-      icon: info.faceUrl,
+      icon: info.faceURL,
     );
   }
 

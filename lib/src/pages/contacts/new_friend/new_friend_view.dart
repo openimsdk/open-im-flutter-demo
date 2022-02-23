@@ -23,60 +23,63 @@ class NewFriendPage extends StatelessWidget {
     return Scaffold(
       appBar: EnterpriseTitleBar.back(title: StrRes.newFriend),
       backgroundColor: PageStyle.c_F8F8F8,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () => logic.toSearchPage(),
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-              color: PageStyle.c_FFFFFF,
-              child: SearchBox(
-                hintText: StrRes.searchDescribe,
-                margin: EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
-                padding: EdgeInsets.symmetric(horizontal: 13.w),
-                enabled: false,
-              ),
-            ),
-          ),
-          _buildChildTitleView(),
-          Obx(
-            () => _buildHeightContainer(
-              child: ListView.builder(
-                itemCount: _length(),
-                cacheExtent: 76.h,
-                itemBuilder: (_, i) => _buildItemView(
-                  logic.applicationList.elementAt(i),
-                  onTap: () => logic.onClickItem(i),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () => logic.toSearchPage(),
+              behavior: HitTestBehavior.translucent,
+              child: Container(
+                color: PageStyle.c_FFFFFF,
+                child: SearchBox(
+                  hintText: StrRes.searchDescribe,
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(horizontal: 13.w),
+                  enabled: false,
                 ),
               ),
             ),
-          ),
-          Obx(
-            () => Visibility(
-              visible: logic.canSeeMore.value && !logic.isExpanded.value,
-              child: Container(
-                margin: EdgeInsets.only(top: 12.h),
-                child: Ink(
-                  color: PageStyle.c_FFFFFF,
-                  height: 43.h,
-                  child: InkWell(
-                    onTap: () => logic.expandedAll(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          StrRes.seeAllFriendRequests,
-                          style: PageStyle.ts_1D6BED_14sp,
-                        ),
-                      ],
+            _buildChildTitleView(),
+            Obx(
+              () => _buildHeightContainer(
+                child: ListView.builder(
+                  itemCount: _length(),
+                  cacheExtent: 76.h,
+                  itemBuilder: (_, i) => _buildItemView(
+                    logic.applicationList.elementAt(i),
+                    onTap: () => logic.onClickItem(i),
+                  ),
+                ),
+              ),
+            ),
+            Obx(
+              () => Visibility(
+                visible: logic.canSeeMore.value && !logic.isExpanded.value,
+                child: Container(
+                  margin: EdgeInsets.only(top: 12.h),
+                  child: Ink(
+                    color: PageStyle.c_FFFFFF,
+                    height: 43.h,
+                    child: InkWell(
+                      onTap: () => logic.expandedAll(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            StrRes.seeAllFriendRequests,
+                            style: PageStyle.ts_1D6BED_14sp,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -89,7 +92,7 @@ class NewFriendPage extends StatelessWidget {
               height: (76 * 4).h,
             );
 
-  Widget _buildItemView(UserInfo info, {Function()? onTap}) => Ink(
+  Widget _buildItemView(FriendApplicationInfo info, {Function()? onTap}) => Ink(
         color: PageStyle.c_FFFFFF,
         height: 76.h,
         child: InkWell(
@@ -100,7 +103,7 @@ class NewFriendPage extends StatelessWidget {
               children: [
                 AvatarView(
                   size: 48.h,
-                  url: info.icon,
+                  url: info.fromFaceURL,
                 ),
                 Expanded(
                   child: Container(
@@ -122,13 +125,13 @@ class NewFriendPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                info.getShowName(),
+                                info.fromNickname!,
                                 style: PageStyle.ts_333333_16sp,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              if (IMUtil.isNotNullStr(info.reqMessage))
+                              if (IMUtil.isNotNullStr(info.reqMsg))
                                 Text(
-                                  info.reqMessage!,
+                                  info.reqMsg!,
                                   style: PageStyle.ts_666666_12sp,
                                   overflow: TextOverflow.ellipsis,
                                 ),

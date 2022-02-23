@@ -22,24 +22,27 @@ class IMController extends GetxController with IMCallback {
     // Initialize SDK
     await OpenIM.iMManager.initSDK(
       platform: Platform.isAndroid ? IMPlatform.android : IMPlatform.ios,
-      ipApi: Config.imApiUrl(),
-      ipWs: Config.imWsUrl(),
-      dbPath: '${(await getApplicationDocumentsDirectory()).path}/',
-      listener: OnInitSDKListener(
+      apiAddr: Config.imApiUrl(),
+      wsAddr: Config.imWsUrl(),
+      dataDir: '${(await getApplicationDocumentsDirectory()).path}/',
+      listener: OnConnectListener(
         onConnecting: () {},
         onConnectFailed: (code, error) {},
         onConnectSuccess: () {},
         onKickedOffline: kickedOffline,
         onUserSigExpired: () {},
-        onSelfInfoUpdated: (u) {
-          userInfo.value = u;
-        },
       ),
     );
     // Set listener
     OpenIM.iMManager
+      //
+      ..userManager.setUserListener(OnUserListener(
+        onSelfInfoUpdated: (u) {
+          userInfo.value = u;
+        },
+      ))
       // Add message listener (remove when not in use)
-      ..messageManager.addAdvancedMsgListener(OnAdvancedMsgListener(
+      ..messageManager.setAdvancedMsgListener(OnAdvancedMsgListener(
         onRecvMessageRevoked: recvMessageRevoked,
         onRecvC2CReadReceipt: recvC2CReadReceipt,
         onRecvNewMessage: recvNewMessage,
@@ -52,15 +55,15 @@ class IMController extends GetxController with IMCallback {
 
       // Set up friend relationship listener
       ..friendshipManager.setFriendshipListener(OnFriendshipListener(
-        onBlackListAdd: blackListAdd,
-        onBlackListDeleted: blackListDeleted,
-        onFriendApplicationListAccept: friendApplicationListAccept,
-        onFriendApplicationListAdded: friendApplicationListAdded,
-        onFriendApplicationListDeleted: friendApplicationListDeleted,
-        onFriendApplicationListReject: friendApplicationListReject,
+        onBlacklistAdded: blacklistAdded,
+        onBlacklistDeleted: blacklistDeleted,
+        onFriendApplicationAccepted: friendApplicationAccepted,
+        onFriendApplicationAdded: friendApplicationAdded,
+        onFriendApplicationDeleted: friendApplicationDeleted,
+        onFriendApplicationRejected: friendApplicationRejected,
         onFriendInfoChanged: friendInfoChanged,
-        onFriendListAdded: friendListAdded,
-        onFriendListDeleted: friendListDeleted,
+        onFriendAdded: friendAdded,
+        onFriendDeleted: friendDeleted,
       ))
 
       // Set up conversation listener
@@ -76,17 +79,17 @@ class IMController extends GetxController with IMCallback {
 
       // Set up group listener
       ..groupManager.setGroupListener(OnGroupListener(
-        onApplicationProcessed: applicationProcessed,
-        onGroupCreated: groupCreated,
+        onGroupApplicationAccepted: groupApplicationAccepted,
+        onGroupApplicationAdded: groupApplicationAdded,
+        onGroupApplicationDeleted: groupApplicationDeleted,
+        onGroupApplicationRejected: groupApplicationRejected,
         onGroupInfoChanged: groupInfoChanged,
-        onMemberEnter: memberEnter,
-        onMemberInvited: memberInvited,
-        onMemberKicked: memberKicked,
-        onMemberLeave: memberLeave,
-        onReceiveJoinApplication: receiveJoinApplication,
+        onGroupMemberAdded: groupMemberAdded,
+        onGroupMemberDeleted: groupMemberDeleted,
+        onGroupMemberInfoChanged: groupMemberInfoChanged,
+        onJoinedGroupAdded: joinedGroupAdded,
+        onJoinedGroupDeleted: joinedGroupDeleted,
       ));
-
-    OpenIM.iMManager.enabledSDKLog(enabled: false);
 
     initializedSubject.sink.add(true);
   }

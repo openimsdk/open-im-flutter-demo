@@ -17,6 +17,8 @@ class ImageRes {
   static const ic_tabContactsSel = "${_dir}ic_tab_contacts_sel.webp";
   static const ic_tabMineNor = "${_dir}ic_tab_mine_nor.webp";
   static const ic_tabMineSel = "${_dir}ic_tab_mine_sel.webp";
+  static const ic_tabWorkNor = "${_dir}ic_tab_work_nor.webp";
+  static const ic_tabWorkSel = "${_dir}ic_tab_work_sel.webp";
   static const ic_callBlack = "${_dir}ic_call_black.webp";
   static const ic_addBlack = "${_dir}ic_add_black.webp";
   static const ic_searchGrey = "${_dir}ic_search_grey.webp";
@@ -109,4 +111,10 @@ class ImageRes {
   static const ic_groupApplicationNotification =
       "${_dir}ic_group_application_notification.webp";
   static const ic_smallCamera = "${_dir}ic_small_camera.webp";
+  static const ic_tree = "${_dir}ic_tree.webp";
+  static const ic_moreArrow = "${_dir}ic_more.webp";
+  static const ic_subLevel = "${_dir}ic_sub_level.webp";
+  static const ic_trumpet = "${_dir}ic_trumpet.webp";
+  static const ic_voiceCallMsg = "${_dir}ic_call_voice_msg.webp";
+  static const ic_videoCallMsg = "${_dir}ic_call_video_msg.webp";
 }

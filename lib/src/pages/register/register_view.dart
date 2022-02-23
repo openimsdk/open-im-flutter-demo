@@ -62,7 +62,7 @@ class RegisterPage extends StatelessWidget {
                       isChecked: logic.agreedProtocol.value,
                       radioStyle: RadioStyle.BLUE,
                       onTap: () => logic.toggleProtocol(),
-                      margin: EdgeInsets.only(left: 48.w, top: 19.h),
+                      margin: EdgeInsets.only(top: 19.h),
                       style1: PageStyle.ts_000000_12sp,
                       style2: PageStyle.ts_1D6BED_12sp,
                     )),

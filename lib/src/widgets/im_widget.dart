@@ -33,6 +33,8 @@ class IMWidget {
     bool crop = true,
     bool toUrl = true,
     bool isAvatar = false,
+    bool fromGallery = true,
+    bool fromCamera = true,
     Function(int? index)? onIndexAvatar,
   }) {
     Get.bottomSheet(
@@ -50,48 +52,50 @@ class IMWidget {
                 onIndexAvatar?.call(index);
               },
             ),
-          SheetItem(
-            label: StrRes.album,
-            borderRadius: isAvatar
-                ? null
-                : BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-            onTap: () {
-              PermissionUtil.storage(() async {
-                final XFile? image = await _picker.pickImage(
-                  source: ImageSource.gallery,
-                );
-                if (null != image?.path) {
-                  var map = await _uCropPic(
-                    image!.path,
-                    crop: crop,
-                    toUrl: toUrl,
+          if (fromGallery)
+            SheetItem(
+              label: StrRes.album,
+              borderRadius: isAvatar
+                  ? null
+                  : BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+              onTap: () {
+                PermissionUtil.storage(() async {
+                  final XFile? image = await _picker.pickImage(
+                    source: ImageSource.gallery,
                   );
-                  onData?.call(map['path'], map['url']);
-                }
-              });
-            },
-          ),
-          SheetItem(
-            label: StrRes.camera,
-            onTap: () {
-              PermissionUtil.camera(() async {
-                final XFile? image = await _picker.pickImage(
-                  source: ImageSource.camera,
-                );
-                if (null != image?.path) {
-                  var map = await _uCropPic(
-                    image!.path,
-                    crop: crop,
-                    toUrl: toUrl,
+                  if (null != image?.path) {
+                    var map = await _uCropPic(
+                      image!.path,
+                      crop: crop,
+                      toUrl: toUrl,
+                    );
+                    onData?.call(map['path'], map['url']);
+                  }
+                });
+              },
+            ),
+          if (fromCamera)
+            SheetItem(
+              label: StrRes.camera,
+              onTap: () {
+                PermissionUtil.camera(() async {
+                  final XFile? image = await _picker.pickImage(
+                    source: ImageSource.camera,
                   );
-                  onData?.call(map['path'], map['url']);
-                }
-              });
-            },
-          ),
+                  if (null != image?.path) {
+                    var map = await _uCropPic(
+                      image!.path,
+                      crop: crop,
+                      toUrl: toUrl,
+                    );
+                    onData?.call(map['path'], map['url']);
+                  }
+                });
+              },
+            ),
         ],
       ),
     );
@@ -125,77 +129,6 @@ class IMWidget {
     if (msg.trim().isNotEmpty) EasyLoading.showToast(msg);
   }
 
-  static void openIMCallSheet({
-    required String uid,
-    required String name,
-    String? icon,
-  }) {
-    Get.bottomSheet(
-      BottomSheetView(
-        itemBgColor: PageStyle.c_FFFFFF,
-        items: [
-          SheetItem(
-            label: sprintf(StrRes.callX, [name]),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-            textStyle: PageStyle.ts_666666_16sp,
-            height: 53.h,
-          ),
-          SheetItem(
-            label: StrRes.callVoice,
-            icon: ImageRes.ic_callVoice,
-            alignment: MainAxisAlignment.start,
-            onTap: () {},
-          ),
-          SheetItem(
-            label: StrRes.callVideo,
-            icon: ImageRes.ic_callVideo,
-            alignment: MainAxisAlignment.start,
-            onTap: () {},
-          ),
-        ],
-      ),
-      // barrierColor: Colors.transparent,
-    );
-  }
-
-  static void openIMGroupCallSheet({required String gid}) {
-    Get.bottomSheet(
-      BottomSheetView(
-        itemBgColor: PageStyle.c_FFFFFF,
-        items: [
-          SheetItem(
-            label: StrRes.callVoice,
-            icon: ImageRes.ic_callVoice,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-            alignment: MainAxisAlignment.start,
-            onTap: () => _groupCall(gid, 'voice'),
-          ),
-          SheetItem(
-            label: StrRes.callVideo,
-            icon: ImageRes.ic_callVideo,
-            alignment: MainAxisAlignment.start,
-            onTap: () => _groupCall(gid, 'video'),
-          ),
-        ],
-      ),
-      // barrierColor: Colors.transparent,
-    );
-  }
-
-  static _groupCall(String gid, String streamType) async {
-    var result = await AppNavigator.startGroupMemberList(
-      gid: gid,
-      defaultCheckedUidList: [OpenIM.iMManager.uid],
-      action: OpAction.GROUP_CALL,
-    );
-  }
-
   static Future<String?> showCountryCodePicker() async {
     var result = await Get.dialog(Center(
       child: SelectionDialog(
@@ -221,7 +154,7 @@ class IMWidget {
     return (result as CountryCode).dialCode;
   }
 
-  static void openMessageSettingSheet(
+  static void openNoDisturbSettingSheet(
       {bool isGroup = false, Function(int index)? onTap}) {
     Get.bottomSheet(
       BottomSheetView(

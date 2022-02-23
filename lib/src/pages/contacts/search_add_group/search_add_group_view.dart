@@ -29,7 +29,7 @@ class SearchAddGroupPage extends StatelessWidget {
                     children: [
                       AvatarView(
                         size: 48.h,
-                        url: logic.info.value.faceUrl,
+                        url: logic.info.value.faceURL,
                       ),
                       SizedBox(
                         width: 26.w,
@@ -92,7 +92,7 @@ class SearchAddGroupPage extends StatelessWidget {
                                           size: 42.h,
                                           url: logic.members
                                               .elementAt(index)
-                                              .faceUrl,
+                                              .faceURL,
                                         ),
                                       )),
                             )),

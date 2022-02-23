@@ -96,8 +96,7 @@ class GroupListPage extends StatelessWidget {
               children: [
                 AvatarView(
                   size: 44.h,
-                  url: info.faceUrl,
-                  isCircle: false,
+                  url: info.faceURL,
                 ),
                 Expanded(
                   child: Container(

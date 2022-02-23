@@ -61,6 +61,8 @@ import 'package:openim_demo/src/pages/contacts/new_friend/new_friend_binding.dar
 import 'package:openim_demo/src/pages/contacts/new_friend/new_friend_view.dart';
 import 'package:openim_demo/src/pages/contacts/search_add_group/search_add_group_binding.dart';
 import 'package:openim_demo/src/pages/contacts/search_add_group/search_add_group_view.dart';
+import 'package:openim_demo/src/pages/forget_password/forget_password_binding.dart';
+import 'package:openim_demo/src/pages/forget_password/forget_password_view.dart';
 import 'package:openim_demo/src/pages/home/home_binding.dart';
 import 'package:openim_demo/src/pages/home/home_view.dart';
 import 'package:openim_demo/src/pages/login/login_binding.dart';
@@ -83,6 +85,8 @@ import 'package:openim_demo/src/pages/mine/setup_language/setup_language_binding
 import 'package:openim_demo/src/pages/mine/setup_language/setup_language_view.dart';
 import 'package:openim_demo/src/pages/mine/setup_username/setup_name_binding.dart';
 import 'package:openim_demo/src/pages/mine/setup_username/setup_name_view.dart';
+import 'package:openim_demo/src/pages/organization/organization_binding.dart';
+import 'package:openim_demo/src/pages/organization/organization_view.dart';
 import 'package:openim_demo/src/pages/register/register_binding.dart';
 import 'package:openim_demo/src/pages/register/register_view.dart';
 import 'package:openim_demo/src/pages/register/setupinfo/setupinfo_binding.dart';
@@ -356,6 +360,16 @@ class AppPages {
       name: AppRoutes.HANDLE_GROUP_APPLICATION,
       page: () => HandleGroupApplicationPage(),
       binding: HandleGroupApplicationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.ORGANIZATION,
+      page: () => OrganizationPage(),
+      binding: OrganizationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.FORGET_PASSWORD,
+      page: () => ForgetPasswordPage(),
+      binding: ForgetPasswordBinding(),
     ),
   ];
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
@@ -33,35 +34,38 @@ class MapView extends StatelessWidget {
             Expanded(
               child: FlutterMap(
                 options: MapOptions(
+                  // crs: const Epsg4326(),
                   center: LatLng(latitude, longitude),
-                  zoom: 14.0,
+                  // center: LatLng(latitude, longitude),
+                  zoom: 16,
                   maxZoom: 18.0,
+                  // adaptiveBoundaries: true,
+                  screenSize: Size(1.sw, 1.sh),
                 ),
                 layers: [
                   TileLayerOptions(
                     urlTemplate:
-                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        // 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        // 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',
+                        'https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
                     subdomains: ['a', 'b', 'c'],
                     attributionBuilder: (_) {
                       return Text(
                         "© OpenIM",
                         style: TextStyle(
-                          color: Colors.blue,
-                        ),
+                            fontSize: 20,
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold),
                       );
                     },
                   ),
                   MarkerLayerOptions(
                     markers: [
                       Marker(
-                        width: 80.0,
-                        height: 80.0,
                         point: LatLng(latitude, longitude),
-                        builder: (ctx) => Container(
-                          child: Icon(
-                            Icons.location_on_sharp,
-                            color: Colors.red,
-                          ),
+                        builder: (ctx) => Icon(
+                          Icons.location_on_sharp,
+                          color: Colors.red,
                         ),
                       ),
                     ],
@@ -70,7 +74,7 @@ class MapView extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 18.h),
               child: Row(
                 children: [
                   Expanded(

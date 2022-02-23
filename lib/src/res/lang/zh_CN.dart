@@ -303,4 +303,13 @@ const Map<String, String> zh_CN = {
   "cancelledByCaller": "对方已取消",
   "rejectedByCaller": "对方已拒绝",
   "unsupportedMessage": "暂不支持的消息类型",
+  "gender": "性别",
+  "birthday": "生日",
+  "man": "男",
+  "woman": "女",
+  "personalInfo": "个人资料",
+  "getVerificationCode": "获取验证码",
+  "setupNewPassword": "请设置新的账号密码",
+  "plsInputNewPassword": "请输入新密码",
+  "confirmModify": "确认修改",
 };

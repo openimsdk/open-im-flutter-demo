@@ -87,6 +87,7 @@ class LoginPage extends StatelessWidget {
                   top: 419.h,
                   left: 40.w,
                   child: GestureDetector(
+                    onTap: logic.forgetPassword,
                     behavior: HitTestBehavior.translucent,
                     child: Text(
                       StrRes.forgetPwd,
@@ -147,18 +148,13 @@ class LoginPage extends StatelessWidget {
                   width: 375.w,
                   // left: 48.w,
                   // width: 295.w,
-                  child: Obx(() => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ProtocolView(
-                            isChecked: logic.agreedProtocol.value,
-                            radioStyle: RadioStyle.BLUE,
-                            onTap: () => logic.toggleProtocol(),
-                            margin: EdgeInsets.only(/*left: 48.w, */ top: 19.h),
-                            style1: PageStyle.ts_333333_12sp,
-                            style2: PageStyle.ts_1D6BED_12sp,
-                          )
-                        ],
+                  child: Obx(() => ProtocolView(
+                        isChecked: logic.agreedProtocol.value,
+                        radioStyle: RadioStyle.BLUE,
+                        onTap: () => logic.toggleProtocol(),
+                        margin: EdgeInsets.only(top: 19.h),
+                        style1: PageStyle.ts_333333_12sp,
+                        style2: PageStyle.ts_1D6BED_12sp,
                       )),
                 )
               ],

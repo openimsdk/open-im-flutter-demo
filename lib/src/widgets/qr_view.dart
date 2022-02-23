@@ -252,7 +252,7 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       controller?.pauseCamera();
       if (result.startsWith(IMQrcodeUrl.addFriend)) {
         var uid = result.substring(IMQrcodeUrl.addFriend.length);
-        AppNavigator.startFriendInfo2(info: UserInfo(uid: uid));
+        AppNavigator.startFriendInfo2(info: UserInfo(userID: uid));
         // Get.back();
       } else if (result.startsWith(IMQrcodeUrl.joinGroup)) {
         var gid = result.substring(IMQrcodeUrl.joinGroup.length);

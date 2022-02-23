@@ -51,7 +51,7 @@ class GroupAnnouncementSetupPage extends StatelessWidget {
         () => Material(
           child: Ink(
             height: 26.h,
-            width: 46.w,
+            // width: 46.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
               color: PageStyle.c_1B72EC.withOpacity(
@@ -60,10 +60,14 @@ class GroupAnnouncementSetupPage extends StatelessWidget {
             ),
             child: InkWell(
               onTap: logic.enabled.value ? () => logic.setAnnouncement() : null,
-              child: Center(
-                child: Text(
-                  StrRes.finished,
-                  style: PageStyle.ts_FFFFFF_14sp,
+              child: Container(
+                constraints: BoxConstraints(minWidth: 46.w),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Center(
+                  child: Text(
+                    StrRes.finished,
+                    style: PageStyle.ts_FFFFFF_14sp,
+                  ),
                 ),
               ),
             ),

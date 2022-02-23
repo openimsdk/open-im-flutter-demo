@@ -57,7 +57,7 @@ class SearchFriendPage extends StatelessWidget {
             child: Row(
               children: [
                 AvatarView(
-                  url: info.icon,
+                  url: info.faceURL,
                   size: 44.h,
                 ),
                 Expanded(

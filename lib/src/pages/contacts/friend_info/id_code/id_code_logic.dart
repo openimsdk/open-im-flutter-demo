@@ -12,7 +12,7 @@ class FriendIdCodeLogic extends GetxController {
   }
 
   void copy() {
-    IMUtil.copy(text: info.uid);
+    IMUtil.copy(text: info.userID!);
   }
 
   @override

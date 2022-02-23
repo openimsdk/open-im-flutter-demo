@@ -15,12 +15,12 @@ class FriendListView extends StatelessWidget {
     return Obx(() => WrapAzListView<ContactsInfo>(
           data: logic.contactsList.value,
           itemBuilder: (context, data, index) {
-            var disabled = logic.defaultCheckedUidList.contains(data.uid);
+            var disabled = logic.defaultCheckedUidList.contains(data.userID);
             return InkWell(
                 onTap: disabled ? null : () => logic.selectedContacts(data),
                 child: buildAzListItemView(
                   name: data.getShowName(),
-                  url: data.icon,
+                  url: data.faceURL,
                   isMultiModel: logic.isMultiModel(),
                   checked: disabled ? true : logic.checkedList.contains(data),
                   enabled: !disabled,

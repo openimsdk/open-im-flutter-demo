@@ -72,10 +72,11 @@ class BottomBar extends StatelessWidget {
               ),
               Positioned(
                 top: 3.h,
-                left: 65.w,
+                right: 35.w,
                 child: UnreadCountView(
                   steam: item.steam,
                   count: item.count,
+                  qqBadge: true,
                 ),
               ),
             ],

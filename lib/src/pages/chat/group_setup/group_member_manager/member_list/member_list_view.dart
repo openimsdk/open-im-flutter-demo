@@ -20,42 +20,44 @@ class GroupMemberListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EnterpriseTitleBar.back(),
-      body: Obx(() => Column(
-            children: [
-              GestureDetector(
-                onTap: () => logic.search(),
-                behavior: HitTestBehavior.translucent,
-                child: SearchBox(
-                  enabled: false,
-                  margin: EdgeInsets.fromLTRB(22.w, 10.h, 22.w, 20.h),
-                  padding: EdgeInsets.symmetric(horizontal: 13.w),
+      body: SafeArea(
+        child: Obx(() => Column(
+              children: [
+                GestureDetector(
+                  onTap: () => logic.search(),
+                  behavior: HitTestBehavior.translucent,
+                  child: SearchBox(
+                    enabled: false,
+                    margin: EdgeInsets.fromLTRB(22.w, 10.h, 22.w, 20.h),
+                    padding: EdgeInsets.symmetric(horizontal: 13.w),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: WrapAzListView<GroupMembersInfo>(
-                  data: logic.memberList.value,
-                  itemBuilder: (context, data, index) {
-                    var disabled =
-                        logic.defaultCheckedUidList.contains(data.userId);
-                    return InkWell(
-                      onTap:
-                          disabled ? null : () => logic.selectedMember(index),
-                      child: buildAzListItemView(
-                        isMultiModel: logic.isMultiModel(),
-                        name: data.nickName!,
-                        url: data.faceUrl,
-                        checked: disabled
-                            ? true
-                            : logic.currentCheckedList.contains(data),
-                        enabled: !disabled,
-                      ),
-                    );
-                  },
+                Expanded(
+                  child: WrapAzListView<GroupMembersInfo>(
+                    data: logic.memberList.value,
+                    itemBuilder: (context, data, index) {
+                      var disabled =
+                          logic.defaultCheckedUidList.contains(data.userID);
+                      return InkWell(
+                        onTap:
+                            disabled ? null : () => logic.selectedMember(index),
+                        child: buildAzListItemView(
+                          isMultiModel: logic.isMultiModel(),
+                          name: data.nickname!,
+                          url: data.faceURL,
+                          checked: disabled
+                              ? true
+                              : logic.currentCheckedList.contains(data),
+                          enabled: !disabled,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              if (logic.isMultiModel()) _buildCountView(),
-            ],
-          )),
+                if (logic.isMultiModel()) _buildCountView(),
+              ],
+            )),
+      ),
     );
   }
 
@@ -184,7 +186,7 @@ class _ConfirmView extends StatelessWidget {
           children: [
             AvatarView(
               size: 44.h,
-              url: info.faceUrl,
+              url: info.faceURL,
             ),
             Expanded(
               child: Container(
@@ -201,7 +203,7 @@ class _ConfirmView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      info.nickName!,
+                      info.nickname!,
                       style: PageStyle.ts_333333_16sp,
                     ),
                     Spacer(),

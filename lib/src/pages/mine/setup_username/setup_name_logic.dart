@@ -6,15 +6,15 @@ class SetupUserNameLogic extends GetxController {
   var inputCtrl = TextEditingController();
 
   void setupName() async {
-    await OpenIM.iMManager.setSelfInfo(
-      name: inputCtrl.text,
+    await OpenIM.iMManager.userManager.setSelfInfo(
+      nickname: inputCtrl.text,
     );
     Get.back(result: inputCtrl.text);
   }
 
   @override
   void onInit() {
-    inputCtrl.text = OpenIM.iMManager.uInfo.name ?? '';
+    inputCtrl.text = OpenIM.iMManager.uInfo.nickname ?? '';
     super.onInit();
   }
 

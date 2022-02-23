@@ -21,10 +21,11 @@ class AddFriendBySearchLogic extends GetxController {
   /// 根据用户id查询用户信息
   void search() async {
     if (isSearchUser) {
-      var list = await OpenIM.iMManager.getUsersInfo([searchCtrl.text]);
+      var list = await OpenIM.iMManager.userManager
+          .getUsersInfo(uidList: [searchCtrl.text]);
       if (list.isNotEmpty) {
         userInfo = list.first;
-        resultSub.addSafely(userInfo!.uid);
+        resultSub.addSafely(userInfo!.userID!);
       } else {
         resultSub.addSafely("");
       }

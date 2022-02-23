@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:openim_demo/src/pages/contacts/contacts_view.dart';
 import 'package:openim_demo/src/pages/conversation/conversation_view.dart';
 import 'package:openim_demo/src/pages/mine/mine_view.dart';
+import 'package:openim_demo/src/pages/workbench/workbench_view.dart';
 import 'package:openim_demo/src/res/images.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/res/styles.dart';
@@ -26,6 +27,7 @@ class HomePage extends StatelessWidget {
                   children: [
                     ConversationPage(),
                     ContactsPage(),
+                    // WorkbenchPage(),
                     MinePage(),
                   ],
                 ),
@@ -38,7 +40,7 @@ class HomePage extends StatelessWidget {
                     unselectedImgRes: ImageRes.ic_tabHomeNor,
                     label: StrRes.home,
                     imgWidth: 24.w,
-                    imgHeight: 24.h,
+                    imgHeight: 25.h,
                     onClick: (i) => logic.switchTab(i),
                     // steam: logic.imLogic.unreadMsgCountCtrl.stream,
                     count: logic.unreadMsgCount.value,
@@ -47,17 +49,26 @@ class HomePage extends StatelessWidget {
                     selectedImgRes: ImageRes.ic_tabContactsSel,
                     unselectedImgRes: ImageRes.ic_tabContactsNor,
                     label: StrRes.contacts,
-                    imgWidth: 24.w,
-                    imgHeight: 25.h,
+                    imgWidth: 22.w,
+                    imgHeight: 23.h,
                     onClick: (i) => logic.switchTab(i),
                     count: logic.unhandledCount.value,
                   ),
+                  // BottomBarItem(
+                  //   selectedImgRes: ImageRes.ic_tabWorkSel,
+                  //   unselectedImgRes: ImageRes.ic_tabWorkNor,
+                  //   label: StrRes.workbench,
+                  //   imgWidth: 22.w,
+                  //   imgHeight: 23.h,
+                  //   onClick: (i) => logic.switchTab(i),
+                  //   // count: logic.unhandledCount.value,
+                  // ),
                   BottomBarItem(
                     selectedImgRes: ImageRes.ic_tabMineSel,
                     unselectedImgRes: ImageRes.ic_tabMineNor,
                     label: StrRes.mine,
-                    imgWidth: 24.w,
-                    imgHeight: 25.h,
+                    imgWidth: 22.w,
+                    imgHeight: 23.h,
                     onClick: (i) => logic.switchTab(i),
                   ),
                 ],

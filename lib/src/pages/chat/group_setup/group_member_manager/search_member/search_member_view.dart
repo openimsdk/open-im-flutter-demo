@@ -57,7 +57,7 @@ class SearchMemberPage extends StatelessWidget {
             child: Row(
               children: [
                 AvatarView(
-                  url: info.faceUrl,
+                  url: info.faceURL,
                   size: 44.h,
                 ),
                 Expanded(
@@ -79,7 +79,7 @@ class SearchMemberPage extends StatelessWidget {
                     //   overflow: TextOverflow.ellipsis,
                     // ),
                     child: SearchKeywordText(
-                      text: info.nickName!,
+                      text: info.nickname!,
                       keyText: logic.searchCtrl.text.trim(),
                       style: PageStyle.ts_333333_16sp,
                       keyStyle: PageStyle.ts_1B72EC_16sp,

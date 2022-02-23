@@ -199,7 +199,7 @@ class _ConfirmView extends StatelessWidget {
           children: [
             AvatarView(
               size: 44.h,
-              url: info.icon,
+              url: info.faceURL,
             ),
             Expanded(
               child: Container(

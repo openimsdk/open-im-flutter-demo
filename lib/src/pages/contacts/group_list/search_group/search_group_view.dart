@@ -58,9 +58,8 @@ class SearchGroupPage extends StatelessWidget {
             child: Row(
               children: [
                 AvatarView(
-                  url: info.faceUrl,
+                  url: info.faceURL,
                   size: 44.h,
-                  isCircle: false,
                 ),
                 Expanded(
                   child: Container(

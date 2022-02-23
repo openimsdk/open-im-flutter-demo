@@ -46,8 +46,7 @@ class GroupIDPage extends StatelessWidget {
                     children: [
                       AvatarView(
                         size: 50.h,
-                        isCircle: false,
-                        url: logic.info.faceUrl,
+                        url: logic.info.faceURL,
                       ),
                       SizedBox(
                         width: 18.w,

@@ -35,9 +35,13 @@ class BlacklistPage extends StatelessWidget {
                   SizedBox(
                     height: 20.h,
                   ),
-                  Text(
-                    StrRes.blacklistHint,
-                    style: PageStyle.ts_999999_16sp,
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.symmetric(horizontal: 22.w),
+                    child: Text(
+                      StrRes.blacklistHint,
+                      style: PageStyle.ts_999999_16sp,
+                    ),
                   )
                 ],
               ),
@@ -52,7 +56,7 @@ class BlacklistPage extends StatelessWidget {
   }
 
   Widget _buildContactsItem(int index, UserInfo info) => Dismissible(
-      key: Key(info.uid),
+      key: Key(info.userID!),
       // background: Container(color: Colors.red),
       confirmDismiss: (direction) async {
         return logic.remove(info);
@@ -67,7 +71,7 @@ class BlacklistPage extends StatelessWidget {
             ),
             AvatarView(
               size: 44.h,
-              url: info.icon,
+              url: info.faceURL,
             ),
             Expanded(
               child: Container(

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:azlistview/azlistview.dart';
 import 'package:common_utils/common_utils.dart';
@@ -46,7 +45,7 @@ class IMUtil {
   IMUtil._();
 
   static Future<File?> uCrop(String path) {
-    return ImageCropper.cropImage(
+    return ImageCropper().cropImage(
       sourcePath: path,
       aspectRatioPresets: Platform.isAndroid
           ? [
@@ -113,16 +112,16 @@ class IMUtil {
     if (info is ContactsInfo) {
       String pinyin = PinyinHelper.getPinyinE(info.getShowName());
       String tag = pinyin.substring(0, 1).toUpperCase();
-      info.namePinyin = pinyin;
+      info.namePinyin = pinyin.toUpperCase();
       if (RegExp("[A-Z]").hasMatch(tag)) {
         info.tagIndex = tag;
       } else {
         info.tagIndex = "#";
       }
     } else if (info is en.GroupMembersInfo) {
-      String pinyin = PinyinHelper.getPinyinE(info.nickName!);
+      String pinyin = PinyinHelper.getPinyinE(info.nickname!);
       String tag = pinyin.substring(0, 1).toUpperCase();
-      info.namePinyin = pinyin;
+      info.namePinyin = pinyin.toUpperCase();
       if (RegExp("[A-Z]").hasMatch(tag)) {
         info.tagIndex = tag;
       } else {
@@ -132,28 +131,33 @@ class IMUtil {
     return info;
   }
 
-  static void openPicture(Message msg, {bool replace = false}) async {
-    File? file;
+  static void openPicture(
+    List<Message> list, {
+    bool replace = false,
+    int index = 0,
+    String? tag,
+  }) async {
+    final picInfoList = <PicInfo>[];
     try {
-      file = File(msg.pictureElem?.sourcePath ?? '');
-      if (!(await file.exists())) {
-        file = null;
+      var picElem;
+      var file;
+      for (var msg in list) {
+        picElem = msg.pictureElem;
+        if (null != picElem.sourcePath && picElem.sourcePath.isNotEmpty) {
+          file = File(picElem.sourcePath);
+          if (!(await file.exists())) {
+            file = null;
+          }
+        }
+        picInfoList.add(PicInfo(file: file, url: picElem.sourcePicture?.url));
       }
     } catch (e) {}
     replace
         ? Get.off(
-            () => previewPic(
-              tag: msg.clientMsgID!,
-              url: msg.pictureElem?.sourcePicture?.url,
-              file: file,
-            ),
+            () => previewPic(picList: picInfoList, index: index, tag: tag),
           )
         : Get.to(
-            () => previewPic(
-              tag: msg.clientMsgID!,
-              url: msg.pictureElem?.sourcePicture?.url,
-              file: file,
-            ),
+            () => previewPic(picList: picInfoList, index: index, tag: tag),
           );
   }
 
@@ -162,10 +166,14 @@ class IMUtil {
         ? Get.off(() => _previewVideo(
               path: msg.videoElem?.videoPath,
               url: msg.videoElem?.videoUrl,
+              coverUrl: msg.videoElem?.snapshotUrl,
+              tag: msg.clientMsgID,
             ))
         : Get.to(() => _previewVideo(
               path: msg.videoElem?.videoPath,
               url: msg.videoElem?.videoUrl,
+              coverUrl: msg.videoElem?.snapshotUrl,
+              tag: msg.clientMsgID,
             ));
   }
 
@@ -202,12 +210,14 @@ class IMUtil {
             ..clientMsgID = msg.clientMsgID
             ..videoElem = VideoElem(videoPath: availablePath, videoUrl: url));
         } else if (null != mimeType && mimeType.contains('image')) {
-          openPicture(Message()
-            ..clientMsgID = msg.clientMsgID
-            ..pictureElem = PictureElem(
-              sourcePath: availablePath,
-              sourcePicture: PictureInfo(url: url),
-            ));
+          openPicture([
+            Message()
+              ..clientMsgID = msg.clientMsgID
+              ..pictureElem = PictureElem(
+                sourcePath: availablePath,
+                sourcePicture: PictureInfo(url: url),
+              )
+          ]);
         } else {
           OpenFile.open(availablePath);
         }
@@ -244,11 +254,18 @@ class IMUtil {
                     ));
                   },
                 );
-                final result = await ImageGallerySaver.saveFile(cachePath);
-                print(result);
-                IMWidget.showToast(
-                    sprintf(StrRes.fileSaveToPath, [result['filePath']]));
                 String? mimeType = mime(fileName);
+                if (null != mimeType &&
+                    (mimeType.contains('video') ||
+                        mimeType.contains('image'))) {
+                  final result = await ImageGallerySaver.saveFile(cachePath);
+                  print(result);
+                  IMWidget.showToast(sprintf(
+                    StrRes.fileSaveToPath,
+                    [result['filePath']],
+                  ));
+                }
+
                 if (null != mimeType && mimeType.contains('video')) {
                   openVideo(
                     Message()
@@ -261,12 +278,14 @@ class IMUtil {
                   );
                 } else if (null != mimeType && mimeType.contains('image')) {
                   openPicture(
-                    Message()
-                      ..clientMsgID = msg.clientMsgID
-                      ..pictureElem = PictureElem(
-                        sourcePath: cachePath,
-                        sourcePicture: PictureInfo(url: url),
-                      ),
+                    [
+                      Message()
+                        ..clientMsgID = msg.clientMsgID
+                        ..pictureElem = PictureElem(
+                          sourcePath: cachePath,
+                          sourcePicture: PictureInfo(url: url),
+                        )
+                    ],
                     replace: true,
                   );
                 } else {
@@ -282,24 +301,27 @@ class IMUtil {
     // } else if (msg.contentType == MessageType.file) {}
   }
 
-  static Widget previewPic({required String tag, String? url, File? file}) =>
+  static Widget previewPic({
+    required List<PicInfo> picList,
+    int index = 0,
+    String? tag,
+  }) =>
       ChatPicturePreview(
         tag: tag,
-        picList: [PicInfo(url: url, file: file)],
+        picList: picList,
+        index: index,
         onDownload: (url) async {
           IMWidget.showToast(StrRes.startDownload);
-          var response = await dio.get(
+          var appDocDir = await getTemporaryDirectory();
+          var name = url.substring(url.lastIndexOf('/'));
+          String savePath = appDocDir.path + name;
+          print(savePath);
+          await dio.download(
             url,
-            options: Options(
-              responseType: ResponseType.bytes,
-              receiveTimeout: 120 * 1000,
-            ),
+            savePath,
+            options: Options(receiveTimeout: 120 * 1000),
           );
-          final result = await ImageGallerySaver.saveImage(
-            Uint8List.fromList(response.data),
-            quality: 90,
-            name: '${DateTime.now().millisecond}',
-          );
+          final result = await ImageGallerySaver.saveFile(savePath);
           print(result);
           IMWidget.showToast(
               sprintf(StrRes.picSaveToPath, [result['filePath']]));
@@ -307,10 +329,13 @@ class IMUtil {
         },
       );
 
-  static Widget _previewVideo({String? path, String? url}) =>
+  static Widget _previewVideo(
+          {String? path, String? url, String? coverUrl, String? tag}) =>
       ChatVideoPlayerView(
         path: path,
         url: url,
+        coverUrl: coverUrl,
+        tag: tag,
         onDownload: (url) async {
           print(url);
           IMWidget.showToast(StrRes.startDownload);
@@ -372,7 +397,7 @@ class IMUtil {
         if (isSelf) {
           content = '${StrRes.you}${StrRes.revoke}';
         } else {
-          content = '"${message.senderNickName}"${StrRes.revoke}';
+          content = '"${message.senderNickname}"${StrRes.revoke}';
         }
         break;
       case MessageType.merger:
@@ -410,9 +435,9 @@ class IMUtil {
   }
 
   static List<Message> calChatTimeInterval(List<Message> list) {
-    var nanoseconds = list.first.sendTime!;
+    var milliseconds = list.first.sendTime!;
     list.first.ext = true;
-    var lastShowTimeStamp = nanoseconds ~/ (1000 * 1000);
+    var lastShowTimeStamp = milliseconds;
     for (var i = 1; i < list.length; i++) {
       var index = i + 1;
       if (index <= list.length - 1) {
@@ -428,8 +453,8 @@ class IMUtil {
     return list;
   }
 
-  static String getChatTimeline(int nanosecond) {
-    int milliseconds = nanosecond ~/ (1000 * 1000);
+  static String getChatTimeline(int milliseconds) {
+    // int milliseconds = nanosecond ~/ (1000 * 1000);
     return TimelineUtil.formatA(
       milliseconds,
       languageCode: Get.locale?.languageCode ?? 'en',
@@ -466,6 +491,9 @@ class IMUtil {
       if (seconds % 60 != 0) {
         s = seconds % 60;
       }
+    }
+    if (h == 0) {
+      return '${m < 10 ? '0$m' : m}:${s < 10 ? '0$s' : s}';
     }
     return "${h < 10 ? '0$h' : h}:${m < 10 ? '0$m' : m}:${s < 10 ? '0$s' : s}";
   }

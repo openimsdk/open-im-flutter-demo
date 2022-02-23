@@ -14,9 +14,9 @@ class SearchAddGroupLogic extends GetxController {
   @override
   void onInit() {
     info = Rx(Get.arguments);
-    imLogic.onGroupApplicationProcessed = (gid, op, agreeOrReject, opReason) {
+    imLogic.groupApplicationChangedSubject.listen((value) {
       _checkGroup();
-    };
+    });
     _getGroupInfo();
     _checkGroup();
     _getMembers();
@@ -30,7 +30,7 @@ class SearchAddGroupLogic extends GetxController {
       var nInfo = list.first;
       info.update((val) {
         val?.groupName = nInfo.groupName;
-        val?.faceUrl = nInfo.faceUrl;
+        val?.faceURL = nInfo.faceURL;
         val?.memberCount = nInfo.memberCount;
       });
     }
@@ -45,9 +45,7 @@ class SearchAddGroupLogic extends GetxController {
     var list = await OpenIM.iMManager.groupManager.getGroupMemberList(
       groupId: info.value.groupID,
     );
-    if (list.data != null) {
-      members.addAll(list.data!);
-    }
+    members.assignAll(list);
   }
 
   enterGroup() async {
@@ -55,7 +53,7 @@ class SearchAddGroupLogic extends GetxController {
       conversationLogic.startChat(
         gid: info.value.groupID,
         name: info.value.groupName,
-        icon: info.value.faceUrl,
+        icon: info.value.faceURL,
         type: 1,
       );
     } else {

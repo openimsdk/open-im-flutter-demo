@@ -42,7 +42,7 @@ class FriendInfoPage extends StatelessWidget {
                         right: 22.w,
                         child: AvatarView(
                           size: 72.h,
-                          url: logic.info.value.icon,
+                          url: logic.info.value.faceURL,
                           enabledPreview: true,
                         ),
                       )
@@ -51,19 +51,25 @@ class FriendInfoPage extends StatelessWidget {
                 ),
                 _buildLine(),
                 _buildItemView(
-                  label: StrRes.remark,
-                  onTap: () => logic.toSetupRemark(),
-                  showArrowBtn: true,
-                ),
-                _buildLine(),
-                _buildItemView(
                   label: StrRes.idCode,
                   onTap: () => logic.toCopyId(),
                   showArrowBtn: true,
                 ),
-                if (logic.info.value.isFriendship)
+                if (logic.info.value.isFriendship == true)
                   Column(
                     children: [
+                      _buildLine(),
+                      _buildItemView(
+                        label: StrRes.remark,
+                        onTap: () => logic.toSetupRemark(),
+                        showArrowBtn: true,
+                      ),
+                      _buildLine(),
+                      _buildItemView(
+                        label: StrRes.personalInfo,
+                        onTap: () => logic.viewPersonalInfo(),
+                        showArrowBtn: true,
+                      ),
                       _buildLine(),
                       _buildItemView(
                         label: StrRes.recommendToFriends,
@@ -74,7 +80,7 @@ class FriendInfoPage extends StatelessWidget {
                       _buildItemView(
                         label: StrRes.addBlacklist,
                         showSwitchBtn: true,
-                        switchOn: logic.info.value.isBlocked,
+                        switchOn: logic.info.value.isBlacklist == true,
                         onTap: () => logic.toggleBlacklist(),
                       ),
                       SizedBox(
@@ -93,26 +99,38 @@ class FriendInfoPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildBtn(
-                      icon: logic.info.value.isFriendship
-                          ? ImageRes.ic_sendMsg
-                          : ImageRes.ic_sendMsgGrey,
+                      icon: ImageRes.ic_sendMsg,
                       label: StrRes.sendMsg,
-                      style: logic.info.value.isFriendship
-                          ? PageStyle.ts_1D6BED_14sp
-                          : PageStyle.ts_B8B8B8_14sp,
+                      style: PageStyle.ts_1D6BED_14sp,
                       onTap: () => logic.toChat(),
                     ),
                     _buildBtn(
-                      icon: logic.info.value.isFriendship
-                          ? ImageRes.ic_appCall
-                          : ImageRes.ic_appCallGrey,
+                      icon: ImageRes.ic_appCall,
                       label: StrRes.appCall,
-                      style: logic.info.value.isFriendship
-                          ? PageStyle.ts_1D6BED_14sp
-                          : PageStyle.ts_B8B8B8_14sp,
+                      style: PageStyle.ts_1D6BED_14sp,
                       onTap: () => logic.toCall(),
                     ),
-                    if (!logic.info.value.isFriendship)
+                    // _buildBtn(
+                    //   icon: logic.info.value.isFriendship
+                    //       ? ImageRes.ic_sendMsg
+                    //       : ImageRes.ic_sendMsgGrey,
+                    //   label: StrRes.sendMsg,
+                    //   style: logic.info.value.isFriendship
+                    //       ? PageStyle.ts_1D6BED_14sp
+                    //       : PageStyle.ts_B8B8B8_14sp,
+                    //   onTap: () => logic.toChat(),
+                    // ),
+                    // _buildBtn(
+                    //   icon: logic.info.value.isFriendship
+                    //       ? ImageRes.ic_appCall
+                    //       : ImageRes.ic_appCallGrey,
+                    //   label: StrRes.appCall,
+                    //   style: logic.info.value.isFriendship
+                    //       ? PageStyle.ts_1D6BED_14sp
+                    //       : PageStyle.ts_B8B8B8_14sp,
+                    //   onTap: () => logic.toCall(),
+                    // ),
+                    if (logic.info.value.isFriendship == false)
                       _buildBtn(
                         icon: ImageRes.ic_sendAddFriendMsg,
                         label: StrRes.addFriend,

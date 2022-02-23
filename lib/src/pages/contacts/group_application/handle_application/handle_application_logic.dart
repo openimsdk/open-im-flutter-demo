@@ -18,8 +18,9 @@ class HandleGroupApplicationLogic extends GetxController {
         .wrap(
             asyncFunction: () =>
                 OpenIM.iMManager.groupManager.acceptGroupApplication(
-                  info: aInfo,
-                  reason: "reason",
+                  gid: aInfo.groupID!,
+                  uid: aInfo.userID!,
+                  handleMsg: "reason",
                 ))
         .then((value) => Get.back(result: true));
   }
@@ -29,8 +30,9 @@ class HandleGroupApplicationLogic extends GetxController {
         .wrap(
             asyncFunction: () =>
                 OpenIM.iMManager.groupManager.refuseGroupApplication(
-                  info: aInfo,
-                  reason: "reason",
+                  gid: aInfo.groupID!,
+                  uid: aInfo.userID!,
+                  handleMsg: "reason",
                 ))
         .then((value) => Get.back(result: true));
   }

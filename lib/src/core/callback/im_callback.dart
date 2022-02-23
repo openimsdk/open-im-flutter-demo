@@ -5,73 +5,65 @@ import 'package:openim_demo/src/core/controller/app_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 class IMCallback {
-  // Function(UserInfo u)? onSelfInfoUpdated;
-  // Function(List<ConversationInfo> list)? onConversationChanged;
-  // Function(List<ConversationInfo> list)? onNewConversation;
+  /// 收到消息撤回
   Function(String msgId)? onRecvMessageRevoked;
-  Function(List<HaveReadInfo> list)? onRecvC2CReadReceipt;
-  Function(String msgId, int progress)? onMsgSendProgress;
+
+  /// 收到消息已读回执
+  Function(List<ReadReceiptInfo> list)? onRecvC2CReadReceipt;
+
+  /// 收到新消息
   Function(Message msg)? onRecvNewMessage;
 
-  Function(UserInfo u)? onBlackListAdd;
-  Function(UserInfo u)? onBlackListDeleted;
+  /// 消息发送进度回执
+  Function(String msgId, int progress)? onMsgSendProgress;
 
-  // Function(UserInfo u)? onFriendApplicationListAccept;
-  // Function(UserInfo u)? onFriendApplicationListAdded;
-  // Function(UserInfo u)? onFriendApplicationListDeleted;
-  // Function(UserInfo u)? onFriendApplicationListReject;
-  // Function(UserInfo u)? onFriendInfoChanged;
-  // Function(UserInfo u)? onFriendListAdded;
-  // Function(UserInfo u)? onFriendListDeleted;
-  Function(String gid, GroupMembersInfo op, int agreeOrReject, String opReason)?
-      onGroupApplicationProcessed;
+  /// 已加入黑名单
+  Function(BlacklistInfo u)? onBlacklistAdd;
 
-  // Function(String gid)? onGroupCreated;
-  // Function(String gid, GroupInfo info)? onGroupInfoChanged;
-  // Function(String gid, List<GroupMembersInfo> list)? onMemberEnter;
-  Function(String gid, GroupMembersInfo op, List<GroupMembersInfo> list)?
-      onMemberInvited;
-  Function(String gid, GroupMembersInfo op, List<GroupMembersInfo> list)?
-      onMemberKicked;
-  Function(String gid, GroupMembersInfo info)? onMemberLeave;
+  /// 已从黑名单移除
+  Function(BlacklistInfo u)? onBlacklistDeleted;
 
-  Function(String gid, GroupMembersInfo info, String opReason)?
-      onReceiveJoinApplication;
-
-  // Function(int count)? onUnreadMsgCountChanged;
-
-  //
+  /// 新增会话
   var conversationAddedSubject = BehaviorSubject<List<ConversationInfo>>();
+
+  /// 旧会话更新
   var conversationChangedSubject = BehaviorSubject<List<ConversationInfo>>();
 
-  // 未读消息数
-  var unreadMsgCountEventSubject = BehaviorSubject<int>();
+  /// 未读消息数
+  var unreadMsgCountEventSubject = PublishSubject<int>();
 
-  // 好友申请列表新增
-  var friendApplicationChangedSubject = BehaviorSubject<UserInfo>();
+  /// 好友申请列表变化（包含自己发出的以及收到的）
+  var friendApplicationChangedSubject =
+      BehaviorSubject<FriendApplicationInfo>();
 
-  // 好友申请列表新增
-  // var friendApplicationRejectEventSubject = BehaviorSubject<UserInfo>();
-  // 好友申请列表新增
-  // var friendApplicationAcceptEventSubject = BehaviorSubject<UserInfo>();
-  // 新增好友
-  var friendAddSubject = BehaviorSubject<UserInfo>();
+  /// 新增好友
+  var friendAddSubject = BehaviorSubject<FriendInfo>();
 
-  // 删除好友
-  var friendDelSubject = BehaviorSubject<UserInfo>();
+  /// 删除好友
+  var friendDelSubject = BehaviorSubject<FriendInfo>();
 
-  // 好友信息改变
-  var friendInfoChangedSubject = BehaviorSubject<UserInfo>();
+  /// 好友信息改变
+  var friendInfoChangedSubject = BehaviorSubject<FriendInfo>();
 
-  // 自己信息更新
+  /// 自己信息更新
   var selfInfoUpdatedSubject = BehaviorSubject<UserInfo>();
 
-  // 组信息更新
+  /// 组信息更新
   var groupInfoUpdatedSubject = BehaviorSubject<GroupInfo>();
 
-  var initializedSubject = BehaviorSubject<bool>();
+  /// 组申请列表变化（包含自己发出的以及收到的）
+  var groupApplicationChangedSubject = BehaviorSubject<GroupApplicationInfo>();
 
-  var memberEnterSubject = BehaviorSubject<Map<String, dynamic>>();
+  var initializedSubject = PublishSubject<bool>();
+
+  /// 群成员收到：群成员已进入
+  var memberAddedSubject = BehaviorSubject<GroupMembersInfo>();
+
+  /// 群成员收到：群成员已退出
+  var memberDeletedSubject = BehaviorSubject<GroupMembersInfo>();
+
+  /// 群成员信息变化
+  var memberInfoChangedSubject = BehaviorSubject<GroupMembersInfo>();
 
   var onKickedOfflineSubject = PublishSubject();
 
@@ -80,9 +72,6 @@ class IMCallback {
   }
 
   void selfInfoUpdated(UserInfo u) {
-    // if (null != onSelfInfoUpdated) {
-    //   onSelfInfoUpdated!(u);
-    // }
     selfInfoUpdatedSubject.addSafely(u);
   }
 
@@ -90,7 +79,7 @@ class IMCallback {
     onRecvMessageRevoked?.call(id);
   }
 
-  void recvC2CReadReceipt(List<HaveReadInfo> list) {
+  void recvC2CReadReceipt(List<ReadReceiptInfo> list) {
     onRecvC2CReadReceipt?.call(list);
   }
 
@@ -103,124 +92,89 @@ class IMCallback {
     onMsgSendProgress?.call(msgId, progress);
   }
 
-  void blackListAdd(UserInfo u) {
-    onBlackListAdd?.call(u);
+  void blacklistAdded(BlacklistInfo u) {
+    onBlacklistAdd?.call(u);
   }
 
-  void blackListDeleted(UserInfo u) {
-    onBlackListDeleted?.call(u);
+  void blacklistDeleted(BlacklistInfo u) {
+    onBlacklistDeleted?.call(u);
   }
 
-  void friendApplicationListAccept(UserInfo u) {
-    // if (null != onFriendApplicationListAccept) {
-    //   onFriendApplicationListAccept!(u);
-    // }
+  void friendApplicationAccepted(FriendApplicationInfo u) {
     friendApplicationChangedSubject.addSafely(u);
   }
 
-  void friendApplicationListAdded(UserInfo u) {
-    // if (null != onFriendApplicationListAdded) {
-    //   onFriendApplicationListAdded!(u);
-    // }
+  void friendApplicationAdded(FriendApplicationInfo u) {
     friendApplicationChangedSubject.addSafely(u);
   }
 
-  void friendApplicationListDeleted(UserInfo u) {
-    // if (null != onFriendApplicationListDeleted) {
-    //   onFriendApplicationListDeleted!(u);
-    // }
+  void friendApplicationDeleted(FriendApplicationInfo u) {
     friendApplicationChangedSubject.addSafely(u);
   }
 
-  void friendApplicationListReject(UserInfo u) {
-    // if (null != onFriendApplicationListReject) {
-    //   onFriendApplicationListReject!(u);
-    // }
-    // friendApplicationAddSubject.addSafely(u);
+  void friendApplicationRejected(FriendApplicationInfo u) {
     friendApplicationChangedSubject.addSafely(u);
   }
 
-  void friendInfoChanged(UserInfo u) {
-    // if (null != onFriendInfoChanged) {
-    //   onFriendInfoChanged!(u);
-    // }
+  void friendInfoChanged(FriendInfo u) {
     friendInfoChangedSubject.addSafely(u);
   }
 
-  void friendListAdded(UserInfo u) {
-    // if (null != onFriendListAdded) {
-    //   onFriendListAdded!(u);
-    // }
+  void friendAdded(FriendInfo u) {
     friendAddSubject.addSafely(u);
   }
 
-  void friendListDeleted(u) {
-    // if (null != onFriendListDeleted) {
-    //   onFriendListDeleted!(u);
-    // }
+  void friendDeleted(FriendInfo u) {
     friendDelSubject.addSafely(u);
   }
 
   void conversationChanged(List<ConversationInfo> list) {
-    // if (null != onConversationChanged) {
-    //   onConversationChanged!(list);
-    // }
     conversationChangedSubject.addSafely(list);
   }
 
   void newConversation(List<ConversationInfo> list) {
-    // if (null != onNewConversation) {
-    //   onNewConversation!(list);
-    // }
     conversationAddedSubject.addSafely(list);
   }
 
-  void applicationProcessed(String groupId, GroupMembersInfo opUser,
-      int agreeOrReject, String opReason) {
-    onGroupApplicationProcessed?.call(groupId, opUser, agreeOrReject, opReason);
+  void groupApplicationAccepted(GroupApplicationInfo info) {
+    groupApplicationChangedSubject.add(info);
   }
 
-  void groupCreated(String groupId) {
-    // if (null != onGroupCreated) {
-    //   onGroupCreated!(groupId);
-    // }
+  void groupApplicationAdded(GroupApplicationInfo info) {
+    groupApplicationChangedSubject.add(info);
   }
 
-  void groupInfoChanged(String groupId, GroupInfo info) {
-    // if (null != onGroupInfoChanged) {
-    //   onGroupInfoChanged!(groupId, info);
-    // }
+  void groupApplicationDeleted(GroupApplicationInfo info) {
+    groupApplicationChangedSubject.add(info);
+  }
+
+  void groupApplicationRejected(GroupApplicationInfo info) {
+    groupApplicationChangedSubject.add(info);
+  }
+
+  void groupInfoChanged(GroupInfo info) {
     groupInfoUpdatedSubject.addSafely(info);
   }
 
-  void memberEnter(String groupId, List<GroupMembersInfo> list) {
-    // onMemberEnter?.call(groupId, list);
-    memberEnterSubject.add({"groupId": groupId, "list": list});
+  void groupMemberAdded(GroupMembersInfo info) {
+    memberAddedSubject.add(info);
   }
 
-  void memberInvited(
-      String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
-    onMemberInvited?.call(groupId, opUser, list);
+  void groupMemberDeleted(GroupMembersInfo info) {
+    memberDeletedSubject.add(info);
   }
 
-  void memberKicked(
-      String groupId, GroupMembersInfo opUser, List<GroupMembersInfo> list) {
-    onMemberKicked?.call(groupId, opUser, list);
+  void groupMemberInfoChanged(GroupMembersInfo info) {
+    memberInfoChangedSubject.add(info);
   }
 
-  void memberLeave(String groupId, GroupMembersInfo info) {
-    onMemberLeave?.call(groupId, info);
-  }
+  /// 创建群： 初始成员收到；邀请进群：被邀请者收到
+  void joinedGroupAdded(GroupInfo info) {}
 
-  void receiveJoinApplication(
-      String groupId, GroupMembersInfo info, String opReason) {
-    onReceiveJoinApplication?.call(groupId, info, opReason);
-  }
+  /// 退出群：退出者收到；踢出群：被踢者收到
+  void joinedGroupDeleted(GroupInfo info) {}
 
   void totalUnreadMsgCountChanged(int count) {
-    // if (null != onUnreadMsgCountChanged) {
-    //   onUnreadMsgCountChanged!(count);
-    // }
     initLogic.showBadge(count);
     unreadMsgCountEventSubject.addSafely(count);
   }
@@ -235,8 +189,11 @@ class IMCallback {
     groupInfoUpdatedSubject.close();
     conversationAddedSubject.close();
     conversationChangedSubject.close();
-    memberEnterSubject.close();
+    memberAddedSubject.close();
+    memberDeletedSubject.close();
+    memberInfoChangedSubject.close();
     onKickedOfflineSubject.close();
+    groupApplicationChangedSubject.close();
   }
 
   final initLogic = Get.find<AppController>();

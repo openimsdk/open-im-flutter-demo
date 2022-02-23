@@ -35,13 +35,13 @@ class AcceptFriendRequestPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AvatarView(
-                      url: logic.userInfo.icon,
+                      url: logic.userInfo.fromFaceURL,
                       size: 56.h,
                     ),
                     SizedBox(width: 14.w),
                     Expanded(
                       child: Text(
-                        logic.userInfo.getShowName(),
+                        logic.userInfo.fromNickname!,
                         style: PageStyle.ts_333333_20sp,
                       ),
                     ),
@@ -65,7 +65,7 @@ class AcceptFriendRequestPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${logic.userInfo.getShowName()}：${logic.userInfo.reqMessage}',
+                        '${logic.userInfo.fromNickname}：${logic.userInfo.reqMsg}',
                         style: PageStyle.ts_333333_14sp,
                       ),
                       Spacer(),

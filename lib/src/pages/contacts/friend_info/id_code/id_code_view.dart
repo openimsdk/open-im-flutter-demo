@@ -38,7 +38,7 @@ class FriendIdCodePage extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    logic.info.uid,
+                    logic.info.userID!,
                     style: PageStyle.ts_333333_20sp,
                   ),
                 ),

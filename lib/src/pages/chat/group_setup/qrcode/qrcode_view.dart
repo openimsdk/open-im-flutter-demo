@@ -45,7 +45,7 @@ class GroupQrcodePage extends StatelessWidget {
                   children: [
                     AvatarView(
                       size: 58.h,
-                      url: logic.info.faceUrl,
+                      url: logic.info.faceURL,
                     ),
                     SizedBox(
                       width: 13.w,

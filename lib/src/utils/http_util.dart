@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:openim_demo/src/common/config.dart';
 import 'package:openim_demo/src/models/api_resp.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import 'dio_logger.dart';
+import 'package:tencent_cos/tencent_cos.dart';
 
 // or new Dio with a BaseOptions instance.
 // var options = BaseOptions(
@@ -89,19 +89,47 @@ class HttpUtil {
     }
   }
 
+  /// tencent cos
   static Future<String> uploadImage({required String path}) async {
+    var resp = await dio.post<Map<String, dynamic>>(
+      "${Config.imApiUrl()}/third/tencent_cloud_storage_credential",
+      data: {'operationID': '${DateTime.now().millisecondsSinceEpoch}'},
+      options: Options(
+        headers: {'token': DataPersistence.getLoginCertificate()?.token},
+      ),
+    );
+    var data = resp.data;
+    var bucketName = data!['data']['Bucket'];
+    var region = data['data']['Region'];
+    var token = data['data']['CredentialResult']['Credentials']['SessionToken'];
+    var secretId =
+        data['data']['CredentialResult']['Credentials']['TmpSecretID'];
+    var secretKey =
+        data['data']['CredentialResult']['Credentials']['TmpSecretKey'];
+
     String fileName = path.substring(path.lastIndexOf("/") + 1);
-    String url = "https://echat-1302656840.cos.ap-chengdu.myqcloud.com/";
-    String key = '${DateTime.now().millisecond}_$fileName';
-    var formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(path),
-      "Key": key,
-      "success_action_status": 200,
-      "Signature": "Signature",
-      "x-cos-security-token": "token"
-    });
-    await dio.post(url, data: formData);
-    return '$url$key';
+
+    var url = "https://$bucketName.cos.$region.myqcloud.com";
+
+    await COSClient(COSConfig(
+      secretId,
+      secretKey,
+      bucketName,
+      region,
+    )).putObject(fileName, path, token: token);
+    // String fileName = path.substring(path.lastIndexOf("/") + 1);
+    // String url = "https://echat-1302656840.cos.ap-chengdu.myqcloud.com/";
+    // String key = '${DateTime.now().millisecond}_$fileName';
+    // var formData = FormData.fromMap({
+    //   "file": await MultipartFile.fromFile(path),
+    //   "Key": key,
+    //   "success_action_status": 200,
+    //   "Signature": "Signature",
+    //   "x-cos-security-token": "token"
+    // });
+    // await dio.post(url, data: formData);
+    // return '$url$key';
+    return '$url/$fileName';
   }
 
   static Future download(

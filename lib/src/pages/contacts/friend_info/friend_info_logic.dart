@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
+import 'package:openim_demo/src/pages/contacts/friend_info/personal_info/personal_info.dart';
 import 'package:openim_demo/src/pages/conversation/conversation_logic.dart';
 import 'package:openim_demo/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_demo/src/res/strings.dart';
@@ -18,7 +19,7 @@ class FriendInfoLogic extends GetxController {
   // var isExistChatPage = false;
 
   void toggleBlacklist() {
-    if (info.value.isBlocked) {
+    if (info.value.isBlacklist == true) {
       removeBlacklist();
     } else {
       addBlacklist();
@@ -32,11 +33,11 @@ class FriendInfoLogic extends GetxController {
       rightText: StrRes.sure,
     ));
     if (confirm == true) {
-      var result = await OpenIM.iMManager.friendshipManager.addToBlackList(
-        uid: info.value.uid,
+      var result = await OpenIM.iMManager.friendshipManager.addBlacklist(
+        uid: info.value.userID!,
       );
       info.update((val) {
-        val?.isInBlackList = 1;
+        val?.isBlacklist = true;
       });
       print('result:$result');
     }
@@ -44,11 +45,11 @@ class FriendInfoLogic extends GetxController {
 
   /// 从黑名单移除
   void removeBlacklist() async {
-    var result = await OpenIM.iMManager.friendshipManager.deleteFromBlackList(
-      uid: info.value.uid,
+    var result = await OpenIM.iMManager.friendshipManager.removeBlacklist(
+      uid: info.value.userID!,
     );
     info.update((val) {
-      val?.isInBlackList = 0;
+      val?.isBlacklist = false;
     });
     print('result:$result');
   }
@@ -60,12 +61,11 @@ class FriendInfoLogic extends GetxController {
       rightText: StrRes.delete,
     ));
     if (confirm) {
-      var result =
-          await OpenIM.iMManager.friendshipManager.deleteFromFriendList(
-        uid: info.value.uid,
+      var result = await OpenIM.iMManager.friendshipManager.deleteFriend(
+        uid: info.value.userID!,
       );
       info.update((val) {
-        val?.flag = 0;
+        val?.isFriendship = false;
       });
       print('result:$result');
     }
@@ -73,44 +73,36 @@ class FriendInfoLogic extends GetxController {
 
   /// 检查是否是好友
   void checkFriendship() async {
-    var list =
-        await OpenIM.iMManager.friendshipManager.checkFriend([info.value.uid]);
-    if (list.isNotEmpty) {
-      info.update((val) {
-        val?.flag = list.first.flag;
-      });
-    }
+    // var list = await OpenIM.iMManager.friendshipManager
+    //     .checkFriend(uidList: [info.value.userID!]);
+    // if (list.isNotEmpty) {
+    //   info.update((val) {
+    //     val?.flag = list.first.flag;
+    //   });
+    // }
   }
 
   void toChat() {
-    if (info.value.isFriendship) {
-      print('${info.value.uid}');
-      // AppNavigator.startChat(
-      //   uid: info.value.uid,
-      //   name: info.value.getShowName(),
-      //   icon: info.value.icon,
-      // );
-      conversationLogic.startChat(
-        uid: info.value.uid,
-        name: info.value.getShowName(),
-        icon: info.value.icon,
-        type: 1,
-      );
-    }
+    /*if (info.value.isFriendship) {
+      print('${info.value.uid}');*/
+    // AppNavigator.startChat(
+    //   uid: info.value.uid,
+    //   name: info.value.getShowName(),
+    //   icon: info.value.icon,
+    // );
+    conversationLogic.startChat(
+      uid: info.value.userID,
+      name: info.value.getShowName(),
+      icon: info.value.faceURL,
+      type: 1,
+    );
+    // }
   }
 
-  void toCall() {
-    if (info.value.isFriendship) {
-      IMWidget.openIMCallSheet(
-        uid: info.value.uid,
-        name: info.value.getShowName(),
-        icon: info.value.icon,
-      );
-    }
-  }
+  void toCall() {}
 
   void addFriend() {
-    if (info.value.uid == OpenIM.iMManager.uid) {
+    if (info.value.userID == OpenIM.iMManager.uid) {
       IMWidget.showToast(StrRes.notAddSelf);
       return;
     }
@@ -132,29 +124,31 @@ class FriendInfoLogic extends GetxController {
         await AppNavigator.startSetFriendRemarksName(info: info.value);
     if (remarkName != null) {
       info.update((val) {
-        val?.comment = remarkName;
+        print('--------remarkName:$remarkName---');
+        val?.remark = remarkName;
       });
     }
   }
 
   void getFriendInfo() async {
-    // var list = await OpenIM.iMManager.getUsersInfo([info.value.uid]);
-    var list = await OpenIM.iMManager.friendshipManager.getFriendsInfo(
-      uidList: [info.value.uid],
+    var list = await OpenIM.iMManager.userManager.getUsersInfo(
+      uidList: [info.value.userID!],
     );
+    // var list = await OpenIM.iMManager.friendshipManager.getFriendsInfo(
+    //   uidList: [info.value.userID!],
+    // );
     if (list.isNotEmpty) {
       var user = list.first;
       info.update((val) {
-        val?.name = user.name;
-        val?.icon = user.icon;
-        val?.comment = user.comment;
+        val?.nickname = user.nickname;
+        val?.faceURL = user.faceURL;
+        val?.remark = user.remark;
         val?.gender = user.gender;
-        val?.mobile = user.mobile;
+        val?.phoneNumber = user.phoneNumber;
         val?.birth = user.birth;
         val?.email = user.email;
-        val?.isInBlackList = user.isInBlackList;
-        val?.ex = user.ex;
-        // val?.flag = user.flag;
+        val?.isBlacklist = user.isBlacklist;
+        val?.isFriendship = user.isFriendship;
       });
     }
   }
@@ -162,7 +156,7 @@ class FriendInfoLogic extends GetxController {
   void recommendFriend() async {
     var result = await AppNavigator.startSelectContacts(
       action: SelAction.RECOMMEND,
-      excludeUidList: [info.value.uid],
+      excludeUidList: [info.value.userID!],
     );
     var uid = result['uId'];
     // var name = result['uName'];
@@ -170,9 +164,9 @@ class FriendInfoLogic extends GetxController {
     // AppNavigator.startChat();
     var message = await OpenIM.iMManager.messageManager.createCardMessage(
       data: {
-        "uid": info.value.uid,
-        'name': info.value.getShowName(),
-        'icon': info.value.icon
+        "userID": info.value.userID,
+        'nickname': info.value.getShowName(),
+        'faceURL': info.value.faceURL
       },
     );
     OpenIM.iMManager.messageManager.sendMessage(
@@ -184,29 +178,35 @@ class FriendInfoLogic extends GetxController {
   @override
   void onInit() {
     info = Rx(Get.arguments);
+    print(' user:   ${json.encode(info.value)}');
     imLoic.friendAddSubject.listen((user) {
       print('add user:   ${json.encode(user)}');
-      if (user.uid == info.value.uid) {
+      if (user.userID == info.value.userID) {
         info.update((val) {
-          val?.flag = 1;
+          val?.isFriendship = true;
         });
       }
     });
     imLoic.friendInfoChangedSubject.listen((user) {
       print('update user info:   ${json.encode(user)}');
-      if (user.uid == info.value.uid) {
+      if (user.userID == info.value.userID) {
         info.update((val) {
-          val?.name = user.name;
+          val?.nickname = user.nickname;
           val?.gender = user.gender;
-          val?.mobile = user.mobile;
+          val?.phoneNumber = user.phoneNumber;
           val?.birth = user.birth;
           val?.email = user.email;
+          val?.remark = user.remark;
         });
       }
     });
     getFriendInfo();
     checkFriendship();
     super.onInit();
+  }
+
+  void viewPersonalInfo() {
+    Get.to(() => PersonalInfoPage());
   }
 
   @override

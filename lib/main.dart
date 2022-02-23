@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:openim_demo/src/app.dart';
 import 'package:openim_demo/src/common/config.dart';
 

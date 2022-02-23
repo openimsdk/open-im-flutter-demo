@@ -11,9 +11,9 @@ class SendFriendRequestLogic extends GetxController {
 
   void addFriend() {
     if (null != _userInfo) {
-      print('addFriend:${_userInfo!.uid}');
+      print('addFriend:${_userInfo!.userID}');
       OpenIM.iMManager.friendshipManager
-          .addFriend(uid: _userInfo!.uid, reason: reasonCtrl.text)
+          .addFriend(uid: _userInfo!.userID!, reason: reasonCtrl.text)
           .then((value) => _sendSuc())
           .catchError((e) => _sendFail());
     }

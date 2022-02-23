@@ -63,8 +63,7 @@ class GroupNameSetupPage extends StatelessWidget {
                     children: [
                       AvatarView(
                         size: 44.h,
-                        isCircle: false,
-                        url: logic.info.value.faceUrl,
+                        url: logic.info.value.faceURL,
                       ),
                       SizedBox(
                         width: 11.w,

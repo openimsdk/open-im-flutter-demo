@@ -24,29 +24,40 @@ class ProtocolView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin,
+      margin: EdgeInsets.only(top: 19.h, left: 48.w, right: 48.w),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          RadioButton(
-            isChecked: isChecked,
-            style: radioStyle,
-            onTap: onTap,
-          ),
-          SizedBox(width: 6.w),
-          RichText(
-            text: TextSpan(
-              text: StrRes.iReadAgree,
-              style: style1,
-              children: [
-                TextSpan(
-                  text: StrRes.serviceAgreement,
-                  style: style2,
-                ),
-                TextSpan(
-                  text: StrRes.privacyPolicy,
-                  style: style2,
-                ),
-              ],
+          Expanded(
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: '',
+                children: [
+                  WidgetSpan(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 6.w),
+                      child: RadioButton(
+                        isChecked: isChecked,
+                        style: radioStyle,
+                        onTap: onTap,
+                      ),
+                    ),
+                  ),
+                  TextSpan(
+                    text: StrRes.iReadAgree,
+                    style: style1,
+                  ),
+                  TextSpan(
+                    text: StrRes.serviceAgreement,
+                    style: style2,
+                  ),
+                  TextSpan(
+                    text: StrRes.privacyPolicy,
+                    style: style2,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

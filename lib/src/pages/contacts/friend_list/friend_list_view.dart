@@ -20,35 +20,39 @@ class MyFriendListPage extends StatelessWidget {
         title: StrRes.myFriend,
       ),
       backgroundColor: PageStyle.c_FFFFFF,
-      body: Column(
-        children: [
-          GestureDetector(
-            onTap: () => logic.searchFriend(),
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-              // color: PageStyle.listViewItemBgColor,
-              child: SearchBox(
-                hintText: StrRes.searchFriend,
-                margin: EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
-                padding: EdgeInsets.symmetric(horizontal: 13.w),
-                enabled: false,
+      body: SafeArea(
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () => logic.searchFriend(),
+              behavior: HitTestBehavior.translucent,
+              child: Container(
+                // color: PageStyle.listViewItemBgColor,
+                child: SearchBox(
+                  hintText: StrRes.searchFriend,
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(horizontal: 13.w),
+                  enabled: false,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Obx(
-              () => WrapAzListView<ContactsInfo>(
-                data: logic.friendList.value,
-                itemBuilder: (_, data, index) => Obx(() => buildAzListItemView(
-                      name: data.getShowName(),
-                      url: data.icon,
-                      onTap: () => logic.viewFriendInfo(index),
-                      onlineStatus: logic.onlineStatus[data.uid],
-                    )),
+            Expanded(
+              child: Obx(
+                () => WrapAzListView<ContactsInfo>(
+                  data: logic.friendList.value,
+                  itemBuilder: (_, data, index) =>
+                      Obx(() => buildAzListItemView(
+                            name: data.getShowName(),
+                            url: data.faceURL,
+                            onTap: () => logic.viewFriendInfo(index),
+                            onlineStatus: logic.onlineStatus[data.userID],
+                          )),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

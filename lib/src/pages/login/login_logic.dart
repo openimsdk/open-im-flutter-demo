@@ -55,10 +55,11 @@ class LoginLogic extends GetxController {
         password: pwdCtrl.text,
       );
       await DataPersistence.putLoginCertificate(data);
-      print('---------login---------- uid: ${data.uid}, token: ${data.token}');
-      await imLogic.login(data.uid, data.token);
+      print(
+          '---------login---------- uid: ${data.userID}, token: ${data.token}');
+      await imLogic.login(data.userID, data.token);
       print('---------im login success-------');
-      jPushLogic.login(data.uid);
+      jPushLogic.login(data.userID);
       print('---------jpush login success----');
       return true;
     } catch (e) {
@@ -133,5 +134,9 @@ class LoginLogic extends GetxController {
   void openCountryCodePicker() async {
     String? code = await IMWidget.showCountryCodePicker();
     if (null != code) areaCode.value = code;
+  }
+
+  void forgetPassword() {
+    AppNavigator.startForgetPassword();
   }
 }

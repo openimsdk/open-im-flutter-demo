@@ -9,6 +9,7 @@ import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ConversationLogic extends GetxController {
   var popCtrl = CustomPopupMenuController();
@@ -16,12 +17,18 @@ class ConversationLogic extends GetxController {
   var imLogic = Get.find<IMController>();
   var homeLogic = Get.find<HomeLogic>();
   var appLogic = Get.find<AppController>();
+  final refreshController = RefreshController(initialRefresh: false);
+  var tempDraftText = <String, String>{};
 
   @override
   void onInit() {
     imLogic.conversationAddedSubject.listen((newList) {
+      // getConversationListSplit();
+      // getAllConversationList();
+      // list.addAll(newList);
       list.insertAll(0, newList);
       _sortConversationList();
+      // _parseDoNotDisturb(newList);
     });
     imLogic.conversationChangedSubject.listen((newList) {
       for (var newValue in newList) {
@@ -29,6 +36,10 @@ class ConversationLogic extends GetxController {
       }
       list.insertAll(0, newList);
       _sortConversationList();
+      // getConversationListSplit();
+      // getAllConversationList();
+      // list.assignAll(newList);
+      // _parseDoNotDisturb(newList);
     });
     super.onInit();
   }
@@ -56,7 +67,12 @@ class ConversationLogic extends GetxController {
           offset: 0,
           count: 40,
         )
-        .then((value) => list..assignAll(value));
+        .then((value) => list..assignAll(value))
+        .then((list) => _parseDoNotDisturb(list));
+    // OpenIM.iMManager.conversationManager
+    //     .getAllConversationList()
+    //     .then((value) => list..assignAll(value))
+    //     .then((list) => _parseDoNotDisturb(list));
   }
 
   /// 标记会话已读
@@ -74,7 +90,7 @@ class ConversationLogic extends GetxController {
     var info = list.elementAt(index);
     OpenIM.iMManager.conversationManager.pinConversation(
       conversationID: info.conversationID,
-      isPinned: !(info.isPinned == 1),
+      isPinned: !info.isPinned!,
     );
   }
 
@@ -119,28 +135,14 @@ class ConversationLogic extends GetxController {
     return prefix;
   }
 
-  Map<String, String> getAtUserMap(int index) {
-    var info = list.elementAt(index);
-    if (info.isGroupChat) {
-      Map<String, String> map =
-          DataPersistence.getAtUserMap(info.groupID!)?.cast() ?? {};
-      return map;
-    }
-    return {};
-  }
-
   /// 解析消息内容
   String getMsgContent(int index) {
     var info = list.elementAt(index);
+
     if (null != info.draftText && '' != info.draftText) {
       var map = json.decode(info.draftText!);
       String text = map['text'];
       if (text.isNotEmpty) {
-        // Map<String, dynamic> atMap = map['at'];
-        // print('text:$text  atMap:$atMap');
-        // atMap.forEach((uid, uname) {
-        //   text = text.replaceAll(uid, uname);
-        // });
         return text;
       }
     }
@@ -163,9 +165,9 @@ class ConversationLogic extends GetxController {
       return '[${StrRes.carte}]';
     } else if (info.latestMsg?.contentType == MessageType.revoke) {
       if (info.latestMsg?.sendID == OpenIM.iMManager.uid) {
-        return '[${StrRes.you}${StrRes.revokeMsg}]';
+        return '[${StrRes.you} ${StrRes.revokeMsg}]';
       } else {
-        return '[${info.latestMsg!.senderNickName}${StrRes.revokeMsg}]';
+        return '[${info.latestMsg!.senderNickname} ${StrRes.revokeMsg}]';
       }
     } else if (info.latestMsg?.contentType == MessageType.at_text) {
       String text = info.latestMsg!.content!;
@@ -188,8 +190,18 @@ class ConversationLogic extends GetxController {
       } catch (e) {
         text = json.encode(info.latestMsg);
       }
-      return text;
+      return text ?? '[${StrRes.unsupportedMessage}]';
     }
+  }
+
+  Map<String, String> getAtUserMap(int index) {
+    var info = list.elementAt(index);
+    if (info.isGroupChat) {
+      Map<String, String> map =
+          DataPersistence.getAtUserMap(info.groupID!)?.cast() ?? {};
+      return map;
+    }
+    return {};
   }
 
   // String text = info.latestMsg?.content?.trim() ?? '';
@@ -203,7 +215,7 @@ class ConversationLogic extends GetxController {
   /// 头像
   String? getAvatar(int index) {
     var info = list.elementAt(index);
-    return info.faceUrl;
+    return info.faceURL;
   }
 
   bool isGroupChat(int index) {
@@ -239,7 +251,12 @@ class ConversationLogic extends GetxController {
   /// 判断置顶
   bool isPinned(int index) {
     var info = list.elementAt(index);
-    return info.isPinned == 1;
+    return info.isPinned!;
+  }
+
+  bool isNotDisturb(int index) {
+    var info = list.elementAt(index);
+    return info.recvMsgOpt != 0;
   }
 
   void toAddFriend() {
@@ -269,10 +286,10 @@ class ConversationLogic extends GetxController {
       uid: info.userID,
       gid: info.groupID,
       name: info.showName,
-      icon: info.faceUrl,
+      icon: info.faceURL,
       oldDraftText: info.draftText,
       conversationID: info.conversationID,
-      unreadCount: info.unreadCount!,
+      // unreadCount: info.unreadCount!,
     );
   }
 
@@ -285,49 +302,93 @@ class ConversationLogic extends GetxController {
     String? icon,
     String? oldDraftText,
     String? conversationID,
-    int? unreadCount,
+    // int? unreadCount,
   }) async {
     ConversationInfo? info;
 
     // 获取会话信息，若不存在则创建
     if (null == conversationID) {
-      info = await OpenIM.iMManager.conversationManager.getSingleConversation(
+      info = await OpenIM.iMManager.conversationManager.getOneConversation(
         sourceID: uid == null ? gid! : uid,
         sessionType: uid == null ? 2 : 1,
       );
     }
 
+    conversationID ??= info!.conversationID;
+    oldDraftText ??= info!.draftText!;
+
+    // 保存旧草稿
+    updateDartText(
+      conversationID: conversationID,
+      uid: uid,
+      gid: gid,
+      text: oldDraftText,
+    );
+
     // 打开聊天窗口，关闭返回草稿
-    var newDraftText = await AppNavigator.startChat(
+    /*var newDraftText = */
+    await AppNavigator.startChat(
       type: type,
       uid: uid,
       gid: gid,
       name: name,
       icon: icon,
-      draftText: oldDraftText ?? info?.draftText,
+      draftText: oldDraftText,
     );
 
-    _markMessageHasRead(
-      uid: uid,
-      gid: gid,
-      unreadCount: unreadCount ?? info!.unreadCount!,
-    );
+    // 读取草稿
+    var newDraftText = tempDraftText[conversationID];
 
+    int? count;
+    var l = list.where((e) => e.conversationID == conversationID);
+    if (l.isNotEmpty) {
+      count = l.first.unreadCount;
+    }
+    // count ??= unreadCount ?? info!.unreadCount!;
+
+    // 标记已读
+    _markMessageHasRead(uid: uid, gid: gid, unreadCount: count);
+
+    // 记录草稿
     _setupDraftText(
-      conversationID: conversationID ?? info!.conversationID,
-      oldDraftText: oldDraftText ?? info!.draftText!,
-      newDraftText: newDraftText,
+      conversationID: conversationID,
+      oldDraftText: oldDraftText,
+      newDraftText: newDraftText!,
     );
     // 回到会话列表
     // homeLogic.switchTab(0);
   }
 
+  /// 草稿
+  /// 聊天页调用，不在通过onWillPop事件返回，因为该事件会拦截ios的右滑返回上一页。
+  void updateDartText({
+    String? conversationID,
+    String? uid,
+    String? gid,
+    required String text,
+  }) {
+    print(
+        '----conversationID:$conversationID uid:$uid   gid:$gid   text:$text');
+    if (null == conversationID || conversationID.isEmpty) {
+      if (null != uid && uid.isNotEmpty) {
+        conversationID = 'single_$uid';
+      } else if (null != gid && gid.isNotEmpty) {
+        conversationID = 'group_$gid';
+      }
+    }
+    if (null != conversationID) tempDraftText[conversationID] = text;
+  }
+
   /// 清空未读消息数
-  void _markMessageHasRead({String? uid, String? gid, int unreadCount = 0}) {
-    if (unreadCount > 0) {
+  void _markMessageHasRead({String? uid, String? gid, int? unreadCount}) {
+    if (unreadCount != null && unreadCount > 0) {
       if (uid != null && uid.isBlank == false) {
-        OpenIM.iMManager.conversationManager.markSingleMessageHasRead(
+        // OpenIM.iMManager.conversationManager.markSingleMessageHasRead(
+        //   userID: uid,
+        // );
+        OpenIM.iMManager.messageManager.markC2CMessageAsRead(
           userID: uid,
+          messageIDList: [],
         );
       } else {
         OpenIM.iMManager.conversationManager.markGroupMessageHasRead(
@@ -347,7 +408,7 @@ class ConversationLogic extends GetxController {
       return;
     }
 
-    // 保存草稿
+    /// 保存草稿
     print('draftText:$newDraftText');
     OpenIM.iMManager.conversationManager.setConversationDraft(
       conversationID: conversationID,
@@ -355,8 +416,40 @@ class ConversationLogic extends GetxController {
     );
   }
 
+  /// 更新会话免打扰
+  void _parseDoNotDisturb(List<ConversationInfo> list) async {
+    list.forEach((info) {
+      if (info.isGroupChat) {
+        appLogic.notDisturbMap['group_${info.groupID}'] = info.recvMsgOpt != 0;
+      } else if (info.isSingleChat) {
+        appLogic.notDisturbMap['single_${info.userID}'] = info.recvMsgOpt != 0;
+      }
+    });
+  }
+
   /// 自定义会话列表排序规则
-  void _sortConversationList() {
-    OpenIM.iMManager.conversationManager.simpleSort(list);
+  void _sortConversationList() =>
+      OpenIM.iMManager.conversationManager.simpleSort(list);
+
+  void onRefresh() async {
+    OpenIM.iMManager.conversationManager
+        .getConversationListSplit(
+          offset: 0,
+          count: 40,
+        )
+        .then((value) => list..assignAll(value))
+        .then((list) => _parseDoNotDisturb(list))
+        .whenComplete(() => refreshController.refreshCompleted());
+  }
+
+  void onLoading() async {
+    OpenIM.iMManager.conversationManager
+        .getConversationListSplit(
+          offset: list.length,
+          count: 40,
+        )
+        .then((value) => list..addAll(value))
+        .then((list) => _parseDoNotDisturb(list))
+        .whenComplete(() => refreshController.loadComplete());
   }
 }

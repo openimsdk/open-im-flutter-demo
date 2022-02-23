@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
@@ -27,9 +24,11 @@ class HomeLogic extends GetxController {
   /// 获取好友申请未处理数
   void getUnhandledFriendApplicationCount() {
     var i = 0;
-    OpenIM.iMManager.friendshipManager.getFriendApplicationList().then((list) {
+    OpenIM.iMManager.friendshipManager
+        .getRecvFriendApplicationList()
+        .then((list) {
       for (var info in list) {
-        if (info.flag == 0) i++;
+        if (info.handleResult == 0) i++;
       }
       unhandledFriendApplicationCount.value = i;
       unhandledCount.value = unhandledGroupApplicationCount.value + i;
@@ -38,9 +37,9 @@ class HomeLogic extends GetxController {
 
   /// 获取群申请未处理数
   void getUnhandledGroupApplicationCount() {
-    OpenIM.iMManager.groupManager.getGroupApplicationList().then((info) {
-      log(json.encode(info));
-      var i = info.count ?? 0;
+    OpenIM.iMManager.groupManager.getRecvGroupApplicationList().then((list) {
+      var i = list.where((e) => e.handleResult == 0).length;
+      print('getUnhandledGroupApplicationCount-----------$i}');
       unhandledGroupApplicationCount.value = i;
       unhandledCount.value = unhandledFriendApplicationCount.value + i;
     });
@@ -54,15 +53,12 @@ class HomeLogic extends GetxController {
     imLogic.friendApplicationChangedSubject.listen((value) {
       getUnhandledFriendApplicationCount();
     });
-    imLogic.onReceiveJoinApplication = (gid, info, opReason) {
-      getUnhandledGroupApplicationCount();
-    };
-    // imLogic.onMemberEnter = (gid, list) {
-    //   getUnhandledGroupApplicationCount();
-    // };
-    imLogic.memberEnterSubject.listen((value) {
+    imLogic.groupApplicationChangedSubject.listen((value) {
       getUnhandledGroupApplicationCount();
     });
+    // imLogic.memberAddedSubject.listen((value) {
+    //   getUnhandledGroupApplicationCount();
+    // });
     super.onInit();
   }
 

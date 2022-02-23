@@ -1,6 +1,8 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
+import 'package:openim_demo/src/models/contacts_info.dart';
 import 'package:openim_demo/src/pages/add_friend/search/search_logic.dart';
+import 'package:openim_demo/src/pages/chat/group_setup/group_member_manager/member_list/member_list_logic.dart';
 import 'package:openim_demo/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_demo/src/widgets/qr_view.dart';
 
@@ -72,7 +74,7 @@ class AppNavigator {
     String? name,
     String? icon,
     String? draftText,
-  }) {
+  }) async {
     var arguments = {
       'uid': uid,
       'gid': gid,
@@ -80,17 +82,27 @@ class AppNavigator {
       'icon': icon,
       'draftText': draftText,
     };
+    // var result = await navigator?.push(
+    //   CustomMaterialPageRoute(
+    //     settings: RouteSettings(name: AppRoutes.CHAT, arguments: arguments),
+    //     builder: (_) {
+    //       return GetBuilder(
+    //         init: ChatLogic(),
+    //         builder: (controller) => ChatPage(),
+    //       );
+    //     },
+    //   ),
+    // );
+    // return result;
     switch (type) {
       case 0:
         return Get.toNamed(AppRoutes.CHAT, arguments: arguments);
-
       case 1:
         return Get.offNamedUntil(
           AppRoutes.CHAT,
           (route) => route.settings.name == AppRoutes.HOME,
           arguments: arguments,
         );
-
       default:
         return Get.offNamed(AppRoutes.CHAT, arguments: arguments);
     }
@@ -121,9 +133,9 @@ class AppNavigator {
   }
 
   static Future<T?>? startSelectContacts<T>({
-    required dynamic action,
-    dynamic defaultCheckedUidList,
-    dynamic excludeUidList,
+    required SelAction action,
+    List<String>? defaultCheckedUidList,
+    List<String>? excludeUidList,
   }) {
     return Get.toNamed<T>(
       AppRoutes.SELECT_CONTACTS,
@@ -151,34 +163,34 @@ class AppNavigator {
     Get.toNamed(AppRoutes.GROUP_LIST);
   }
 
-  static Future<T?>? startFriendInfo<T>({required dynamic info}) {
+  static Future<T?>? startFriendInfo<T>({required UserInfo info}) {
     return Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
   }
 
   /// 扫一扫进去
-  static Future<T?>? startFriendInfo2<T>({required dynamic info}) {
+  static Future<T?>? startFriendInfo2<T>({required UserInfo info}) {
     return Get.offAndToNamed(AppRoutes.FRIEND_INFO, arguments: info);
     // return Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
   }
 
-  static Future<T?>? startSearchAddGroup<T>({required dynamic info}) {
+  static Future<T?>? startSearchAddGroup<T>({required GroupInfo info}) {
     return Get.toNamed(AppRoutes.SEARCH_ADD_GROUP, arguments: info);
   }
 
-  static Future<T?>? startSearchAddGroup2<T>({required dynamic info}) {
+  static Future<T?>? startSearchAddGroup2<T>({required GroupInfo info}) {
     return Get.offAndToNamed(AppRoutes.SEARCH_ADD_GROUP, arguments: info);
     // return Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
   }
 
-  static void startFriendIDCode({required dynamic info}) {
+  static void startFriendIDCode({required UserInfo info}) {
     Get.toNamed(AppRoutes.FRIEND_ID_CODE, arguments: info);
   }
 
-  static void startSendFriendRequest({required dynamic info}) {
+  static void startSendFriendRequest({required UserInfo info}) {
     Get.toNamed(AppRoutes.SEND_FRIEND_REQUEST, arguments: info);
   }
 
-  static Future<T?>? startSetFriendRemarksName<T>({required dynamic info}) {
+  static Future<T?>? startSetFriendRemarksName<T>({required UserInfo info}) {
     return Get.toNamed(AppRoutes.FRIEND_REMARK, arguments: info);
   }
 
@@ -200,7 +212,8 @@ class AppNavigator {
     );
   }
 
-  static Future<T?>? startAcceptFriendRequest<T>({dynamic apply}) {
+  static Future<T?>? startAcceptFriendRequest<T>(
+      {required FriendApplicationInfo apply}) {
     return Get.toNamed(
       AppRoutes.ACCEPT_FRIEND_REQUEST,
       arguments: apply,
@@ -227,14 +240,15 @@ class AppNavigator {
   //   Get.toNamed(AppRoutes.CALL, arguments: data);
   // }
 
-  static void startCreateGroupInChatSetup({dynamic members}) {
+  static void startCreateGroupInChatSetup(
+      {required List<ContactsInfo> members}) {
     Get.offNamed(
       AppRoutes.CREATE_GROUP_IN_CHAT_SETUP,
       arguments: {'members': members},
     );
   }
 
-  static void startGroupNameSet({dynamic info}) {
+  static void startGroupNameSet({required GroupInfo info}) {
     Get.toNamed(AppRoutes.GROUP_NAME_SETUP, arguments: info);
   }
 
@@ -242,15 +256,15 @@ class AppNavigator {
     Get.toNamed(AppRoutes.MY_GROUP_NICKNAME);
   }
 
-  static void startEditAnnouncement({dynamic info}) {
+  static void startEditAnnouncement({required GroupInfo info}) {
     Get.toNamed(AppRoutes.GROUP_ANNOUNCEMENT_SETUP, arguments: info);
   }
 
-  static void startViewGroupQrcode({dynamic info}) {
+  static void startViewGroupQrcode({required GroupInfo info}) {
     Get.toNamed(AppRoutes.GROUP_QRCODE, arguments: info);
   }
 
-  static Future<T?>? startGroupMemberManager<T>({dynamic info}) {
+  static Future<T?>? startGroupMemberManager<T>({required GroupInfo info}) {
     return Get.toNamed(
       AppRoutes.GROUP_MEMBER_MANAGER,
       arguments: info,
@@ -259,9 +273,9 @@ class AppNavigator {
 
   static Future<T?>? startGroupMemberList<T>({
     required String gid,
-    dynamic list,
-    dynamic action,
-    dynamic defaultCheckedUidList,
+    required OpAction action,
+    List<GroupMembersInfo>? list,
+    List<String>? defaultCheckedUidList,
   }) {
     return Get.toNamed(
       AppRoutes.GROUP_MEMBER_LIST,
@@ -274,7 +288,7 @@ class AppNavigator {
     );
   }
 
-  static void startViewGroupId({dynamic info}) {
+  static void startViewGroupId({required GroupInfo info}) {
     Get.toNamed(AppRoutes.GROUP_ID, arguments: info);
   }
 
@@ -298,15 +312,16 @@ class AppNavigator {
     Get.toNamed(AppRoutes.BLACKLIST);
   }
 
-  static Future<T?>? startSearchFriend<T>({dynamic list}) {
+  static Future<T?>? startSearchFriend<T>({required List<ContactsInfo> list}) {
     return Get.toNamed(AppRoutes.SEARCH_FRIEND, arguments: list);
   }
 
-  static Future<T?>? startSearchGroup<T>({dynamic list}) {
+  static Future<T?>? startSearchGroup<T>({required List<GroupInfo> list}) {
     return Get.toNamed(AppRoutes.SEARCH_GROUP, arguments: list);
   }
 
-  static Future<T?>? startSearchMember<T>({dynamic list}) {
+  static Future<T?>? startSearchMember<T>(
+      {required List<GroupMembersInfo> list}) {
     return Get.toNamed(AppRoutes.SEARCH_MEMBER, arguments: list);
   }
 
@@ -327,7 +342,7 @@ class AppNavigator {
         defaultCheckedUidList: [OpenIM.iMManager.uid],
       );
 
-  static void applyEnterGroup(dynamic info) {
+  static void applyEnterGroup(GroupInfo info) {
     Get.toNamed(AppRoutes.APPLY_ENTER_GROUP, arguments: info);
   }
 
@@ -343,5 +358,14 @@ class AppNavigator {
       'aInfo': aInfo,
       'gInfo': gInfo,
     });
+  }
+
+  static void startOrganization() {
+    Get.toNamed(AppRoutes.ORGANIZATION);
+  }
+
+  static void startForgetPassword({String accountType = "phone"}) {
+    Get.toNamed(AppRoutes.FORGET_PASSWORD,
+        arguments: {"accountType": accountType});
   }
 }

@@ -142,7 +142,7 @@ class PreviewMergeMsg extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            message.senderNickName!,
+                            message.senderNickname!,
                             style: PageStyle.ts_666666_12sp,
                           ),
                           if (text != null && child == null)

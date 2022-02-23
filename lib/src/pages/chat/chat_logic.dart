@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,9 +13,11 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
 import 'package:openim_demo/src/models/contacts_info.dart';
+import 'package:openim_demo/src/pages/conversation/conversation_logic.dart';
 import 'package:openim_demo/src/pages/select_contacts/select_contacts_logic.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/sdk_extension/message_manager.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
 import 'package:openim_demo/src/widgets/bottom_sheet_view.dart';
@@ -25,17 +26,21 @@ import 'package:openim_demo/src/widgets/map_view.dart';
 import 'package:openim_demo/src/widgets/preview_merge_msg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart' as rx;
+import 'package:sprintf/sprintf.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+import 'group_setup/group_member_manager/member_list/member_list_logic.dart';
+
 class ChatLogic extends GetxController {
-  var imLogic = Get.find<IMController>();
-  var inputCtrl = TextEditingController();
-  var focusNode = FocusNode();
-  var autoCtrl = ScrollController();
+  final imLogic = Get.find<IMController>();
+  final conversationLogic = Get.find<ConversationLogic>();
+  final inputCtrl = TextEditingController();
+  final focusNode = FocusNode();
+  final autoCtrl = ScrollController();
 
   final refreshController = RefreshController();
 
@@ -82,7 +87,7 @@ class ChatLogic extends GetxController {
   var curMsgAtUser = <String>[];
 
   var _uuid = Uuid();
-  var listViewKey = '1124'.obs;
+  var listViewKey = '1024'.obs;
   var _isFirstLoad = true;
   var _lastCursorIndex = -1;
   var onlineStatus = false.obs;
@@ -152,9 +157,17 @@ class ChatLogic extends GetxController {
           }
         } else {
           if (!messageList.contains(message)) {
-            // messageList.insert(0, message);
             messageList.add(message);
-            // scrollBottom();
+            // ios 退到后台再次唤醒消息乱序
+            messageList.sort((a, b) {
+              if (a.sendTime! > b.sendTime!) {
+                return 1;
+              } else if (a.sendTime! > b.sendTime!) {
+                return -1;
+              } else {
+                return 0;
+              }
+            });
           }
         }
       }
@@ -164,7 +177,7 @@ class ChatLogic extends GetxController {
       messageList.removeWhere((e) => e.clientMsgID == msgId);
     };
     // 消息已读回执监听
-    imLogic.onRecvC2CReadReceipt = (List<HaveReadInfo> list) {
+    imLogic.onRecvC2CReadReceipt = (List<ReadReceiptInfo> list) {
       try {
         // var info = list.firstWhere((read) => read.uid == uid);
         list.forEach((readInfo) {
@@ -187,17 +200,21 @@ class ChatLogic extends GetxController {
     };
 
     // 有新成员进入
-    imLogic.memberEnterSubject.stream.listen((map) {
-      var groupId = map['groupId'];
+    imLogic.memberAddedSubject.stream.listen((info) {
+      var groupId = info.groupID;
       if (groupId == gid) {
-        _putMemberInfo(map['list']);
+        _putMemberInfo([info]);
       }
     });
-    // imLogic.onMemberEnter = (groupId, list) {
-    //   if (groupId == gid) {
-    //     _putMemberInfo(list);
-    //   }
-    // };
+
+    // 成员信息改变
+    imLogic.memberInfoChangedSubject.listen((info) {
+      var groupId = info.groupID;
+      if (groupId == gid) {
+        _putMemberInfo([info]);
+      }
+    });
+
     // 自定义消息点击事件
     clickSubject.listen((index) {
       print('index:$index');
@@ -211,6 +228,7 @@ class ChatLogic extends GetxController {
         milliseconds: 2000,
       );
       clearCurAtMap();
+      _updateDartText(createDraftText());
     });
 
     // 输入框聚焦
@@ -223,18 +241,17 @@ class ChatLogic extends GetxController {
     imLogic.groupInfoUpdatedSubject.listen((value) {
       if (gid == value.groupID) {
         name.value = value.groupName ?? '';
-        icon.value = value.faceUrl ?? '';
+        icon.value = value.faceURL ?? '';
       }
     });
 
     // 好友信息变化
     imLogic.friendInfoChangedSubject.listen((value) {
-      if (uid == value.uid) {
-        name.value = value.getShowName();
-        icon.value = value.icon ?? '';
+      if (uid == value.userID) {
+        name.value = value.nickname!;
+        icon.value = value.faceURL ?? '';
       }
     });
-
     super.onInit();
   }
 
@@ -256,21 +273,21 @@ class ChatLogic extends GetxController {
   // 获取组成员，并保存id跟name
   void getAtMappingMap() async {
     if (isGroupChat) {
-      var result = await OpenIM.iMManager.groupManager.getGroupMemberList(
+      var list = await OpenIM.iMManager.groupManager.getGroupMemberList(
         groupId: gid!,
       );
-      _putMemberInfo(result.data);
+      _putMemberInfo(list);
     }
   }
 
   /// 记录群成员信息
   void _putMemberInfo(List<GroupMembersInfo>? list) {
     list?.forEach((member) {
-      atUserNameMappingMap[member.userId!] = member.nickName!;
-      atUserInfoMappingMap[member.userId!] = UserInfo(
-        uid: member.userId!,
-        name: member.nickName,
-        icon: member.faceUrl,
+      atUserNameMappingMap[member.userID!] = member.nickname!;
+      atUserInfoMappingMap[member.userID!] = UserInfo(
+        userID: member.userID!,
+        nickname: member.nickname,
+        faceURL: member.faceURL,
       );
     });
     atUserNameMappingMap[OpenIM.iMManager.uid] = StrRes.you;
@@ -293,6 +310,7 @@ class ChatLogic extends GetxController {
     } else {
       messageList.insertAll(0, list);
     }
+    log('-------${jsonEncode(list)}');
     return list.length == 40;
   }
 
@@ -396,7 +414,7 @@ class ChatLogic extends GetxController {
     var summaryList = <String>[];
     var title;
     for (var msg in multiSelList) {
-      summaryList.add('${msg.senderNickName}：${IMUtil.parseMsg(msg)}');
+      summaryList.add('${msg.senderNickname}：${IMUtil.parseMsg(msg)}');
       if (summaryList.length >= 2) break;
     }
     if (isGroupChat) {
@@ -419,7 +437,7 @@ class ChatLogic extends GetxController {
     if (isSingleChat) {
       OpenIM.iMManager.messageManager.typingStatusUpdate(
         userID: uid!,
-        typing: focus,
+        msgTip: focus ? 'yes' : 'no',
       );
     }
   }
@@ -427,23 +445,28 @@ class ChatLogic extends GetxController {
   /// 发送名片
   void sendCarte({required String uid, String? name, String? icon}) async {
     var message = await OpenIM.iMManager.messageManager.createCardMessage(
-      data: {"uid": uid, 'name': name, 'icon': icon},
+      data: {"userID": uid, 'nickname': name, 'faceURL': icon},
     );
     _sendMessage(message);
   }
 
-  void sendCustomMsg() {
-    /* OpenIM.iMManager.messageManager.createCustomMessage(
+  /// 发送自定义消息
+  void sendCustomMsg({
+    required String data,
+    required String extension,
+    required String description,
+  }) async {
+    var message = await OpenIM.iMManager.messageManager.createCustomMessage(
       data: data,
       extension: extension,
       description: description,
-    );*/
+    );
+    _sendMessage(message);
   }
 
   void _sendMessage(Message message, {String? userId, String? groupId}) {
     log('send : ${json.encode(message)}');
     if (null == userId && null == groupId) {
-      // messageList.insert(0, message);
       messageList.add(message);
       scrollBottom();
     }
@@ -455,16 +478,17 @@ class ChatLogic extends GetxController {
           userID: userId ?? uid,
           groupID: groupId ?? gid,
         )
-        .then((value) => _sendSucceeded(message))
+        .then((value) => _sendSucceeded(message, value))
         .catchError((e) => _senFailed(message, e))
         .whenComplete(() => _completed());
   }
 
   ///  消息发送成功
-  void _sendSucceeded(Message message) {
-    message.status = MessageStatus.succeeded;
+  void _sendSucceeded(Message oldMsg, Message newMsg) {
+    // message.status = MessageStatus.succeeded;
+    oldMsg.update(newMsg);
     msgSendStatusSubject.addSafely(MsgStreamEv<bool>(
-      msgId: message.clientMsgID!,
+      msgId: oldMsg.clientMsgID!,
       value: true,
     ));
   }
@@ -501,8 +525,9 @@ class ChatLogic extends GetxController {
       quoteContent.value = '';
     } else {
       quoteMsg = indexOfMessage(index);
-      var name = quoteMsg!.senderNickName;
+      var name = quoteMsg!.senderNickname;
       quoteContent.value = "$name：${IMUtil.parseMsg(quoteMsg!)}";
+      focusNode.requestFocus();
     }
   }
 
@@ -545,16 +570,21 @@ class ChatLogic extends GetxController {
   }
 
   /// 标记消息为已读
-  void markC2CMessageAsRead(int index, Message message, bool visible) {
-    print('mark as read：$index   ${message.clientMsgID!}   ${message.isRead}');
+  void markC2CMessageAsRead(int index, Message message, bool visible) async {
+    var data = parseCustomMessage(index);
+    if (null != data && data['viewType'] == CustomMessageViewType.call) {
+      return;
+    }
     if (isSingleChat &&
         visible &&
         !message.isRead! &&
         message.sendID != OpenIM.iMManager.uid) {
-      OpenIM.iMManager.messageManager.markC2CMessageAsRead(
+      print('mark as read：$index ${message.clientMsgID!} ${message.isRead}');
+      await OpenIM.iMManager.messageManager.markC2CMessageAsRead(
         userID: uid!,
         messageIDList: [message.clientMsgID!],
       );
+      message.isRead = true;
     }
   }
 
@@ -741,13 +771,18 @@ class ChatLogic extends GetxController {
   void parseClickEvent(Message msg) async {
     // log("message:${json.encode(msg)}");
     if (msg.contentType == MessageType.picture) {
-      IMUtil.openPicture(msg);
+      var list = messageList
+          .where((p0) => p0.contentType == MessageType.picture)
+          .toList();
+      var index = list.indexOf(msg);
+      IMUtil.openPicture(list, index: index, tag: msg.clientMsgID);
     } else if (msg.contentType == MessageType.video) {
       IMUtil.openVideo(msg);
     } else if (msg.contentType == MessageType.file) {
       IMUtil.openFile(msg);
       // OpenFile.open(filePath);
     } else if (msg.contentType == MessageType.card) {
+      print('-------content:${msg.content}');
       var info = ContactsInfo.fromJson(json.decode(msg.content!));
       AppNavigator.startFriendInfo(info: info);
     } else if (msg.contentType == MessageType.merger) {
@@ -777,38 +812,37 @@ class ChatLogic extends GetxController {
   }
 
   /// 拨视频或音频
-  void call() {
-    if (isGroupChat) {
-      IMWidget.openIMGroupCallSheet(gid: gid!);
-      return;
-    }
-    IMWidget.openIMCallSheet(uid: uid!, name: name.value, icon: icon.value);
-  }
+  void call() {}
 
   /// 群聊天长按头像为@用户
   void onLongPressLeftAvatar(int index) {
     var msg = indexOfMessage(index);
     if (isGroupChat) {
       var uid = msg.sendID!;
-      var uname = msg.senderNickName;
+      // var uname = msg.senderNickName;
       if (curMsgAtUser.contains(uid)) return;
       curMsgAtUser.add(uid);
       // 在光标出插入内容
       // 先保存光标前和后内容
       var cursor = inputCtrl.selection.base.offset;
+      if (!focusNode.hasFocus) {
+        focusNode.requestFocus();
+        cursor = _lastCursorIndex;
+      }
       if (cursor < 0) cursor = 0;
-      print('===================cursor:$cursor');
+      print('========cursor:$cursor   _lastCursorIndex:$_lastCursorIndex');
       // 光标前面的内容
       var start = inputCtrl.text.substring(0, cursor);
       print('===================start:$start');
       // 光标后面的内容
       var end = inputCtrl.text.substring(cursor);
       print('===================end:$end');
-      var at = '@$uid ';
+      var at = ' @$uid ';
       inputCtrl.text = '$start$at$end';
-      inputCtrl.selection = TextSelection.fromPosition(TextPosition(
-        offset: '$start$at'.length,
-      ));
+      inputCtrl.selection = TextSelection.collapsed(offset: '$start$at'.length);
+      // inputCtrl.selection = TextSelection.fromPosition(TextPosition(
+      //   offset: '$start$at'.length,
+      // ));
       _lastCursorIndex = inputCtrl.selection.start;
       print('$curMsgAtUser');
     }
@@ -817,10 +851,9 @@ class ChatLogic extends GetxController {
   void onTapLeftAvatar(int index) {
     var msg = indexOfMessage(index);
     var info = ContactsInfo.fromJson({
-      'uid': msg.sendID!,
-      'name': msg.senderNickName,
-      'icon': msg.senderFaceUrl,
-      'flag': 1,
+      'userID': msg.sendID!,
+      'nickname': msg.senderNickname,
+      'faceURL': msg.senderFaceUrl,
     });
     AppNavigator.startFriendInfo(info: info);
     // Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
@@ -828,7 +861,7 @@ class ChatLogic extends GetxController {
 
   void clickAtText(id) {
     if (null != atUserInfoMappingMap[id]) {
-      AppNavigator.startFriendInfo(info: atUserInfoMappingMap[id]);
+      AppNavigator.startFriendInfo(info: atUserInfoMappingMap[id]!);
     }
   }
 
@@ -891,13 +924,21 @@ class ChatLogic extends GetxController {
   }
 
   /// 退出界面前处理
-  bool exit() {
+  exit() async {
     if (multiSelMode.value) {
       closeMultiSelMode();
       return false;
     }
     Get.back(result: createDraftText());
     return true;
+  }
+
+  void _updateDartText(String text) {
+    conversationLogic.updateDartText(
+      text: text,
+      uid: uid,
+      gid: gid,
+    );
   }
 
   void focusNodeChanged(bool hasFocus) {
@@ -983,68 +1024,58 @@ class ChatLogic extends GetxController {
     final atReg = RegExp(regexAt);
     final emojiReg = RegExp(regexEmoji);
     var reg = RegExp(pattern);
+    var cursor = _lastCursorIndex;
+    if (cursor == 0) return;
+    Match? match;
     if (reg.hasMatch(input)) {
-      var match = reg.allMatches(inputCtrl.text).last;
-      var matchText = match.group(0)!;
-      var start = match.start;
-      var end = start + matchText.length;
-      // 当前处于末尾
-      if (end == input.length) {
-        if (atReg.hasMatch(matchText)) {
-          String id = matchText.replaceFirst("@", "").trim();
-          if (curMsgAtUser.remove(id)) {
-            inputCtrl.text = input.replaceRange(start, end, '');
-          } else {
-            inputCtrl.text = input.substring(0, input.length - 1);
-          }
-        } else if (emojiReg.hasMatch(matchText)) {
-          inputCtrl.text = input.replaceRange(start, end, "");
+      for (var m in reg.allMatches(input)) {
+        var matchText = m.group(0)!;
+        var start = m.start;
+        var end = start + matchText.length;
+        if (end == cursor) {
+          match = m;
+          break;
         }
-      } else {
-        inputCtrl.text = input.substring(0, input.length - 1);
-      }
-    } else {
-      if (input.isNotEmpty) {
-        inputCtrl.text = input.substring(0, input.length - 1);
       }
     }
-    _lastCursorIndex = inputCtrl.text.length;
+    var matchText = match?.group(0);
+    if (matchText != null) {
+      var start = match!.start;
+      var end = start + matchText.length;
+      if (atReg.hasMatch(matchText)) {
+        String id = matchText.replaceFirst("@", "").trim();
+        if (curMsgAtUser.remove(id)) {
+          inputCtrl.text = input.replaceRange(start, end, '');
+          cursor = start;
+        } else {
+          inputCtrl.text = input.replaceRange(cursor - 1, cursor, '');
+          --cursor;
+        }
+      } else if (emojiReg.hasMatch(matchText)) {
+        inputCtrl.text = input.replaceRange(start, end, "");
+        cursor = start;
+      } else {
+        inputCtrl.text = input.replaceRange(cursor - 1, cursor, '');
+        --cursor;
+      }
+    } else {
+      inputCtrl.text = input.replaceRange(cursor - 1, cursor, '');
+      --cursor;
+    }
+    _lastCursorIndex = cursor;
   }
 
   /// 用户在线状态
   void _getOnlineStatus(List<String> uidList) {
-    Apis.onlineStatus(uidList: uidList).then((list) {
-      list.forEach((e) {
-        if (e.status == 'online') {
-          // IOSPlatformStr     = "IOS"
-          // AndroidPlatformStr = "Android"
-          // WindowsPlatformStr = "Windows"
-          // OSXPlatformStr     = "OSX"
-          // WebPlatformStr     = "Web"
-          // MiniWebPlatformStr = "MiniWeb"
-          // LinuxPlatformStr   = "Linux"
-          final pList = <String>[];
-          for (var platform in e.detailPlatformStatus!) {
-            if (platform.platform == "Android" || platform.platform == "IOS") {
-              pList.add(StrRes.phoneOnline);
-            } else if (platform.platform == "Windows") {
-              pList.add(StrRes.pcOnline);
-            } else if (platform.platform == "Web") {
-              pList.add(StrRes.webOnline);
-            } else if (platform.platform == "MiniWeb") {
-              pList.add(StrRes.webMiniOnline);
-            } /* else {
-              onlineStatus[e.userID!] = StrRes.online;
-            }*/
-          }
-          onlineStatusDesc.value = '${pList.join('/')}${StrRes.online}';
-          onlineStatus.value = true;
-        } else {
-          onlineStatusDesc.value = StrRes.offline;
-          onlineStatus.value = false;
-        }
-      });
-    });
+    Apis.queryOnlineStatus(
+      uidList: uidList,
+      onlineStatusCallback: (map) {
+        onlineStatus.value = map[uidList.first]!;
+      },
+      onlineStatusDescCallback: (map) {
+        onlineStatusDesc.value = map[uidList.first]!;
+      },
+    );
   }
 
   void _startQueryOnlineStatus() {
@@ -1059,4 +1090,112 @@ class ChatLogic extends GetxController {
   String getSubTile() => typing.value ? StrRes.typing : onlineStatusDesc.value;
 
   bool showOnlineStatus() => !typing.value && onlineStatusDesc.isNotEmpty;
+
+  /// 语音视频通话信息不显示读状态
+  bool enabledReadStatus(int index) {
+    try {
+      var message = indexOfMessage(index);
+      switch (message.contentType) {
+        case MessageType.custom:
+          {
+            var data = message.customElem!.data;
+            var map = json.decode(data!);
+            switch (map['customType']) {
+              case CustomMessageType.call:
+                return false;
+            }
+          }
+      }
+    } catch (e) {}
+    return true;
+  }
+
+  dynamic parseCustomMessage(int index) {
+    var message = indexOfMessage(index);
+    try {
+      switch (message.contentType) {
+        case MessageType.custom:
+          {
+            var data = message.customElem!.data;
+            var map = json.decode(data!);
+            switch (map['customType']) {
+              case CustomMessageType.call:
+                {
+                  var duration = map['data']['duration'];
+                  var state = map['data']['state'];
+                  var type = map['data']['type'];
+                  var content;
+                  switch (state) {
+                    case 'BE_HANGUP':
+                    case 'HANGUP':
+                      content = sprintf(
+                          StrRes.callDuration, [IMUtil.seconds2HMS(duration)]);
+                      break;
+                    case 'CANCEL':
+                      content = StrRes.cancelled;
+                      break;
+                    case 'BE_CANCELED':
+                      content = StrRes.cancelledByCaller;
+                      break;
+                    case 'REJECT':
+                      content = StrRes.rejected;
+                      break;
+                    case 'BE_REJECTED':
+                      content = StrRes.rejectedByCaller;
+                      break;
+                    default:
+                      break;
+                  }
+                  if (content != null) {
+                    return {
+                      'viewType': CustomMessageViewType.call,
+                      'type': type,
+                      'content': content,
+                    };
+                  }
+                }
+                break;
+            }
+          }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  /// 处理输入框输入@字符
+  String? openAtList() {
+    if (gid != null && gid!.isNotEmpty) {
+      var cursor = inputCtrl.selection.baseOffset;
+      AppNavigator.startGroupMemberList(
+        gid: gid!,
+        action: OpAction.AT,
+      )?.then((list) {
+        if (null != list) {
+          var buffer = StringBuffer();
+          List uidList = list;
+          for (var uid in uidList) {
+            if (curMsgAtUser.contains(uid)) continue;
+            curMsgAtUser.add(uid);
+            buffer.write(' @$uid ');
+          }
+          if (cursor < 0) cursor = 0;
+          // 光标前面的内容
+          var start = inputCtrl.text.substring(0, cursor);
+          // 光标后面的内容
+          var end = inputCtrl.text.substring(cursor + 1);
+          inputCtrl.text = '$start$buffer$end';
+          inputCtrl.selection = TextSelection.fromPosition(TextPosition(
+            offset: '$start$buffer'.length,
+          ));
+          _lastCursorIndex = inputCtrl.selection.start;
+        } else {}
+      });
+      return "@";
+    }
+    return null;
+  }
+}
+
+enum CustomMessageViewType {
+  call,
 }

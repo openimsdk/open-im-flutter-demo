@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/models/call_records.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
-import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class CallRecordsLogic extends GetxController {
   var index = 0.obs;
@@ -34,6 +33,7 @@ class CallRecordsLogic extends GetxController {
 
   bool remove(CallRecords records) {
     _needUpdate = true;
+    missedList.remove(records);
     return list.remove(records);
   }
 
@@ -41,8 +41,5 @@ class CallRecordsLogic extends GetxController {
     this.index.value = index;
   }
 
-  void call(CallRecords records) {
-    IMWidget.openIMCallSheet(
-        uid: records.uid, name: records.name, icon: records.icon);
-  }
+  void call(CallRecords records) {}
 }

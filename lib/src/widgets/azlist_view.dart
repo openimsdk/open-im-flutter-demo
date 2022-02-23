@@ -4,66 +4,67 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_demo/src/res/images.dart';
 import 'package:openim_demo/src/res/styles.dart';
 import 'package:openim_demo/src/widgets/radio_button.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'avatar_view.dart';
 
 class WrapAzListView<T extends ISuspensionBean> extends StatelessWidget {
   const WrapAzListView({
     Key? key,
-    this.itemScrollController,
+    // this.itemScrollController,
     required this.data,
     required this.itemBuilder,
   }) : super(key: key);
 
   /// Controller for jumping or scrolling to an item.
-  final ItemScrollController? itemScrollController;
+  // final ItemScrollController? itemScrollController;
   final List<T> data;
   final Widget Function(BuildContext context, T data, int index) itemBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: AzListView(
-        data: data,
-        physics: AlwaysScrollableScrollPhysics(),
-        itemCount: data.length,
-        itemBuilder: (BuildContext context, int index) {
-          var model = data[index];
-          return itemBuilder(context, model, index);
-        },
-        itemScrollController: itemScrollController,
-        susItemBuilder: (BuildContext context, int index) {
-          var model = data[index];
-          return _buildTagView(model.getSuspensionTag());
-        },
-        indexBarData: SuspensionUtil.getTagIndexList(data),
-        indexBarOptions: IndexBarOptions(
-          needRebuild: true,
-          selectTextStyle: TextStyle(
-            fontSize: 12,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-          selectItemDecoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFF333333),
-          ),
-          indexHintWidth: 96,
-          indexHintHeight: 97,
-          indexHintDecoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(ImageRes.ic_indexBarBg),
-              fit: BoxFit.contain,
-            ),
-          ),
-          indexHintAlignment: Alignment.centerRight,
-          indexHintTextStyle: TextStyle(
-            fontSize: 24.0,
-            color: Colors.black87,
-          ),
-          indexHintOffset: Offset(-30, 0),
+    return AzListView(
+      data: data,
+      // physics: AlwaysScrollableScrollPhysics(),
+      itemCount: data.length,
+      itemBuilder: (BuildContext context, int index) {
+        var model = data[index];
+        return itemBuilder(context, model, index);
+      },
+      // itemScrollController: itemScrollController,
+      susItemBuilder: (BuildContext context, int index) {
+        var model = data[index];
+        if ('↑' == model.getSuspensionTag()) {
+          return Container();
+        }
+        return _buildTagView(model.getSuspensionTag());
+      },
+      susItemHeight: 23.h,
+      indexBarData: SuspensionUtil.getTagIndexList(data),
+      indexBarOptions: IndexBarOptions(
+        needRebuild: true,
+        selectTextStyle: TextStyle(
+          fontSize: 12,
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
         ),
+        // selectItemDecoration: BoxDecoration(
+        //   shape: BoxShape.circle,
+        //   color: Color(0xFF333333),
+        // ),
+        indexHintWidth: 96,
+        indexHintHeight: 97,
+        indexHintDecoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(ImageRes.ic_indexBarBg),
+            fit: BoxFit.contain,
+          ),
+        ),
+        indexHintAlignment: Alignment.centerRight,
+        indexHintTextStyle: TextStyle(
+          fontSize: 24.0,
+          color: Colors.black87,
+        ),
+        indexHintOffset: Offset(-30, 0),
       ),
     );
   }
@@ -89,6 +90,7 @@ Widget buildAzListItemView({
   bool checked = false,
   bool enabled = true,
   String? onlineStatus,
+  List<Widget>? tags,
 }) =>
     Ink(
       child: InkWell(
@@ -129,11 +131,15 @@ Widget buildAzListItemView({
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        name,
-                        style: PageStyle.ts_333333_16sp,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      Row(
+                          children: (tags ?? <Widget>[])
+                            ..insert(
+                                0,
+                                Text(
+                                  name,
+                                  style: PageStyle.ts_333333_16sp,
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
                       if (onlineStatus != null)
                         Text(
                           '[$onlineStatus]',

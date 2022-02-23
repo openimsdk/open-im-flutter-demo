@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:openim_demo/src/utils/data_persistence.dart';
 
 class JPushController extends GetxController {
   final JPush jPush = JPush();
@@ -36,7 +38,7 @@ class JPushController extends GetxController {
     jPush.setup(
       appKey: "646f952e8310ff8c9a336dee", //你自己应用的 AppKey
       channel: "developer-default",
-      production: false,
+      production: true,
       debug: true,
     );
 
@@ -163,17 +165,22 @@ class JPushController extends GetxController {
   }
 
   Future login(String uid) async {
-    await jPush.setAlias(uid).then((map) {
-      print("jpush setAlias success: $map");
-    }).catchError((error) {
-      print("jpush setAlias error: $error");
-    });
+    var logged = DataPersistence.getJpushLoginStatus(uid);
+    if (logged != true) {
+      await jPush.setAlias(uid).then((map) async {
+        print("jpush setAlias success: $map");
+        await DataPersistence.putJpushLoginStatus(uid);
+      }).catchError((error) {
+        print("jpush setAlias error: $error");
+      });
+    }
     return true;
   }
 
   Future logout() async {
-    await jPush.deleteAlias().then((map) async {
+    jPush.deleteAlias().then((map) async {
       print("jpush deleteAlias success: $map");
+      await DataPersistence.removeJpushLoginStatus(OpenIM.iMManager.uid);
     }).catchError((error) {
       print("jpush deleteAlias error: $error");
     });

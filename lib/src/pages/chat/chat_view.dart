@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:openim_demo/src/res/images.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/res/styles.dart';
 import 'package:openim_demo/src/widgets/chat_listview.dart';
@@ -90,78 +92,141 @@ class ChatPage extends StatelessWidget {
             onTap: logic.clickLinkText,
           ),
         ],
+        customItemBuilder: _buildCustomItemView,
+        enabledReadStatus: logic.enabledReadStatus(index),
       );
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return logic.exit();
-      },
-      child: ChatVoiceRecordLayout(
-        locale: Get.locale,
-        builder: (bar) => Obx(() => Scaffold(
-              backgroundColor: PageStyle.c_FFFFFF,
-              appBar: EnterpriseTitleBar.chatTitle(
-                title: logic.name.value,
-                subTitle: logic.getSubTile(),
-                onClickCallBtn: () => logic.call(),
-                onClickMoreBtn: () => logic.chatSetup(),
-                leftButton: logic.multiSelMode.value ? StrRes.cancel : null,
-                onClose: () => logic.exit(),
-                showOnlineStatus: logic.showOnlineStatus(),
-                online: logic.onlineStatus.value,
-              ),
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ChatListView(
-                        listViewKey: ObjectKey(logic.listViewKey.value),
-                        onTouch: () => logic.closeToolbox(),
-                        itemCount: logic.messageList.length,
-                        controller: logic.autoCtrl,
-                        onLoad: () => logic.getHistoryMsgList(),
-                        itemBuilder: (_, index) => Obx(() => _itemView(index)),
-                      ),
+    return Obx(() => WillPopScope(
+          onWillPop: logic.multiSelMode.value ? () async => logic.exit() : null,
+          child: ChatVoiceRecordLayout(
+            locale: Get.locale,
+            builder: (bar) => Obx(() => Scaffold(
+                  backgroundColor: PageStyle.c_FFFFFF,
+                  appBar: EnterpriseTitleBar.chatTitle(
+                    title: logic.name.value,
+                    subTitle: logic.getSubTile(),
+                    onClickCallBtn: () => logic.call(),
+                    onClickMoreBtn: () => logic.chatSetup(),
+                    leftButton: logic.multiSelMode.value ? StrRes.cancel : null,
+                    onClose: () => logic.exit(),
+                    showOnlineStatus: logic.showOnlineStatus(),
+                    online: logic.onlineStatus.value,
+                  ),
+                  body: SafeArea(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ChatListView(
+                            listViewKey: ObjectKey(logic.listViewKey.value),
+                            onTouch: () => logic.closeToolbox(),
+                            itemCount: logic.messageList.length,
+                            controller: logic.autoCtrl,
+                            onLoad: () => logic.getHistoryMsgList(),
+                            itemBuilder: (_, index) =>
+                                Obx(() => _itemView(index)),
+                          ),
+                        ),
+                        ChatInputBoxView(
+                          controller: logic.inputCtrl,
+                          allAtMap: logic.atUserNameMappingMap,
+                          toolbox: ChatToolsView(
+                            onTapAlbum: () => logic.onTapAlbum(),
+                            onTapCamera: () => logic.onTapCamera(),
+                            onTapCarte: () => logic.onTapCarte(),
+                            onTapFile: () => logic.onTapFile(),
+                            onTapLocation: () => logic.onTapLocation(),
+                            onTapVideoCall: () => logic.call(),
+                            onStopVoiceInput: () => logic.onStopVoiceInput(),
+                            onStartVoiceInput: () => logic.onStartVoiceInput(),
+                          ),
+                          multiOpToolbox: ChatMultiSelToolbox(
+                            onDelete: () => logic.mergeDelete(),
+                            onMergeForward: () => logic.mergeForward(),
+                          ),
+                          emojiView: ChatEmojiView(
+                            onAddEmoji: logic.onAddEmoji,
+                            onDeleteEmoji: logic.onDeleteEmoji,
+                          ),
+                          onSubmitted: (v) => logic.sendTextMsg(),
+                          forceCloseToolboxSub: logic.forceCloseToolbox,
+                          voiceRecordBar: bar,
+                          quoteContent: logic.quoteContent.value,
+                          onClearQuote: () => logic.setQuoteMsg(-1),
+                          multiMode: logic.multiSelMode.value,
+                          focusNode: logic.focusNode,
+                          inputFormatters: [
+                            AtTextInputFormatter(logic.openAtList)
+                          ],
+                        ),
+                      ],
                     ),
-                    ChatInputBoxView(
-                      controller: logic.inputCtrl,
-                      allAtMap: logic.atUserNameMappingMap,
-                      toolbox: ChatToolsView(
-                        onTapAlbum: () => logic.onTapAlbum(),
-                        onTapCamera: () => logic.onTapCamera(),
-                        onTapCarte: () => logic.onTapCarte(),
-                        onTapFile: () => logic.onTapFile(),
-                        onTapLocation: () => logic.onTapLocation(),
-                        onTapVideoCall: () => logic.call(),
-                        onStopVoiceInput: () => logic.onStopVoiceInput(),
-                        onStartVoiceInput: () => logic.onStartVoiceInput(),
-                      ),
-                      multiOpToolbox: ChatMultiSelToolbox(
-                        onDelete: () => logic.mergeDelete(),
-                        onMergeForward: () => logic.mergeForward(),
-                      ),
-                      emojiView: ChatEmojiView(
-                        onAddEmoji: logic.onAddEmoji,
-                        onDeleteEmoji: logic.onDeleteEmoji,
-                      ),
-                      onSubmitted: (v) => logic.sendTextMsg(),
-                      forceCloseToolboxSub: logic.forceCloseToolbox,
-                      voiceRecordBar: bar,
-                      quoteContent: logic.quoteContent.value,
-                      onClearQuote: () => logic.setQuoteMsg(-1),
-                      multiMode: logic.multiSelMode.value,
-                      focusNode: logic.focusNode,
-                    ),
-                  ],
-                ),
-              ),
-            )),
-        onCompleted: (sec, path) {
-          logic.sendVoice(duration: sec, path: path);
-        },
-      ),
-    );
+                  ),
+                )),
+            onCompleted: (sec, path) {
+              logic.sendVoice(duration: sec, path: path);
+            },
+          ),
+        ));
   }
+
+  /// custom item view
+  Widget? _buildCustomItemView(
+    BuildContext context,
+    int index,
+    Message message,
+  ) {
+    var data = logic.parseCustomMessage(index);
+    if (null != data && data['viewType'] == CustomMessageViewType.call) {
+      return _buildCallItemView(type: data['type'], content: data['content']);
+    }
+    return null;
+  }
+
+  /// 通话item
+  Widget _buildCallItemView({
+    required String type,
+    required String content,
+  }) =>
+      Row(
+        children: [
+          Image.asset(
+            type == 'voice'
+                ? ImageRes.ic_voiceCallMsg
+                : ImageRes.ic_videoCallMsg,
+            width: 20.h,
+            height: 20.h,
+          ),
+          SizedBox(width: 6.w),
+          Text(
+            content,
+            style: PageStyle.ts_333333_14sp,
+          ),
+        ],
+      );
+
+  /// 群公告item
+  Widget _buildAnnouncementItemView(String content) => Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Image.asset(ImageRes.ic_trumpet, width: 16.h, height: 16.h),
+                SizedBox(width: 4.w),
+                Text(
+                  StrRes.groupAnnouncement,
+                  style: PageStyle.ts_898989_13sp,
+                )
+              ],
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              content,
+              style: PageStyle.ts_333333_13sp,
+            ),
+          ],
+        ),
+      );
 }

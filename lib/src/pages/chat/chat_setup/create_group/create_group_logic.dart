@@ -25,15 +25,15 @@ class CreateGroupInChatSetupLogic extends GetxController {
       IMWidget.showToast(StrRes.createGroupNameHint);
       return;
     }
-    var gid = await OpenIM.iMManager.groupManager.createGroup(
+    var info = await OpenIM.iMManager.groupManager.createGroup(
       groupName: nameCtrl.text,
       faceUrl: avatarUrl.value,
-      list: memberList.map((e) => GroupMemberRole(uid: e.uid)).toList(),
+      list: memberList.map((e) => GroupMemberRole(userID: e.userID)).toList(),
     );
-    print('create group : $gid');
+    print('create group : $info');
     conversationLogic.startChat(
       type: 1,
-      gid: gid,
+      gid: info.groupID,
       name: nameCtrl.text,
       icon: avatarUrl.value,
     );

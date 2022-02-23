@@ -1,14 +1,14 @@
 class LoginCertificate {
-  String uid;
+  String userID;
   String token;
 
   LoginCertificate.fromJson(Map<String, dynamic> map)
-      : uid = map["uid"],
+      : userID = map["userID"],
         token = map["token"];
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['uid'] = uid;
+    data['userID'] = userID;
     data['token'] = token;
     return data;
   }

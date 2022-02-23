@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
 import 'package:openim_demo/src/models/contacts_info.dart';
-import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
 
@@ -20,10 +20,10 @@ class MyFriendListLogic extends GetxController {
   void getFriendList() async {
     OpenIM.iMManager.friendshipManager
         .getFriendListMap()
-        // .then((list) => list.where((e) => e['isInBlackList'] != 1))
-        .then((list) => list.where((e) => _filterBlackList(e)))
+        .then((list) => list.where((e) => e['blackInfo'] == null))
         .then((list) {
-          queryOnlineStatus(uidList);
+          queryOnlineStatus(
+              list.map((e) => UserInfo.fromJson(e).userID).toList().cast());
           return list;
         })
         .then((list) => list.map((e) => ContactsInfo.fromJson(e)).toList())
@@ -31,18 +31,13 @@ class MyFriendListLogic extends GetxController {
         .then((list) => friendList.assignAll(list.cast<ContactsInfo>()));
   }
 
-  bool _filterBlackList(Map<String, dynamic> map) {
-    uidList.add(map['uid']!);
-    return map["isInBlackList"] != 1;
-  }
-
   void viewFriendInfo(int index) async {
     var info = friendList.elementAt(index);
-    _comment = info.comment;
+    _comment = info.remark;
     await AppNavigator.startFriendInfo(info: info);
     // await Get.toNamed(AppRoutes.FRIEND_INFO, arguments: info);
     //
-    if (_comment != info.comment) {
+    if (_comment != info.remark) {
       IMUtil.setAzPinyinAndTag(info);
 
       // A-Z sort.
@@ -57,32 +52,33 @@ class MyFriendListLogic extends GetxController {
   void onInit() {
     imLoic.friendDelSubject.listen((user) {
       print('delete user:   ${json.encode(user)}');
-      friendList.removeWhere((e) => e.uid == user.uid);
+      friendList.removeWhere((e) => e.userID == user.userID);
     });
     imLoic.friendAddSubject.listen((user) {
       print('add user:   ${json.encode(user)}');
       // getFriendList();
-      _addUser(user);
+      _addUser(user.toJson());
     });
     imLoic.friendInfoChangedSubject.listen((user) {
       print('update user info:   ${json.encode(user)}');
       // getFriendList();
-      friendList.removeWhere((e) => e.uid == user.uid);
+      friendList.removeWhere((e) => e.userID == user.userID);
 
-      _addUser(user);
+      print('=========toJson:${user.toJson()}=========');
+      _addUser(user.toJson());
     });
 
-    imLoic.onBlackListAdd = (user) {
-      friendList.removeWhere((e) => e.uid == user.uid);
+    imLoic.onBlacklistAdd = (user) {
+      friendList.removeWhere((e) => e.userID == user.userID);
     };
-    imLoic.onBlackListDeleted = (user) {
-      _addUser(user);
+    imLoic.onBlacklistDeleted = (user) {
+      _addUser(user.toJson());
     };
     super.onInit();
   }
 
-  void _addUser(UserInfo user) {
-    var info = ContactsInfo.fromJson(user.toJson());
+  void _addUser(Map<String, dynamic> json) {
+    var info = ContactsInfo.fromJson(json);
 
     //
     friendList.add(IMUtil.setAzPinyinAndTag(info) as ContactsInfo);
@@ -103,34 +99,10 @@ class MyFriendListLogic extends GetxController {
   }
 
   void queryOnlineStatus(List<String> uidList) {
-    Apis.onlineStatus(uidList: uidList).then((list) {
-      list.forEach((e) {
-        if (e.status == 'online') {
-          // IOSPlatformStr     = "IOS"
-          // AndroidPlatformStr = "Android"
-          // WindowsPlatformStr = "Windows"
-          // OSXPlatformStr     = "OSX"
-          // WebPlatformStr     = "Web"
-          // MiniWebPlatformStr = "MiniWeb"
-          // LinuxPlatformStr   = "Linux"
-          for (var platform in e.detailPlatformStatus!) {
-            if (platform.platform == "Android" || platform.platform == "IOS") {
-              onlineStatus[e.userID!] = StrRes.phoneOnline;
-            } else if (platform.platform == "Windows") {
-              onlineStatus[e.userID!] = StrRes.pcOnline;
-            } else if (platform.platform == "Web" ||
-                platform.platform == "MiniWeb") {
-              onlineStatus[e.userID!] = StrRes.webOnline;
-            } else {
-              onlineStatus[e.userID!] = StrRes.online;
-            }
-          }
-        } else {
-          onlineStatus[e.userID!] = StrRes.offline;
-        }
-      });
-      // onlineStatus.refresh();
-    });
+    Apis.queryOnlineStatus(
+      uidList: uidList,
+      onlineStatusDescCallback: (map) => onlineStatus.addAll(map),
+    );
   }
 
   @override

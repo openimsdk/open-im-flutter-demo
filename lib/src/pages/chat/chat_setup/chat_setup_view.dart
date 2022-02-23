@@ -119,10 +119,10 @@ class ChatSetupPage extends StatelessWidget {
                 _buildItemView(
                   label: StrRes.friendMessageSettings,
                   showArrow: true,
-                  value: logic.messageSet.value == 0
+                  value: logic.noDisturbIndex.value == 0
                       ? StrRes.receiveMessageButNotPrompt
                       : StrRes.blockFriends,
-                  onTap: logic.messageSetting,
+                  onTap: logic.noDisturbSetting,
                 ),
               SizedBox(height: 12.h),
               _buildItemView(

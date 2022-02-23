@@ -11,7 +11,7 @@ class GroupNameSetupLogic extends GetxController {
 
   @override
   void onInit() {
-    info = Get.arguments;
+    info = Rx(Get.arguments);
     nameCtrl.text = info.value.groupName ?? '';
     enabled.value = nameCtrl.text.isNotEmpty;
     nameCtrl.addListener(() {

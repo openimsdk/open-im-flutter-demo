@@ -35,7 +35,7 @@ class SearchMemberLogic extends GetxController {
     resultList.clear();
     if (key.isNotEmpty) {
       memberList.forEach((element) {
-        if (element.nickName!.toUpperCase().contains(key.toUpperCase())) {
+        if (element.nickname!.toUpperCase().contains(key.toUpperCase())) {
           resultList.add(element);
         }
       });

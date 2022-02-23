@@ -75,8 +75,8 @@ class MineLogic extends GetxController {
     //   userInfo?.value = value;
     // });
     imLogic.onKickedOfflineSubject.listen((value) {
-      // Get.snackbar('提示!', '你的账号已在其他设备登录，请及时修改密码。');
-      // kickedOffline();
+      Get.snackbar(StrRes.accountWarn, StrRes.accountException);
+      kickedOffline();
     });
     super.onInit();
   }

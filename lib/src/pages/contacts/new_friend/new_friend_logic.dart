@@ -1,18 +1,19 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 
 class NewFriendLogic extends GetxController {
   var imLogic = Get.find<IMController>();
-  var applicationList = <UserInfo>[].obs;
+  var applicationList = <FriendApplicationInfo>[].obs;
   var canSeeMore = false.obs;
   var isExpanded = false.obs;
 
   /// 获取好友申请列表
   void getFriendApplicationList() async {
     var list =
-        await OpenIM.iMManager.friendshipManager.getFriendApplicationList();
+        await OpenIM.iMManager.friendshipManager.getRecvFriendApplicationList();
     applicationList
       ..clear()
       ..addAll(list /*.map((e) => e)*/);
@@ -28,7 +29,7 @@ class NewFriendLogic extends GetxController {
     //   arguments: apply,
     // );
     if (result == true) {
-      apply.flag = 1;
+      apply.handleResult = 1;
       applicationList.refresh();
     }
 
@@ -49,9 +50,9 @@ class NewFriendLogic extends GetxController {
   void refuseFriendApplication(int index) async {
     var apply = applicationList.elementAt(index);
     await OpenIM.iMManager.friendshipManager.refuseFriendApplication(
-      uid: apply.uid,
+      uid: apply.fromUserID!,
     );
-    apply.flag = -1;
+    apply.handleResult = -1;
     applicationList.refresh();
   }
 
@@ -61,7 +62,12 @@ class NewFriendLogic extends GetxController {
       acceptFriendApplication(index);
     } else if (info.isAgreed) {
       //
-      AppNavigator.startFriendInfo(info: info);
+      AppNavigator.startFriendInfo(
+          info: UserInfo.fromJson({
+        "userID": info.fromUserID,
+        "nickname": info.fromNickname,
+        "faceURL": info.fromFaceURL,
+      }));
     }
   }
 

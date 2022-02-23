@@ -19,6 +19,7 @@ class ContactsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: PageStyle.c_FFFFFF,
       appBar: EnterpriseTitleBar.leftTitle(
         title: StrRes.contacts,
         actions: [
@@ -44,24 +45,22 @@ class ContactsPage extends StatelessWidget {
                 onTap: () => logic.toFriendApplicationList(),
                 count: homeLogic.unhandledFriendApplicationCount.value,
               ),
-              _buildLine(),
               _buildGroupItem(
                 icon: ImageRes.ic_groupApplicationNotification,
                 label: StrRes.groupApplicationNotification,
                 onTap: () => logic.viewGroupApplication(),
                 count: homeLogic.unhandledGroupApplicationCount.value,
               ),
-              _buildLine(),
               _buildGroupItem(
                 icon: ImageRes.ic_myFriend,
                 label: StrRes.myFriend,
                 onTap: () => logic.toMyFriendList(),
               ),
-              _buildLine(),
               _buildGroupItem(
                 icon: ImageRes.ic_myGroup,
                 label: StrRes.myGroup,
                 onTap: () => logic.toMyGroupList(),
+                showUnderline: false,
               ),
               _buildSubTitle(),
               SliverList(
@@ -81,59 +80,39 @@ class ContactsPage extends StatelessWidget {
     required String label,
     int count = 0,
     Function()? onTap,
+    bool showUnderline = true,
   }) =>
       SliverToBoxAdapter(
-        child: Ink(
-          color: Colors.white,
-          child: InkWell(
-            onTap: onTap,
-            child: Container(
-              height: 64.h,
-              padding: EdgeInsets.symmetric(horizontal: 22.w),
-              child: Row(
-                children: [
-                  Image.asset(
-                    icon,
-                    width: 42.h,
-                    height: 42.h,
-                  ),
-                  SizedBox(
-                    width: 18.w,
-                  ),
-                  Text(
-                    label,
-                    style: PageStyle.ts_333333_18sp,
-                  ),
-                  Spacer(),
-                  UnreadCountView(count: count),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Image.asset(
-                    ImageRes.ic_next,
-                    width: 7.w,
-                    height: 13.h,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        child: _buildItemView(
+            icon: icon,
+            label: label,
+            showUnderline: showUnderline,
+            showUnreadCount: true,
+            showRightArrow: true,
+            viewType: 0,
+            count: count,
+            onTap: onTap),
       );
 
-  Widget _buildLine() => SliverToBoxAdapter(
-        child: Container(
-          margin: EdgeInsets.only(left: 82.w, right: 22.w),
-          color: Color(0xFFF1F1F1),
-          height: 1,
-        ),
-      );
+  Widget _buildContactsItem(UserInfo info) => Obx(() => _buildItemView(
+        icon: info.faceURL!,
+        label: info.getShowName(),
+        showUnderline: true,
+        showUnreadCount: false,
+        showRightArrow: false,
+        viewType: 2,
+        key: info.userID,
+        onlineStatus: logic.onlineStatusDesc[info.userID],
+        onTap: () => logic.viewContactsInfo(info),
+        onDismiss: () => logic.removeFrequentContacts(info),
+      ));
 
   Widget _buildSubTitle() => SliverToBoxAdapter(
         child: Container(
-          color: Color(0xFF1B72EC).withOpacity(0.12),
+          color: PageStyle.c_F8F8F8,
+          // color: Color(0xFF1B72EC).withOpacity(0.12),
           padding: EdgeInsets.only(left: 22.w),
-          height: 23.h,
+          height: 33.h,
           child: Row(
             children: [
               Text(
@@ -145,45 +124,133 @@ class ContactsPage extends StatelessWidget {
         ),
       );
 
-  Widget _buildContactsItem(UserInfo info) => Ink(
-        height: 64.h,
+  Widget _buildItemView({
+    required String icon,
+    required String label,
+    String? onlineStatus,
+    int count = 0,
+    Function()? onTap,
+    bool showUnderline = true,
+    bool showUnreadCount = true,
+    bool showRightArrow = true,
+    int viewType = 0,
+    String? key,
+    bool Function()? onDismiss,
+  }) =>
+      Ink(
+        color: Colors.white,
         child: InkWell(
-          onTap: () => logic.viewContactsInfo(info),
-          child: Dismissible(
-            key: Key(info.uid),
-            confirmDismiss: (direction) async {
-              return logic.removeFrequentContacts(info);
-            },
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 22.w,
-                ),
-                AvatarView(
-                  size: 44.h,
-                  url: info.icon,
-                ),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 14.w),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      border: BorderDirectional(
-                        bottom: BorderSide(
-                          color: PageStyle.c_F0F0F0,
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      info.getShowName(),
-                      style: PageStyle.ts_333333_16sp,
-                    ),
+          onTap: onTap,
+          child: viewType == 2
+              ? Dismissible(
+                  key: Key(key!),
+                  confirmDismiss: (direction) async {
+                    return onDismiss!.call();
+                  },
+                  child: _buildChildView(
+                    icon: icon,
+                    label: label,
+                    onlineStatus: onlineStatus,
+                    count: count,
+                    onTap: onTap,
+                    showUnderline: showUnderline,
+                    showRightArrow: showRightArrow,
+                    showUnreadCount: showUnreadCount,
+                    viewType: viewType,
                   ),
+                )
+              : _buildChildView(
+                  icon: icon,
+                  label: label,
+                  onlineStatus: onlineStatus,
+                  count: count,
+                  onTap: onTap,
+                  showUnderline: showUnderline,
+                  showRightArrow: showRightArrow,
+                  showUnreadCount: showUnreadCount,
+                  viewType: viewType,
                 ),
-              ],
+        ),
+      );
+
+  Widget _buildChildView({
+    required String icon,
+    required String label,
+    String? onlineStatus,
+    int count = 0,
+    Function()? onTap,
+    bool showUnderline = true,
+    bool showUnreadCount = true,
+    bool showRightArrow = true,
+    int viewType = 0,
+  }) =>
+      Container(
+        height: 61.h,
+        padding: EdgeInsets.symmetric(horizontal: 22.w),
+        child: Row(
+          children: [
+            if (viewType == 2) AvatarView(size: 44.h, url: icon),
+            if (viewType == 1)
+              Container(
+                width: 42.h,
+                height: 42.h,
+                child: Center(
+                  child: Image.asset(icon, width: 24.h, height: 24.h),
+                ),
+              ),
+            if (viewType == 0) Image.asset(icon, width: 42.h, height: 42.h),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                  left: viewType == 2 ? 16.w : 18.w,
+                ),
+                alignment: Alignment.centerLeft,
+                decoration: showUnderline
+                    ? BoxDecoration(
+                        border: BorderDirectional(
+                          bottom: BorderSide(
+                            color: Color(0xFFF1F1F1),
+                            width: 1,
+                          ),
+                        ),
+                      )
+                    : null,
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          label,
+                          style: viewType == 2
+                              ? PageStyle.ts_333333_16sp
+                              : PageStyle.ts_333333_18sp,
+                        ),
+                        if (viewType == 2 && null != onlineStatus)
+                          Text(
+                            onlineStatus,
+                            style: PageStyle.ts_999999_12sp,
+                          ),
+                      ],
+                    ),
+                    Spacer(),
+                    if (showUnreadCount)
+                      Container(
+                        margin: EdgeInsets.only(right: 5.w),
+                        child: UnreadCountView(count: count),
+                      ),
+                    if (showRightArrow)
+                      Image.asset(
+                        ImageRes.ic_moreArrow,
+                        width: 16.w,
+                        height: 16.h,
+                      ),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       );
 }

@@ -13,6 +13,7 @@ class DataPersistence {
   static const _IP = 'ip';
   static const _language = "language";
   static const _ignoreUpdate = 'ignoreUpdate';
+  static const _jpushLogin = '%s_jpushLogin';
 
   DataPersistence._();
 
@@ -102,5 +103,17 @@ class DataPersistence {
 
   static String? getIgnoreVersion() {
     return SpUtil.getString(_ignoreUpdate);
+  }
+
+  static Future<bool>? putJpushLoginStatus(String alias) {
+    return SpUtil.putBool(sprintf(_jpushLogin, [alias]), true);
+  }
+
+  static bool? getJpushLoginStatus(String alias) {
+    return SpUtil.getBool(sprintf(_jpushLogin, [alias]), defValue: false);
+  }
+
+  static Future<bool>? removeJpushLoginStatus(String alias) {
+    return SpUtil.remove(sprintf(_jpushLogin, [alias]));
   }
 }

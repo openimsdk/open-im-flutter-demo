@@ -4,7 +4,7 @@ import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class AcceptFriendRequestLogic extends GetxController {
-  late UserInfo userInfo;
+  late FriendApplicationInfo userInfo;
 
   @override
   void onInit() {
@@ -15,7 +15,7 @@ class AcceptFriendRequestLogic extends GetxController {
   /// 接受好友申请
   void acceptFriendApplication() async {
     OpenIM.iMManager.friendshipManager
-        .acceptFriendApplication(uid: userInfo.uid)
+        .acceptFriendApplication(uid: userInfo.fromUserID!)
         .then(
       (value) {
         IMWidget.showToast(StrRes.addSuccessfully);
