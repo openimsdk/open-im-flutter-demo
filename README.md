@@ -39,7 +39,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ##### 2，android安装包debug可以运行但release启动白屏？
 
-答：flutter的release包默认是开启了混淆。可以使用命令：flutter build release --no -shrink，如果此命令无效可如下配置
+答：flutter的release包默认是开启了混淆，可以使用命令：flutter build release --no -shrink，如果此命令无效可如下操作
 
 在android/build.gradle配置的release配置加入以下配置
 
@@ -75,7 +75,7 @@ ndk {
 
 ##### 5，demo编译ios时为什么不能在模拟器上运行只能在真机上运行
 
-答：插件依赖方式： flutter_openim_sdk: ^2.0.0+1 只能运行在真机上，如果既想在模拟器上运行又想在真机上运行，可以使用以下依赖方式：
+答：插件依赖方式flutter_openim_sdk: ^xxx 只能运行在真机上。如果既想在模拟器上运行又想在真机上运行，可以使用以下依赖方式：
 
 ```
 flutter_openim_sdk:
@@ -94,7 +94,8 @@ flutter_openim_sdk:
 - pod install
 - 连接真机后运行Archive
 
-![WeChatda10dfb8d2f59f883465d7d4088064f8](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
+![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
+
 ##### 7，ios运行的最低版本号？
 
 答：11.0
