@@ -88,14 +88,13 @@ flutter_openim_sdk:
 
 答：请将cup架构设置为arm64，然后依次如下操作
 
--  flutter clean
-
+- flutter clean
 - flutter pub get
 - cd ios
 - pod install
+- 连接真机后运行Archive
 
--  连接真机后运行Archive
-
+![WeChatda10dfb8d2f59f883465d7d4088064f8](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
 ##### 7，ios运行的最低版本号？
 
 答：11.0
