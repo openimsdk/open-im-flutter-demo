@@ -5,7 +5,7 @@ class Urls {
   static var login2 = "${Config.imApiUrl()}/auth/user_token";
   static var importFriends = "${Config.imApiUrl()}/friend/import_friend";
   static var inviteToGroup = "${Config.imApiUrl()}/group/invite_user_to_group";
-  static var onlineStatus = "${Config.imApiUrl()}/user/get_users_online_status";
+  static var onlineStatus = "${Config.imApiUrl()}/manager/get_users_online_status";
 
   ///
   // static const getVerificationCode = "/cpc/auth/code";
