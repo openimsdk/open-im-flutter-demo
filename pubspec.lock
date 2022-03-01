@@ -374,14 +374,14 @@ packages:
       name: flutter_openim_sdk
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.0+1"
   flutter_openim_widget:
     dependency: "direct main"
     description:
       name: flutter_openim_widget
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.6"
+    version: "0.0.7"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

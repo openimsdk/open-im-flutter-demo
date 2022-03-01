@@ -172,6 +172,12 @@ class FriendInfoLogic extends GetxController {
     OpenIM.iMManager.messageManager.sendMessage(
       message: message,
       userID: uid,
+      offlinePushInfo: OfflinePushInfo(
+        title: '你收到了一条新消息',
+        desc: '',
+        iOSBadgeCount: true,
+        iOSPushSound: '+1',
+      ),
     );
   }
 

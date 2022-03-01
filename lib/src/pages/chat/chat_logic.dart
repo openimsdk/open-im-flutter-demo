@@ -477,6 +477,12 @@ class ChatLogic extends GetxController {
           message: message,
           userID: userId ?? uid,
           groupID: groupId ?? gid,
+          offlinePushInfo: OfflinePushInfo(
+            title: '你收到了一条新消息',
+            desc: '',
+            iOSBadgeCount: true,
+            iOSPushSound: '+1',
+          ),
         )
         .then((value) => _sendSucceeded(message, value))
         .catchError((e) => _senFailed(message, e))
