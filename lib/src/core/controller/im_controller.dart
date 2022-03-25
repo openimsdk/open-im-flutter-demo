@@ -44,8 +44,9 @@ class IMController extends GetxController with IMCallback {
       // Add message listener (remove when not in use)
       ..messageManager.setAdvancedMsgListener(OnAdvancedMsgListener(
         onRecvMessageRevoked: recvMessageRevoked,
-        onRecvC2CReadReceipt: recvC2CReadReceipt,
+        onRecvC2CMessageReadReceipt: recvC2CReadReceipt,
         onRecvNewMessage: recvNewMessage,
+        onRecvGroupMessageReadReceipt: recvGroupReadReceipt,
       ))
 
       // Set up message sending progress listener

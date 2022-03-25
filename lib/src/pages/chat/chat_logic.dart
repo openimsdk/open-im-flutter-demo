@@ -181,7 +181,7 @@ class ChatLogic extends GetxController {
       try {
         // var info = list.firstWhere((read) => read.uid == uid);
         list.forEach((readInfo) {
-          if (readInfo.uid == uid) {
+          if (readInfo.userID == uid) {
             messageList.forEach((e) {
               if (readInfo.msgIDList?.contains(e.clientMsgID) == true) {
                 e.isRead = true;
@@ -678,7 +678,6 @@ class ChatLogic extends GetxController {
   void onTapAlbum() async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       Get.context!,
-      requestType: RequestType.common,
     );
     if (null != assets) {
       for (var asset in assets) {
@@ -691,7 +690,10 @@ class ChatLogic extends GetxController {
   void onTapCamera() async {
     final AssetEntity? entity = await CameraPicker.pickFromCamera(
       Get.context!,
-      enableRecording: true,
+      pickerConfig: CameraPickerConfig(
+        enableAudio: true,
+        enableRecording: true,
+      ),
     );
     _handleAssets(entity);
   }
@@ -739,9 +741,8 @@ class ChatLogic extends GetxController {
           var trulyH = asset.height;
           var scaleW = 100.w;
           var scaleH = scaleW * trulyH / trulyW;
-          var data = await asset.thumbDataWithSize(
-            scaleW.toInt(),
-            scaleH.toInt(),
+          var data = await asset.thumbnailDataWithSize(
+            ThumbnailSize(scaleW.toInt(), scaleH.toInt()),
           );
           print('-----------video thumb build success----------------');
           final result = await ImageGallerySaver.saveImage(

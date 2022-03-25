@@ -22,7 +22,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
-  ImageScannerPlugin.register(with: registry.registrar(forPlugin: "ImageScannerPlugin"))
+  PhotoManagerPlugin.register(with: registry.registrar(forPlugin: "PhotoManagerPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))

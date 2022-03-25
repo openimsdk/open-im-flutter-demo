@@ -83,6 +83,8 @@ class IMCallback {
     onRecvC2CReadReceipt?.call(list);
   }
 
+  void recvGroupReadReceipt(List<ReadReceiptInfo> list) {}
+
   void recvNewMessage(Message msg) {
     initLogic.showNotification(msg);
     onRecvNewMessage?.call(msg);
