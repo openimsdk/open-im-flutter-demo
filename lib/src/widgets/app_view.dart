@@ -8,8 +8,8 @@ import 'package:openim_demo/src/core/controller/app_controller.dart';
 
 class AppView extends StatelessWidget {
   const AppView({Key? key, required this.builder}) : super(key: key);
-  final Widget Function(Locale? locale,
-      Widget Function(BuildContext context, Widget? child) builder) builder;
+  final Widget Function(
+      Locale? locale, Widget Function(BuildContext context, Widget? child) builder) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +22,8 @@ class AppView extends StatelessWidget {
           designSize: Size(Config.UI_W, Config.UI_H),
           minTextAdapt: true,
           splitScreenMode: true,
-          builder: () => builder(controller.getLocale(), EasyLoading.init(
+          builder: (_) => builder(controller.getLocale(), EasyLoading.init(
             builder: (context, widget) {
-              ScreenUtil.setContext(context);
               return widget!;
             },
           )),
