@@ -23,15 +23,15 @@ class ServerConfigLogic extends GetxController {
 
     ipCtrl.addListener(() {
       if (ipCtrl.text.isEmpty) {
-        authCtrl.text = 'http://${Config.serverIp()}:42233';
-        imApiCtrl.text = 'http://${Config.serverIp()}:10000';
-        imWsCtrl.text = 'ws://${Config.serverIp()}:17778';
-        callCtrl.text = 'http://${Config.serverIp()}:5551';
+        authCtrl.text = 'http://${Config.serverIp()}:10004';
+        imApiCtrl.text = 'http://${Config.serverIp()}:10002';
+        imWsCtrl.text = 'ws://${Config.serverIp()}:10001';
+        callCtrl.text = '';
       } else {
-        authCtrl.text = 'http://${ipCtrl.text}:42233';
-        imApiCtrl.text = 'http://${ipCtrl.text}:10000';
-        imWsCtrl.text = 'ws://${ipCtrl.text}:17778';
-        callCtrl.text = 'http://${ipCtrl.text}:5551';
+        authCtrl.text = 'http://${ipCtrl.text}:10004';
+        imApiCtrl.text = 'http://${ipCtrl.text}:10002';
+        imWsCtrl.text = 'ws://${ipCtrl.text}:10001';
+        callCtrl.text = '';
       }
     });
     super.onInit();

@@ -87,12 +87,6 @@ class Config {
 
   /// 音视频通话地址
   static String callUrl() {
-    var url;
-    var server = DataPersistence.getServerConfig();
-    if (null != server) {
-      url = server['callUrl'];
-      print('缓存callUrl: $url');
-    }
-    return url ?? 'http://$defaultIp:5551';
+    return '';
   }
 }

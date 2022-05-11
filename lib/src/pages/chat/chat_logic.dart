@@ -257,11 +257,9 @@ class ChatLogic extends GetxController {
 
   void chatSetup() {
     if (null != uid && uid!.isNotEmpty) {
-      AppNavigator.startChatSetup(
-          uid: uid!, name: name.value, icon: icon.value);
+      AppNavigator.startChatSetup(uid: uid!, name: name.value, icon: icon.value);
     } else if (null != gid && gid!.isNotEmpty) {
-      AppNavigator.startGroupSetup(
-          gid: gid!, name: name.value, icon: icon.value);
+      AppNavigator.startGroupSetup(gid: gid!, name: name.value, icon: icon.value);
     }
   }
 
@@ -323,7 +321,14 @@ class ChatLogic extends GetxController {
       // 发送 @ 消息
       message = await OpenIM.iMManager.messageManager.createTextAtMessage(
         text: content,
-        atUidList: curMsgAtUser,
+        atUserIDList: curMsgAtUser,
+        atUserInfoList: curMsgAtUser
+            .map((e) => AtUserInfo(
+                  atUserID: e,
+                  groupNickname: atUserNameMappingMap[e],
+                ))
+            .toList(),
+        quoteMessage: quoteMsg,
       );
     } else if (quoteMsg != null) {
       // 发送引用消息
@@ -342,8 +347,7 @@ class ChatLogic extends GetxController {
 
   /// 发送图片
   void sendPicture({required String path}) async {
-    var message =
-        await OpenIM.iMManager.messageManager.createImageMessageFromFullPath(
+    var message = await OpenIM.iMManager.messageManager.createImageMessageFromFullPath(
       imagePath: path,
     );
     _sendMessage(message);
@@ -351,8 +355,7 @@ class ChatLogic extends GetxController {
 
   /// 发送语音
   void sendVoice({required int duration, required String path}) async {
-    var message =
-        await OpenIM.iMManager.messageManager.createSoundMessageFromFullPath(
+    var message = await OpenIM.iMManager.messageManager.createSoundMessageFromFullPath(
       soundPath: path,
       duration: duration,
     );
@@ -366,8 +369,7 @@ class ChatLogic extends GetxController {
     required int duration,
     required String thumbnailPath,
   }) async {
-    var message =
-        await OpenIM.iMManager.messageManager.createVideoMessageFromFullPath(
+    var message = await OpenIM.iMManager.messageManager.createVideoMessageFromFullPath(
       videoPath: videoPath,
       videoType: mimeType,
       duration: duration,
@@ -378,8 +380,7 @@ class ChatLogic extends GetxController {
 
   /// 发送文件
   void sendFile({required String filePath, required String fileName}) async {
-    var message =
-        await OpenIM.iMManager.messageManager.createFileMessageFromFullPath(
+    var message = await OpenIM.iMManager.messageManager.createFileMessageFromFullPath(
       filePath: filePath,
       fileName: fileName,
     );
@@ -581,10 +582,7 @@ class ChatLogic extends GetxController {
     if (null != data && data['viewType'] == CustomMessageViewType.call) {
       return;
     }
-    if (isSingleChat &&
-        visible &&
-        !message.isRead! &&
-        message.sendID != OpenIM.iMManager.uid) {
+    if (isSingleChat && visible && !message.isRead! && message.sendID != OpenIM.iMManager.uid) {
       print('mark as read：$index ${message.clientMsgID!} ${message.isRead}');
       await OpenIM.iMManager.messageManager.markC2CMessageAsRead(
         userID: uid!,
@@ -716,8 +714,7 @@ class ChatLogic extends GetxController {
 
   /// 名片
   void onTapCarte() async {
-    var result =
-        await AppNavigator.startSelectContacts(action: SelAction.CARTE);
+    var result = await AppNavigator.startSelectContacts(action: SelAction.CARTE);
     if (null != result) {
       sendCarte(
         uid: result['uId'],
@@ -778,9 +775,7 @@ class ChatLogic extends GetxController {
   void parseClickEvent(Message msg) async {
     // log("message:${json.encode(msg)}");
     if (msg.contentType == MessageType.picture) {
-      var list = messageList
-          .where((p0) => p0.contentType == MessageType.picture)
-          .toList();
+      var list = messageList.where((p0) => p0.contentType == MessageType.picture).toList();
       var index = list.indexOf(msg);
       IMUtil.openPicture(list, index: index, tag: msg.clientMsgID);
     } else if (msg.contentType == MessageType.video) {
@@ -1021,11 +1016,8 @@ class ChatLogic extends GetxController {
   /// 删除表情
   void onDeleteEmoji() {
     final input = inputCtrl.text;
-    final regexEmoji = emojiFaces.keys
-        .toList()
-        .join('|')
-        .replaceAll('[', '\\[')
-        .replaceAll(']', '\\]');
+    final regexEmoji =
+        emojiFaces.keys.toList().join('|').replaceAll('[', '\\[').replaceAll(']', '\\]');
     final list = [regexAt, regexEmoji];
     final pattern = '(${list.toList().join('|')})';
     final atReg = RegExp(regexAt);
@@ -1135,8 +1127,7 @@ class ChatLogic extends GetxController {
                   switch (state) {
                     case 'BE_HANGUP':
                     case 'HANGUP':
-                      content = sprintf(
-                          StrRes.callDuration, [IMUtil.seconds2HMS(duration)]);
+                      content = sprintf(StrRes.callDuration, [IMUtil.seconds2HMS(duration)]);
                       break;
                     case 'CANCEL':
                       content = StrRes.cancelled;

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:azlistview/azlistview.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,8 +32,7 @@ class IntervalDo {
 
   void run({required Function() fuc, int milliseconds = 0}) {
     DateTime now = DateTime.now();
-    if (null == last ||
-        now.difference(last ?? now).inMilliseconds > milliseconds) {
+    if (null == last || now.difference(last ?? now).inMilliseconds > milliseconds) {
       last = now;
       fuc();
     }
@@ -188,8 +186,7 @@ class IMUtil {
       var url = fileElem.sourceUrl;
       var fileName = fileElem.fileName;
       var fileSize = fileElem.fileSize;
-      var cachePath =
-          '${(await getTemporaryDirectory()).path}/${msg.clientMsgID}_$fileName';
+      var cachePath = '${(await getTemporaryDirectory()).path}/${msg.clientMsgID}_$fileName';
       print('cachePath:$cachePath');
       // 原路径
       var isExitSourcePath = await isExitFile(sourcePath);
@@ -229,43 +226,24 @@ class IMUtil {
         print('url:$url');
         final logic = Get.find<ChatLogic>();
         print('logic:$logic');
-        CancelToken? cancelToken = CancelToken();
+        if (url == null) return;
         Get.to(() => ChatFilePreview(
               msgId: msg.clientMsgID!,
               name: fileName!,
               size: fileSize!,
-              // path: sourcePath,
+              dio: dio,
               url: url,
               available: isExitNetwork || isExitSourcePath,
-              subject: logic.downloadProgressSubject,
-              onDownload: (url) async {
-                print(url);
-                // await onDownload?.call(url, cachePath);
+              cachePath: cachePath,
+              onDownloadStart: () {
                 IMWidget.showToast(StrRes.startDownload);
-                await dio.download(
-                  url,
-                  cachePath,
-                  options: Options(receiveTimeout: 60 * 1000),
-                  cancelToken: cancelToken,
-                  onReceiveProgress: (int count, int total) {
-                    logic.downloadProgressSubject.addSafely(MsgStreamEv(
-                      msgId: msg.clientMsgID!,
-                      value: count / total,
-                    ));
-                  },
-                );
+              },
+              onDownloadFinished: () async {
                 String? mimeType = mime(fileName);
-                if (null != mimeType &&
-                    (mimeType.contains('video') ||
-                        mimeType.contains('image'))) {
-                  final result = await ImageGallerySaver.saveFile(cachePath);
-                  print(result);
-                  IMWidget.showToast(sprintf(
-                    StrRes.fileSaveToPath,
-                    [result['filePath']],
-                  ));
+                if (null != mimeType) {
+                  await saveMediaToGallery(mimeType, cachePath);
                 }
-
+                IMWidget.showToast(sprintf(StrRes.fileSaveToPath, [cachePath]));
                 if (null != mimeType && mimeType.contains('video')) {
                   openVideo(
                     Message()
@@ -292,13 +270,15 @@ class IMUtil {
                   OpenFile.open(cachePath);
                 }
               },
-            ))?.whenComplete(() => cancelToken.cancel());
+            ));
       }
     }
+  }
 
-    // if (msg.contentType == MessageType.picture) {
-    // } else if (msg.contentType == MessageType.video) {
-    // } else if (msg.contentType == MessageType.file) {}
+  static saveMediaToGallery(String mimeType, String cachePath) async {
+    if (mimeType.contains('video') || mimeType.contains('image')) {
+      await ImageGallerySaver.saveFile(cachePath);
+    }
   }
 
   static Widget previewPic({
@@ -310,48 +290,28 @@ class IMUtil {
         tag: tag,
         picList: picList,
         index: index,
-        onDownload: (url) async {
+        dio: dio,
+        onStartDownload: (url, path) {
           IMWidget.showToast(StrRes.startDownload);
-          var appDocDir = await getTemporaryDirectory();
-          var name = url.substring(url.lastIndexOf('/'));
-          String savePath = appDocDir.path + name;
-          print(savePath);
-          await dio.download(
-            url,
-            savePath,
-            options: Options(receiveTimeout: 120 * 1000),
-          );
-          final result = await ImageGallerySaver.saveFile(savePath);
-          print(result);
-          IMWidget.showToast(
-              sprintf(StrRes.picSaveToPath, [result['filePath']]));
-          return true;
+        },
+        onDownloadFinished: (url, path) async {
+          final result = await ImageGallerySaver.saveFile(path);
+          IMWidget.showToast(sprintf(StrRes.picSaveToPath, [result['filePath']]));
         },
       );
 
-  static Widget _previewVideo(
-          {String? path, String? url, String? coverUrl, String? tag}) =>
+  static Widget _previewVideo({String? path, String? url, String? coverUrl, String? tag}) =>
       ChatVideoPlayerView(
         path: path,
         url: url,
         coverUrl: coverUrl,
         tag: tag,
-        onDownload: (url) async {
-          print(url);
+        onStartDownload: (url, path) {
           IMWidget.showToast(StrRes.startDownload);
-          var appDocDir = await getTemporaryDirectory();
-          var name = url.substring(url.lastIndexOf('/'));
-          String savePath = appDocDir.path + name;
-          print(savePath);
-          await dio.download(
-            url,
-            savePath,
-            options: Options(receiveTimeout: 120 * 1000),
-          );
-          final result = await ImageGallerySaver.saveFile(savePath);
-          print(result);
-          IMWidget.showToast(
-              sprintf(StrRes.videoSaveToPath, [result['filePath']]));
+        },
+        onDownloadFinished: (url, path) async {
+          final result = await ImageGallerySaver.saveFile(path);
+          IMWidget.showToast(sprintf(StrRes.videoSaveToPath, [result['filePath']]));
         },
       );
 
@@ -370,8 +330,7 @@ class IMUtil {
           bool isAtSelf = text.contains('@${OpenIM.iMManager.uid} ');
           // bool isAtSelf = map['isAtSelf'];
           if (isAtSelf == true) {
-            content =
-                '@${StrRes.you}${text.replaceAll('@${OpenIM.iMManager.uid}', '')}';
+            content = '@${StrRes.you}${text.replaceAll('@${OpenIM.iMManager.uid}', '')}';
           }
         } catch (e) {}
         break;
@@ -418,8 +377,8 @@ class IMUtil {
   }
 
   static bool isMobile(String mobile) {
-    RegExp exp = RegExp(
-        r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+    RegExp exp =
+        RegExp(r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
     return exp.hasMatch(mobile);
   }
 
@@ -529,10 +488,9 @@ class IMUtil {
     required String dir,
     required String fileName,
   }) async {
-    var path = (Platform.isIOS
-            ? await getTemporaryDirectory()
-            : await getExternalStorageDirectory())
-        ?.path;
+    var path =
+        (Platform.isIOS ? await getTemporaryDirectory() : await getExternalStorageDirectory())
+            ?.path;
     File file = File('$path/$dir/$fileName');
     if (!(await file.exists())) {
       file.create(recursive: true);
