@@ -60,7 +60,7 @@ class Config {
       url = server['authUrl'];
       print('缓存authUrl: $url');
     }
-    return url ?? "http://$defaultIp:42233";
+    return url ?? "http://$defaultIp:10004";
   }
 
   /// IM sdk api地址
@@ -71,7 +71,7 @@ class Config {
       url = server['apiUrl'];
       print('缓存apiUrl: $url');
     }
-    return url ?? 'http://$defaultIp:10000';
+    return url ?? 'http://$defaultIp:10002';
   }
 
   /// IM ws 地址
@@ -82,7 +82,7 @@ class Config {
       url = server['wsUrl'];
       print('缓存wsUrl: $url');
     }
-    return url ?? 'ws://$defaultIp:17778';
+    return url ?? 'ws://$defaultIp:10001';
   }
 
   /// 音视频通话地址

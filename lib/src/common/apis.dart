@@ -240,38 +240,38 @@ class Apis {
     Function(Map<String, String>)? onlineStatusDescCallback,
     Function(Map<String, bool>)? onlineStatusCallback,
   }) {
-    if (uidList.isEmpty) return;
-    var batch = uidList.length ~/ 200;
-    var remainder = uidList.length % 200;
-    var i = 0;
-    var subList;
-    if (batch > 0) {
-      for (; i < batch; i++) {
-        subList = uidList.sublist(i * 200, 200 * (i + 1));
-        Apis._onlineStatus(uidList: subList).then((list) => _handleStatus(
-              list,
-              onlineStatusCallback: onlineStatusCallback,
-              onlineStatusDescCallback: onlineStatusDescCallback,
-            ));
-      }
-    }
-    if (remainder > 0) {
-      if (i > 0) {
-        subList = uidList.sublist(i * 200, 200 * i + remainder);
-        Apis._onlineStatus(uidList: subList).then((list) => _handleStatus(
-              list,
-              onlineStatusCallback: onlineStatusCallback,
-              onlineStatusDescCallback: onlineStatusDescCallback,
-            ));
-      } else {
-        subList = uidList.sublist(0, remainder);
-        Apis._onlineStatus(uidList: subList).then((list) => _handleStatus(
-              list,
-              onlineStatusCallback: onlineStatusCallback,
-              onlineStatusDescCallback: onlineStatusDescCallback,
-            ));
-      }
-    }
+    // if (uidList.isEmpty) return;
+    // var batch = uidList.length ~/ 200;
+    // var remainder = uidList.length % 200;
+    // var i = 0;
+    // var subList;
+    // if (batch > 0) {
+    //   for (; i < batch; i++) {
+    //     subList = uidList.sublist(i * 200, 200 * (i + 1));
+    //     Apis._onlineStatus(uidList: subList).then((list) => _handleStatus(
+    //           list,
+    //           onlineStatusCallback: onlineStatusCallback,
+    //           onlineStatusDescCallback: onlineStatusDescCallback,
+    //         ));
+    //   }
+    // }
+    // if (remainder > 0) {
+    //   if (i > 0) {
+    //     subList = uidList.sublist(i * 200, 200 * i + remainder);
+    //     Apis._onlineStatus(uidList: subList).then((list) => _handleStatus(
+    //           list,
+    //           onlineStatusCallback: onlineStatusCallback,
+    //           onlineStatusDescCallback: onlineStatusDescCallback,
+    //         ));
+    //   } else {
+    //     subList = uidList.sublist(0, remainder);
+    //     Apis._onlineStatus(uidList: subList).then((list) => _handleStatus(
+    //           list,
+    //           onlineStatusCallback: onlineStatusCallback,
+    //           onlineStatusDescCallback: onlineStatusDescCallback,
+    //         ));
+    //   }
+    // }
   }
 
   static _handleStatus(
