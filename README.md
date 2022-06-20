@@ -35,7 +35,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ##### 1，demo对应的flutter版本是？
 
-答：stable分支2.10.1
+答：stable分支3.0.1
 
 ##### 2，android安装包debug可以运行但release启动白屏？
 
@@ -73,18 +73,7 @@ ndk {
 }
 ```
 
-##### 5，demo编译ios时为什么不能在模拟器上运行只能在真机上运行
-
-答：插件依赖方式flutter_openim_sdk: ^xxx 只能运行在真机上。如果既想在模拟器上运行又想在真机上运行，可以使用以下依赖方式：
-
-```
-flutter_openim_sdk:
-       git:
-          url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
-          ref: fix-ios-simulator
-```
-
-##### 6，ios构建release包报错
+##### 5，ios构建release包报错
 
 答：请将cup架构设置为arm64，然后依次如下操作
 
@@ -96,6 +85,6 @@ flutter_openim_sdk:
 
 ![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
 
-##### 7，ios运行的最低版本号？
+##### 6，ios运行的最低版本号？
 
-答：11.0
+答：13.0

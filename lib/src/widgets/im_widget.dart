@@ -9,6 +9,7 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openim_demo/src/pages/chat/group_setup/group_member_manager/member_list/member_list_logic.dart';
 import 'package:openim_demo/src/pages/register/select_avatar/select_avatar_view.dart';
@@ -106,10 +107,14 @@ class IMWidget {
     bool crop = true,
     bool toUrl = true,
   }) async {
-    File? cropFile;
+    CroppedFile? cropFile;
     String? url;
     if (crop) {
       cropFile = await IMUtil.uCrop(path);
+      if (cropFile == null) {
+        // 放弃选择
+        return {'path': cropFile?.path ?? path, 'url': url};
+      }
     }
 
     if (toUrl) {

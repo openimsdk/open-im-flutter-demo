@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/config.dart';
 import 'package:openim_demo/src/core/controller/app_controller.dart';
@@ -22,11 +22,15 @@ class AppView extends StatelessWidget {
           designSize: Size(Config.UI_W, Config.UI_H),
           minTextAdapt: true,
           splitScreenMode: true,
-          builder: (_) => builder(controller.getLocale(), EasyLoading.init(
-            builder: (context, widget) {
-              return widget!;
-            },
-          )),
+          builder: (_, child) => builder(
+            controller.getLocale(),
+            EasyLoading.init(
+              builder: (context, widget) {
+                // ScreenUtil.setContext(context);
+                return widget!;
+              },
+            ),
+          ),
         ),
       ),
     );
