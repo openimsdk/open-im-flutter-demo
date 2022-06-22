@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:openim_demo/src/common/config.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:openim_demo/src/widgets/bottom_sheet_view.dart';
+
 
 class ServerConfigLogic extends GetxController {
   var checked = true.obs;
@@ -12,6 +15,7 @@ class ServerConfigLogic extends GetxController {
   var imApiCtrl = TextEditingController();
   var imWsCtrl = TextEditingController();
   var callCtrl = TextEditingController();
+  var objectStorageCtrl = TextEditingController();
 
   @override
   void onInit() {
@@ -20,6 +24,7 @@ class ServerConfigLogic extends GetxController {
     imApiCtrl.text = Config.imApiUrl();
     imWsCtrl.text = Config.imWsUrl();
     callCtrl.text = Config.callUrl();
+    objectStorageCtrl.text = Config.objectStorage();
 
     ipCtrl.addListener(() {
       if (ipCtrl.text.isEmpty) {
@@ -44,6 +49,7 @@ class ServerConfigLogic extends GetxController {
     imWsCtrl.dispose();
     callCtrl.dispose();
     ipCtrl.dispose();
+    objectStorageCtrl.dispose();
     super.onClose();
   }
 
@@ -58,6 +64,7 @@ class ServerConfigLogic extends GetxController {
       'apiUrl': imApiCtrl.text,
       'wsUrl': imWsCtrl.text,
       'callUrl': callCtrl.text,
+      'objectStorage': objectStorageCtrl.text,
     });
     IMWidget.showToast('重启app后配置生效');
     // Get.reset();
@@ -65,5 +72,40 @@ class ServerConfigLogic extends GetxController {
 
   void toggleTab(i) {
     index.value = i;
+  }
+
+  void selectObjectStorage() {
+    Get.bottomSheet(
+      BottomSheetView(
+        items: [
+          SheetItem(
+            label: '腾讯云',
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+            onTap: () => _updateObjectStorage(1),
+          ),
+          SheetItem(
+            label: 'minio',
+            onTap: () => _updateObjectStorage(2),
+          ),
+          SheetItem(
+            label: '阿里云',
+            onTap: () => _updateObjectStorage(3),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _updateObjectStorage(int objectstorage) {
+    if(objectstorage==1){
+      objectStorageCtrl.text = "cos";
+    }else if(objectstorage==2){
+      objectStorageCtrl.text = "minio";
+    }else if(objectstorage==3){
+      objectStorageCtrl.text = "oss";
+    }
   }
 }

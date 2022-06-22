@@ -25,6 +25,7 @@ class IMController extends GetxController with IMCallback {
       apiAddr: Config.imApiUrl(),
       wsAddr: Config.imWsUrl(),
       dataDir: '${(await getApplicationDocumentsDirectory()).path}/',
+      objectStorage: Config.objectStorage(),
       listener: OnConnectListener(
         onConnecting: () {},
         onConnectFailed: (code, error) {},
