@@ -16,6 +16,7 @@ class ServerConfigPage extends StatelessWidget {
     required String label,
     required String hintText,
     required TextEditingController controller,
+    Function()? onTap,
   }) =>
       Container(
         decoration: BoxDecoration(
@@ -45,6 +46,7 @@ class ServerConfigPage extends StatelessWidget {
             TextField(
               controller: controller,
               keyboardType: TextInputType.url,
+              onTap: onTap,
               decoration: InputDecoration(
                 hintText: hintText,
               ),
@@ -84,6 +86,12 @@ class ServerConfigPage extends StatelessWidget {
                 label: 'IM WS地址',
                 hintText: Config.imWsUrl(),
                 controller: logic.imWsCtrl,
+              ),
+              _buildItemField(
+                label: '存储独享',
+                hintText: Config.objectStorage(),
+                controller: logic.objectStorageCtrl,
+                onTap: () => logic.selectObjectStorage(),
               ),
               _buildItemField(
                 label: '音视频通话服务器地址',

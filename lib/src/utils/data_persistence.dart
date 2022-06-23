@@ -11,6 +11,7 @@ class DataPersistence {
   static const _AT_USER_INFO = '%s_atUserInfo';
   static const _SERVER = "server";
   static const _IP = 'ip';
+  static const _ObjectStorage = 'objectStorage';
   static const _language = "language";
   static const _ignoreUpdate = 'ignoreUpdate';
   static const _jpushLogin = '%s_jpushLogin';
@@ -87,6 +88,14 @@ class DataPersistence {
 
   static String? getServerIP() {
     return SpUtil.getString(_IP);
+  }
+
+  static Future<bool>? putObjectStorage(String objectStorage) {
+    return SpUtil.putString(_ObjectStorage,objectStorage);
+  }
+
+  static String ? getObjectStorage(){
+    return SpUtil.getString(_ObjectStorage);
   }
 
   static Future<bool>? putLanguage(int index) {
