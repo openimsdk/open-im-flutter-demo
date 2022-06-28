@@ -85,6 +85,16 @@ class Config {
     return url ?? 'ws://$defaultIp:10001';
   }
 
+  /// 存储对象
+  static String objectStorage(){
+    var objectStorage;
+    var server = DataPersistence.getServerConfig();
+    if (null !=server){
+      objectStorage = server['objectStorage'];
+      print('缓存objectStorage: $objectStorage');
+    }
+    return objectStorage ?? 'cos';
+  }
   /// 音视频通话地址
   static String callUrl() {
     return '';
