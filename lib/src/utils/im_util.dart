@@ -276,7 +276,7 @@ class IMUtil {
     String? tag,
   }) =>
       ChatPicturePreview(
-        tag: tag,
+        heroTag: tag,
         picList: picList,
         index: index,
         dio: dio,
@@ -294,7 +294,7 @@ class IMUtil {
         path: path,
         url: url,
         coverUrl: coverUrl,
-        tag: tag,
+        heroTag: tag,
         onStartDownload: (url, path) {
           IMWidget.showToast(StrRes.startDownload);
         },

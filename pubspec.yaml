@@ -83,7 +83,7 @@ dependencies:
   flutter_bugly: ^0.4.4
   tencent_cos: ^1.0.5
   flutter_cupertino_datetime_picker: ^3.0.0
-  flutter_openim_widget: ^2.0.9+1
+  flutter_openim_widget: ^2.1.0
 
 
 #dependency_overrides:
