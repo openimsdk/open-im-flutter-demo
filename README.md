@@ -45,7 +45,7 @@ demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Op
 
 答：flutter的release包默认是开启了混淆，可以使用命令：flutter build release --no -shrink，如果此命令无效可如下操作
 
-在android/build.gradle配置的release配置加入以下配置
+在android/app/build.gradle配置的release配置加入以下配置
 
 ```
 release {
