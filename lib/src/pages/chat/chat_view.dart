@@ -148,6 +148,7 @@ class ChatPage extends StatelessWidget {
                           emojiView: ChatEmojiView(
                             onAddEmoji: logic.onAddEmoji,
                             onDeleteEmoji: logic.onDeleteEmoji,
+                            textEditingController: logic.inputCtrl,
                           ),
                           onSubmitted: (v) => logic.sendTextMsg(),
                           forceCloseToolboxSub: logic.forceCloseToolbox,
