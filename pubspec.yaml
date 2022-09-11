@@ -83,11 +83,7 @@ dependencies:
   flutter_bugly: ^0.4.4
   tencent_cos: ^1.0.5
   flutter_cupertino_datetime_picker: ^3.0.0
-  flutter_openim_widget: ^2.1.0
-
-
-#dependency_overrides:
-#  decimal: 1.5.0
+  flutter_openim_widget: 2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -97,12 +93,11 @@ dependency_overrides:
   scrollable_positioned_list: ^0.3.2
   #  visibility_detector: ^0.3.3
   xml: ^6.0.1
-  camera_android: 0.9.7+1
-  camera_avfoundation: 0.9.7+1
   pull_to_refresh:
     git:
       url: https://github.com/miquelbeltran/flutter_pulltorefresh
       ref: master
+  record: 4.1.1
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
