@@ -29,7 +29,7 @@ class Config {
       statusBarIconBrightness: brightness,
     ));
 
-    FlutterBugly.init(androidAppId: "4103e474e9", iOSAppId: "28849b1ca6");
+    // FlutterBugly.init(androidAppId: "4103e474e9", iOSAppId: "28849b1ca6");
   }
 
   static const UI_W = 375.0;
