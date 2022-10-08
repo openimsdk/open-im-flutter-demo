@@ -93,3 +93,28 @@ ndk {
 ##### 7，ios运行的最低版本号？
 
 答：13.0
+
+#### 8， 有开发者遇到以下问题：
+```
+Could not build the precompiled application for the device.
+Error (Xcode): Signing for "TOCropViewController-TOCropViewControllerBundle" requires a development team. Select a development team
+in the Signing & Capabilities editor.
+
+Error (Xcode): Signing for "DKImagePickerController-DKImagePickerController" requires a development team. Select a development team
+in the Signing & Capabilities editor.
+
+Error (Xcode): Signing for "DKPhotoGallery-DKPhotoGallery" requires a development team. Select a development team in the Signing &
+Capabilities editor.
+```
+在Podfile添加以下代码：
+```ruby
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
+        config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
+        config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
+      end
+   end
+end
+```
