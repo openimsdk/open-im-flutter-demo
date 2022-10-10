@@ -80,7 +80,7 @@ ndk {
 
 ##### 6，ios构建release包报错
 
-答：请将cup架构设置为arm64，然后依次如下操作
+答：请将cpu架构设置为arm64，然后依次如下操作
 
 - flutter clean
 - flutter pub get
