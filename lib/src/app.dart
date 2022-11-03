@@ -8,8 +8,8 @@ import 'package:openim_demo/src/utils/logger_util.dart';
 import 'package:openim_demo/src/widgets/app_view.dart';
 
 import 'core/controller/im_controller.dart';
-import 'core/controller/jpush_controller.dart';
 import 'core/controller/permission_controller.dart';
+import 'core/controller/push_controller.dart';
 
 class EnterpriseChatApp extends StatelessWidget {
   const EnterpriseChatApp({Key? key}) : super(key: key);
@@ -51,6 +51,6 @@ class InitBinding extends Bindings {
   void dependencies() {
     Get.put<PermissionController>(PermissionController());
     Get.put<IMController>(IMController());
-    Get.put<JPushController>(JPushController());
+    Get.put<PushController>(PushController());
   }
 }

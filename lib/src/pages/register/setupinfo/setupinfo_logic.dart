@@ -5,7 +5,7 @@ import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
-import 'package:openim_demo/src/core/controller/jpush_controller.dart';
+import 'package:openim_demo/src/core/controller/push_controller.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
@@ -15,7 +15,7 @@ import '../../../utils/data_persistence.dart';
 
 class SetupSelfInfoLogic extends GetxController {
   var imLogic = Get.find<IMController>();
-  var jPushLogic = Get.find<JPushController>();
+  var pushLogic = Get.find<PushController>();
   var nameCtrl = TextEditingController();
   var showNameClearBtn = false.obs;
   var icon = "".obs;
@@ -72,7 +72,7 @@ class SetupSelfInfoLogic extends GetxController {
     await syncSelfInfo();
     await adminOperate(uid);
     print('---------im login success-------');
-    jPushLogic.login(uid);
+    pushLogic.login(uid);
     print('---------jpush login success----');
     AppNavigator.startMain();
   }

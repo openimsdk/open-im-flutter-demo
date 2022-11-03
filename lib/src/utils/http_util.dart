@@ -1,17 +1,13 @@
-import 'package:dio/dio.dart';
-import 'package:openim_demo/src/common/config.dart';
-import 'package:openim_demo/src/models/api_resp.dart';
-import 'package:openim_demo/src/utils/data_persistence.dart';
-import 'package:openim_demo/src/widgets/im_widget.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:tencent_cos/tencent_cos.dart';
+import 'dart:io';
 
-// or new Dio with a BaseOptions instance.
-// var options = BaseOptions(
-//   baseUrl: Config.BASE_URL,
-//   connectTimeout: 5000,
-//   receiveTimeout: 3000,
-// );
+import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import '../common/config.dart';
+import '../models/api_resp.dart';
+import '../widgets/im_widget.dart';
+import 'data_persistence.dart';
+
 var dio = Dio();
 
 class HttpUtil {
@@ -53,9 +49,10 @@ class HttpUtil {
   }
 
   ///
-  static Future<Map<String, dynamic>> post(
+  static Future post(
     String path, {
     dynamic data,
+    bool showErrorToast = true,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -76,60 +73,40 @@ class HttpUtil {
       if (resp.errCode == 0) {
         return resp.data;
       } else {
-        IMWidget.showToast(resp.errMsg);
+        if (showErrorToast) {
+          IMWidget.showToast(resp.errMsg);
+        }
+
         return Future.error(resp.errMsg);
       }
     } catch (error) {
       if (error is DioError) {
-        IMWidget.showToast(error.response.toString());
-      } else {
-        IMWidget.showToast(error.toString());
+        if (showErrorToast) IMWidget.showToast(error.message);
+        return Future.error(error.message);
       }
+      if (showErrorToast) IMWidget.showToast(error.toString());
       return Future.error(error);
     }
   }
 
-  /// tencent cos
-  static Future<String> uploadImage({required String path}) async {
+  static Future<String> uploadImageForMinio({required String path}) async {
+    String fileName = path.substring(path.lastIndexOf("/") + 1);
+    // fileType: file = "1",video = "2",picture = "3"
+    // final mf = await MultipartFile.fromFile(path, filename: fileName);
+    final bytes = await File(path).readAsBytes();
+    final mf = MultipartFile.fromBytes(bytes, filename: fileName);
+
+    var formData = FormData.fromMap(
+        {'operationID': '${DateTime.now().millisecondsSinceEpoch}', 'fileType': 1, 'file': mf});
+
     var resp = await dio.post<Map<String, dynamic>>(
-      "${Config.imApiUrl()}/third/tencent_cloud_storage_credential",
-      data: {'operationID': '${DateTime.now().millisecondsSinceEpoch}'},
+      "${Config.imApiUrl()}/third/minio_upload",
+      data: formData,
       options: Options(
         headers: {'token': DataPersistence.getLoginCertificate()?.token},
       ),
     );
-    var data = resp.data;
-    var bucketName = data!['data']['Bucket'];
-    var region = data['data']['Region'];
-    var token = data['data']['CredentialResult']['Credentials']['SessionToken'];
-    var secretId =
-        data['data']['CredentialResult']['Credentials']['TmpSecretID'];
-    var secretKey =
-        data['data']['CredentialResult']['Credentials']['TmpSecretKey'];
-
-    String fileName = path.substring(path.lastIndexOf("/") + 1);
-
-    var url = "https://$bucketName.cos.$region.myqcloud.com";
-
-    await COSClient(COSConfig(
-      secretId,
-      secretKey,
-      bucketName,
-      region,
-    )).putObject(fileName, path, token: token);
-    // String fileName = path.substring(path.lastIndexOf("/") + 1);
-    // String url = "https://echat-1302656840.cos.ap-chengdu.myqcloud.com/";
-    // String key = '${DateTime.now().millisecond}_$fileName';
-    // var formData = FormData.fromMap({
-    //   "file": await MultipartFile.fromFile(path),
-    //   "Key": key,
-    //   "success_action_status": 200,
-    //   "Signature": "Signature",
-    //   "x-cos-security-token": "token"
-    // });
-    // await dio.post(url, data: formData);
-    // return '$url$key';
-    return '$url/$fileName';
+    return resp.data?['data']['URL'];
   }
 
   static Future download(

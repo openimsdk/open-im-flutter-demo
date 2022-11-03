@@ -19,17 +19,15 @@ class ServerConfigPage extends StatelessWidget {
     Function()? onTap,
   }) =>
       Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0xFF000000).withOpacity(0.15),
-                offset: Offset(0, 1),
-                spreadRadius: 0,
-                blurRadius: 4,
-              ),
-            ]),
+        decoration:
+            BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), boxShadow: [
+          BoxShadow(
+            color: Color(0xFF000000).withOpacity(0.15),
+            offset: Offset(0, 1),
+            spreadRadius: 0,
+            blurRadius: 4,
+          ),
+        ]),
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(
           left: 22.w,
@@ -92,11 +90,6 @@ class ServerConfigPage extends StatelessWidget {
                 hintText: Config.objectStorage(),
                 controller: logic.objectStorageCtrl,
                 onTap: () => logic.selectObjectStorage(),
-              ),
-              _buildItemField(
-                label: '音视频通话服务器地址',
-                hintText: Config.callUrl(),
-                controller: logic.callCtrl,
               ),
               Container(
                 margin: EdgeInsets.symmetric(

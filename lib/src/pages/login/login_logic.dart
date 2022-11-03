@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
-import 'package:openim_demo/src/core/controller/jpush_controller.dart';
+import 'package:openim_demo/src/core/controller/push_controller.dart';
 import 'package:openim_demo/src/pages/server_config/server_config_binding.dart';
 import 'package:openim_demo/src/pages/server_config/server_config_view.dart';
 import 'package:openim_demo/src/res/strings.dart';
@@ -24,7 +24,7 @@ class LoginLogic extends GetxController {
   var obscureText = true.obs;
   var agreedProtocol = true.obs;
   var imLogic = Get.find<IMController>();
-  var jPushLogic = Get.find<JPushController>();
+  var pushLogic = Get.find<PushController>();
   var enabledLoginButton = false.obs;
   var index = 0.obs;
   var areaCode = "+86".obs;
@@ -55,11 +55,10 @@ class LoginLogic extends GetxController {
         password: pwdCtrl.text,
       );
       await DataPersistence.putLoginCertificate(data);
-      print(
-          '---------login---------- uid: ${data.userID}, token: ${data.token}');
+      print('---------login---------- uid: ${data.userID}, token: ${data.token}');
       await imLogic.login(data.userID, data.token);
       print('---------im login success-------');
-      jPushLogic.login(data.userID);
+      pushLogic.login(data.userID);
       print('---------jpush login success----');
       return true;
     } catch (e) {
@@ -98,8 +97,8 @@ class LoginLogic extends GetxController {
   }
 
   void _changeLoginButtonStatus() {
-    enabledLoginButton.value = pwdCtrl.text.isNotEmpty &&
-        (phoneCtrl.text.isNotEmpty || emailCtrl.text.isNotEmpty);
+    enabledLoginButton.value =
+        pwdCtrl.text.isNotEmpty && (phoneCtrl.text.isNotEmpty || emailCtrl.text.isNotEmpty);
   }
 
   void toServerConfig() {

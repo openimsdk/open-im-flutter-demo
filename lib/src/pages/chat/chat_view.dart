@@ -124,8 +124,7 @@ class ChatPage extends StatelessWidget {
                             itemCount: logic.messageList.length,
                             controller: logic.autoCtrl,
                             onLoad: () => logic.getHistoryMsgList(),
-                            itemBuilder: (_, index) =>
-                                Obx(() => _itemView(index)),
+                            itemBuilder: (_, index) => Obx(() => _itemView(index)),
                           ),
                         ),
                         ChatInputBoxView(
@@ -148,6 +147,7 @@ class ChatPage extends StatelessWidget {
                           emojiView: ChatEmojiView(
                             onAddEmoji: logic.onAddEmoji,
                             onDeleteEmoji: logic.onDeleteEmoji,
+                            textEditingController: logic.inputCtrl,
                           ),
                           onSubmitted: (v) => logic.sendTextMsg(),
                           forceCloseToolboxSub: logic.forceCloseToolbox,
@@ -156,9 +156,7 @@ class ChatPage extends StatelessWidget {
                           onClearQuote: () => logic.setQuoteMsg(-1),
                           multiMode: logic.multiSelMode.value,
                           focusNode: logic.focusNode,
-                          inputFormatters: [
-                            AtTextInputFormatter(logic.openAtList)
-                          ],
+                          inputFormatters: [AtTextInputFormatter(logic.openAtList)],
                         ),
                       ],
                     ),
@@ -192,9 +190,7 @@ class ChatPage extends StatelessWidget {
       Row(
         children: [
           Image.asset(
-            type == 'voice'
-                ? ImageRes.ic_voiceCallMsg
-                : ImageRes.ic_videoCallMsg,
+            type == 'voice' ? ImageRes.ic_voiceCallMsg : ImageRes.ic_videoCallMsg,
             width: 20.h,
             height: 20.h,
           ),

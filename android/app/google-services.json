@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "680527798591",
+    "project_id": "openim-5c6c0",
+    "storage_bucket": "openim-5c6c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680527798591:android:dab6e9a0adaa4d8824f38a",
+        "android_client_info": {
+          "package_name": "io.openim.app.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680527798591-8lu3bmeo8m1secn6fj9t45ce2u5jgiht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_Bx0ewCxYvM5Qfy7uueBrjTF55ZYur_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680527798591-8lu3bmeo8m1secn6fj9t45ce2u5jgiht.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "680527798591-6roft9apgtfjd9233igjajjanh2qb5mf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.b.biradar.googleMlKitExample"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680527798591:android:587c04d8774c4ada24f38a",
+        "android_client_info": {
+          "package_name": "io.openim.app.enterprisechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680527798591-8lu3bmeo8m1secn6fj9t45ce2u5jgiht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_Bx0ewCxYvM5Qfy7uueBrjTF55ZYur_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680527798591-8lu3bmeo8m1secn6fj9t45ce2u5jgiht.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "680527798591-6roft9apgtfjd9233igjajjanh2qb5mf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.b.biradar.googleMlKitExample"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

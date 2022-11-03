@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw new Exception("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -25,38 +25,45 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "io.openim.app.demo"
+        applicationId "io.openim.app.enterprisechat"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
+        multiDexEnabled true
+
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a"//, "armeabi", "x86", "x86_64", "mips", "mips64"
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+        }
+
+        lintOptions {
+            disable 'InvalidPackage'
+            disable "Instantiatable"
+            checkReleaseBuilds false
+            abortOnError false
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : "646f952e8310ff8c9a336dee", // NOTE: JPush 上注册的包名对应的 Appkey.
-                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
-//                XIAOMI_APPKEY : "MI-5852008579936", // 小米平台注册的appkey,注意不要将前缀去掉 MI-appkey
-//                XIAOMI_APPID  : "MI-2882303761520085936", // 小米平台注册的appid，注意不要将前缀去掉 MI-appid
-//                MEIZU_APPKEY  : "MZ-989fb579ffbe468191f5c611691dc424",
-//                MEIZU_APPID   : "MZ-145050",
-//                OPPO_APPKEY   : "OP-oppo的APPKEY",
-//                OPPO_APPID    : "OP-oppo的APPID",
-//                OPPO_APPSECRET: "OP-oppo的APPSECRET",
-//                VIVO_APPKEY   : "vivo的APPKEY",
-//                VIVO_APPID    : "vivo的APPID"
+                GETUI_APPID     : "",
+                // 下面是多厂商配置，如需要开通使用请联系技术支持
+                // 如果不需要使用，预留空字段即可
+                XIAOMI_APP_ID   : "",
+                XIAOMI_APP_KEY  : "",
+                MEIZU_APP_ID    : "",
+                MEIZU_APP_KEY   : "",
+                HUAWEI_APP_ID   : "",
+                OPPO_APP_KEY    : "",
+                OPPO_APP_SECRET : "",
+                VIVO_APP_ID     : "",
+                VIVO_APP_KEY    : "",
+                // 荣耀相关应用参数
+                HONOR_APP_ID   : "",
         ]
-    }
-
-    lintOptions {
-        abortOnError false
     }
 
     signingConfigs {
@@ -77,9 +84,9 @@ android {
 
         }
         release {
-//            minifyEnabled false
+            minifyEnabled false
 //            useProguard false
-//            shrinkResources false
+            shrinkResources false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
@@ -100,23 +107,24 @@ flutter {
 }
 
 dependencies {
-    // 接入华为厂商
-//    implementation 'com.huawei.hms:push:5.3.0.301'
-//    implementation 'cn.jiguang.sdk.plugin:huawei:4.4.5'// 极光厂商插件版本与接入 JPush 版本保持一致，下同
-    // 接入小米厂商
-//    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.4.5'
-    // 接入 FCM 厂商
-//    implementation 'com.google.firebase:firebase-messaging:21.0.1'
-//    implementation 'cn.jiguang.sdk.plugin:fcm:4.0.0'
-    // 接入魅族厂商
-//    implementation 'cn.jiguang.sdk.plugin:meizu:4.4.5'
-    // 接入 VIVO 厂商
-//    implementation 'cn.jiguang.sdk.plugin:vivo:4.4.5'
-    // 接入 OPPO 厂商
-//    implementation 'cn.jiguang.sdk.plugin:oppo:4.4.5'
+    // 个推
+    // 根据所需厂商选择集成
+    implementation 'com.huawei.hms:push:5.3.0.301'
+    implementation 'com.getui.opt:hwp:3.1.0'   // 华为
+    implementation 'com.getui.opt:xmp:3.2.0'   // 小米
+    implementation('com.assist-v3:oppo:3.1.0') {
+        exclude group: 'commons-codec'
+    }   // oppo
+    implementation 'com.assist-v3:vivo:3.1.0'  // vivo
+    implementation 'com.getui.opt:mzp:3.2.0'   // 魅族
+    implementation 'com.getui.opt:ups:3.0.3'   // ups，ups目前支持坚果，索尼，海信手机
+    implementation 'com.getui.opt:honor:3.2.0' // 荣耀
+
+//    implementation('com.amap.api:location:5.6.0')
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
-//apply plugin: 'com.huawei.agconnect'
+apply plugin: 'com.huawei.agconnect'
 //apply plugin: 'com.google.gms.google-services'
 
 static def buildTime() {

@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
-import 'package:openim_demo/src/core/controller/jpush_controller.dart';
+import 'package:openim_demo/src/core/controller/push_controller.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class SplashLogic extends GetxController {
   final imLogic = Get.find<IMController>();
-  final jPushLogic = Get.find<JPushController>();
+  final pushLogic = Get.find<PushController>();
 
   var loginCertificate = DataPersistence.getLoginCertificate();
 
@@ -40,7 +40,7 @@ class SplashLogic extends GetxController {
       print('---------login---------- uid: $uid, token: $token');
       await imLogic.login(uid!, token!);
       print('---------im login success-------');
-      jPushLogic.login(uid!);
+      pushLogic.login(uid!);
       print('---------jpush login success----');
       AppNavigator.startMain();
     } catch (e) {

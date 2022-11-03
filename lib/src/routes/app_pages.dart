@@ -7,8 +7,6 @@ import 'package:openim_demo/src/pages/add_friend/search/search_binding.dart';
 import 'package:openim_demo/src/pages/add_friend/search/search_view.dart';
 import 'package:openim_demo/src/pages/add_friend/send_friend_request/send_friend_request_binding.dart';
 import 'package:openim_demo/src/pages/add_friend/send_friend_request/send_friend_request_view.dart';
-import 'package:openim_demo/src/pages/call/call_records/call_records_binding.dart';
-import 'package:openim_demo/src/pages/call/call_records/call_records_view.dart';
 import 'package:openim_demo/src/pages/chat/chat_binding.dart';
 import 'package:openim_demo/src/pages/chat/chat_setup/chat_setup_binding.dart';
 import 'package:openim_demo/src/pages/chat/chat_setup/chat_setup_view.dart';
@@ -330,11 +328,6 @@ class AppPages {
       name: AppRoutes.SEARCH_MEMBER,
       page: () => SearchMemberPage(),
       binding: SearchMemberBinding(),
-    ),
-    GetPage(
-      name: AppRoutes.CALL_RECORDS,
-      page: () => CallRecordsPage(),
-      binding: CallRecordsBinding(),
     ),
     GetPage(
       name: AppRoutes.LANGUAGE_SETUP,

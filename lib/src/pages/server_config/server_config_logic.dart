@@ -1,11 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/config.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
-import 'package:openim_demo/src/widgets/im_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:openim_demo/src/widgets/bottom_sheet_view.dart';
-
+import 'package:openim_demo/src/widgets/im_widget.dart';
 
 class ServerConfigLogic extends GetxController {
   var checked = true.obs;
@@ -23,7 +22,6 @@ class ServerConfigLogic extends GetxController {
     authCtrl.text = Config.appAuthUrl();
     imApiCtrl.text = Config.imApiUrl();
     imWsCtrl.text = Config.imWsUrl();
-    callCtrl.text = Config.callUrl();
     objectStorageCtrl.text = Config.objectStorage();
 
     ipCtrl.addListener(() {
@@ -100,11 +98,11 @@ class ServerConfigLogic extends GetxController {
   }
 
   void _updateObjectStorage(int objectstorage) {
-    if(objectstorage==1){
+    if (objectstorage == 1) {
       objectStorageCtrl.text = "cos";
-    }else if(objectstorage==2){
+    } else if (objectstorage == 2) {
       objectStorageCtrl.text = "minio";
-    }else if(objectstorage==3){
+    } else if (objectstorage == 3) {
       objectStorageCtrl.text = "oss";
     }
   }

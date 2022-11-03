@@ -13,7 +13,6 @@ abstract class AppRoutes {
   static const CHAT = "/chat";
   static const CHAT_SETUP = "/chat_setup";
 
-  // static const CONTACTS = "/contacts";
   static const SELECT_CONTACTS = "/select_contacts";
   static const SELECT_CONTACTS_BY_GROUP = "/select_contacts_by_group";
   static const ADD_CONTACTS = "/add_contacts";

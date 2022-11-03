@@ -14,6 +14,7 @@ class PermissionController extends GetxController {
       Permission.location,
       // Permission.photos,
       Permission.notification,
+      Permission.bluetoothConnect
     ]);
     super.onInit();
   }

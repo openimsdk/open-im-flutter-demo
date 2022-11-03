@@ -43,8 +43,7 @@ class BottomBar extends StatelessWidget {
     );
   }
 
-  Widget _buildItemView({required int i, required BottomBarItem item}) =>
-      Expanded(
+  Widget _buildItemView({required int i, required BottomBarItem item}) => Expanded(
         child: GestureDetector(
           onTap: () {
             if (item.onClick != null) item.onClick!(i);
@@ -75,9 +74,7 @@ class BottomBar extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.only(left: 15.w),
                   child: UnreadCountView(
-                    steam: item.steam,
-                    count: item.count,
-                    qqBadge: true,
+                    count: item.count?.toInt() ?? 0,
                   ),
                 ),
               ),
