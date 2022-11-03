@@ -4,7 +4,7 @@ PODS:
   - ATBarSDK (1.4.1)
   - audio_session (0.0.1):
     - Flutter
-  - Bugly (2.5.91)
+  - Bugly (2.5.93)
   - camera_avfoundation (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.4):
@@ -38,11 +38,13 @@ PODS:
   - DKPhotoGallery/Resource (0.0.17):
     - SDWebImage
     - SwiftyGif
+  - emoji_picker_flutter (0.0.1):
+    - Flutter
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
-  - flutter_app_badger (1.3.0):
+  - flutter_app_badger (0.0.1):
     - Flutter
   - flutter_bugly (0.0.1):
     - Bugly
@@ -65,35 +67,33 @@ PODS:
     - Flutter
   - flutter_openim_sdk (0.0.1):
     - Flutter
-    - OpenIMSDKCore (= 2.2.0)
+    - OpenIMSDKCore (= 2.3.4)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - getuiflut (0.0.1):
+    - Flutter
+    - GTSDK
+  - GTSDK (2.7.1.0):
+    - ZXSDK
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.6.1)
   - image_gallery_saver (1.5.0):
     - Flutter
-  - image_picker_ios (0.0.1):
+  - image_picker (0.0.1):
     - Flutter
-  - JCore (3.1.0)
-  - JPush (4.4.0):
-    - JCore (>= 2.0.0)
-  - jpush_flutter (0.0.2):
-    - Flutter
-    - JCore (= 3.1.0)
-    - JPush (= 4.4.0)
   - just_audio (0.0.1):
     - Flutter
-  - libwebp (1.2.1):
-    - libwebp/demux (= 1.2.1)
-    - libwebp/mux (= 1.2.1)
-    - libwebp/webp (= 1.2.1)
-  - libwebp/demux (1.2.1):
+  - libwebp (1.2.3):
+    - libwebp/demux (= 1.2.3)
+    - libwebp/mux (= 1.2.3)
+    - libwebp/webp (= 1.2.3)
+  - libwebp/demux (1.2.3):
     - libwebp/webp
-  - libwebp/mux (1.2.1):
+  - libwebp/mux (1.2.3):
     - libwebp/demux
-  - libwebp/webp (1.2.1)
+  - libwebp/webp (1.2.3)
   - Mantle (2.2.0):
     - Mantle/extobjc (= 2.2.0)
   - Mantle/extobjc (2.2.0)
@@ -102,7 +102,7 @@ PODS:
   - MTBBarcodeScanner (5.0.11)
   - open_file (0.0.1):
     - Flutter
-  - OpenIMSDKCore (2.2.0)
+  - "OpenIMSDKCore (2.3.4+2)"
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter
@@ -122,10 +122,10 @@ PODS:
     - ZXingObjC (~> 3.6.5)
   - record (0.0.1):
     - Flutter
-  - SDWebImage (5.13.2):
-    - SDWebImage/Core (= 5.13.2)
-  - SDWebImage/Core (5.13.2)
-  - SDWebImageWebPCoder (0.9.0):
+  - SDWebImage (5.13.5):
+    - SDWebImage/Core (= 5.13.5)
+  - SDWebImage/Core (5.13.5)
+  - SDWebImageWebPCoder (0.9.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.13)
   - shared_preferences_ios (0.0.1):
@@ -146,11 +146,13 @@ PODS:
   - ZXingObjC (3.6.5):
     - ZXingObjC/All (= 3.6.5)
   - ZXingObjC/All (3.6.5)
+  - ZXSDK (3.2.0)
 
 DEPENDENCIES:
   - app_installer (from `.symlinks/plugins/app_installer/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
+  - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
@@ -160,10 +162,10 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_openim_sdk (from `.symlinks/plugins/flutter_openim_sdk/ios`)
+  - getuiflut (from `.symlinks/plugins/getuiflut/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
-  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - jpush_flutter (from `.symlinks/plugins/jpush_flutter/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
@@ -188,8 +190,7 @@ SPEC REPOS:
     - DKImagePickerController
     - DKPhotoGallery
     - FMDB
-    - JCore
-    - JPush
+    - GTSDK
     - libwebp
     - Mantle
     - MTBBarcodeScanner
@@ -200,6 +201,7 @@ SPEC REPOS:
     - SwiftyGif
     - TOCropViewController
     - ZXingObjC
+    - ZXSDK
 
 EXTERNAL SOURCES:
   app_installer:
@@ -208,6 +210,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_session/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
+  emoji_picker_flutter:
+    :path: ".symlinks/plugins/emoji_picker_flutter/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
@@ -226,14 +230,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_openim_sdk:
     :path: ".symlinks/plugins/flutter_openim_sdk/ios"
+  getuiflut:
+    :path: ".symlinks/plugins/getuiflut/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_gallery_saver:
     :path: ".symlinks/plugins/image_gallery_saver/ios"
-  image_picker_ios:
-    :path: ".symlinks/plugins/image_picker_ios/ios"
-  jpush_flutter:
-    :path: ".symlinks/plugins/jpush_flutter/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   map_launcher:
@@ -271,33 +275,33 @@ SPEC CHECKSUMS:
   app_installer: 4301996bd8f3c6f75776416b8885a6d92928306f
   ATBarSDK: b6aa2b6a120ac7d6b1ff041bd60b9edde6bb17c4
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  Bugly: afe841bba2ea6de6d432a3c125240a5e75949c55
+  Bugly: b8715e6ec4004b7f7fbffab0643ba80545aee3da
   camera_avfoundation: 07c77549ea54ad95d8581be86617c094a46280d9
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
+  emoji_picker_flutter: df19dac03a2b39ac667dc8d1da939ef3a9e21347
+  file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_app_badger: 65de4d6f0c34a891df49e6cfb8a1c0496426fa68
   flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   flutter_image_compress: fd2b476345226e1a10ea352fa306af95704642c1
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
-  flutter_openim_sdk: ad0a826340e23db3ec7535324a1ea6b972fdac40
+  flutter_openim_sdk: 0670c879fbfa2e2197262a436e6fb0be16d38b3e
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  getuiflut: 8628ba2b64a738a847a07d2b67e0ac305778e2ee
+  GTSDK: 546259fef58f9fc1df6b86ec13307c3218b9e2e3
   image_cropper: 60c2789d1f1a78c873235d4319ca0c34a69f2d98
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
-  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
-  JCore: 4029befb2497adc36b2496e2cfd6b24d9f671784
-  JPush: b7d00f2cc78766e76c8abb30a5741fe94d21e5bc
-  jpush_flutter: bc88cfa9a4ff4481031564b641c3fe24024bb2cb
+  image_picker: 541dcbb3b9cf32d87eacbd957845d8651d6c62c3
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
-  libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
+  libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
-  OpenIMSDKCore: fa01aef998c26e128f5fb36288384533e7137d3d
+  OpenIMSDKCore: 0df676003368a149a36338c795cc2efde6c46eba
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
@@ -306,8 +310,8 @@ SPEC CHECKSUMS:
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   r_scan: 5672d9b68f8cece3835895a6aaab12047acf65bd
   record: cae05d8dd3cdb1dea3511b20e5a5811a1ae00d0d
-  SDWebImage: 72f86271a6f3139cc7e4a89220946489d4b9a866
-  SDWebImageWebPCoder: 3dc350894112feab5375cfba9ce0986544a66a69
+  SDWebImage: 23d714cd599354ee7906dbae26dff89b421c4370
+  SDWebImageWebPCoder: 18503de6621dd2c420d680e33d46bf8e1d5169b0
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
@@ -317,7 +321,8 @@ SPEC CHECKSUMS:
   video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
+  ZXSDK: abe4ef2002d42d51cdfab14256b8492bbeed2190
 
-PODFILE CHECKSUM: f897b32ce1eb8749384c29e8fcfc4e8b6d64a770
+PODFILE CHECKSUM: f4a3892e0341c815b77c8eb68286c822db8491d2
 
 COCOAPODS: 1.11.3
