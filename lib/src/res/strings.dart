@@ -144,6 +144,10 @@ class StrRes {
 
   static get selectByGroup => 'selectByGroup'.tr;
 
+  static get selectByTag => 'selectByTag'.tr;
+
+  static get selectByGroupChat => 'selectByGroupChat'.tr;
+
   static get draftText => 'draftText'.tr;
 
   static get you => 'you'.tr;
@@ -399,6 +403,10 @@ class StrRes {
 
   static get notDisturbModel => 'notDisturbModel'.tr;
 
+  static get enableRing => 'enableRing'.tr;
+
+  static get enableVibration => 'enableVibration'.tr;
+
   static get addMyMethod => 'addMyMethod'.tr;
 
   static get blacklist => 'blacklist'.tr;
@@ -622,6 +630,8 @@ class StrRes {
 
   static get rejectedByCaller => 'rejectedByCaller'.tr;
 
+  static get callTimeout => 'callTimeout'.tr;
+
   static get unsupportedMessage => 'unsupportedMessage'.tr;
 
   static get gender => 'gender'.tr;
@@ -641,4 +651,424 @@ class StrRes {
   static get plsInputNewPassword => 'plsInputNewPassword'.tr;
 
   static get confirmModify => 'confirmModify'.tr;
+
+  static get edit => 'edit'.tr;
+
+  static get favoriteEmoticons => 'favoriteEmoticons'.tr;
+
+  static get manageEmoticons => 'manageEmoticons'.tr;
+
+  static get deleteEmoticons => 'deleteEmoticons'.tr;
+
+  static get calEmoticonsNum => 'calEmoticonsNum'.tr;
+
+  static get completed => 'completed'.tr;
+
+  static get burnAfterReading => 'burnAfterReading'.tr;
+
+  static get setChatBackground => 'setChatBackground'.tr;
+
+  static get fontSize => 'fontSize'.tr;
+
+  static get little => 'little'.tr;
+
+  static get standard => 'standard'.tr;
+
+  static get big => 'big'.tr;
+
+  static get setSuccessfully => 'setSuccessfully'.tr;
+
+  static get face => 'face'.tr;
+
+  static get tag => 'tag'.tr;
+
+  static get emptyTag => 'emptyTag'.tr;
+
+  static get newTag => 'newTag'.tr;
+
+  static get tagName => 'tagName'.tr;
+
+  static get tagMember => 'tagMember'.tr;
+
+  static get plsInputTagName => 'plsInputTagName'.tr;
+
+  static get plsSelectTagMember => 'plsSelectTagMember'.tr;
+
+  static get confirmDeleteTag => 'confirmDeleteTag'.tr;
+
+  static get messageReadStatus => 'messageReadStatus'.tr;
+
+  static get assignSearchContent => 'assignSearchContent'.tr;
+
+  static get noFoundMessage => 'noFoundMessage'.tr;
+
+  static get thisWeek => 'thisWeek'.tr;
+
+  static get thisMonth => 'thisMonth'.tr;
+
+  static get dismissGroup => 'dismissGroup'.tr;
+
+  static get dismissGroupHint => 'dismissGroupHint'.tr;
+
+  static get mutedGroup => 'mutedGroup'.tr;
+
+  static get setMute => 'setMute'.tr;
+
+  static get tenMinutes => 'tenMinutes'.tr;
+
+  static get oneHour => 'oneHour'.tr;
+
+  static get twelveHours => 'twelveHours'.tr;
+
+  static get oneDay => 'oneDay'.tr;
+
+  static get custom => 'custom'.tr;
+
+  static get day => 'day'.tr;
+
+  static get workNotification => 'workNotification'.tr;
+
+  static get customEmoji => 'customEmoji'.tr;
+
+  static get createGroupNotification => 'createGroupNotification'.tr;
+
+  static get editGroupInfoNotification => 'editGroupInfoNotification'.tr;
+
+  static get quitGroupNotification => 'quitGroupNotification'.tr;
+
+  static get invitedJoinGroupNotification => 'invitedJoinGroupNotification'.tr;
+
+  static get kickedGroupNotification => 'kickedGroupNotification'.tr;
+
+  static get joinGroupNotification => 'joinGroupNotification'.tr;
+
+  static get dismissGroupNotification => 'dismissGroupNotification'.tr;
+
+  static get transferredGroupNotification => 'transferredGroupNotification'.tr;
+
+  static get muteGroupMemberNotification => 'muteGroupMemberNotification'.tr;
+
+  static get muteCancelGroupMemberNotification =>
+      'muteCancelGroupMemberNotification'.tr;
+
+  static get muteGroupNotification => 'muteGroupNotification'.tr;
+
+  static get muteCancelGroupNotification => 'muteCancelGroupNotification'.tr;
+
+  static get friendAddedNotification => 'friendAddedNotification'.tr;
+
+  static get openPrivateChatNotification => 'openPrivateChatNotification'.tr;
+
+  static get closePrivateChatNotification => 'closePrivateChatNotification'.tr;
+
+  static get clearChatHistory => 'clearChatHistory'.tr;
+
+  static get organization => 'organization'.tr;
+
+  static get selectFromAlbum => 'selectFromAlbum'.tr;
+
+  static get recover => 'recover'.tr;
+
+  static get confirmClearChatHistory => 'confirmClearChatHistory'.tr;
+
+  static get groupMemberInfoChangedNotification =>
+      'groupMemberInfoChangedNotification'.tr;
+
+  static get rejectFriendRequest => 'rejectFriendRequest'.tr;
+
+  static get rejectSuccessfully => 'rejectSuccessfully'.tr;
+
+  static get rejectFailed => 'rejectFailed'.tr;
+
+  static get oneMinutes => 'oneMinutes'.tr;
+
+  static get hour => 'hour'.tr;
+
+  static get minute => 'minute'.tr;
+
+  static get seconds => 'seconds'.tr;
+
+  static get scanQrLogin => 'scanQrLogin'.tr;
+
+  static get pcLoginConfirmation => 'pcLoginConfirmation'.tr;
+
+  static get confirmLogin => 'confirmLogin'.tr;
+
+  static get cancelLogin => 'cancelLogin'.tr;
+
+  static get loginSuccessful => 'loginSuccessful'.tr;
+
+  static get loginFailed => 'loginFailed'.tr;
+
+  static get searchAll => 'searchAll'.tr;
+
+  static get searchContacts => 'searchContacts'.tr;
+
+  static get searchGroup => 'searchGroup'.tr;
+
+  static get searchChatHistory => 'searchChatHistory'.tr;
+
+  static get searchFile => 'searchFile'.tr;
+
+  static get seeMore => 'seeMore'.tr;
+
+  static get relatedChatHistory => 'relatedChatHistory'.tr;
+
+  static get groupNicknameIs => 'groupNicknameIs'.tr;
+
+  static get joinGroupTimeIs => 'joinGroupTimeIs'.tr;
+
+  static get noSearchResult => 'noSearchResult'.tr;
+
+  static get organizationInformation => 'organizationInformation'.tr;
+
+  static get businessOrOrganization => 'businessOrOrganization'.tr;
+
+  static get department => 'department'.tr;
+
+  static get position => 'position'.tr;
+
+  static get viewNews => 'viewNews'.tr;
+
+  static get moreInfo => 'moreInfo'.tr;
+
+  static get previewFontSize => 'previewFontSize'.tr;
+
+  static get reset => 'reset'.tr;
+
+  static get groupNickname => 'groupNickname'.tr;
+
+  static get joinGroupTime => 'joinGroupTime'.tr;
+
+  static get makeAdmin => 'makeAdmin'.tr;
+
+  static get searchFriendLabel => 'searchFriendLabel'.tr;
+
+  static get searchDeptMemberLabel => 'searchDeptMemberLabel'.tr;
+
+  static get friends => 'friends'.tr;
+
+  static get colleague => 'colleague'.tr;
+
+  static get group => 'group'.tr;
+
+  static get toBeProcessed => 'toBeProcessed'.tr;
+
+  static get everyone => 'everyone'.tr;
+
+  static get inviteYouCall => 'inviteYouCall'.tr;
+
+  static get rejectCall => 'rejectCall'.tr;
+
+  static get acceptCall => 'acceptCall'.tr;
+
+  static get joinGroupSet => 'joinGroupSet'.tr;
+
+  static get allowAnyoneJoinGroup => 'allowAnyoneJoinGroup'.tr;
+
+  static get inviteNotVerification => 'inviteNotVerification'.tr;
+
+  static get needVerification => 'needVerification'.tr;
+
+  static get createWorkGroup => 'createWorkGroup'.tr;
+
+  static get groupType => 'groupType'.tr;
+
+  static get generalGroup => 'generalGroup'.tr;
+
+  static get workGroup => 'workGroup'.tr;
+
+  static get groupMemberPermissions => 'groupMemberPermissions'.tr;
+
+  static get notViewMemberProfiles => 'notViewMemberProfiles'.tr;
+
+  static get notAddMemberToFriend => 'notAddMemberToFriend'.tr;
+
+  static get joinGroupMethod => 'joinGroupMethod'.tr;
+
+  static get byInviteJoinGroup => 'byInviteJoinGroup'.tr;
+
+  static get byIDJoinGroup => 'byIDJoinGroup'.tr;
+
+  static get byQrcodeJoinGroup => 'byQrcodeJoinGroup'.tr;
+
+  static get groupNoticePermissionTips => 'groupNoticePermissionTips'.tr;
+
+  static get invite => 'invite'.tr;
+
+  static get joinIn => 'joinIn'.tr;
+
+  static get invitationCode => 'invitationCode'.tr;
+
+  static get workMoments => 'workMoments'.tr;
+
+  static get momentsNewMessage => 'momentsNewMessage'.tr;
+
+  static get momentsAtUsers => 'momentsAtUsers'.tr;
+
+  static get loading => 'loading'.tr;
+
+  static get message => 'message'.tr;
+
+  static get publishGraphic => 'publishGraphic'.tr;
+
+  static get publishVideo => 'publishVideo'.tr;
+
+  static get whoCanView => 'whoCanView'.tr;
+
+  static get atWhoView => 'atWhoView'.tr;
+
+  static get momentsPublic => 'momentsPublic'.tr;
+
+  static get momentsPublicSub => 'momentsPublicSub'.tr;
+
+  static get momentsPrivate => 'momentsPrivate'.tr;
+
+  static get momentsPrivateSub => 'momentsPrivateSub'.tr;
+
+  static get momentsPart => 'momentsPart'.tr;
+
+  static get momentsPartSub => 'momentsPartSub'.tr;
+
+  static get momentsBlocked => 'momentsBlocked'.tr;
+
+  static get momentsBlockedSub => 'momentsBlockedSub'.tr;
+
+  static get momentsSelectedFromGroup => 'momentsSelectedFromGroup'.tr;
+
+  static get momentsSelectedFromAddressBook =>
+      'momentsSelectedFromAddressBook'.tr;
+
+  static get rollUp => 'rollUp'.tr;
+
+  static get fullText => 'fullText'.tr;
+
+  static get comment => 'comment'.tr;
+
+  static get manyPeopleLikeIt => 'manyPeopleLikeIt'.tr;
+
+  static get confirmClearMessage => 'confirmClearMessage'.tr;
+
+  static get likeYou => 'likeYou'.tr;
+
+  static get commentYou => 'commentYou'.tr;
+
+  static get detail => 'detail'.tr;
+
+  static get mentionYou => 'mentionYou'.tr;
+
+  static get note => 'note'.tr;
+
+  static get momentsGone => 'momentsGone'.tr;
+
+  static get momentsEmpty => 'momentsEmpty'.tr;
+
+  static get noCameraPermission => 'noCameraPermission'.tr;
+
+  static get forwardMaxCountTips => 'forwardMaxCountTips'.tr;
+
+  static get noInternet => 'noInternet'.tr;
+
+  static get connecting => 'connecting'.tr;
+
+  static get connectingFailed => 'connectingFailed'.tr;
+
+  static get synchronizing => 'synchronizing'.tr;
+
+  static get syncFailed => 'syncFailed'.tr;
+
+  static get tooManyPeopleTipsWhenCreateGroup =>
+      'tooManyPeopleTipsWhenCreateGroup'.tr;
+
+  static get justNow => 'justNow'.tr;
+
+  static get groupAudioCallHint => 'groupAudioCallHint'.tr;
+
+  static get groupVideoCallHint => 'groupVideoCallHint'.tr;
+
+  static get callingBusy => 'callingBusy'.tr;
+
+  static get groupCallForbidden => 'groupCallForbidden'.tr;
+
+  static get launchMeeting => 'launchMeeting'.tr;
+
+  static get joinMeeting => 'joinMeeting'.tr;
+
+  static get plsInputMeetingSubject => 'plsInputMeetingSubject'.tr;
+
+  static get meetingStartTime => 'meetingStartTime'.tr;
+
+  static get meetingDuration => 'meetingDuration'.tr;
+
+  static get enterMeeting => 'enterMeeting'.tr;
+
+  static get meetingNo => 'meetingNo'.tr;
+
+  static get yourMeetingName => 'yourMeetingName'.tr;
+
+  static get plsInputMeetingNumber => 'plsInputMeetingNumber'.tr;
+
+  static get plsInputYouMeetingName => 'plsInputYouMeetingName'.tr;
+
+  static get meetingSubjectIs => 'meetingSubjectIs'.tr;
+
+  static get meetingStartTimeIs => 'meetingStartTimeIs'.tr;
+
+  static get meetingDurationIs => 'meetingDurationIs'.tr;
+
+  static get meetingNumberIs => 'meetingNumberIs'.tr;
+
+  static get meetingMessageClickHint => 'meetingMessageClickHint'.tr;
+
+  static get meetingMessage => 'meetingMessage'.tr;
+
+  static get openMeeting => 'openMeeting'.tr;
+
+  static get didNotStart => 'didNotStart'.tr;
+
+  static get started => 'started'.tr;
+
+  static get meetingInitiator => 'meetingInitiator'.tr;
+
+  static get usePwdLogin => 'usePwdLogin'.tr;
+
+  static get useSMSLogin => 'useSMSLogin'.tr;
+
+  static get verificationCode => 'verificationCode'.tr;
+
+  static get plsInputVerificationCode => 'plsInputVerificationCode'.tr;
+
+  static get unlockVerification => 'unlockVerification'.tr;
+
+  static get password => 'password'.tr;
+
+  static get fingerprint => 'fingerprint'.tr;
+
+  static get gesture => 'gesture'.tr;
+
+  static get biometrics => 'biometrics'.tr;
+
+  static get plsEnterNewPwd => 'plsEnterNewPwd'.tr;
+
+  static get plsEnterPwd => 'plsEnterPwd'.tr;
+
+  static get plsConfirmNewPwd => 'plsConfirmNewPwd'.tr;
+
+  static get resetInput => 'resetInput'.tr;
+
+  static get forbidAddMeToFriend => 'forbidAddMeToFriend'.tr;
+
+  static get doNotDisturbHint => 'doNotDisturbHint'.tr;
+
+  static get lockPwdErrorHint => 'lockPwdErrorHint'.tr;
+
+  static get notAddFriendHint => 'notAddFriendHint'.tr;
+
+  static get gesturePwdConfirmErrorHint => 'gesturePwdConfirmErrorHint'.tr;
+
+  static get deletedByFriendHint => 'deletedByFriendHint'.tr;
+
+  static get blockedByFriendHint => 'blockedByFriendHint'.tr;
+
+  static get sendFriendVerification => 'sendFriendVerification'.tr;
 }

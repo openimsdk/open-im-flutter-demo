@@ -84,7 +84,8 @@ dependencies:
   tencent_cos: 1.0.5
   flutter_cupertino_datetime_picker: 3.0.0
   flutter_openim_widget: 2.1.0
-
+  device_info_plus: 6.0.0
+  dart_date: ^1.1.1
 
 #dependency_overrides:
 #  decimal: 1.5.0
@@ -99,6 +100,7 @@ dependency_overrides:
   xml: 6.0.1
   camera_android: 0.9.7+1
   camera_avfoundation: 0.9.7+1
+  ffi: 2.0.1
   pull_to_refresh:
     git:
       url: https://github.com/miquelbeltran/flutter_pulltorefresh

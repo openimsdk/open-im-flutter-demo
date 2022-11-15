@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
-import 'package:openim_demo/src/core/controller/jpush_controller.dart';
+import 'package:openim_demo/src/core/controller/push_controller.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
+import 'package:openim_demo/src/utils/http_util.dart';
+import 'package:openim_demo/src/widgets/bottom_sheet_view.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 import 'package:openim_demo/src/widgets/loading_view.dart';
 
@@ -15,8 +17,9 @@ import '../../../utils/data_persistence.dart';
 
 class SetupSelfInfoLogic extends GetxController {
   var imLogic = Get.find<IMController>();
-  var jPushLogic = Get.find<JPushController>();
+  var pushLogic = Get.find<PushController>();
   var nameCtrl = TextEditingController();
+  var invitationCodeCtrl = TextEditingController();
   var showNameClearBtn = false.obs;
   var icon = "".obs;
   String? phoneNumber;
@@ -25,8 +28,10 @@ class SetupSelfInfoLogic extends GetxController {
   late String verifyCode;
   late String password;
   var avatarIndex = 0.obs;
-
-  // final ImagePicker _picker = ImagePicker();
+  final invitationCode = ''.obs;
+  final nickName = ''.obs;
+  final gender = 1.obs;
+  final birth = 0.obs;
 
   @override
   void onInit() {
@@ -35,7 +40,9 @@ class SetupSelfInfoLogic extends GetxController {
     email = Get.arguments['email'];
     verifyCode = Get.arguments['verifyCode'];
     password = Get.arguments['password'];
+    invitationCode.value = Get.arguments['invitationCode'] ?? '';
     avatarIndex.value = -1;
+    birth.value = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     // avatarIndex = Random().nextInt(indexAvatarList.length);
     super.onInit();
   }
@@ -43,59 +50,49 @@ class SetupSelfInfoLogic extends GetxController {
   var stream = Stream.value(1);
 
   enterMain() async {
-    if (icon.isEmpty && avatarIndex.value == -1) {
-      IMWidget.showToast(StrRes.plsUploadAvatar);
-      return;
-    }
     if (nameCtrl.text.isEmpty) {
       IMWidget.showToast(StrRes.nameNotEmpty);
       return;
     }
 
     LoadingView.singleton.wrap(asyncFunction: () => _login());
-    // await _login();
   }
 
   _login() async {
-    var data = await Apis.register(
-      areaCode: areaCode,
-      phoneNumber: phoneNumber,
-      email: email,
-      password: password,
-      verificationCode: verifyCode,
-    );
+    var data = await Apis.setPassword(
+        nickname: nameCtrl.text,
+        areaCode: areaCode,
+        phoneNumber: phoneNumber,
+        email: email,
+        password: password,
+        verificationCode: verifyCode,
+        invitationCode: invitationCode.value,
+        gender: gender.value,
+        birth: birth.value);
+    var account = {
+      "areaCode": areaCode,
+      "phoneNumber": phoneNumber,
+      "email": email
+    };
     await DataPersistence.putLoginCertificate(data);
+    await DataPersistence.putAccount(account);
     var uid = data.userID;
-    var token = data.token;
+    var token = data.imToken;
     print('---------login---------- uid: $uid, token: $token');
     await imLogic.login(uid, token);
-    await syncSelfInfo();
-    await adminOperate(uid);
+    await syncSelfInfo(uid);
     print('---------im login success-------');
-    jPushLogic.login(uid);
+    pushLogic.login(uid);
     print('---------jpush login success----');
     AppNavigator.startMain();
   }
 
-  /// 管理员操作
-  adminOperate(uid) async {
-    try {
-      // 登录管理员
-      var data = await Apis.login2('openIM123456');
-      // 以管理员身份为用户导入好友
-      await Apis.importFriends(uid: uid, token: data.token);
-      // 拉用户进群
-      await Apis.inviteToGroup(uid: uid, token: data.token);
-    } catch (e) {}
-  }
-
-  syncSelfInfo() async {
-    await OpenIM.iMManager.userManager.setSelfInfo(
-      nickname: nameCtrl.text,
-      faceURL: icon.isEmpty ? indexAvatarList[avatarIndex.value] : icon.value,
-      phoneNumber: phoneNumber,
-      email: email,
-    );
+  syncSelfInfo(String uid) async {
+    if (icon.value.isNotEmpty == true) {
+      final faceURL = await HttpUtil.uploadImageForMinio(path: icon.value);
+      await Apis.updateUserInfo(userID: uid, faceURL: faceURL);
+      // await OpenIM.iMManager.userManager.setSelfInfo(faceURL: faceURL);
+    }
   }
 
   void pickerPic() {
@@ -115,6 +112,56 @@ class SetupSelfInfoLogic extends GetxController {
         });
   }
 
+  void selectGender() {
+    Get.bottomSheet(
+      BottomSheetView(
+        items: [
+          SheetItem(
+            label: StrRes.man,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+            onTap: () => _updateGender(1),
+          ),
+          SheetItem(
+            label: StrRes.woman,
+            onTap: () => _updateGender(2),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _updateGender(int gender) {
+    this.gender.value = gender;
+  }
+
+  String get genderStr => gender.value == 1 ? '男' : '女';
+
+  void openDatePicker() {
+    var appLocale = Get.locale;
+    var format = "yyyy/MM/dd";
+    var locale = DateTimePickerLocale.en_us;
+    if (appLocale!.languageCode.toLowerCase().contains("zh")) {
+      format = "yyyy年/MM月/dd日";
+      locale = DateTimePickerLocale.zh_cn;
+    }
+    DatePicker.showDatePicker(
+      Get.context!,
+      locale: locale,
+      dateFormat: format,
+      maxDateTime: DateTime.now(),
+      onConfirm: (dateTime, List<int> selectedIndex) {
+        _updateBirthday(dateTime.millisecondsSinceEpoch ~/ 1000);
+      },
+    );
+  }
+
+  void _updateBirthday(int birthday) {
+    birth.value = birthday;
+  }
+
   @override
   void onReady() {
     nameCtrl.addListener(() {
@@ -127,7 +174,15 @@ class SetupSelfInfoLogic extends GetxController {
   @override
   void onClose() {
     nameCtrl.dispose();
-
     super.onClose();
+  }
+
+  void openPhotoSheet() {
+    IMWidget.openPhotoSheet(
+        toUrl: false,
+        onData: (path, url) {
+          // 拿到本地的照片地址， 最后才上传
+          icon.value = path;
+        });
   }
 }

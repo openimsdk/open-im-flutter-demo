@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:azlistview/azlistview.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:crypto/crypto.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -372,7 +373,8 @@ class IMUtil {
   }
 
   // md5 加密
-  static String generateMD5(String data) {
+  static String? generateMD5(String? data) {
+    if (null == data) return null;
     var content = new Utf8Encoder().convert(data);
     var digest = md5.convert(content);
     return digest.toString();
@@ -504,5 +506,43 @@ class IMUtil {
         return diff > 0 ? 1 : -1;
     }
     return diff;
+  }
+
+
+  static int _platform = -9;
+
+  static Future<int> getPlatform() async {
+    if (_platform == -9) {
+      _platform = await _platformID(Get.context!);
+    }
+    return _platform;
+  }
+
+  // 1 iPhone 2 android  8 android pad 9 iPad
+  static Future<int> _platformID(BuildContext context) async {
+    if (Platform.isIOS) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      var iPad = iosInfo.utsname.machine?.toLowerCase().contains("ipad");
+
+      if (iPad != true) {
+        iPad = iosInfo.model?.toLowerCase() == "ipad";
+      }
+
+      return iPad == true ? 9 : 1;
+    } else {
+      // The equivalent of the "smallestWidth" qualifier on Android.
+      var shortestSide = MediaQuery.of(context).size.shortestSide;
+      // Determine if we should use mobile layout or not, 600 here is
+      // a common breakpoint for a typical 7-inch tablet.
+      return shortestSide > 600 ? 8 : 2;
+    }
+  }
+
+  static bool isPhoneNumber(String areaCode, String mobile) {
+    if (areaCode == '+86') {
+      return isMobile(mobile);
+    }
+    return true;
   }
 }

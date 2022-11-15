@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
 
 import '../../res/strings.dart';
 import '../../res/styles.dart';
 import '../../widgets/button.dart';
 import '../../widgets/phone_input_box.dart';
 import '../../widgets/titlebar.dart';
+import '../../widgets/touch_close_keyboard.dart';
 import 'forget_password_logic.dart';
 
 class ForgetPasswordPage extends StatelessWidget {
@@ -28,17 +28,17 @@ class ForgetPasswordPage extends StatelessWidget {
                   padding: EdgeInsets.only(left: 32.w, top: 49.h),
                   child: Text(
                     StrRes.forgetPwd,
-                    style: PageStyle.ts_333333_26sp,
+                    style: PageStyle.ts_171A1D_26sp_medium,
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 32.w, top: 44.h, right: 32.w),
                   child: Obx(() => PhoneInputBox(
-                        controller: logic.controller,
-                        labelStyle: PageStyle.ts_000000_14sp,
-                        hintStyle: PageStyle.ts_000000_opacity40p_18sp,
-                        textStyle: PageStyle.ts_000000_18sp,
-                        codeStyle: PageStyle.ts_000000_18sp,
+                    controller: logic.controller,
+                        labelStyle: PageStyle.ts_171A1D_14sp,
+                        hintStyle: PageStyle.ts_171A1D0_opacity40p_17sp,
+                        textStyle: PageStyle.ts_171A1D_17sp,
+                        codeStyle: PageStyle.ts_171A1D_17sp,
                         arrowColor: PageStyle.c_000000,
                         clearBtnColor: PageStyle.c_000000_opacity40p,
                         code: logic.areaCode.value,
@@ -49,12 +49,13 @@ class ForgetPasswordPage extends StatelessWidget {
                             : InputWay.email,
                       )),
                 ),
-                Button(
-                  textStyle: PageStyle.ts_FFFFFF_18sp,
-                  margin: EdgeInsets.only(top: 206.h, left: 32.w, right: 32.w),
-                  text: StrRes.getVerificationCode,
-                  background: PageStyle.c_1D6BED,
-                ),
+                Obx(() => Button(
+                      margin:
+                          EdgeInsets.only(top: 206.h, left: 32.w, right: 32.w),
+                      text: StrRes.getVerificationCode,
+                      enabled: logic.enabled.value,
+                      onTap: logic.nextStep,
+                    )),
               ],
             ),
           ),

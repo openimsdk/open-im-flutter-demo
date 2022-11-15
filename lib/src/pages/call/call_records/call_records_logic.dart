@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:openim_demo/src/models/call_records.dart';
-import 'package:openim_demo/src/utils/data_persistence.dart';
 
 class CallRecordsLogic extends GetxController {
   var index = 0.obs;
@@ -12,22 +9,11 @@ class CallRecordsLogic extends GetxController {
 
   @override
   void onInit() {
-    list.addAll(DataPersistence.getCallRecords() ?? []);
-    list.forEach((element) {
-      if (!element.success) {
-        missedList.add(element);
-      }
-    });
-    print(
-        'list----${DateTime.now().millisecondsSinceEpoch}---${json.encode(list)}');
     super.onInit();
   }
 
   @override
   void onClose() {
-    if (_needUpdate) {
-      DataPersistence.putCallRecords(list);
-    }
     super.onClose();
   }
 

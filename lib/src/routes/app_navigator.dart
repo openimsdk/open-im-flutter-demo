@@ -9,6 +9,10 @@ import 'package:openim_demo/src/widgets/qr_view.dart';
 import 'app_pages.dart';
 
 class AppNavigator {
+  static void backLogin() {
+    Get.until((route) => Get.currentRoute == AppRoutes.LOGIN);
+  }
+
   static void startLogin() {
     Get.offAllNamed(AppRoutes.LOGIN);
   }
@@ -21,11 +25,33 @@ class AppNavigator {
     String? email,
     String? phoneNumber,
     String? areaCode,
+    required int usedFor,
+    String? invitationCode,
   }) {
     Get.toNamed(AppRoutes.REGISTER_VERIFY_PHONE, arguments: {
       'phoneNumber': phoneNumber,
       'areaCode': areaCode,
       'email': email,
+      'usedFor': usedFor,
+      'invitationCode': invitationCode
+    });
+  }
+
+  /// [usedFor] 1：注册，2：重置密码
+  static void startSetupPwd(
+      {String? phoneNumber,
+      String? areaCode,
+      String? email,
+      required String verifyCode,
+      required int usedFor,
+      String? invitationCode}) {
+    Get.toNamed(AppRoutes.REGISTER_SETUP_PWD, arguments: {
+      'phoneNumber': phoneNumber,
+      'areaCode': areaCode,
+      'email': email,
+      'verifyCode': verifyCode,
+      'usedFor': usedFor,
+      'invitationCode': invitationCode
     });
   }
 
@@ -43,19 +69,20 @@ class AppNavigator {
     });
   }
 
-  static void startRegisterSetupSelfInfo({
-    String? phoneNumber,
-    String? areaCode,
-    String? email,
-    required String verifyCode,
-    required String password,
-  }) {
+  static void startRegisterSetupSelfInfo(
+      {String? phoneNumber,
+      String? areaCode,
+      String? email,
+      required String verifyCode,
+      required String password,
+      String? invitationCode}) {
     Get.toNamed(AppRoutes.REGISTER_SETUP_SELF_INFO, arguments: {
       'phoneNumber': phoneNumber,
       'areaCode': areaCode,
       'email': email,
       'verifyCode': verifyCode,
       'password': password,
+      'invitationCode': invitationCode
     });
   }
 

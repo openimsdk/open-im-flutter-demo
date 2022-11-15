@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
-import 'package:openim_demo/src/core/controller/jpush_controller.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
@@ -9,9 +8,11 @@ import 'package:openim_demo/src/widgets/custom_dialog.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 import 'package:openim_demo/src/widgets/loading_view.dart';
 
+import '../../core/controller/push_controller.dart';
+
 class MineLogic extends GetxController {
   final imLogic = Get.find<IMController>();
-  final jPushLogic = Get.find<JPushController>();
+  final pushLogic = Get.find<PushController>();
 
   // Rx<UserInfo>? userInfo;
 
@@ -53,7 +54,7 @@ class MineLogic extends GetxController {
         await LoadingView.singleton.wrap(asyncFunction: () async {
           await imLogic.logout();
           await DataPersistence.removeLoginCertificate();
-          await jPushLogic.logout();
+          await pushLogic.logout();
         });
         AppNavigator.startLogin();
       } catch (e) {
@@ -65,7 +66,7 @@ class MineLogic extends GetxController {
 
   void kickedOffline() async {
     await DataPersistence.removeLoginCertificate();
-    await jPushLogic.logout();
+    await pushLogic.logout();
     AppNavigator.startLogin();
   }
 

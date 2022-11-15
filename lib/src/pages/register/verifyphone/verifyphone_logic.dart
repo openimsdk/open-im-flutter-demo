@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/res/strings.dart';
@@ -9,12 +10,12 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 
 class VerifyPhoneLogic extends GetxController {
   var codeErrorCtrl = StreamController<ErrorAnimationType>();
-
-  // var codeEditCtrl = TextEditingController();
+  var codeEditCtrl = TextEditingController(text: '');
   String? phoneNumber;
   String? areaCode;
   String? email;
-
+  late int usedFor;
+  String? invitationCode;
   void shake() {
     codeErrorCtrl.add(ErrorAnimationType.shake);
   }
@@ -22,18 +23,20 @@ class VerifyPhoneLogic extends GetxController {
   void onCompleted(value) async {
     try {
       await Apis.checkVerificationCode(
-        areaCode: areaCode,
-        phoneNumber: phoneNumber,
-        email: email,
-        verificationCode: value,
-      );
+          areaCode: areaCode,
+          phoneNumber: phoneNumber,
+          email: email,
+          verificationCode: value,
+          usedFor: usedFor,
+          invitationCode: invitationCode);
 
-      AppNavigator.startRegisterSetupPwd(
-        areaCode: areaCode,
-        phoneNumber: phoneNumber,
-        email: email,
-        verifyCode: value,
-      );
+      AppNavigator.startSetupPwd(
+          areaCode: areaCode,
+          phoneNumber: phoneNumber,
+          email: email,
+          verifyCode: value,
+          usedFor: usedFor,
+          invitationCode: invitationCode);
     } catch (e) {
       shake();
       IMWidget.showToast('${StrRes.verifyCodeError}:$e');
@@ -45,6 +48,8 @@ class VerifyPhoneLogic extends GetxController {
     phoneNumber = Get.arguments['phoneNumber'];
     areaCode = Get.arguments['areaCode'];
     email = Get.arguments['email'];
+    usedFor = Get.arguments['usedFor'];
+    invitationCode = Get.arguments['invitationCode'];
     super.onInit();
   }
 
@@ -52,15 +57,15 @@ class VerifyPhoneLogic extends GetxController {
 
   @override
   void onReady() {
-    requestVerificationCode();
     super.onReady();
   }
 
   Future<bool> requestVerificationCode() => Apis.requestVerificationCode(
-        areaCode: areaCode,
-        phoneNumber: phoneNumber,
-        email: email,
-      );
+      areaCode: areaCode,
+      phoneNumber: phoneNumber,
+      email: email,
+      usedFor: usedFor,
+      invitationCode: invitationCode);
 
   @override
   void onClose() {

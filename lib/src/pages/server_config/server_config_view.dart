@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_demo/src/common/config.dart';
-import 'package:openim_demo/src/res/styles.dart';
-import 'package:openim_demo/src/widgets/button.dart';
-import 'package:openim_demo/src/widgets/titlebar.dart';
-import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
 
+import '../../widgets/titlebar.dart';
+import '../../widgets/touch_close_keyboard.dart';
 import 'server_config_logic.dart';
 
 class ServerConfigPage extends StatelessWidget {
@@ -14,9 +11,9 @@ class ServerConfigPage extends StatelessWidget {
 
   Widget _buildItemField({
     required String label,
-    required String hintText,
+    String? hintText,
     required TextEditingController controller,
-    Function()? onTap,
+    bool enabled = true,
   }) =>
       Container(
         decoration: BoxDecoration(
@@ -40,13 +37,11 @@ class ServerConfigPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-            ),
+            Text(label),
             TextField(
               controller: controller,
               keyboardType: TextInputType.url,
-              onTap: onTap,
+              enabled: enabled,
               decoration: InputDecoration(
                 hintText: hintText,
               ),
@@ -67,59 +62,58 @@ class ServerConfigPage extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _buildItemField(
-                label: '请输入服务器地址',
-                hintText: Config.serverIp(),
-                controller: logic.ipCtrl,
+              Text(
+                '修改配置后，保存并重启才能生效',
+                style: TextStyle(color: Colors.red),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: logic.switchServer,
+                    child: Obx(() => Text(
+                          logic.isIP.value ? "切换为域名" : "切换为IP",
+                        )),
+                  ),
+                  ElevatedButton(
+                    onPressed: logic.confirm,
+                    child: Text('保存配置'),
+                  ),
+                ],
+              ),
+              Obx(() => _buildItemField(
+                    label: '请输入服务器地址',
+                    hintText: logic.isIP.value ? 'IP' : '域名',
+                    // hintText: Config.serverIp(),
+                    controller: logic.ipCtrl,
+                  )),
               _buildItemField(
                 label: '登录注册服务器地址',
-                hintText: Config.appAuthUrl(),
+                // hintText: Config.appAuthUrl(),
                 controller: logic.authCtrl,
+                enabled: false,
               ),
               _buildItemField(
                 label: 'IM API服务器地址',
-                hintText: Config.imApiUrl(),
+                // hintText: Config.imApiUrl(),
                 controller: logic.imApiCtrl,
+                enabled: false,
               ),
               _buildItemField(
                 label: 'IM WS地址',
-                hintText: Config.imWsUrl(),
+                // hintText: Config.imWsUrl(),
                 controller: logic.imWsCtrl,
+                enabled: false,
               ),
-              _buildItemField(
-                label: '存储独享',
-                hintText: Config.objectStorage(),
-                controller: logic.objectStorageCtrl,
-                onTap: () => logic.selectObjectStorage(),
-              ),
-              _buildItemField(
-                label: '音视频通话服务器地址',
-                hintText: Config.callUrl(),
-                controller: logic.callCtrl,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 22.w,
-                  vertical: 10.h,
+              GestureDetector(
+                onTap: logic.showObjectStorageSheet,
+                behavior: HitTestBehavior.translucent,
+                child: _buildItemField(
+                  label: '设置图片存储',
+                  hintText: '',
+                  controller: logic.objectStorageCtrl,
+                  enabled: false,
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      '重启app后配置生效',
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Button(
-                textStyle: PageStyle.ts_FFFFFF_18sp,
-                text: '保存',
-                background: PageStyle.c_1D6BED,
-                onTap: () => logic.confirm(),
-                margin: EdgeInsets.symmetric(horizontal: 22.w),
               ),
             ],
           ),

@@ -28,6 +28,21 @@ class PageStyle {
   static const c_A2C9F8 = Color(0xFFA2C9F8);
   static const c_FDDFA1 = Color(0xFFFDDFA1);
   static const c_F5F5F5 = Color(0xFFF5F5F5);
+  static const c_EAEAEA = Color(0xFFEAEAEA);
+  static const c_C7C7C8 = Color(0xFFC7C7C8);
+  static const c_DCEBFE = Color(0xFFDCEBFE);
+  static const c_B0B0B0 = Color(0xFFB0B0B0);
+  static const c_D7D7D7 = Color(0xFFD7D7D7);
+  static const c_71BCFF = Color(0xFF71BCFF);
+  static const c_EB84CA = Color(0xFFeb84ca);
+  static const c_F0F6FF = Color(0xFFF0F6FF);
+  static const c_2576FC = Color(0xFF2576FC);
+  static const c_FFC563 = Color(0xFFFFC563);
+  static const c_0089FF = Color(0xFF0089FF);
+  static const c_F1F7FF = Color(0xFFF1F7FF);
+  static const c_FDFEFF = Color(0xFFFDFEFF);
+  static const c_16191C = Color(0xFF16191C);
+  static const c_A2A3A5 = Color(0xFFA2A3A5);
 
   static var c_D8D8D8_opacity40p = Color(0xFFD8D8D8).withOpacity(0.4);
   static var c_000000_opacity40p = Color(0xFF000000).withOpacity(0.4);
@@ -39,6 +54,7 @@ class PageStyle {
   static var c_999999_opacity40p = Color(0xFF999999).withOpacity(0.4);
   static var c_979797_opacity50p = Color(0xFF979797).withOpacity(0.5);
   static var c_333333_opacity40p = Color(0xFF333333).withOpacity(0.4);
+  static var c_0089FF_opacity40p = Color(0xFF0089FF).withOpacity(0.4);
 
   ///
   static var ts_FFFFFF_10sp = TextStyle(
@@ -60,6 +76,11 @@ class PageStyle {
   static var ts_FFFFFF_18sp = TextStyle(
     fontSize: 18.sp,
     color: Color(0xFFFFFFFF),
+  );
+  static var ts_FFFFFF_18sp_semibold = TextStyle(
+    fontSize: 18.sp,
+    color: Color(0xFFFFFFFF),
+    fontWeight: FontWeight.w600,
   );
   static var ts_FFFFFF_20sp = TextStyle(
     fontSize: 20.sp,
@@ -176,6 +197,10 @@ class PageStyle {
     fontSize: 10.sp,
     color: Color(0xFF1B72EC),
   );
+  static var ts_1B72EC_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFF1B72EC),
+  );
   static var ts_1B72EC_14sp = TextStyle(
     fontSize: 14.sp,
     color: Color(0xFF1B72EC),
@@ -269,6 +294,10 @@ class PageStyle {
     color: Color(0xFFD9350D),
     fontSize: 18.sp,
   );
+  static var ts_D9350D_14sp = TextStyle(
+    color: Color(0xFFD9350D),
+    fontSize: 14.sp,
+  );
   static var ts_E80000_16sp = TextStyle(
     color: Color(0xFFE80000),
     fontSize: 16.sp,
@@ -276,6 +305,10 @@ class PageStyle {
   static var ts_F33E37_15sp = TextStyle(
     color: Color(0xFFF33E37),
     fontSize: 15.sp,
+  );
+  static var ts_F33E37_16sp = TextStyle(
+    color: Color(0xFFF33E37),
+    fontSize: 16.sp,
   );
   static var ts_F33E37_13sp = TextStyle(
     color: Color(0xFFF33E37),
@@ -313,9 +346,25 @@ class PageStyle {
     fontSize: 16.sp,
     color: Color(0xFF9F9F9F),
   );
+  static var ts_9F9F9F_14sp = TextStyle(
+    fontSize: 14.sp,
+    color: Color(0xFF9F9F9F),
+  );
 
+  static var ts_ADADAD_10sp = TextStyle(
+    fontSize: 10.sp,
+    color: Color(0xFFADADAD),
+  );
   static var ts_ADADAD_18sp = TextStyle(
     fontSize: 18.sp,
+    color: Color(0xFFADADAD),
+  );
+  static var ts_ADADAD_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFFADADAD),
+  );
+  static var ts_ADADAD_14sp = TextStyle(
+    fontSize: 14.sp,
     color: Color(0xFFADADAD),
   );
   static var ts_FF8C00_10sp = TextStyle(
@@ -325,5 +374,84 @@ class PageStyle {
   static var ts_2691ED_10sp = TextStyle(
     fontSize: 10.sp,
     color: Color(0xFF2691ED),
+  );
+  static var ts_F85050_18sp = TextStyle(
+    fontSize: 18.sp,
+    color: Color(0xFFF85050),
+  );
+  static var ts_B0B0B0_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFFB0B0B0),
+  );
+  static var ts_B0B0B0_14sp = TextStyle(
+    fontSize: 14.sp,
+    color: Color(0xFFB0B0B0),
+  );
+  static var ts_BABABA_16sp = TextStyle(
+    fontSize: 16.sp,
+    color: Color(0xFFBABABA),
+  );
+  static var ts_617183_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFF617183),
+  );
+  static var ts_171A1D_32sp_semibold = TextStyle(
+    fontSize: 32.sp,
+    color: Color(0xFF171A1D),
+    fontWeight: FontWeight.w600,
+  );
+  static var ts_171A1D_14sp = TextStyle(
+    fontSize: 14.sp,
+    color: Color(0xFF171A1D),
+  );
+  static var ts_171A1D_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFF171A1D),
+  );
+  static var ts_171A1D_17sp = TextStyle(
+    fontSize: 17.sp,
+    color: Color(0xFF171A1D),
+  );
+  static var ts_171A1D_18sp = TextStyle(
+    fontSize: 18.sp,
+    color: Color(0xFF171A1D),
+  );
+  static var ts_171A1D_26sp_medium = TextStyle(
+    fontSize: 26.sp,
+    color: Color(0xFF171A1D),
+    fontWeight: FontWeight.w500,
+  );
+  static var ts_171A1D0_opacity40p_17sp = TextStyle(
+    fontSize: 17.sp,
+    color: Color(0xFF171A1D).withOpacity(0.4),
+  );
+  static var ts_0089FF_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFF0089FF),
+  );
+  static var ts_0089FF_16sp = TextStyle(
+    fontSize: 16.sp,
+    color: Color(0xFF0089FF),
+  );
+
+  static final ts_5496EB_14sp = TextStyle(
+    fontSize: 14.sp,
+    color: Color(0xFF5496EB),
+  );
+  static final ts_5496EB_12sp = TextStyle(
+    fontSize: 12.sp,
+    color: Color(0xFF5496EB),
+  );
+  static final ts_16191C_17sp_opacity40 = TextStyle(
+    fontSize: 17.sp,
+    color: Color(0xFF16191C).withOpacity(.4),
+  );
+  static final ts_16191C_17sp_opacity60 = TextStyle(
+    fontSize: 17.sp,
+    color: Color(0xFF16191C).withOpacity(.6),
+  );
+  static final ts_16191C_17sp = TextStyle(
+    fontSize: 17.sp,
+    color: Color(0xFF16191C),
   );
 }

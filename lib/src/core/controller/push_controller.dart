@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
-import 'package:openim_demo/src/utils/data_persistence.dart';
 
-class JPushController extends GetxController {
+class PushController extends GetxController {
   final JPush jPush = JPush();
 
   @override
@@ -165,22 +163,17 @@ class JPushController extends GetxController {
   }
 
   Future login(String uid) async {
-    var logged = DataPersistence.getJpushLoginStatus(uid);
-    if (logged != true) {
-      await jPush.setAlias(uid).then((map) async {
-        print("jpush setAlias success: $map");
-        await DataPersistence.putJpushLoginStatus(uid);
-      }).catchError((error) {
-        print("jpush setAlias error: $error");
-      });
-    }
+    await jPush.setAlias(uid).then((map) async {
+      print("jpush setAlias success: $map");
+    }).catchError((error) {
+      print("jpush setAlias error: $error");
+    });
     return true;
   }
 
   Future logout() async {
     jPush.deleteAlias().then((map) async {
       print("jpush deleteAlias success: $map");
-      await DataPersistence.removeJpushLoginStatus(OpenIM.iMManager.uid);
     }).catchError((error) {
       print("jpush deleteAlias error: $error");
     });

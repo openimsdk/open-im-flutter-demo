@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
@@ -13,7 +14,8 @@ class RegisterLogic extends GetxController {
   var areaCode = "+86".obs;
 
   void nextStep() {
-    if (isPhoneRegister && !IMUtil.isMobile(controller.text)) {
+    if (isPhoneRegister &&
+        !IMUtil.isPhoneNumber(areaCode.value, controller.text)) {
       IMWidget.showToast(StrRes.plsInputRightPhone);
       return;
     }
@@ -21,11 +23,21 @@ class RegisterLogic extends GetxController {
       IMWidget.showToast(StrRes.plsInputRightEmail);
       return;
     }
-    AppNavigator.startRegisterVerifyPhoneOrEmail(
-      areaCode: areaCode.value,
-      phoneNumber: isPhoneRegister ? controller.text : null,
-      email: !isPhoneRegister ? controller.text : null,
-    );
+
+    Apis.requestVerificationCode(
+            areaCode: areaCode.value,
+            phoneNumber: isPhoneRegister ? controller.text : null,
+            email: !isPhoneRegister ? controller.text : null,
+            usedFor: 1)
+        .then((value) {
+      if (value) {
+        AppNavigator.startRegisterVerifyPhoneOrEmail(
+            areaCode: areaCode.value,
+            phoneNumber: isPhoneRegister ? controller.text : null,
+            email: !isPhoneRegister ? controller.text : null,
+            usedFor: 1);
+      }
+    });
   }
 
   void toggleProtocol() {

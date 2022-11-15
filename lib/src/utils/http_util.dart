@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:openim_demo/src/common/config.dart';
 import 'package:openim_demo/src/models/api_resp.dart';
 import 'package:openim_demo/src/utils/data_persistence.dart';
@@ -25,7 +28,7 @@ class HttpUtil {
         requestBody: true,
         responseHeader: true,
       ))
-      // ..interceptors.add(HttpFormatter())
+    // ..interceptors.add(HttpFormatter())
       ..interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
         // Do something before request is sent
         return handler.next(options); //continue
@@ -53,9 +56,10 @@ class HttpUtil {
   }
 
   ///
-  static Future<Map<String, dynamic>> post(
+  static Future post(
     String path, {
     dynamic data,
+    bool showErrorToast = true,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -76,26 +80,29 @@ class HttpUtil {
       if (resp.errCode == 0) {
         return resp.data;
       } else {
-        IMWidget.showToast(resp.errMsg);
+        if (showErrorToast) {
+          IMWidget.showToast(resp.errCode.toString().tr);
+        }
+
         return Future.error(resp.errMsg);
       }
     } catch (error) {
       if (error is DioError) {
-        IMWidget.showToast(error.response.toString());
-      } else {
-        IMWidget.showToast(error.toString());
+        if (showErrorToast) IMWidget.showToast(error.message);
+        return Future.error(error.message);
       }
+      if (showErrorToast) IMWidget.showToast(error.toString());
       return Future.error(error);
     }
   }
 
   /// tencent cos
-  static Future<String> uploadImage({required String path}) async {
+  static Future<String> uploadImageForCos({required String path}) async {
     var resp = await dio.post<Map<String, dynamic>>(
       "${Config.imApiUrl()}/third/tencent_cloud_storage_credential",
       data: {'operationID': '${DateTime.now().millisecondsSinceEpoch}'},
       options: Options(
-        headers: {'token': DataPersistence.getLoginCertificate()?.token},
+        headers: {'token': DataPersistence.getLoginCertificate()?.imToken},
       ),
     );
     var data = resp.data;
@@ -130,6 +137,29 @@ class HttpUtil {
     // await dio.post(url, data: formData);
     // return '$url$key';
     return '$url/$fileName';
+  }
+
+  static Future<String> uploadImageForMinio({required String path}) async {
+    String fileName = path.substring(path.lastIndexOf("/") + 1);
+    // fileType: file = "1",video = "2",picture = "3"
+    // final mf = await MultipartFile.fromFile(path, filename: fileName);
+    final bytes = await File(path).readAsBytes();
+    final mf = MultipartFile.fromBytes(bytes, filename: fileName);
+
+    var formData = FormData.fromMap({
+      'operationID': '${DateTime.now().millisecondsSinceEpoch}',
+      'fileType': 1,
+      'file': mf
+    });
+
+    var resp = await dio.post<Map<String, dynamic>>(
+      "${Config.imApiUrl()}/third/minio_upload",
+      data: formData,
+      options: Options(
+        headers: {'token': DataPersistence.getLoginCertificate()?.imToken},
+      ),
+    );
+    return resp.data?['data']['URL'];
   }
 
   static Future download(
