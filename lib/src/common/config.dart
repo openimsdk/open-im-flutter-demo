@@ -71,9 +71,8 @@ class Config {
     return ip ?? host;
   }
 
-  static String get chatTokenBaseURL => '$apiScheme://$host/complete_admin/';
-
   /// 登录注册手机验 证服务器地址
+  /// ip端口：10008   域名路由：chat
   static String appAuthUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -85,6 +84,7 @@ class Config {
   }
 
   /// IM sdk api地址
+  /// ip端口：10002   域名路由：api
   static String imApiUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -96,6 +96,7 @@ class Config {
   }
 
   /// IM ws 地址
+  /// ip端口：10001   域名路由：msg_gateway
   static String imWsUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
