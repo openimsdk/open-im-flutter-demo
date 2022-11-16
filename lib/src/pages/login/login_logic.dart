@@ -13,10 +13,16 @@ import 'package:openim_demo/src/utils/im_util.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 import 'package:openim_demo/src/widgets/loading_view.dart';
 
+enum LoginType {
+  password,
+  sms,
+}
+
 class LoginLogic extends GetxController {
   var phoneCtrl = TextEditingController();
   var emailCtrl = TextEditingController();
   var pwdCtrl = TextEditingController();
+  var codeCtrl = TextEditingController();
   var phoneFocusNode = FocusNode();
   var emailFocusNode = FocusNode();
   var showAccountClearBtn = false.obs;
@@ -28,9 +34,11 @@ class LoginLogic extends GetxController {
   var enabledLoginButton = false.obs;
   var index = 0.obs;
   var areaCode = "+86".obs;
+  var loginType = LoginType.password.obs;
 
   login() async {
-    if (index.value == 0 && !IMUtil.isMobile(phoneCtrl.text)) {
+    if (index.value == 0 &&
+        !IMUtil.isPhoneNumber(areaCode.value, phoneCtrl.text)) {
       IMWidget.showToast(StrRes.plsInputRightPhone);
       return;
     }
@@ -52,11 +60,19 @@ class LoginLogic extends GetxController {
         areaCode: areaCode.value,
         phoneNumber: index.value == 0 ? phoneCtrl.text : null,
         email: index.value == 1 ? emailCtrl.text : null,
-        password: pwdCtrl.text,
+        password: isPasswordLogin ? pwdCtrl.text : null,
+        code: isPasswordLogin ? null : codeCtrl.text,
       );
+      var account = {
+        "areaCode": areaCode.value,
+        "phoneNumber": phoneCtrl.text,
+        "email": emailCtrl.text,
+      };
       await DataPersistence.putLoginCertificate(data);
-      print('---------login---------- uid: ${data.userID}, token: ${data.token}');
-      await imLogic.login(data.userID, data.token);
+      await DataPersistence.putAccount(account);
+      print(
+          '---------login---------- uid: ${data.userID}, token: ${data.imToken}');
+      await imLogic.login(data.userID, data.imToken);
       print('---------im login success-------');
       pushLogic.login(data.userID);
       print('---------jpush login success----');
@@ -93,12 +109,16 @@ class LoginLogic extends GetxController {
       showPwdClearBtn.value = pwdCtrl.text.isNotEmpty;
       _changeLoginButtonStatus();
     });
+    codeCtrl.addListener(() {
+      _changeLoginButtonStatus();
+    });
     super.onReady();
   }
 
   void _changeLoginButtonStatus() {
-    enabledLoginButton.value =
-        pwdCtrl.text.isNotEmpty && (phoneCtrl.text.isNotEmpty || emailCtrl.text.isNotEmpty);
+    enabledLoginButton.value = (isPasswordLogin && pwdCtrl.text.isNotEmpty ||
+            !isPasswordLogin && codeCtrl.text.isNotEmpty) &&
+        (phoneCtrl.text.isNotEmpty || emailCtrl.text.isNotEmpty);
   }
 
   void toServerConfig() {
@@ -108,8 +128,9 @@ class LoginLogic extends GetxController {
   @override
   void onClose() {
     phoneCtrl.dispose();
-    pwdCtrl.dispose();
     emailCtrl.dispose();
+    pwdCtrl.dispose();
+    codeCtrl.dispose();
     phoneFocusNode.dispose();
     emailFocusNode.dispose();
     super.onClose();
@@ -137,5 +158,52 @@ class LoginLogic extends GetxController {
 
   void forgetPassword() {
     AppNavigator.startForgetPassword();
+  }
+
+  @override
+  void onInit() {
+    initData();
+    super.onInit();
+  }
+
+  void initData() {
+    var map = DataPersistence.getAccount();
+    if (map is Map) {
+      String? areaCode = map["areaCode"];
+      String? phoneNumber = map["phoneNumber"];
+      String? email = map["email"];
+      if (phoneNumber != null && phoneNumber.isNotEmpty) {
+        phoneCtrl.text = phoneNumber;
+      }
+      if (areaCode != null && areaCode.isNotEmpty) {
+        this.areaCode.value = areaCode;
+      }
+      if (email != null && email.isNotEmpty) {
+        emailCtrl.text = email;
+      }
+    }
+  }
+
+  bool get isPasswordLogin => loginType.value == LoginType.password;
+
+  void switchLoginType() {
+    loginType.value = isPasswordLogin ? LoginType.sms : LoginType.password;
+  }
+
+  Future<bool> getVerificationCode() async {
+    try {
+      // await LoadingView.singleton.wrap(
+      //     asyncFunction: () => Apis.requestVerificationCode(
+      //           areaCode: areaCode.value,
+      //           phoneNumber: index.value == 0 ? phoneCtrl.text : null,
+      //           email: index.value == 1 ? emailCtrl.text : null,
+      //           usedFor: 3,
+      //         ));
+      IMWidget.showToast(StrRes.sendSuccessfully);
+      return true;
+    } catch (e) {
+      IMWidget.showToast(StrRes.sendFailed);
+      return false;
+    }
   }
 }

@@ -1,15 +1,19 @@
 class LoginCertificate {
   String userID;
-  String token;
+  String imToken; // im的
+  String chatToken; // 业务服务器的
 
   LoginCertificate.fromJson(Map<String, dynamic> map)
       : userID = map["userID"],
-        token = map["token"];
+        imToken = map["imToken"],
+        chatToken = map['chatToken'];
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['userID'] = userID;
-    data['token'] = token;
+    data['imToken'] = imToken;
+    data['chatToken'] = chatToken;
+
     return data;
   }
 }

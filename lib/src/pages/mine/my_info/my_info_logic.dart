@@ -10,6 +10,8 @@ import 'package:openim_demo/src/widgets/bottom_sheet_view.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 import 'package:openim_demo/src/widgets/loading_view.dart';
 
+import '../../../common/apis.dart';
+
 class MyInfoLogic extends GetxController {
   final imLogic = Get.find<IMController>();
 
@@ -34,9 +36,15 @@ class MyInfoLogic extends GetxController {
   }
 
   void openPhotoSheet() {
-    IMWidget.openPhotoSheet(onData: (path, url) {
+    IMWidget.openPhotoSheet(onData: (path, url) async {
       if (url != null) {
-        OpenIM.iMManager.userManager.setSelfInfo(faceURL: url);
+        LoadingView.singleton.wrap(
+          asyncFunction: () =>
+              Apis.updateUserInfo(userID: OpenIM.iMManager.uid, faceURL: url)
+                  .then((value) => imLogic.userInfo.update((val) {
+                        val?.faceURL = url;
+                      })),
+        );
       }
     });
   }
@@ -55,7 +63,7 @@ class MyInfoLogic extends GetxController {
       dateFormat: format,
       maxDateTime: DateTime.now(),
       onConfirm: (dateTime, List<int> selectedIndex) {
-        // _updateBirthday(dateTime.toString());
+        _updateBirthday(dateTime.millisecondsSinceEpoch ~/ 1000);
       },
     );
   }
@@ -83,21 +91,21 @@ class MyInfoLogic extends GetxController {
 
   void _updateGender(int gender) {
     LoadingView.singleton.wrap(
-      asyncFunction: () => OpenIM.iMManager.userManager
-          .setSelfInfo(gender: gender)
-          .then((value) => imLogic.userInfo.update((val) {
-                val?.gender = gender;
-              })),
+      asyncFunction: () =>
+          Apis.updateUserInfo(userID: OpenIM.iMManager.uid, gender: gender)
+              .then((value) => imLogic.userInfo.update((val) {
+                    val?.gender = gender;
+                  })),
     );
   }
 
-  void _updateBirthday(String birthday) {
+  void _updateBirthday(int birthday) {
     LoadingView.singleton.wrap(
-      asyncFunction: () => OpenIM.iMManager.userManager
-          .setSelfInfo(birth: 0)
-          .then((value) => imLogic.userInfo.update((val) {
-                // val?.birth = birthday;
-              })),
+      asyncFunction: () =>
+          Apis.updateUserInfo(userID: OpenIM.iMManager.uid, birth: birthday)
+              .then((value) => imLogic.userInfo.update((val) {
+                    val?.birth = birthday;
+                  })),
     );
   }
 

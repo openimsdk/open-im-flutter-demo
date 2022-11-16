@@ -7,6 +7,7 @@ import 'package:openim_demo/src/widgets/button.dart';
 import 'package:openim_demo/src/widgets/pwd_input_box.dart';
 import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
 
+import '../../../widgets/titlebar.dart';
 import 'setuppwd_logic.dart';
 
 class SetupPwdPage extends StatelessWidget {
@@ -17,59 +18,66 @@ class SetupPwdPage extends StatelessWidget {
     return TouchCloseSoftKeyboard(
       child: Scaffold(
         backgroundColor: PageStyle.c_FFFFFF,
-        body: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 32.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 152.h),
-                Text(
-                  StrRes.plsSetupPwd,
-                  style: PageStyle.ts_333333_26sp,
-                ),
-                SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        StrRes.pwdExplanation,
-                        style: PageStyle.ts_1D6BED_16sp,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 32.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EnterpriseTitleBar.backButton(left: 0),
+                  SizedBox(height: 49.h),
+                  Text(
+                    logic.usedFor == 1
+                        ? StrRes.plsSetupPwd
+                        : StrRes.setupNewPassword,
+                    style: PageStyle.ts_171A1D_26sp_medium,
+                  ),
+                  SizedBox(height: 4.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          StrRes.pwdExplanation,
+                          style: PageStyle.ts_0089FF_16sp,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 28.h),
-                Obx(() => PwdInputBox(
-                      autofocus: true,
-                      controller: logic.pwdCtrl,
-                      labelStyle: PageStyle.ts_000000_14sp,
-                      hintStyle: PageStyle.ts_000000_opacity40p_18sp,
-                      textStyle: PageStyle.ts_000000_18sp,
-                      showClearBtn: logic.showPwdClearBtn.value,
-                      obscureText: logic.obscureText.value,
-                      onClickEyesBtn: () => logic.toggleEye(),
-                      // inputFormatters: [
-                      //   FilteringTextInputFormatter.allow(
-                      //     RegExp(r'[\w\W]{6,20}'),
-                      //   )
-                      // ],
-                      eyesBtnColor: Color(0xFF000000).withOpacity(0.4),
-                      clearBtnColor: Color(0xFF000000).withOpacity(0.4),
-                    )),
-                SizedBox(height: 14.h),
-                Text(
-                  StrRes.pwdRule,
-                  style: PageStyle.ts_1D6BED_12sp,
-                ),
-                SizedBox(height: 155.h),
-                Button(
-                  textStyle: PageStyle.ts_FFFFFF_18sp,
-                  text: StrRes.nextStep,
-                  background: PageStyle.c_1D6BED,
-                  onTap: () => logic.nextStep(),
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(height: 28.h),
+                  Obx(() => PwdInputBox(
+                        autofocus: true,
+                        controller: logic.pwdCtrl,
+                        labelStyle: PageStyle.ts_171A1D_14sp,
+                        hintStyle: PageStyle.ts_000000_opacity40p_18sp,
+                        textStyle: PageStyle.ts_171A1D_17sp,
+                        showClearBtn: logic.showPwdClearBtn.value,
+                        obscureText: logic.obscureText.value,
+                        onClickEyesBtn: () => logic.toggleEye(),
+                        // inputFormatters: [
+                        //   FilteringTextInputFormatter.allow(
+                        //     RegExp(r'[\w\W]{6,20}'),
+                        //   )
+                        // ],
+                        eyesBtnColor: PageStyle.c_333333,
+                        clearBtnColor: PageStyle.c_000000_opacity40p,
+                      )),
+                  SizedBox(height: 14.h),
+                  Text(
+                    StrRes.pwdRule,
+                    style: PageStyle.ts_0089FF_12sp,
+                  ),
+                  SizedBox(height: 155.h),
+                  Obx(() => Button(
+                        textStyle: PageStyle.ts_FFFFFF_18sp,
+                        text: logic.usedFor == 1
+                            ? StrRes.nextStep
+                            : StrRes.confirmModify,
+                        enabled: logic.enabled.value,
+                        onTap: () => logic.nextStep(),
+                      )),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,8 +1,8 @@
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:uuid/uuid.dart';
 
-import '../common/config.dart';
 import '../models/login_certificate.dart';
 
 class DataPersistence {
@@ -19,11 +19,38 @@ class DataPersistence {
   static const _CHAT_BACKGROUND = '%s_chatBackground';
   static const _GROUP_APPLICATION = '%s_groupApplication';
   static const _FRIEND_APPLICATION = '%s_friendApplication';
+  static const _DEVICE_ID = 'deviceID';
+  static const _ENABLE_VIBRATION = 'enableVibration';
+  static const _ENABLE_RING = 'enableRing';
+  static const _SCREEN_PWD = 'screenPassword';
+  static const _ENABLED_BIOMETRIC = 'enabledBiometric';
 
   DataPersistence._();
 
+  // static bool get enableVibration => SpUtil.getBool(_ENABLE_VIBRATION) ?? false;
+  //
+  // static bool get enableRing => SpUtil.getBool(_ENABLE_RING) ?? false;
+
+  // static setEnableShake(bool shake) {
+  //   SpUtil.putBool(_ENABLE_VIBRATION, shake);
+  // }
+  //
+  // static setEnableRing(bool ring) {
+  //   SpUtil.putBool(_ENABLE_RING, ring);
+  // }
+
+  static String getDeviceID() {
+    var deviceID = SpUtil.getString(_DEVICE_ID);
+    if (deviceID!.isEmpty) {
+      deviceID = Uuid().v4();
+      SpUtil.putString(_DEVICE_ID, deviceID);
+    }
+    return deviceID;
+  }
+
   static LoginCertificate? getLoginCertificate() {
-    return SpUtil.getObj(_LOGIN_INFO, (v) => LoginCertificate.fromJson(v.cast()));
+    return SpUtil.getObj(
+        _LOGIN_INFO, (v) => LoginCertificate.fromJson(v.cast()));
   }
 
   static Future<bool>? putLoginCertificate(LoginCertificate info) {
@@ -119,7 +146,7 @@ class DataPersistence {
   static double getChatFontSizeFactor() {
     return SpUtil.getDouble(
       getKey(_CHAT_FONT_SIZE_FACTOR),
-      defValue: Config.textScaleFactor,
+      defValue: 1,
     )!;
   }
 
@@ -135,11 +162,13 @@ class DataPersistence {
     return SpUtil.remove(getKey(_CHAT_BACKGROUND));
   }
 
-  static Future<bool>? putHaveReadUnHandleGroupApplication(List<String> idList) {
+  static Future<bool>? putHaveReadUnHandleGroupApplication(
+      List<String> idList) {
     return SpUtil.putStringList(getKey(_GROUP_APPLICATION), idList);
   }
 
-  static Future<bool>? putHaveReadUnHandleFriendApplication(List<String> idList) {
+  static Future<bool>? putHaveReadUnHandleFriendApplication(
+      List<String> idList) {
     return SpUtil.putStringList(getKey(_FRIEND_APPLICATION), idList);
   }
 
@@ -149,5 +178,29 @@ class DataPersistence {
 
   static List<String>? getHaveReadUnHandleFriendApplication() {
     return SpUtil.getStringList(getKey(_FRIEND_APPLICATION), defValue: []);
+  }
+
+  static Future<bool>? putLockScreenPassword(String password) {
+    return SpUtil.putString(getKey(_SCREEN_PWD), password);
+  }
+
+  static Future<bool>? clearLockScreenPassword() {
+    return SpUtil.remove(getKey(_SCREEN_PWD));
+  }
+
+  static String? getLockScreenPassword() {
+    return SpUtil.getString(getKey(_SCREEN_PWD), defValue: null);
+  }
+
+  static Future<bool>? openBiometric() {
+    return SpUtil.putBool(getKey(_ENABLED_BIOMETRIC), true);
+  }
+
+  static bool? isEnabledBiometric() {
+    return SpUtil.getBool(getKey(_ENABLED_BIOMETRIC), defValue: null);
+  }
+
+  static Future<bool>? closeBiometric() {
+    return SpUtil.remove(getKey(_ENABLED_BIOMETRIC));
   }
 }

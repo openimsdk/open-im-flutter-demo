@@ -5,25 +5,23 @@ buildscript {
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/google' }
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
-        maven { url "https://mvn.gt.getui.com/nexus/content/repositories/releases/" }
-        maven { url 'https://developer.huawei.com/repo/' }    // hms
-        maven { url "https://dl.google.com/dl/android/maven2/" }   // fcm
+        maven { url 'https://open-im-online.rentsoft.cn:51000/repository/maven2/' }
         google()
         mavenCentral()
-        maven {
-            url 'https://maven.columbus.heytapmobi.com/repository/releases/'
-            credentials {
-                username 'nexus'
-                password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
-            }
-        }
+        // hms
+//        maven { url 'https://developer.huawei.com/repo/' }
+        // fcm
+//        maven { url "https://maven.google.com" }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:4.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.5'  // fcm
-        classpath 'com.huawei.agconnect:agcp:1.5.2.300'    // hms
+//        classpath 'com.android.tools.build:gradle:7.0.2'
+        // fcm
+//        classpath 'com.google.gms:google-services:4.3.4'
+        // hms
+//        classpath 'com.huawei.agconnect:agcp:1.4.2.300'
     }
 }
 
@@ -33,18 +31,13 @@ allprojects {
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/google' }
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
-        maven { url "https://mvn.gt.getui.com/nexus/content/repositories/releases/" }
-        maven { url 'https://developer.huawei.com/repo/' }    // hms
-        maven { url "https://dl.google.com/dl/android/maven2/" }   // fcm
+        maven { url 'https://open-im-online.rentsoft.cn:51000/repository/maven2/' }
         google()
         mavenCentral()
-        maven {
-            url 'https://maven.columbus.heytapmobi.com/repository/releases/'
-            credentials {
-                username 'nexus'
-                password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
-            }
-        }
+        // hms
+//        maven { url 'https://developer.huawei.com/repo/' }
+        // fcm
+//        maven { url "https://maven.google.com" }
     }
 }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,12 +9,11 @@ import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
 import 'package:openim_demo/src/widgets/verify_code_send_button.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../../widgets/button.dart';
 import 'verifyphone_logic.dart';
 
 class VerifyPhonePage extends StatelessWidget {
   final logic = Get.find<VerifyPhoneLogic>();
-  final color1 = const Color(0xFF999999);
-  final color2 = const Color(0xFF1D6BED);
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +33,22 @@ class VerifyPhonePage extends StatelessWidget {
                     logic.isPhoneRegister
                         ? StrRes.verifyCodeSentToPhone
                         : StrRes.verifyCodeSentToEmail,
-                    style: PageStyle.ts_333333_26sp,
+                    style: PageStyle.ts_171A1D_26sp_medium,
                   ),
                   Text(
                     logic.isPhoneRegister
                         ? '${logic.areaCode} ${logic.phoneNumber}'
                         : logic.email!,
-                    style: PageStyle.ts_1D6BED_16sp,
+                    style: PageStyle.ts_0089FF_16sp,
                   ),
                   SizedBox(height: 28.h),
                   Text(
                     StrRes.plsInputCode,
-                    style: PageStyle.ts_000000_14sp,
+                    style: PageStyle.ts_171A1D_14sp,
                   ),
                   PinCodeTextField(
                     appContext: context,
+                    controller: logic.codeEditCtrl,
                     autoFocus: true,
                     // pastedTextStyle: TextStyle(
                     //   color: Colors.green.shade600,
@@ -71,13 +72,13 @@ class VerifyPhonePage extends StatelessWidget {
                     },
                     pinTheme: PinTheme(
                       shape: PinCodeFieldShape.underline,
-                      activeColor: color2,
-                      selectedColor: color2,
-                      inactiveColor: color1,
-                      disabledColor: color1,
-                      activeFillColor: color1,
-                      selectedFillColor: color1,
-                      inactiveFillColor: color1,
+                      activeColor: const Color(0xFF0089FF),
+                      selectedColor: const Color(0xFF0089FF),
+                      inactiveColor: const Color(0xFF999999),
+                      disabledColor: const Color(0xFF999999),
+                      activeFillColor: const Color(0xFF999999),
+                      selectedFillColor: const Color(0xFF999999),
+                      inactiveFillColor: const Color(0xFF999999),
                       // borderRadius: BorderRadius.circular(5),
                       // fieldHeight: 50,
                       // fieldWidth: 40,
@@ -99,10 +100,15 @@ class VerifyPhonePage extends StatelessWidget {
                     onCompleted: (v) {
                       logic.onCompleted(v);
                     },
+                    onSubmitted: (v) {
+                      logic.onCompleted(v);
+                    },
                     // onTap: () {
                     //   print("Pressed");
                     // },
-                    onChanged: (value) {},
+                    onChanged: (v) {
+                      // logic.onCompleted(v);
+                    },
                     beforeTextPaste: (text) {
                       print("Allowing to paste $text");
                       //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
@@ -111,10 +117,15 @@ class VerifyPhonePage extends StatelessWidget {
                     },
                   ),
                   VerifyCodeSendButton(
-                    sec: 60,
+                    sec: 300,
                     onTapCallback: () async {
                       return logic.requestVerificationCode();
                     },
+                  ),
+                  Button(
+                    onTap: () => logic.onCompleted(logic.codeEditCtrl.text),
+                    margin: EdgeInsets.only(top: 59.h),
+                    text: StrRes.nextStep,
                   ),
                 ],
               ),

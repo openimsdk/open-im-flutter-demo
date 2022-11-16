@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/apis.dart';
 import '../../res/strings.dart';
 import '../../routes/app_navigator.dart';
 import '../../utils/im_util.dart';
@@ -11,9 +12,11 @@ class ForgetPasswordLogic extends GetxController {
   var showClearBtn = false.obs;
   var isPhoneRegister = true;
   var areaCode = "+86".obs;
+  var enabled = false.obs;
 
-  void nextStep() {
-    if (isPhoneRegister && !IMUtil.isMobile(controller.text)) {
+  void nextStep() async {
+    if (isPhoneRegister &&
+        !IMUtil.isPhoneNumber(areaCode.value, controller.text)) {
       IMWidget.showToast(StrRes.plsInputRightPhone);
       return;
     }
@@ -21,10 +24,17 @@ class ForgetPasswordLogic extends GetxController {
       IMWidget.showToast(StrRes.plsInputRightEmail);
       return;
     }
+    await Apis.requestVerificationCode(
+      areaCode: areaCode.value,
+      phoneNumber: isPhoneRegister ? controller.text : null,
+      email: !isPhoneRegister ? controller.text : null,
+      usedFor: 2,
+    );
     AppNavigator.startRegisterVerifyPhoneOrEmail(
       areaCode: areaCode.value,
       phoneNumber: isPhoneRegister ? controller.text : null,
       email: !isPhoneRegister ? controller.text : null,
+      usedFor: 2,
     );
   }
 
@@ -32,6 +42,7 @@ class ForgetPasswordLogic extends GetxController {
   void onReady() {
     controller.addListener(() {
       showClearBtn.value = controller.text.isNotEmpty;
+      enabled.value = controller.text.isNotEmpty;
     });
     super.onReady();
   }

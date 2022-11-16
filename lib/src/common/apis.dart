@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_demo/src/common/urls.dart';
@@ -11,6 +12,7 @@ import 'package:openim_demo/src/utils/http_util.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 
+import '../utils/data_persistence.dart';
 import 'config.dart';
 
 class Apis {
@@ -29,7 +31,8 @@ class Apis {
     String? areaCode,
     String? phoneNumber,
     String? email,
-    required String password,
+    String? password,
+    String? code,
   }) async {
     try {
       var data = await HttpUtil.post(Urls.login, data: {
@@ -37,87 +40,200 @@ class Apis {
         'phoneNumber': phoneNumber,
         'email': email,
         'password': IMUtil.generateMD5(password),
-        'platform': _platform,
+        'platform': await IMUtil.getPlatform(),
+        'code': code,
         'operationID': _getOperationID(),
       });
-      return LoginCertificate.fromJson(data);
+      return LoginCertificate.fromJson(data!);
     } catch (e) {
       print('e:$e');
-      // var error = e as DioError;
-      // IMWidget.showToast('登录失败，请联系管理员:${error.response}');
-      return Future.error(e);
-    }
-  }
-
-  static Future<LoginCertificate> login2(String uid) async {
-    try {
-      var data = await HttpUtil.post(Urls.login2, data: {
-        'secret': Config.secret,
-        'platform': _platform,
-        'userID': uid,
-        'operationID': _getOperationID(),
-      });
-      return LoginCertificate.fromJson(data);
-    } catch (e) {
-      print('e:$e');
-      // var error = e as DioError;
-      // IMWidget.showToast('登录失败，请联系管理员:${error.response}');
       return Future.error(e);
     }
   }
 
   /// register
-  static Future<LoginCertificate> register({
+  static Future<LoginCertificate> setPassword(
+      {required String nickname,
+      required String password,
+      required String verificationCode,
+      String? faceURL,
+      String? areaCode,
+      String? phoneNumber,
+      String? email,
+      int birth = 0,
+      int gender = 1,
+      String? invitationCode,
+      int? platformID}) async {
+    try {
+      var data = await HttpUtil.post(Urls.setPwd, data: {
+        "nickname": nickname,
+        "faceURL": faceURL ?? '',
+        "areaCode": areaCode,
+        'phoneNumber': phoneNumber,
+        'email': email ?? '',
+        'birth': birth,
+        'gender': gender,
+        'deviceID': DataPersistence.getDeviceID(),
+        'password': IMUtil.generateMD5(password),
+        'verificationCode': verificationCode,
+        'platform': await IMUtil.getPlatform(),
+        'operationID': _getOperationID(),
+        'invitationCode': invitationCode,
+      });
+      return LoginCertificate.fromJson(data!);
+    } catch (e) {
+      print('e:$e');
+      return Future.error(e);
+    }
+  }
+
+  /// reset password
+  static Future<dynamic> resetPassword({
     String? areaCode,
     String? phoneNumber,
     String? email,
     required String password,
     required String verificationCode,
   }) async {
-    try {
-      var data = await HttpUtil.post(Urls.register, data: {
-        "areaCode": areaCode,
-        'phoneNumber': phoneNumber,
-        'email': email,
-        'password': IMUtil.generateMD5(password),
-        'verificationCode': verificationCode,
-        'platform': Platform.isAndroid ? IMPlatform.android : IMPlatform.ios,
-        'operationID': _getOperationID(),
-      });
-      return LoginCertificate.fromJson(data);
-    } catch (e) {
-      print('e:$e');
-      // var error = e as DioError;
-      // IMWidget.showToast('注册失败，请联系管理员:${error.response}');
-      return Future.error(e);
-    }
+    return HttpUtil.post(Urls.resetPwd, data: {
+      "areaCode": areaCode,
+      'phoneNumber': phoneNumber,
+      'email': email,
+      'password': IMUtil.generateMD5(password),
+      'verificationCode': verificationCode,
+      'platform': await IMUtil.getPlatform(),
+      'operationID': _getOperationID(),
+    });
   }
 
-  static Future<bool> register2(
-      {required String uid, required String name}) async {
+  /// change password
+  static Future<bool> changePassword({
+    required String userID,
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     try {
-      await HttpUtil.post(Urls.register2, data: {
-        'secret': Config.secret,
-        'platform': _platform,
-        'uid': uid,
-        'name': name,
+      await HttpUtil.post(Urls.changePwd, data: {
+        "userID": userID,
+        'currentPassword': IMUtil.generateMD5(currentPassword),
+        'newPassword': IMUtil.generateMD5(newPassword),
+        'platform': await IMUtil.getPlatform(),
         'operationID': _getOperationID(),
       });
+
       return true;
     } catch (e) {
-      print('e:$e');
-      // var error = e as DioError;
-      // IMWidget.showToast('注册失败，请联系管理员:${error.response}');
       return false;
     }
   }
 
-  /// 获取验证码
-  static Future<bool> requestVerificationCode({
-    String? areaCode,
+  /// update user info
+  static Future<dynamic> updateUserInfo({
+    required String userID,
+    String? account,
     String? phoneNumber,
+    String? areaCode,
     String? email,
+    String? nickname,
+    String? faceURL,
+    int? gender,
+    int? birth,
+    int? level,
+    int? allowAddFriend,
+    int? allowBeep,
+    int? allowVibration,
   }) async {
+    Map<String, dynamic> param = {'userID': userID};
+    void put(String key, dynamic value) {
+      if (null != value) {
+        param[key] = value;
+      }
+    }
+
+    put('account', account);
+    put('phoneNumber', phoneNumber);
+    put('areaCode', areaCode);
+    put('email', email);
+    put('nickname', nickname);
+    put('faceURL', faceURL);
+    put('gender', gender);
+    put('gender', gender);
+    put('level', level);
+    put('birth', birth);
+    put('allowAddFriend', allowAddFriend);
+    put('allowBeep', allowBeep);
+    put('allowVibration', allowVibration);
+
+    return HttpUtil.post(
+      Urls.updateUserInfo,
+      data: {
+        ...param,
+        'platform': await IMUtil.getPlatform(),
+        'operationID': _getOperationID(),
+      },
+      options: chatTokenOptions,
+    );
+  }
+
+  /// reset password
+  static Future<dynamic> getUsersFullInfo({
+    int pageNumber = 0,
+    int showNumber = 100,
+    required List<String> userIDList,
+  }) async {
+    return HttpUtil.post(
+      Urls.getUsersFullInfo,
+      data: {
+        'pageNumber': pageNumber,
+        'showNumber': showNumber,
+        'userIDList': userIDList,
+        'platform': await IMUtil.getPlatform(),
+        'operationID': _getOperationID(),
+      },
+      options: chatTokenOptions,
+    );
+  }
+
+  static Future<dynamic> queryMyFullInfo() async {
+    final data = await Apis.getUsersFullInfo(
+      userIDList: [OpenIM.iMManager.uid],
+    );
+    if (data['userFullInfoList'] is List) {
+      List list = data['userFullInfoList'];
+      return list.firstOrNull;
+    }
+    return null;
+  }
+
+  static Future<dynamic> searchUserFullInfo({
+    required String content,
+    int pageNumber = 0,
+    int showNumber = 10,
+  }) async {
+    final data = await HttpUtil.post(
+      Urls.searchUserFullInfo,
+      data: {
+        'pageNumber': pageNumber,
+        'showNumber': showNumber,
+        'content': content,
+        'operationID': _getOperationID(),
+      },
+      options: chatTokenOptions,
+    );
+    if (data['userFullInfoList'] is List) {
+      return data['userFullInfoList'];
+    }
+    return null;
+  }
+
+  /// 获取验证码
+  /// [usedFor] 1：注册，2：重置密码
+  static Future<bool> requestVerificationCode(
+      {String? areaCode,
+      String? phoneNumber,
+      String? email,
+      required int usedFor,
+      String? invitationCode}) async {
     return HttpUtil.post(
       Urls.getVerificationCode,
       data: {
@@ -125,25 +241,26 @@ class Apis {
         "phoneNumber": phoneNumber,
         "email": email,
         'operationID': _getOperationID(),
+        'usedFor': usedFor,
+        'invitationCode': invitationCode
       },
     ).then((value) {
       IMWidget.showToast(StrRes.sentSuccessfully);
       return true;
     }).catchError((e) {
       print('e:$e');
-      // var error = e as DioError;
-      // IMWidget.showToast('发送失败:${error.response}');
       return false;
     });
   }
 
   /// 校验验证码
-  static Future<dynamic> checkVerificationCode({
-    String? areaCode,
-    String? phoneNumber,
-    String? email,
-    required String verificationCode,
-  }) {
+  static Future<dynamic> checkVerificationCode(
+      {String? areaCode,
+      String? phoneNumber,
+      String? email,
+      required String verificationCode,
+      required int usedFor,
+      String? invitationCode}) {
     return HttpUtil.post(
       Urls.checkVerificationCode,
       data: {
@@ -151,53 +268,12 @@ class Apis {
         "areaCode": areaCode,
         "email": email,
         "verificationCode": verificationCode,
+        "usedFor": usedFor,
         'operationID': _getOperationID(),
+        'invitationCode': invitationCode
       },
     );
   }
-
-  /////////////////////////////////////////////////////////
-  /// 为用户导入好友OpenIM成员
-  static Future<bool> importFriends(
-      {required String uid, required String token}) async {
-    try {
-      await HttpUtil.post(
-        Urls.importFriends,
-        data: {
-          "uidList": openIMMemberIDS,
-          "ownerUid": uid,
-          'operationID': _getOperationID(),
-        },
-        options: Options(headers: {'token': token}),
-      );
-      return true;
-    } catch (e) {
-      print('e:$e');
-    }
-    return false;
-  }
-
-  /// 拉用户进OpenIM官方体验群
-  static Future<bool> inviteToGroup(
-      {required String uid, required String token}) async {
-    try {
-      await dio.post(
-        Urls.inviteToGroup,
-        data: {
-          "groupID": openIMGroupID,
-          "uidList": [uid],
-          "reason": "Welcome join openim group",
-          'operationID': _getOperationID(),
-        },
-        options: Options(headers: {'token': token}),
-      );
-      return true;
-    } catch (e) {
-      print('e:$e');
-    }
-    return false;
-  }
-
   static Future<UpgradeInfoV2> checkUpgradeV2() {
     return dio.post<Map<String, dynamic>>(
       'https://www.pgyer.com/apiv2/app/check',
@@ -318,4 +394,7 @@ class Apis {
   static String _getOperationID() {
     return DateTime.now().millisecondsSinceEpoch.toString();
   }
+
+  static Options get chatTokenOptions => Options(
+      headers: {'token': DataPersistence.getLoginCertificate()!.chatToken});
 }

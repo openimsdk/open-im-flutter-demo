@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
-import 'package:openim_demo/src/core/controller/im_controller.dart';
-import 'package:openim_demo/src/core/controller/push_controller.dart';
-import 'package:openim_demo/src/routes/app_navigator.dart';
-import 'package:openim_demo/src/utils/data_persistence.dart';
-import 'package:openim_demo/src/widgets/im_widget.dart';
+
+import '../../core/controller/im_controller.dart';
+import '../../core/controller/push_controller.dart';
+import '../../routes/app_navigator.dart';
+import '../../utils/data_persistence.dart';
+import '../../widgets/im_widget.dart';
 
 class SplashLogic extends GetxController {
   final imLogic = Get.find<IMController>();
@@ -15,16 +18,13 @@ class SplashLogic extends GetxController {
 
   String? get uid => loginCertificate?.userID;
 
-  String? get token => loginCertificate?.token;
+  String? get token => loginCertificate?.imToken;
+
+  late StreamSubscription initializedSub;
 
   @override
   void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    imLogic.initializedSubject.listen((value) async {
+    initializedSub = imLogic.initializedSubject.listen((value) async {
       print('---------------------initialized---------------------');
       if (isExistLoginCertificate) {
         await _login();
@@ -32,6 +32,11 @@ class SplashLogic extends GetxController {
         AppNavigator.startLogin();
       }
     });
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
     super.onReady();
   }
 
@@ -47,5 +52,11 @@ class SplashLogic extends GetxController {
       IMWidget.showToast('$e');
       AppNavigator.startLogin();
     }
+  }
+
+  @override
+  void onClose() {
+    initializedSub.cancel();
+    super.onClose();
   }
 }
