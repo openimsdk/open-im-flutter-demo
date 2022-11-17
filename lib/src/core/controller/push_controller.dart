@@ -1,182 +1,185 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 
-import 'package:flutter/services.dart';
+import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:getuiflut/getuiflut.dart';
 
 class PushController extends GetxController {
-  final JPush jPush = JPush();
+  String _platformVersion = 'Unknown';
+  String _payloadInfo = 'Null';
+  String _notificationState = "";
+  String _getClientId = "";
+  String _getDeviceToken = "";
+  String _onReceivePayload = "";
+  String _onReceiveNotificationResponse = "";
+  String _onAppLinkPayLoad = "";
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> _init() async {
+    initGetuiSdk();
+    // iOS 配置, 安卓配置build.gradle文件
+    if (Platform.isIOS) {
+      Getuiflut().startSdk(appId: "", appKey: "", appSecret: "");
+    }
+
+    Getuiflut().addEventHandler(
+      // 注册收到 cid 的回调
+      onReceiveClientId: (String message) async {
+        print("Getui flutter onReceiveClientId: $message");
+        _getClientId = "ClientId: $message";
+      },
+      onReceiveMessageData: (Map<String, dynamic> msg) async {
+        print("Getui flutter onReceiveMessageData: $msg");
+        _payloadInfo = msg['payload'];
+      },
+      onNotificationMessageArrived: (Map<String, dynamic> msg) async {
+        print("Getui flutter onNotificationMessageArrived: $msg");
+        _notificationState = 'Arrived';
+      },
+      onNotificationMessageClicked: (Map<String, dynamic> msg) async {
+        print("Getui flutter onNotificationMessageClicked: $msg");
+        _notificationState = 'Clicked';
+      },
+      // 注册 DeviceToken 回调
+      onRegisterDeviceToken: (String message) async {
+        print("Getui flutter onRegisterDeviceToken: $message");
+        _getDeviceToken = "$message";
+      },
+      // SDK收到透传消息回调
+      onReceivePayload: (Map<String, dynamic> message) async {
+        print("Getui flutter onReceivePayload: $message");
+        _onReceivePayload = "$message";
+      },
+      // 点击通知回调
+      onReceiveNotificationResponse: (Map<String, dynamic> message) async {
+        print("Getui flutter onReceiveNotificationResponse: $message");
+        _onReceiveNotificationResponse = "$message";
+      },
+      // APPLink中携带的透传payload信息
+      onAppLinkPayload: (String message) async {
+        print("Getui flutter onAppLinkPayload: $message");
+        _onAppLinkPayLoad = "$message";
+      },
+      // 通知服务开启\关闭回调
+      onPushModeResult: (Map<String, dynamic> message) async {
+        print("Getui flutter onPushModeResult: $message");
+      },
+      // SetTag回调
+      onSetTagResult: (Map<String, dynamic> message) async {
+        print("Getui flutter onSetTagResult: $message");
+      },
+      // 设置别名回调
+      onAliasResult: (Map<String, dynamic> message) async {
+        print("Getui flutter onAliasResult: $message");
+      },
+      // 查询Tag回调
+      onQueryTagResult: (Map<String, dynamic> message) async {
+        print("Getui flutter onQueryTagResult: $message");
+      },
+      // APNs通知即将展示回调
+      onWillPresentNotification: (Map<String, dynamic> message) async {
+        print("Getui flutter onWillPresentNotification: $message");
+      },
+      // APNs通知设置跳转回调
+      onOpenSettingsForNotification: (Map<String, dynamic> message) async {
+        print("Getui flutter onOpenSettingsForNotification: $message");
+      },
+      onTransmitUserMessageReceive: (Map<String, dynamic> event) async {
+        print("Getui flutter onTransmitUserMessageReceive: $event");
+      },
+    );
+  }
+
+  /// 初始化个推sdk
+  Future<void> initGetuiSdk() async {
+    try {
+      Getuiflut.initGetuiSdk;
+    } catch (e) {
+      e.toString();
+    }
+  }
+
+  ///////////SDK Public Function//////////
+
+  void activityCreate() {
+    Getuiflut().onActivityCreate();
+  }
+
+  Future<void> getClientId() async {
+    String getClientId;
+    try {
+      getClientId = await Getuiflut.getClientId;
+      print(getClientId);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  /// 仅android 停止SDK服务
+  void stopPush() {
+    Getuiflut().turnOffPush();
+  }
+
+  /// 开启SDK服务
+  void startPush() {
+    Getuiflut().turnOnPush();
+  }
+
+  ///
+  /// 绑定别名功能:后台可以根据别名进行推送
+  /// alias 别名字符串
+  /// aSn   绑定序列码, Android中无效，仅在iOS有效
+  void login(String uid) {
+    Getuiflut().bindAlias(uid, 'openim');
+  }
+
+  void logout() {
+    Getuiflut().unbindAlias(OpenIM.iMManager.uid, 'openim', true);
+  }
+
+  /// 给用户打标签 , 后台可以根据标签进行推送
+  void setTag() {
+    List test = List.filled(1, 'abc');
+    Getuiflut().setTag(test);
+  }
+
+  ////////////ios Public Function////////////
+
+  /// 仅ios 同步服务端角标
+  void setBadge() {
+    Getuiflut().setBadge(5);
+  }
+
+  /// 仅ios 同步App本地角标
+  void setLocalBadge() {
+    Getuiflut().setLocalBadge(0);
+  }
+
+  /// 仅ios 复位服务端角标
+  void resetBadge() {
+    Getuiflut().resetBadge();
+  }
+
+  /// 仅ios
+  void setPushMode() {
+    Getuiflut().setPushMode(0);
+  }
+
+  /// 获取冷启动Apns参数
+  Future<void> getLaunchNotification() async {
+    Map info;
+    try {
+      info = await Getuiflut.getLaunchNotification;
+      print(info);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   void onInit() {
-    _initJPush();
+    _init();
     super.onInit();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> _initJPush() async {
-    String? platformVersion;
-
-    try {
-      //Map<String, dynamic> message
-      jPush.addEventHandler(onReceiveNotification: (message) async {
-        print("jpush flutter onReceiveNotification: ${json.encode(message)}");
-      }, onOpenNotification: (message) async {
-        print("jpush flutter onOpenNotification: ${json.encode(message)}");
-      }, onReceiveMessage: (message) async {
-        print("jpush flutter onReceiveMessage: ${json.encode(message)}");
-      }, onReceiveNotificationAuthorization: (message) async {
-        print(
-            "jpush flutter onReceiveNotificationAuthorization: ${json.encode(message)}");
-      });
-    } on PlatformException {
-      print("jpush Failed to get platform version.");
-    }
-
-    jPush.setup(
-      appKey: "646f952e8310ff8c9a336dee", //你自己应用的 AppKey
-      channel: "developer-default",
-      production: true,
-      debug: true,
-    );
-
-    jPush.applyPushAuthority(NotificationSettingsIOS(
-      sound: true,
-      alert: true,
-      badge: true,
-    ));
-
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    jPush.getRegistrationID().then((rid) {
-      print("jpush flutter get registration id : $rid");
-    });
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-  }
-
-  void sendLocalNotification() {
-    // 三秒后出发本地推送
-    var fireDate = DateTime.fromMillisecondsSinceEpoch(
-        DateTime.now().millisecondsSinceEpoch + 3000);
-    var localNotification = LocalNotification(
-        id: 234,
-        title: 'fadsfa',
-        buildId: 1,
-        content: 'fdas',
-        fireTime: fireDate,
-        subtitle: 'fasf',
-        badge: 5,
-        extra: {"fa": "0"});
-    jPush.sendLocalNotification(localNotification).then((res) {
-      print("jpush flutter sendLocalNotification :$res");
-    });
-  }
-
-  void getLaunchAppNotification() {
-    jPush.getLaunchAppNotification().then((map) {
-      print("jpush flutter getLaunchAppNotification success:$map");
-    }).catchError((error) {
-      print("jpush flutter getLaunchAppNotification error: $error");
-    });
-  }
-
-  void setTags() {
-    jPush.setTags(["lala", "haha"]).then((map) {
-      var tags = map['tags'];
-      print("jpush set tags success: $map $tags");
-    }).catchError((error) {
-      print("jpush set tags error: $error");
-    });
-  }
-
-  void addTags() {
-    jPush.addTags(["lala", "haha"]).then((map) {
-      var tags = map['tags'];
-      print("jpush addTags success: $map $tags");
-    }).catchError((error) {
-      print("jpush addTags error: $error");
-    });
-  }
-
-  void deleteTags() {
-    jPush.deleteTags(["lala", "haha"]).then((map) {
-      var tags = map['tags'];
-      print("jpush deleteTags success: $map $tags");
-    }).catchError((error) {
-      print("jpush deleteTags error: $error");
-    });
-  }
-
-  void getAllTags() {
-    jPush.getAllTags().then((map) {
-      print("jpush getAllTags success: $map");
-    }).catchError((error) {
-      print("jpush getAllTags error: $error");
-    });
-  }
-
-  void cleanAllTags() {
-    jPush.cleanTags().then((map) {
-      var tags = map['tags'];
-      print("jpush cleanTags success: $map $tags");
-    }).catchError((error) {
-      print("jpush cleanTags error: $error");
-    });
-  }
-
-  void setAlias() {
-    jPush.setAlias("thealias11").then((map) {
-      print("jpush setAlias success: $map");
-    }).catchError((error) {
-      print("jpush setAlias error: $error");
-    });
-  }
-
-  void deleteAlias() {
-    jPush.deleteAlias().then((map) {
-      print("jpush deleteAlias success: $map");
-    }).catchError((error) {
-      print("jpush deleteAlias error: $error");
-    });
-  }
-
-  void setBadge() {
-    jPush.setBadge(66).then((map) {
-      print("jpush setBadge success: $map");
-    }).catchError((error) {
-      print("jpush setBadge error: $error");
-    });
-  }
-
-  void isNotificationEnabled() {
-    jPush.isNotificationEnabled().then((bool value) {
-      print("jpush 通知授权是否打开: $value");
-    }).catchError((onError) {
-      print("jpush 通知授权是否打开: ${onError.toString()}");
-    });
-  }
-
-  void openSettingsForNotification() {
-    jPush.openSettingsForNotification();
-  }
-
-  Future login(String uid) async {
-    await jPush.setAlias(uid).then((map) async {
-      print("jpush setAlias success: $map");
-    }).catchError((error) {
-      print("jpush setAlias error: $error");
-    });
-    return true;
-  }
-
-  Future logout() async {
-    jPush.deleteAlias().then((map) async {
-      print("jpush deleteAlias success: $map");
-    }).catchError((error) {
-      print("jpush deleteAlias error: $error");
-    });
-    return true;
   }
 }

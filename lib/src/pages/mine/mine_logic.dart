@@ -54,7 +54,7 @@ class MineLogic extends GetxController {
         await LoadingView.singleton.wrap(asyncFunction: () async {
           await imLogic.logout();
           await DataPersistence.removeLoginCertificate();
-          await pushLogic.logout();
+          pushLogic.logout();
         });
         AppNavigator.startLogin();
       } catch (e) {
@@ -66,7 +66,7 @@ class MineLogic extends GetxController {
 
   void kickedOffline() async {
     await DataPersistence.removeLoginCertificate();
-    await pushLogic.logout();
+    pushLogic.logout();
     AppNavigator.startLogin();
   }
 
