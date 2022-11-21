@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:openim_demo/src/res/strings.dart';
 import 'package:openim_demo/src/res/styles.dart';
 import 'package:openim_demo/src/widgets/button.dart';
+import 'package:openim_demo/src/widgets/name_input_box.dart';
 import 'package:openim_demo/src/widgets/phone_input_box.dart';
 import 'package:openim_demo/src/widgets/titlebar.dart';
 import 'package:openim_demo/src/widgets/touch_close_keyboard.dart';
@@ -47,12 +48,18 @@ class RegisterPage extends StatelessWidget {
                             ? InputWay.phone
                             : InputWay.email,
                       )),
-                  SizedBox(
-                    height: 28.h,
+                  28.verticalSpace,
+                  NameInputBox(
+                    topLabel: StrRes.invitationCode,
+                    topLabelStyle: PageStyle.ts_000000_14sp,
+                    hintText:
+                        '${StrRes.plsInputInvitationCode}${logic.needInvitationCodeRegister ? '' : StrRes.optional}',
+                    hintStyle: PageStyle.ts_999999_18sp,
+                    controller: logic.invitationCodeCtrl,
                   ),
+                  116.verticalSpace,
                   Button(
                     onTap: () => logic.nextStep(),
-                    margin: EdgeInsets.only(top: 59.h),
                     text: StrRes.nowRegister,
                   ),
                   // Obx(() => ProtocolView(

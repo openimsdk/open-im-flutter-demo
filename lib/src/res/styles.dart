@@ -115,6 +115,10 @@ class PageStyle {
     fontSize: 16.sp,
     color: Color(0xFF000000),
   );
+  static var ts_000000_17sp = TextStyle(
+    fontSize: 17.sp,
+    color: Color(0xFF000000),
+  );
   static var ts_000000_18sp = TextStyle(
     fontSize: 18.sp,
     color: Color(0xFF000000),

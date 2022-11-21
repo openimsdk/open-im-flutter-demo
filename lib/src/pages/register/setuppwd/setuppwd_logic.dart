@@ -27,12 +27,13 @@ class SetupPwdLogic extends GetxController {
     if (usedFor == 1) {
       // 设置密码/注册
       AppNavigator.startRegisterSetupSelfInfo(
-          areaCode: areaCode,
-          phoneNumber: phoneNumber,
-          email: email,
-          verifyCode: verifyCode,
-          password: pwdCtrl.text,
-          invitationCode: invitationCode);
+        areaCode: areaCode,
+        phoneNumber: phoneNumber,
+        email: email,
+        verifyCode: verifyCode,
+        password: pwdCtrl.text,
+        invitationCode: invitationCode,
+      );
     } else if (usedFor == 2) {
       //重置密码
       LoadingView.singleton.wrap(asyncFunction: () async {

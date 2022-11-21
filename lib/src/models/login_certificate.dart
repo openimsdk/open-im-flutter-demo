@@ -4,9 +4,9 @@ class LoginCertificate {
   String chatToken; // 业务服务器的
 
   LoginCertificate.fromJson(Map<String, dynamic> map)
-      : userID = map["userID"],
-        imToken = map["imToken"],
-        chatToken = map['chatToken'];
+      : userID = map["userID"] ?? '',
+        imToken = map["imToken"] ?? '',
+        chatToken = map['chatToken'] ?? '';
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};

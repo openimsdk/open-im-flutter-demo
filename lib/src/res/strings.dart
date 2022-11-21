@@ -1071,4 +1071,9 @@ class StrRes {
   static get blockedByFriendHint => 'blockedByFriendHint'.tr;
 
   static get sendFriendVerification => 'sendFriendVerification'.tr;
+  static get optional => 'optional'.tr;
+
+  static get invitationCodeNotEmpty => 'invitationCodeNotEmpty'.tr;
+
+  static get plsInputInvitationCode => 'plsInputInvitationCode'.tr;
 }

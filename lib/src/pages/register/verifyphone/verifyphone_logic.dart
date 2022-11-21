@@ -23,20 +23,22 @@ class VerifyPhoneLogic extends GetxController {
   void onCompleted(value) async {
     try {
       await Apis.checkVerificationCode(
-          areaCode: areaCode,
-          phoneNumber: phoneNumber,
-          email: email,
-          verificationCode: value,
-          usedFor: usedFor,
-          invitationCode: invitationCode);
+        areaCode: areaCode,
+        phoneNumber: phoneNumber,
+        email: email,
+        verificationCode: value,
+        usedFor: usedFor,
+        invitationCode: invitationCode,
+      );
 
       AppNavigator.startSetupPwd(
-          areaCode: areaCode,
-          phoneNumber: phoneNumber,
-          email: email,
-          verifyCode: value,
-          usedFor: usedFor,
-          invitationCode: invitationCode);
+        areaCode: areaCode,
+        phoneNumber: phoneNumber,
+        email: email,
+        verifyCode: value,
+        usedFor: usedFor,
+        invitationCode: invitationCode,
+      );
     } catch (e) {
       shake();
       IMWidget.showToast('${StrRes.verifyCodeError}:$e');
@@ -61,11 +63,12 @@ class VerifyPhoneLogic extends GetxController {
   }
 
   Future<bool> requestVerificationCode() => Apis.requestVerificationCode(
-      areaCode: areaCode,
-      phoneNumber: phoneNumber,
-      email: email,
-      usedFor: usedFor,
-      invitationCode: invitationCode);
+        areaCode: areaCode,
+        phoneNumber: phoneNumber,
+        email: email,
+        usedFor: usedFor,
+        invitationCode: invitationCode,
+      );
 
   @override
   void onClose() {

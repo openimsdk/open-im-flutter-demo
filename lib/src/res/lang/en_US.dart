@@ -572,4 +572,7 @@ const Map<String, String> en_US = {
   '%s has enabled friend verification. You are not his or her friend. Please send a friend verification request first, and the other party can only chat after the verification is passed.',
   'blockedByFriendHint': 'Has been blocked',
   'sendFriendVerification': 'Send friend verification',
+  'optional': '(optional)',
+  'invitationCodeNotEmpty': 'Invitation code cannot be empty',
+  'plsInputInvitationCode': 'Please enter the invitation code',
 };
