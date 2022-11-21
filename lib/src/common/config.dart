@@ -73,6 +73,8 @@ class Config {
 
   /// 登录注册手机验 证服务器地址
   /// ip端口：10008   域名路由：chat
+  /// https://xxxxx/chat/
+  /// http://xxxxx:10008
   static String appAuthUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -85,6 +87,8 @@ class Config {
 
   /// IM sdk api地址
   /// ip端口：10002   域名路由：api
+  /// https://xxxxx/api/
+  /// http://xxxxx:10002
   static String imApiUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -97,6 +101,8 @@ class Config {
 
   /// IM ws 地址
   /// ip端口：10001   域名路由：msg_gateway
+  /// wss://xxxxx/msg_gateway/
+  /// ws://xxxxx:10001
   static String imWsUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
