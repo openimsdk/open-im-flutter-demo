@@ -19,10 +19,6 @@ class Apis {
   static int get _platform =>
       Platform.isAndroid ? IMPlatform.android : IMPlatform.ios;
   static final openIMMemberIDS = [
-    "18349115126",
-    "13918588195",
-    "17396220460",
-    "18666662412"
   ];
   static final openIMGroupID = '082cad15fd27a2b6b875370e053ccd79';
 
