@@ -16,6 +16,7 @@ class Urls {
   static var searchUserFullInfo =
       "${Config.appAuthUrl()}/user/search_users_full_info";
 
+
   /// 登录注册是独立于im的业务
   static var getVerificationCode = "${Config.appAuthUrl()}/account/code";
   static var checkVerificationCode = "${Config.appAuthUrl()}/account/verify";
