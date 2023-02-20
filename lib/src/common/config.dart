@@ -32,8 +32,6 @@ class Config {
       statusBarBrightness: brightness,
       statusBarIconBrightness: brightness,
     ));
-
-    // FlutterBugly.init(androidAppId: "4103e474e9", iOSAppId: "28849b1ca6");
   }
 
   static late String cachePath;
