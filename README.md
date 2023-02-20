@@ -36,7 +36,7 @@ demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Op
 
 ##### 1，demo对应的flutter版本是？
 
-答：stable分支3.0.1
+答：stable分支3.7.3
 
 ##### 2，支持哪些平台？
 

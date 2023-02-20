@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +34,13 @@ import 'package:uuid/uuid.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+import '../../core/controller/app_controller.dart';
 import 'group_setup/group_member_manager/member_list/member_list_logic.dart';
 
 class ChatLogic extends GetxController {
   final imLogic = Get.find<IMController>();
   final conversationLogic = Get.find<ConversationLogic>();
+  final appLogic = Get.find<AppController>();
   final inputCtrl = TextEditingController();
   final focusNode = FocusNode();
   final autoCtrl = ScrollController();
@@ -314,6 +317,10 @@ class ChatLogic extends GetxController {
 
   /// 发送文字内容，包含普通内容，引用回复内容，@内容
   void sendTextMsg() async {
+    if (!canContinueAskRobot()) {
+      IMWidget.showToast('请等待机器人回复！');
+      return;
+    }
     var content = inputCtrl.text;
     if (content.isEmpty) return;
     var message;
@@ -1191,6 +1198,21 @@ class ChatLogic extends GetxController {
       return "@";
     }
     return null;
+  }
+
+  bool isRobot() {
+    final robots = appLogic.clientConfigMap['robots'];
+    return robots != null && (robots as List).contains(uid);
+  }
+
+  bool canContinueAskRobot() {
+    if (!isRobot()) return true;
+    final last = messageList.lastOrNull;
+    final enabled = last == null ||
+        last.sendID != OpenIM.iMManager.uid ||
+        (DateTime.now().millisecondsSinceEpoch - last.sendTime!) >
+            1 * 60 * 1000;
+    return enabled;
   }
 }
 

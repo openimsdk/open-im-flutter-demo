@@ -393,4 +393,21 @@ class Apis {
 
   static Options get chatTokenOptions => Options(
       headers: {'token': DataPersistence.getLoginCertificate()!.chatToken});
+
+  /// discoverPageURL
+  /// ordinaryUserAddFriend,
+  /// bossUserID,
+  /// adminURL ,
+  /// allowSendMsgNotFriend
+  /// needInvitationCodeRegister
+  /// robots
+  static Future<Map<String, dynamic>> getClientConfig() async {
+    var result = await HttpUtil.post(
+      Urls.getClientConfig,
+      data: {'operationID': _getOperationID()},
+      // options: chatTokenOptions,
+      showErrorToast: false,
+    );
+    return result;
+  }
 }

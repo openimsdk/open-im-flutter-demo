@@ -25,4 +25,8 @@ class Urls {
   static var changePwd = "${Config.appAuthUrl()}/account/change_password";
   static var login = "${Config.appAuthUrl()}/account/login";
   static var upgrade = "${Config.appAuthUrl()}/app/check";
+
+
+  static final getClientConfig =
+      '${Config.chatTokenUrl()}/admin/init/get_client_config';
 }
