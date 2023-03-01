@@ -11,6 +11,8 @@ import 'package:openim_demo/src/utils/data_persistence.dart';
 import 'package:openim_demo/src/utils/upgrade_manager.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../common/apis.dart';
+
 class AppController extends GetxController with UpgradeManger {
   var isRunningBackground = false;
   var backgroundSubject = PublishSubject<bool>();
@@ -35,6 +37,8 @@ class AppController extends GetxController with UpgradeManger {
 
   /// 免打扰
   final notDisturbMap = <String, bool>{};
+
+  final clientConfigMap = <String, dynamic>{}.obs;
 
   void runningBackground(bool run) {
     print('-----App running background : $run-------------');
@@ -177,6 +181,7 @@ class AppController extends GetxController with UpgradeManger {
 
   @override
   void onReady() {
+    _queryClientConfig();
     // _startForegroundService();
     autoCheckVersionUpgrade();
     super.onReady();
@@ -207,5 +212,10 @@ class AppController extends GetxController with UpgradeManger {
       }
     }
     return show;
+  }
+
+  void _queryClientConfig() async {
+    final map = await Apis.getClientConfig();
+    clientConfigMap.assignAll(map);
   }
 }

@@ -1,6 +1,6 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:country_code_picker/country_codes.dart';
-import 'package:country_code_picker/selection_dialog.dart';
+import 'dart:async';
+
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
@@ -18,8 +18,6 @@ import 'bottom_sheet_view.dart';
 class IMWidget {
   static final ImagePicker _picker = ImagePicker();
 
-  static final List<CountryCode> _countryCodes =
-      codes.map((json) => CountryCode.fromJson(json)).toList();
 
   static void openPhotoSheet({
     Function(String path, String? url)? onData,
@@ -127,28 +125,38 @@ class IMWidget {
   }
 
   static Future<String?> showCountryCodePicker() async {
-    var result = await Get.dialog(Center(
-      child: SelectionDialog(
-        _countryCodes,
-        [],
-        showCountryOnly: false,
-        // emptySearchBuilder: widget.emptySearchBuilder,
-        // searchDecoration: widget.searchDecoration,
-        // searchStyle: widget.searchStyle,
-        // textStyle: widget.dialogTextStyle,
-        // boxDecoration: widget.boxDecoration,
-        showFlag: true,
-        // flagWidth: widget.flagWidth,
-        // flagDecoration: widget.flagDecoration,
-        size: Size(1.sw - 60.w, 1.sh * 3 / 4),
-        // backgroundColor: Colors.transparent,
-        barrierColor: Colors.transparent,
-        // hideSearch: true,
-        closeIcon: const Icon(Icons.close),
+    Completer<String> completer = Completer();
+    showCountryPicker(
+      context: Get.context!,
+      showPhoneCode: true,
+      countryListTheme: CountryListThemeData(
+        flagSize: 25,
+        backgroundColor: Colors.white,
+        textStyle: TextStyle(fontSize: 16.sp, color: Colors.blueGrey),
+        bottomSheetHeight: 500.h,
+        // Optional. Country list modal height
+        //Optional. Sets the border radius for the bottomsheet.
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8.0.r),
+          topRight: Radius.circular(8.0.r),
+        ),
+        //Optional. Styles the search field.
+        inputDecoration: InputDecoration(
+          labelText: StrRes.search,
+          // hintText: 'Start typing to search',
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: const Color(0xFF8C98A8).withOpacity(0.2),
+            ),
+          ),
+        ),
       ),
-    ));
-    if (null == result) return null;
-    return (result as CountryCode).dialCode;
+      onSelect: (Country country) {
+        completer.complete("+" + country.phoneCode);
+      },
+    );
+    return completer.future;
   }
 
   static void openNoDisturbSettingSheet({bool isGroup = false, Function(int index)? onTap}) {

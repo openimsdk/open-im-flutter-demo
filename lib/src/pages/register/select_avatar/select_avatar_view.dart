@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim_demo/src/res/strings.dart';
-import 'package:openim_demo/src/res/styles.dart';
-import 'package:openim_demo/src/widgets/titlebar.dart';
+
+import '../../../res/strings.dart';
+import '../../../res/styles.dart';
+import '../../../widgets/titlebar.dart';
 
 class SelectAvatarPage extends StatelessWidget {
   // final logic = Get.find<SelectAvatarLogic>();

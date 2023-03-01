@@ -6,14 +6,18 @@ import 'package:openim_demo/src/routes/app_navigator.dart';
 import 'package:openim_demo/src/utils/im_util.dart';
 import 'package:openim_demo/src/widgets/im_widget.dart';
 
+import '../../core/controller/app_controller.dart';
+
 class RegisterLogic extends GetxController {
+  var appLogic = Get.find<AppController>();
   var controller = TextEditingController();
+  var invitationCodeCtrl = TextEditingController();
   var showClearBtn = false.obs;
   var agreedProtocol = true.obs;
   var isPhoneRegister = true;
   var areaCode = "+86".obs;
 
-  void nextStep() {
+  void nextStep() async {
     if (isPhoneRegister &&
         !IMUtil.isPhoneNumber(areaCode.value, controller.text)) {
       IMWidget.showToast(StrRes.plsInputRightPhone);
@@ -24,20 +28,27 @@ class RegisterLogic extends GetxController {
       return;
     }
 
-    Apis.requestVerificationCode(
-            areaCode: areaCode.value,
-            phoneNumber: isPhoneRegister ? controller.text : null,
-            email: !isPhoneRegister ? controller.text : null,
-            usedFor: 1)
-        .then((value) {
-      if (value) {
-        AppNavigator.startRegisterVerifyPhoneOrEmail(
-            areaCode: areaCode.value,
-            phoneNumber: isPhoneRegister ? controller.text : null,
-            email: !isPhoneRegister ? controller.text : null,
-            usedFor: 1);
-      }
-    });
+    if (needInvitationCodeRegister && invitationCodeCtrl.text.isEmpty) {
+      IMWidget.showToast(StrRes.invitationCodeNotEmpty);
+      return;
+    }
+
+    final success = await Apis.requestVerificationCode(
+      areaCode: areaCode.value,
+      phoneNumber: isPhoneRegister ? controller.text : null,
+      email: !isPhoneRegister ? controller.text : null,
+      usedFor: 1,
+      invitationCode: invitationCodeCtrl.text,
+    );
+    if (success) {
+      AppNavigator.startRegisterVerifyPhoneOrEmail(
+        areaCode: areaCode.value,
+        phoneNumber: isPhoneRegister ? controller.text : null,
+        email: !isPhoneRegister ? controller.text : null,
+        usedFor: 1,
+        invitationCode: invitationCodeCtrl.text,
+      );
+    }
   }
 
   void toggleProtocol() {
@@ -55,6 +66,7 @@ class RegisterLogic extends GetxController {
   @override
   void onClose() {
     controller.dispose();
+    invitationCodeCtrl.dispose();
     super.onClose();
   }
 
@@ -70,4 +82,7 @@ class RegisterLogic extends GetxController {
       areaCode.value = code;
     }
   }
+
+  bool get needInvitationCodeRegister =>
+      false /*appLogic.clientConfigMap['needInvitationCodeRegister'] != 0*/;
 }

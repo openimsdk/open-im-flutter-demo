@@ -22,93 +22,107 @@ class SetupSelfInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TouchCloseSoftKeyboard(
-        child: Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: EnterpriseTitleBar.backButton(left: 16),
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 32.h,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: EnterpriseTitleBar.backButton(left: 16),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Obx(
+              () => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                  Text(
+                    StrRes.plsFullSelfInfo,
+                    style: PageStyle.ts_333333_26sp,
+                  ),
+                  SizedBox(
+                    height: 24.h,
+                  ),
+                  _buildCell(
+                    StrRes.nickname,
+                    trailing: Text(
+                      logic.nickName.value,
+                      style: PageStyle.ts_000000_17sp,
+                    ),
+                    onTap: () {
+                      _showDialog();
+                    },
+                  ),
+                  _buildCell(
+                    StrRes.avatar,
+                    trailing: Obx(() => _buildAvatarButton()),
+                    onTap: () {
+                      logic.openPhotoSheet();
+                    },
+                  ),
+                  _buildCell(
+                    StrRes.gender,
+                    trailing: Text(
+                      logic.genderStr,
+                      style: PageStyle.ts_000000_17sp,
+                    ),
+                    onTap: () {
+                      logic.selectGender();
+                    },
+                  ),
+                  // _buildCell(
+                  //   '${StrRes.invitationCode}${logic.needInvitationCodeRegister ? '' : StrRes.optional}',
+                  //   trailing: Text(logic.invitationCode.value),
+                  //   onTap: () {
+                  //     _showDialog(false);
+                  //   },
+                  // ),
+                  45.verticalSpace,
+                  DebounceButton(
+                    onTap: () async => await logic.enterMain(),
+                    // your tap handler moved here
+                    builder: (context, onTap) {
+                      return Button(
+                        textStyle: PageStyle.ts_FFFFFF_18sp,
+                        text: StrRes.enterApp,
+                        onTap: onTap,
+                      );
+                    },
+                  ),
+                ],
               ),
-              Text(
-                StrRes.plsFullSelfInfo,
-                style: PageStyle.ts_333333_26sp,
-              ),
-              SizedBox(
-                height: 24.h,
-              ),
-              _buildCell(StrRes.nickname, trailing: Text(logic.nickName.value),
-                  onTap: () {
-                _showDialog();
-              }),
-              _buildCell(StrRes.avatar,
-                  trailing: Obx(() => _buildAvatarButton()), onTap: () {
-                logic.openPhotoSheet();
-              }),
-              _buildCell(StrRes.gender, trailing: Text(logic.genderStr),
-                  onTap: () {
-                logic.selectGender();
-              }),
-              _buildCell(StrRes.invitationCode + '(选填)',
-                  trailing: Text(logic.invitationCode.value), onTap: () {
-                _showDialog(false);
-              }),
-              SizedBox(
-                height: 24.h,
-              ),
-              DebounceButton(
-                onTap: () async => await logic.enterMain(),
-                // your tap handler moved here
-                builder: (context, onTap) {
-                  return Button(
-                    textStyle: PageStyle.ts_FFFFFF_18sp,
-                    text: StrRes.enterApp,
-                    onTap: onTap,
-                  );
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _buildCell(String title, {Widget? trailing, VoidCallback? onTap}) {
     return GestureDetector(
       child: Container(
         height: 70.h,
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(title),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (trailing != null) trailing,
-                    Icon(
-                      Icons.keyboard_arrow_right,
-                      color: PageStyle.c_666666,
-                    )
-                  ],
-                )
-              ],
+        decoration: BoxDecoration(
+          border: BorderDirectional(
+            bottom: BorderSide(
+              color: PageStyle.c_D8D8D8,
+              width: 1,
+              style: BorderStyle.solid,
             ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(title, style: PageStyle.ts_000000_17sp),
             Spacer(),
-            Divider(
-              thickness: 2,
-            )
+            if (trailing != null) trailing,
+            Image.asset(
+              ImageRes.ic_moreArrow,
+              width: 12,
+              height: 12,
+            ),
           ],
         ),
       ),
@@ -116,7 +130,7 @@ class SetupSelfInfoPage extends StatelessWidget {
     );
   }
 
-  void _showDialog([bool forNickName = true]) {
+  void _showDialog() {
     showDialog<String>(
       context: Get.context!,
       builder: (_) {
@@ -126,34 +140,30 @@ class SetupSelfInfoPage extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: TextField(
-                  controller:
-                      forNickName ? logic.nameCtrl : logic.invitationCodeCtrl,
+                  controller: logic.nameCtrl,
                   autofocus: true,
                   decoration: InputDecoration(
-                      labelText:
-                          forNickName ? StrRes.nickname : StrRes.invitationCode,
-                      hintText: forNickName
-                          ? logic.nickName.value
-                          : logic.invitationCode.value),
+                    labelText: StrRes.nickname,
+                    hintText: logic.nickName.value,
+                  ),
                 ),
               )
             ],
           ),
           actions: <Widget>[
             TextButton(
-                child: Text(StrRes.cancel),
-                onPressed: () {
-                  Get.back();
-                }),
+              child: Text(StrRes.cancel),
+              onPressed: () {
+                Get.back();
+              },
+            ),
             TextButton(
-                child: Text(StrRes.sure),
-                onPressed: () {
-                  forNickName
-                      ? logic.nickName.value = logic.nameCtrl.text.trim()
-                      : logic.invitationCode.value =
-                          logic.invitationCodeCtrl.text.trim();
-                  Get.back();
-                })
+              child: Text(StrRes.sure),
+              onPressed: () {
+                logic.nickName.value = logic.nameCtrl.text.trim();
+                Get.back();
+              },
+            )
           ],
         );
       },

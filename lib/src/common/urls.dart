@@ -16,6 +16,7 @@ class Urls {
   static var searchUserFullInfo =
       "${Config.appAuthUrl()}/user/search_users_full_info";
 
+
   /// 登录注册是独立于im的业务
   static var getVerificationCode = "${Config.appAuthUrl()}/account/code";
   static var checkVerificationCode = "${Config.appAuthUrl()}/account/verify";
@@ -24,4 +25,8 @@ class Urls {
   static var changePwd = "${Config.appAuthUrl()}/account/change_password";
   static var login = "${Config.appAuthUrl()}/account/login";
   static var upgrade = "${Config.appAuthUrl()}/app/check";
+
+
+  static final getClientConfig =
+      '${Config.chatTokenUrl()}/admin/init/get_client_config';
 }

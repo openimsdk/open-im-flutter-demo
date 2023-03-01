@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
@@ -31,8 +32,6 @@ class Config {
       statusBarBrightness: brightness,
       statusBarIconBrightness: brightness,
     ));
-
-    FlutterBugly.init(androidAppId: "4103e474e9", iOSAppId: "28849b1ca6");
   }
 
   static late String cachePath;
@@ -50,15 +49,12 @@ class Config {
   /// 秘钥
   static const secret = 'tuoyun';
 
-  /// 使用ip：  http://xxx:端口/、       ws://xxx:端口/
-  /// 使用域名： https://xxx/路由/、      wss://xxx/路由/
-  static const apiScheme = 'https';
-  static const socketScheme = 'wss';
-
   /// ip
   /// web.rentsoft.cn
   /// test-web.rentsoft.cn
   static const host = "web.rentsoft.cn";
+
+  static bool get isIP => RegexUtil.isIP(host);
 
   /// 服务器IP
   static String serverIp() {
@@ -71,8 +67,25 @@ class Config {
     return ip ?? host;
   }
 
+  /// 商业版管理后台
+  /// $apiScheme://$host/complete_admin/
+  /// $apiScheme://$host:10009
+  /// 端口：10009
+  static String chatTokenUrl() {
+    var url;
+    var server = DataPersistence.getServerConfig();
+    if (null != server) {
+      url = server['chatTokenUrl'];
+      print('缓存chatTokenUrl: $url');
+    }
+    return url ??
+        (isIP ? "http://$host:10009" : "https://$host/complete_admin");
+  }
+
   /// 登录注册手机验 证服务器地址
-  /// ip端口：10008   域名路由：chat
+  /// $apiScheme://$host/chat/
+  /// $apiScheme://$host:10008
+  /// 端口：10008
   static String appAuthUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -80,11 +93,13 @@ class Config {
       url = server['authUrl'];
       print('缓存authUrl: $url');
     }
-    return url ?? "$apiScheme://$host/chat/";
+    return url ?? (isIP ? "http://$host:10008" : "https://$host/chat");
   }
 
   /// IM sdk api地址
-  /// ip端口：10002   域名路由：api
+  /// $apiScheme://$host/api/
+  /// $apiScheme://$host:10002
+  /// 端口：10002
   static String imApiUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -92,11 +107,13 @@ class Config {
       url = server['apiUrl'];
       print('缓存apiUrl: $url');
     }
-    return url ?? '$apiScheme://$host/api/';
+    return url ?? (isIP ? 'http://$host:10002' : "https://$host/api");
   }
 
   /// IM ws 地址
-  /// ip端口：10001   域名路由：msg_gateway
+  /// $socketScheme://$host/msg_gateway
+  /// $socketScheme://$host:10001
+  /// 端口：10001
   static String imWsUrl() {
     var url;
     var server = DataPersistence.getServerConfig();
@@ -104,7 +121,7 @@ class Config {
       url = server['wsUrl'];
       print('缓存wsUrl: $url');
     }
-    return url ?? '$socketScheme://$host/msg_gateway';
+    return url ?? (isIP ? "ws://$host:10001" : "wss://$host/msg_gateway");
   }
 
   /// 图片存储

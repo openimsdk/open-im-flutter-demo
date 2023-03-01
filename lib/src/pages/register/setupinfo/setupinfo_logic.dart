@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
-import 'package:flutter_openim_widget/flutter_openim_widget.dart';
 import 'package:get/get.dart';
 import 'package:openim_demo/src/common/apis.dart';
 import 'package:openim_demo/src/core/controller/im_controller.dart';
@@ -16,19 +15,18 @@ import 'package:openim_demo/src/widgets/loading_view.dart';
 import '../../../utils/data_persistence.dart';
 
 class SetupSelfInfoLogic extends GetxController {
-  var imLogic = Get.find<IMController>();
-  var pushLogic = Get.find<PushController>();
-  var nameCtrl = TextEditingController();
-  var invitationCodeCtrl = TextEditingController();
-  var showNameClearBtn = false.obs;
-  var icon = "".obs;
+  final imLogic = Get.find<IMController>();
+  final pushLogic = Get.find<PushController>();
+  final nameCtrl = TextEditingController();
+  final showNameClearBtn = false.obs;
+  final icon = "".obs;
   String? phoneNumber;
   String? areaCode;
   String? email;
+  String? invitationCode;
   late String verifyCode;
   late String password;
-  var avatarIndex = 0.obs;
-  final invitationCode = ''.obs;
+  final avatarIndex = 0.obs;
   final nickName = ''.obs;
   final gender = 1.obs;
   final birth = 0.obs;
@@ -40,7 +38,7 @@ class SetupSelfInfoLogic extends GetxController {
     email = Get.arguments['email'];
     verifyCode = Get.arguments['verifyCode'];
     password = Get.arguments['password'];
-    invitationCode.value = Get.arguments['invitationCode'] ?? '';
+    invitationCode = Get.arguments['invitationCode'];
     avatarIndex.value = -1;
     birth.value = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     // avatarIndex = Random().nextInt(indexAvatarList.length);
@@ -66,7 +64,7 @@ class SetupSelfInfoLogic extends GetxController {
         email: email,
         password: password,
         verificationCode: verifyCode,
-        invitationCode: invitationCode.value,
+        invitationCode: invitationCode,
         gender: gender.value,
         birth: birth.value);
     var account = {

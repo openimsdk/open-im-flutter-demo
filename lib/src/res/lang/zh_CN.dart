@@ -552,4 +552,7 @@ const Map<String, String> zh_CN = {
   'deletedByFriendHint': '%s开启了朋友验证，你还不是他（她）朋友，请先发送朋友验证请求，对方验证通过后才能聊天。',
   'blockedByFriendHint': '已被拉黑',
   'sendFriendVerification': '发送朋友验证',
+  'optional': '（选填）',
+  'invitationCodeNotEmpty': '邀请码不能为空',
+  'plsInputInvitationCode': '请输入邀请码',
 };

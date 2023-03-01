@@ -130,6 +130,9 @@ class ChatPage extends StatelessWidget {
                         ChatInputBoxView(
                           controller: logic.inputCtrl,
                           allAtMap: logic.atUserNameMappingMap,
+                          enabledEmojiButton: !logic.isRobot(),
+                          enabledToolboxButton: !logic.isRobot(),
+                          enabledVoiceButton: !logic.isRobot(),
                           toolbox: ChatToolsView(
                             onTapAlbum: () => logic.onTapAlbum(),
                             onTapCamera: () => logic.onTapCamera(),
