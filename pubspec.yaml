@@ -87,7 +87,7 @@ dependencies:
   flutter_openim_widget:
     git:
       url: https://github.com/hrxiang/flutter_openim_widget.git
-      ref: v2.3.5+2
+      ref: 2.3.5+3
 #    path: ../flutter_openim_widget
 
 dev_dependencies:
