@@ -31,7 +31,7 @@ class IMController extends GetxController with IMCallback {
         onConnectFailed: (code, error) {},
         onConnectSuccess: () {},
         onKickedOffline: kickedOffline,
-        onUserSigExpired: () {},
+        onUserTokenExpired: () {},
       ),
     );
     // Set listener
