@@ -591,11 +591,15 @@ class ChatLogic extends GetxController {
     }
     if (isSingleChat && visible && !message.isRead! && message.sendID != OpenIM.iMManager.uid) {
       print('mark as read：$index ${message.clientMsgID!} ${message.isRead}');
-      await OpenIM.iMManager.messageManager.markC2CMessageAsRead(
-        userID: uid!,
-        messageIDList: [message.clientMsgID!],
-      );
-      message.isRead = true;
+      try {
+        await OpenIM.iMManager.messageManager.markC2CMessageAsRead(
+          userID: uid!,
+          messageIDList: [message.clientMsgID!],
+        );
+        message.isRead = true;
+      }catch(e){
+        print('mark as read err :$index ${message.clientMsgID!} ${message.isRead} ${e.toString()}');
+      }
     }
   }
 
