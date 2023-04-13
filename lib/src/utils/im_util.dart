@@ -127,9 +127,9 @@ class IMUtil {
   }) async {
     final picInfoList = <PicInfo>[];
     try {
-      var picElem;
-      var file;
       for (var msg in list) {
+        var picElem;
+        var file;
         picElem = msg.pictureElem;
         if (null != picElem.sourcePath && picElem.sourcePath.isNotEmpty) {
           file = File(picElem.sourcePath);
