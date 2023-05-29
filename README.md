@@ -28,8 +28,6 @@ A OpenIM flutter demo, only support android and ios.
 
 ### 其他
 
-demo里使用的ui库链接：[flutter_openim_widget ](https://github.com/hrxiang/flutter_openim_widget.git)
-
 demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git)
 
 ### Issues
