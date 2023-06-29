@@ -4,8 +4,7 @@
 ### OpenIM
 A OpenIM flutter demo, only support android and ios.
 
-![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/QQ20211207-101110.gif)
-
+![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/1.gif)
 
 
 ### 官方demo使用
@@ -16,7 +15,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ##### 2. 替换服务器地址为自己搭建的服务器地址，默认地址为官方服务器地址
 
-![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/QQ20211216-141624.gif)
+![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/2.gif)
 
 
 ### 源代码使用
@@ -26,11 +25,20 @@ A OpenIM flutter demo, only support android and ios.
 3. 运行flutter pub get
 4. 运行flutter run
 
+### 新版本分支为3.0，flutter版本仍然是3.7.3
+请将sdk的依赖替换为git依赖
+```dart
+  flutter_openim_sdk:
+git:
+url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+ref: open_3.0
+
+```
+
 ### 其他
 
-demo里使用的ui库链接：[flutter_openim_widget ](https://github.com/hrxiang/flutter_openim_widget.git)
-
 demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git)
+
 
 ### Issues
 
