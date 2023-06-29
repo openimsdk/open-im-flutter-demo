@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new Exception("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -22,14 +22,23 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 33
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "io.openim.app.enterprisechat"
+        applicationId "cn.rentsoft.flutter.openim.consumer"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
@@ -38,7 +47,7 @@ android {
         multiDexEnabled true
 
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            abiFilters "arm64-v8a"//, "armeabi-v7a", "armeabi", "x86", "x86_64", "mips", "mips64"
         }
 
         lintOptions {
@@ -49,18 +58,18 @@ android {
         }
 
         manifestPlaceholders = [
-                GETUI_APPID     : "",
+                GETUI_APPID    : "",
                 // 下面是多厂商配置，如需要开通使用请联系技术支持
                 // 如果不需要使用，预留空字段即可
-                XIAOMI_APP_ID   : "",
-                XIAOMI_APP_KEY  : "",
-                MEIZU_APP_ID    : "",
-                MEIZU_APP_KEY   : "",
-                HUAWEI_APP_ID   : "",
-                OPPO_APP_KEY    : "",
-                OPPO_APP_SECRET : "",
-                VIVO_APP_ID     : "",
-                VIVO_APP_KEY    : "",
+                XIAOMI_APP_ID  : "",
+                XIAOMI_APP_KEY : "",
+                MEIZU_APP_ID   : "",
+                MEIZU_APP_KEY  : "",
+                HUAWEI_APP_ID  : "",
+                OPPO_APP_KEY   : "",
+                OPPO_APP_SECRET: "",
+                VIVO_APP_ID    : "",
+                VIVO_APP_KEY   : "",
                 // 荣耀相关应用参数
                 HONOR_APP_ID   : "",
         ]
@@ -84,9 +93,9 @@ android {
 
         }
         release {
-            minifyEnabled false
+//            minifyEnabled false
 //            useProguard false
-            shrinkResources false
+//            shrinkResources false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
@@ -97,7 +106,7 @@ android {
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
-                outputFileName = "OpenIM_${versionName}(${versionCode})_${buildType.name}_${buildTime()}.apk"
+                outputFileName = "OpenIM(C2.0)_${versionName}(${versionCode})_${buildType.name}_${buildTime()}.apk"
             }
     }
 }
@@ -107,6 +116,7 @@ flutter {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     // 个推
     // 根据所需厂商选择集成
     implementation 'com.huawei.hms:push:5.3.0.301'
@@ -124,7 +134,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 }
 
-apply plugin: 'com.huawei.agconnect'
+//apply plugin: 'com.huawei.agconnect'
 //apply plugin: 'com.google.gms.google-services'
 
 static def buildTime() {

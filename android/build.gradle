@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version="1.6.10"
+    ext.kotlin_version = '1.7.10'
     repositories {
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
@@ -8,8 +8,6 @@ buildscript {
         maven { url "https://mvn.gt.getui.com/nexus/content/repositories/releases/" }
         maven { url 'https://developer.huawei.com/repo/' }    // hms
         maven { url "https://dl.google.com/dl/android/maven2/" }   // fcm
-        google()
-        mavenCentral()
         maven {
             url 'https://maven.columbus.heytapmobi.com/repository/releases/'
             credentials {
@@ -17,10 +15,12 @@ buildscript {
                 password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
             }
         }
+        google()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.5'  // fcm
         classpath 'com.huawei.agconnect:agcp:1.5.2.300'    // hms
@@ -36,8 +36,6 @@ allprojects {
         maven { url "https://mvn.gt.getui.com/nexus/content/repositories/releases/" }
         maven { url 'https://developer.huawei.com/repo/' }    // hms
         maven { url "https://dl.google.com/dl/android/maven2/" }   // fcm
-        google()
-        mavenCentral()
         maven {
             url 'https://maven.columbus.heytapmobi.com/repository/releases/'
             credentials {
@@ -45,12 +43,16 @@ allprojects {
                 password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
             }
         }
+        google()
+        mavenCentral()
     }
 }
 
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
     project.evaluationDependsOn(':app')
 }
 
