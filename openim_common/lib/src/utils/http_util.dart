@@ -18,7 +18,7 @@ class HttpUtil {
         requestBody: true,
         responseHeader: true,
       ))
-      // ..interceptors.add(HttpFormatter())
+    // ..interceptors.add(HttpFormatter())
       ..interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
         // Do something before request is sent
         return handler.next(options); //continue
@@ -50,20 +50,22 @@ class HttpUtil {
 
   ///
   static Future post(
-    String path, {
-    dynamic data,
-    bool showErrorToast = true,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
+      String path, {
+        dynamic data,
+        bool showErrorToast = true,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onSendProgress,
+        ProgressCallback? onReceiveProgress,
+      }) async {
     try {
       data ??= {};
-      if (data is Map) {
-        data['operationID'] = operationID;
-      }
+      data['operationID'] = operationID;
+      options ??= Options();
+      options.headers ??= {};
+      options.headers!['operationID'] = operationID;
+
       var result = await dio.post<Map<String, dynamic>>(
         path,
         data: data,
@@ -127,11 +129,11 @@ class HttpUtil {
   }
 
   static Future download(
-    String url, {
-    required String cachePath,
-    CancelToken? cancelToken,
-    Function(int count, int total)? onProgress,
-  }) {
+      String url, {
+        required String cachePath,
+        CancelToken? cancelToken,
+        Function(int count, int total)? onProgress,
+      }) {
     return dio.download(
       url,
       cachePath,
@@ -142,10 +144,10 @@ class HttpUtil {
   }
 
   static Future saveUrlPicture(
-    String url, {
-    CancelToken? cancelToken,
-    Function(int count, int total)? onProgress,
-  }) async {
+      String url, {
+        CancelToken? cancelToken,
+        Function(int count, int total)? onProgress,
+      }) async {
     final name = url.substring(url.lastIndexOf('/') + 1);
     final cachePath = await IMUtils.createTempFile(dir: 'picture', name: name);
     return download(
@@ -162,10 +164,10 @@ class HttpUtil {
   }
 
   static Future saveUrlVideo(
-    String url, {
-    CancelToken? cancelToken,
-    Function(int count, int total)? onProgress,
-  }) async {
+      String url, {
+        CancelToken? cancelToken,
+        Function(int count, int total)? onProgress,
+      }) async {
     final name = url.substring(url.lastIndexOf('/') + 1);
     final cachePath = await IMUtils.createTempFile(dir: 'video', name: name);
     return download(
