@@ -27,13 +27,12 @@ A OpenIM flutter demo, only support android and ios.
 
 ### 新版本UI使用的sdk是open_3.0分支为，flutter版本仍然是3.7.3
 
-请将sdk的依赖替换为git依赖
+###### 请将sdk的依赖替换为git依赖
 ```dart
   flutter_openim_sdk:
-git:
-url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
-ref: open_3.0
-
+    git:
+        url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+        ref: open_3.0
 ```
 
 ### 其他
