@@ -96,7 +96,10 @@ dependencies:
 #  cached_chewie: ^1.0.0
 #  cached_video_player: ^2.0.4
   flutter_openim_sdk:
-    path: ../../flutter_openim_sdk
+    git:
+      url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+      ref: open_3.0
+#    path: ../../flutter_openim_sdk
 
 #dependency_overrides:
 #  collection: 1.17.1

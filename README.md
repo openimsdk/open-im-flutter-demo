@@ -25,7 +25,7 @@ A OpenIM flutter demo, only support android and ios.
 3. 运行flutter pub get
 4. 运行flutter run
 
-### 新版本UI使用的sdk是open_3.0分支为，flutter版本仍然是3.7.3
+### 新版本UI使用的sdk是open_3.0分支为，flutter版本3.7.7
 
 ###### 请将sdk的依赖替换为git依赖
 ```dart
@@ -44,7 +44,7 @@ demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Op
 
 ##### 1，demo对应的flutter版本是？
 
-答：stable分支3.7.3
+答：stable分支3.7.7
 
 ##### 2，支持哪些平台？
 
