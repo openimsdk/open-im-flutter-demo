@@ -113,7 +113,6 @@ dependencies:
   flutter_openim_sdk:
     git:
       url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
-      ref: open_3.0
 #  flutter_openim_sdk:
 #    path: ../flutter_openim_sdk
 #  flutter_openim_unimp:
