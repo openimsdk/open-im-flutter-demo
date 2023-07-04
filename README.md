@@ -32,7 +32,6 @@ A OpenIM flutter demo, only support android and ios.
   flutter_openim_sdk:
     git:
         url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
-        ref: open_3.0
 ```
 
 ### 其他
