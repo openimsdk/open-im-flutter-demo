@@ -11,7 +11,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ##### 1. 下载体验app
 
-![Android](https://www.pgyer.com/app/qrcode/OpenIM)
+![Android](https://www.pgyer.com/app/qrcode/openim_flutter_full)
 
 ##### 2. 替换服务器地址为自己搭建的服务器地址，默认地址为官方服务器地址
 
