@@ -26,7 +26,7 @@ class IMController extends GetxController with IMCallback {
   }
 
   void _initialOpenIM() async {
-    await OpenIM.iMManager.initSDK(
+    final initialized =   await OpenIM.iMManager.initSDK(
       platformID: IMUtils.getPlatform(),
       apiAddr: Config.imApiUrl,
       wsAddr: Config.imWsUrl,
@@ -126,23 +126,9 @@ class IMController extends GetxController with IMCallback {
         onGroupMemberInfoChanged: groupMemberInfoChanged,
         onJoinedGroupAdded: joinedGroupAdded,
         onJoinedGroupDeleted: joinedGroupDeleted,
-      ))
-    // Set up signaling listener
-      ..signalingManager.setSignalingListener(OnSignalingListener(
-        onInvitationCancelled: invitationCancelled,
-        onInvitationTimeout: invitationTimeout,
-        onInviteeAccepted: inviteeAccepted,
-        onInviteeRejected: inviteeRejected,
-        onReceiveNewInvitation: receiveNewInvitation,
-        onInviteeAcceptedByOtherDevice: inviteeAcceptedByOtherDevice,
-        onInviteeRejectedByOtherDevice: inviteeRejectedByOtherDevice,
-        onHangup: beHangup,
-        onRoomParticipantConnected: roomParticipantConnected,
-        onRoomParticipantDisconnected: roomParticipantDisconnected,
-        onMeetingStreamChanged: meetingSteamChanged,
       ));
 
-    initializedSubject.sink.add(true);
+    initializedSubject.sink.add(initialized);
   }
 
   Future login(String userID, String token) async {
