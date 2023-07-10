@@ -29,27 +29,28 @@ A OpenIM flutter demo, only support android and ios.
 
 ###### 请将sdk的依赖替换为git依赖
 ```dart
-  flutter_openim_sdk:
-    git:
-        url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+  flutter_openim_sdk:git:url: https: //github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
 ```
 
 ### 其他
 
 demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git)
 
-
 ### Issues
 
-##### 1，demo对应的flutter版本是？
+##### 1，支持多语言吗？
+
+答：支持，默认跟随系统语言
+
+##### 2，demo对应的flutter版本是？
 
 答：stable分支3.7.7
 
-##### 2，支持哪些平台？
+##### 3，支持哪些平台？
 
 答：因为sdk的原因demo目前只能运行在android跟ios设备上
 
-##### 3，android安装包debug可以运行但release启动白屏？
+##### 4，android安装包debug可以运行但release启动白屏？
 
 答：flutter的release包默认是开启了混淆，可以使用命令：flutter build release --no -shrink，如果此命令无效可如下操作
 
@@ -63,7 +64,7 @@ release {
 }
 ```
 
-##### 4，代码必须混淆怎么办？
+##### 5，代码必须混淆怎么办？
 
 答：在混淆规则里加入以下规则
 
@@ -73,7 +74,7 @@ release {
 -keep class open_im_sdk_callback.**{*;}
 ```
 
-##### 5，android安装包不能安装在模拟器上？
+##### 6，android安装包不能安装在模拟器上？
 
 答：因为Demo去掉了某些cpu架构，如果你想运行在模拟器上请按以下方式：
 
@@ -85,7 +86,7 @@ ndk {
 }
 ```
 
-##### 6，ios构建release包报错
+##### 7，ios构建release包报错
 
 答：请将cpu架构设置为arm64，然后依次如下操作
 
@@ -97,11 +98,11 @@ ndk {
 
 ![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
 
-##### 7，ios运行的最低版本号？
+##### 8，ios运行的最低版本号？
 
 答：13.0
 
-#### 8， 有开发者遇到以下问题：
+#### 9， 有开发者遇到以下问题：
 ```
 Could not build the precompiled application for the device.
 Error (Xcode): Signing for "TOCropViewController-TOCropViewControllerBundle" requires a development team. Select a development team
