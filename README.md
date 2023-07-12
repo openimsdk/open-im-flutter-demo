@@ -48,7 +48,7 @@ demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Op
 
 ##### 3，支持哪些平台？
 
-答：因为sdk的原因demo目前只能运行在android跟ios设备上
+答：demo目前支持android、ios。
 
 ##### 4，android安装包debug可以运行但release启动白屏？
 
