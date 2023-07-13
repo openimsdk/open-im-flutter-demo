@@ -1,5 +1,5 @@
 ![avatar](https://github.com/OpenIMSDK/OpenIM-Docs/blob/main/docs/images/WechatIMG20.jpeg)
-## 可以免费使用，必须在app启动页加上 (由OpenIM提供技术支持)
+## Can be used for free, must be added on the app startup page (powered by OpenIM)
 
 ### OpenIM
 A OpenIM flutter demo, only support android and ios.
@@ -7,54 +7,56 @@ A OpenIM flutter demo, only support android and ios.
 ![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/1.gif)
 
 
-### 官方demo使用
+### Official demo use
 
-##### 1. 下载体验app
+##### 1. Download the experience app
 
 ![Android](https://www.pgyer.com/app/qrcode/openim_flutter_full)
 
-##### 2. 替换服务器地址为自己搭建的服务器地址，默认地址为官方服务器地址
+##### 2. Replace the server address with the server address built by yourself, and the default address is the official server address
 
 ![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/2.gif)
 
 
-### 源代码使用
+### source code usage
 
 1. git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
-2. 修改 [config.dart](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/lib/src/common/config.dart)文件里的服务器地址为自己搭建的服务器地址
-3. 运行flutter pub get
-4. 运行flutter run
+2. modify the server address in the [config.dart](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/lib/src/common/config.dart) file to the server address built by yourself
+3. flutter pub get
+4. flutter run
 
-### 新版本UI使用的sdk是main分支，flutter版本3.7.7
+### The sdk used by the new version UI is the main branch, flutter version 3.7.7
 
-###### 请将sdk的依赖替换为git依赖
+###### Please replace the sdk dependency with git dependency
 ```dart
-  flutter_openim_sdk:git:url: https: //github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+  flutter_openim_sdk:
+    git:
+        url: https: //github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
 ```
 
-### 其他
+### other
 
-demo使用的im库链接：[flutter_openim_sdk ](https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git)
+The im library link used by the demo: [flutter_openim_sdk ](https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git)
 
 ### Issues
 
-##### 1，支持多语言吗？
+##### 1. Does it support multiple languages?
 
-答：支持，默认跟随系统语言
+A: Support, follow the system language by default
 
-##### 2，demo对应的flutter版本是？
+##### 2. What is the flutter version corresponding to the demo?
 
-答：stable分支3.7.7
+A: stable branch 3.7.7
 
-##### 3，支持哪些平台？
+##### 3. Which platforms are supported?
 
-答：demo目前支持android、ios。
+A: The demo currently supports android and ios.
 
-##### 4，android安装包debug可以运行但release启动白屏？
+##### 4. The debug of the android installation package can run, but the release starts with a white screen?
 
-答：flutter的release包默认是开启了混淆，可以使用命令：flutter build release --no -shrink，如果此命令无效可如下操作
+A: The release package of flutter is obfuscated by default. You can use the command: flutter build release --no -shrink. If this command is invalid, you can do the following
 
-在android/app/build.gradle配置的release配置加入以下配置
+Add the following configuration to the release configuration configured in android/app/build.gradle
 
 ```
 release {
@@ -64,9 +66,9 @@ release {
 }
 ```
 
-##### 5，代码必须混淆怎么办？
+##### 5. What should I do if the code must be confused?
 
-答：在混淆规则里加入以下规则
+A: Add the following rules to the obfuscation rules
 
 ```
 -keep class io.openim.**{*;}
@@ -74,11 +76,11 @@ release {
 -keep class open_im_sdk_callback.**{*;}
 ```
 
-##### 6，android安装包不能安装在模拟器上？
+##### 6. The android installation package cannot be installed on the emulator?
 
-答：因为Demo去掉了某些cpu架构，如果你想运行在模拟器上请按以下方式：
+A: Because the Demo has removed some cpu architectures, if you want to run it on the emulator, please do the following:
 
-在android/build.gradle配置加入
+Add in android/build.gradle configuration
 
 ```
 ndk {
@@ -86,23 +88,23 @@ ndk {
 }
 ```
 
-##### 7，ios构建release包报错
+##### 7, ios build release package error
 
-答：请将cpu架构设置为arm64，然后依次如下操作
+A: Please set the CPU architecture to arm64, and then operate as follows
 
 - flutter clean
 - flutter pub get
 - cd ios
 - pod install
-- 连接真机后运行Archive
+- Run Archive after connecting to the real device
 
 ![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
 
-##### 8，ios运行的最低版本号？
+##### 8. What is the minimum version number for ios to run?
 
-答：13.0
+A: 13.0
 
-#### 9， 有开发者遇到以下问题：
+#### 9. Some developers encountered the following problems:
 ```
 Could not build the precompiled application for the device.
 Error (Xcode): Signing for "TOCropViewController-TOCropViewControllerBundle" requires a development team. Select a development team
@@ -114,7 +116,7 @@ in the Signing & Capabilities editor.
 Error (Xcode): Signing for "DKPhotoGallery-DKPhotoGallery" requires a development team. Select a development team in the Signing &
 Capabilities editor.
 ```
-在Podfile添加以下代码：
+Add the following code to Podfile:
 ```ruby
 post_install do |installer|
     installer.pods_project.targets.each do |target|
