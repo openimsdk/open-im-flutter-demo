@@ -44,7 +44,7 @@ class SendVerificationApplicationLogic extends GetxController {
       IMViews.showToast(StrRes.sendSuccessfully);
     } catch (_) {
       if (_ is PlatformException) {
-        if (_.code == '${AddFriendFailedCode.refuseToAddFriends}') {
+        if (_.code == '${SDKErrorCode.refuseToAddFriends}') {
           IMViews.showToast(StrRes.canNotAddFriends);
           return;
         }

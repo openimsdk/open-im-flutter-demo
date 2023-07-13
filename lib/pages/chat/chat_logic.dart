@@ -476,9 +476,9 @@ class ChatLogic extends GetxController {
       int code = int.tryParse(error.code) ?? 0;
       if (isSingleChat) {
         int? customType;
-        if (code == MessageFailedCode.blockedByFriend) {
+        if (code == SDKErrorCode.hasBeenBlocked) {
           customType = CustomMessageType.blockedByFriend;
-        } else if (code == MessageFailedCode.deletedByFriend) {
+        } else if (code == SDKErrorCode.notFriend) {
           customType = CustomMessageType.deletedByFriend;
         }
         if (null != customType) {
@@ -494,7 +494,8 @@ class ChatLogic extends GetxController {
           );
         }
       } else {
-        if (code == MessageFailedCode.notInGroup && null == groupId) {
+        if ((code == SDKErrorCode.userIsNotInGroup ||
+            code == SDKErrorCode.groupDisbanded) && null == groupId) {
           final status = groupInfo?.status;
           final hintMessage = (await OpenIM.iMManager.messageManager
               .createFailedHintMessage(
