@@ -183,8 +183,8 @@ class IMViews {
         //   compress: false,
         // );
         result = await LoadingView.singleton.wrap(
-          asyncFunction: () => OpenIM.iMManager.putFile(
-            putID: putID,
+          asyncFunction: () => OpenIM.iMManager.uploadFile(
+            id: putID,
             filePath: cropFile!.path,
             fileName: cropFile.path,
           ),
@@ -196,8 +196,8 @@ class IMViews {
         //   compress: false,
         // );
         result = await LoadingView.singleton.wrap(
-          asyncFunction: () => OpenIM.iMManager.putFile(
-            putID: putID,
+          asyncFunction: () => OpenIM.iMManager.uploadFile(
+            id: putID,
             filePath: path,
             fileName: path,
           ),
