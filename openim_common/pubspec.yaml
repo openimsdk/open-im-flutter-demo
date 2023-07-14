@@ -95,9 +95,7 @@ dependencies:
       url: https://github.com/hrxiang/flutter_download_manager.git
 #  cached_chewie: ^1.0.0
 #  cached_video_player: ^2.0.4
-  flutter_openim_sdk:
-    git:
-      url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+  flutter_openim_sdk: ^3.0.0
 #    path: ../../flutter_openim_sdk
 
 #dependency_overrides:

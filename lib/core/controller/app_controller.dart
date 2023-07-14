@@ -274,7 +274,7 @@ class AppController extends GetxController with UpgradeManger {
         isAllowBeep &&
         (ringerStatus == RingerModeStatus.normal ||
             ringerStatus == RingerModeStatus.unknown)) {
-      _audioPlayer.setAsset(_ring);
+      _audioPlayer.setAsset(_ring, package: 'openim_common');
       _audioPlayer.setLoopMode(LoopMode.off);
       _audioPlayer.setVolume(1.0);
       _audioPlayer.play();
