@@ -11,7 +11,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ##### 1. Download the experience app
 
-![Android](https://www.pgyer.com/app/qrcode/openim_flutter_full)
+![Android](https://www.pgyer.com/app/qrcode/OpenIM-Flutter)
 
 ##### 2. Replace the server address with the server address built by yourself, and the default address is the official server address
 
