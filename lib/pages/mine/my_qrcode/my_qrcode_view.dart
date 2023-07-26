@@ -82,7 +82,7 @@ class MyQrcodePage extends StatelessWidget {
                         //   colors: [Color(0xFFFEB2B2), Color(0xFF5496E4)],
                         // ),
                       ),
-                      child: QrImage(
+                      child: QrImageView(
                         data: logic.buildQRContent(),
                         size: 140.w,
                         backgroundColor: Styles.c_FFFFFF,

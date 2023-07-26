@@ -23,15 +23,13 @@ import 'package:sprintf/sprintf.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 import 'package:video_compress/video_compress.dart';
 
-
 /// 间隔时间完成某事
 class IntervalDo {
   DateTime? last;
 
   void run({required Function() fuc, int milliseconds = 0}) {
     DateTime now = DateTime.now();
-    if (null == last ||
-        now.difference(last ?? now).inMilliseconds > milliseconds) {
+    if (null == last || now.difference(last ?? now).inMilliseconds > milliseconds) {
       last = now;
       fuc();
     }
@@ -130,14 +128,13 @@ class IMUtils {
     }
   }
 
-  static String? emptyStrToNull(String? str) =>
-      (null != str && str.trim().isEmpty) ? null : str;
+  static String? emptyStrToNull(String? str) => (null != str && str.trim().isEmpty) ? null : str;
 
   static bool isNotNullEmptyStr(String? str) => null != str && "" != str.trim();
 
   static bool isChinaMobile(String mobile) {
-    RegExp exp = RegExp(
-        r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+    RegExp exp =
+        RegExp(r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
     return exp.hasMatch(mobile);
   }
 
@@ -197,9 +194,8 @@ class IMUtils {
     required String dir,
     required String name,
   }) async {
-    final storage = (Platform.isIOS
-        ? await getTemporaryDirectory()
-        : await getExternalStorageDirectory());
+    final storage =
+        (Platform.isIOS ? await getTemporaryDirectory() : await getExternalStorageDirectory());
     Directory directory = Directory('${storage!.path}/$dir');
     if (!(await directory.exists())) {
       directory.create(recursive: true);
@@ -272,8 +268,7 @@ class IMUtils {
         externalStorageDirPath = directory?.path;
       }
     } else if (Platform.isIOS) {
-      externalStorageDirPath =
-          (await getApplicationDocumentsDirectory()).absolute.path;
+      externalStorageDirPath = (await getApplicationDocumentsDirectory()).absolute.path;
     }
     return externalStorageDirPath!;
   }
@@ -292,8 +287,7 @@ class IMUtils {
   }
 
   /// 消息列表超过5分钟则显示时间
-  static List<Message> calChatTimeInterval(List<Message> list,
-      {bool calculate = true}) {
+  static List<Message> calChatTimeInterval(List<Message> list, {bool calculate = true}) {
     if (!calculate) return list;
     var milliseconds = list.firstOrNull?.sendTime;
     if (null == milliseconds) return list;
@@ -416,8 +410,7 @@ class IMUtils {
     return "${_combTime(days, StrRes.day)}${_combTime(hours, StrRes.hours)}${_combTime(minutes, StrRes.minute)}${_combTime(seconds, StrRes.seconds)}";
   }
 
-  static String _combTime(int value, String unit) =>
-      value > 0 ? '$value$unit' : '';
+  static String _combTime(int value, String unit) => value > 0 ? '$value$unit' : '';
 
   /// 搜索聊天内容显示规则
   static String calContent({
@@ -494,9 +487,7 @@ class IMUtils {
   }
 
   static String getGroupMemberShowName(GroupMembersInfo membersInfo) {
-    return membersInfo.userID == OpenIM.iMManager.userID
-        ? StrRes.you
-        : membersInfo.nickname!;
+    return membersInfo.userID == OpenIM.iMManager.userID ? StrRes.you : membersInfo.nickname!;
   }
 
   static String getShowName(String? userID, String? nickname) {
@@ -525,8 +516,7 @@ class IMUtils {
           case MessageType.groupInfoSetNotification:
             {
               final ntf = GroupNotification.fromJson(map);
-              if (ntf.group?.notification != null &&
-                  ntf.group!.notification!.isNotEmpty) {
+              if (ntf.group?.notification != null && ntf.group!.notification!.isNotEmpty) {
                 return isConversation ? ntf.group!.notification! : null;
               }
               // a 修改了群资料
@@ -547,12 +537,9 @@ class IMUtils {
               final ntf = InvitedJoinGroupNotification.fromJson(map);
               // a 邀请 b 加入群聊
               final label = StrRes.invitedJoinGroupNtf;
-              final b = ntf.invitedUserList
-                  ?.map((e) => getGroupMemberShowName(e))
-                  .toList()
-                  .join('、');
-              text = sprintf(
-                  label, [getGroupMemberShowName(ntf.opUser!), b ?? '']);
+              final b =
+                  ntf.invitedUserList?.map((e) => getGroupMemberShowName(e)).toList().join('、');
+              text = sprintf(label, [getGroupMemberShowName(ntf.opUser!), b ?? '']);
             }
             break;
           case MessageType.memberKickedNotification:
@@ -560,10 +547,8 @@ class IMUtils {
               final ntf = KickedGroupMemeberNotification.fromJson(map);
               // b 被 a 踢出群聊
               final label = StrRes.kickedGroupNtf;
-              final b = ntf.kickedUserList!
-                  .map((e) => getGroupMemberShowName(e))
-                  .toList()
-                  .join('、');
+              final b =
+                  ntf.kickedUserList!.map((e) => getGroupMemberShowName(e)).toList().join('、');
               text = sprintf(label, [b, getGroupMemberShowName(ntf.opUser!)]);
             }
             break;
@@ -612,10 +597,8 @@ class IMUtils {
               final ntf = MuteMemberNotification.fromJson(map);
               // b 被 a 取消了禁言
               final label = StrRes.muteCancelMemberNtf;
-              text = sprintf(label, [
-                getGroupMemberShowName(ntf.mutedUser!),
-                getGroupMemberShowName(ntf.opUser!)
-              ]);
+              text = sprintf(label,
+                  [getGroupMemberShowName(ntf.mutedUser!), getGroupMemberShowName(ntf.opUser!)]);
             }
             break;
           case MessageType.groupMutedNotification:
@@ -652,8 +635,7 @@ class IMUtils {
             break;
           case MessageType.groupMemberInfoChangedNotification:
             final ntf = GroupMemberInfoChangedNotification.fromJson(map);
-            text = sprintf(StrRes.memberInfoChangedNtf,
-                [getGroupMemberShowName(ntf.opUser!)]);
+            text = sprintf(StrRes.memberInfoChangedNtf, [getGroupMemberShowName(ntf.opUser!)]);
             break;
           case MessageType.groupNoticeChangedNotification:
             if (isConversation) {
@@ -663,8 +645,7 @@ class IMUtils {
             break;
           case MessageType.groupNameChangedNotification:
             final ntf = GroupNotification.fromJson(map);
-            text = sprintf(StrRes.whoModifyGroupName,
-                [getGroupMemberShowName(ntf.opUser!)]);
+            text = sprintf(StrRes.whoModifyGroupName, [getGroupMemberShowName(ntf.opUser!)]);
             break;
         }
       }
@@ -770,8 +751,7 @@ class IMUtils {
           switch (customType) {
             case CustomMessageType.call:
               var type = map['data']['type'];
-              content =
-                  '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
+              content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
               break;
             case CustomMessageType.emoji:
               content = '[${StrRes.emoji}]';
@@ -845,8 +825,7 @@ class IMUtils {
                   switch (state) {
                     case 'beHangup':
                     case 'hangup':
-                      content =
-                          sprintf(StrRes.callDuration, [seconds2HMS(duration)]);
+                      content = sprintf(StrRes.callDuration, [seconds2HMS(duration)]);
                       break;
                     case 'cancel':
                       content = StrRes.cancelled;
@@ -909,8 +888,7 @@ class IMUtils {
         var list = message.atTextElem!.atUsersInfo;
         list?.forEach((e) {
           final userID = e.atUserID!;
-          final groupNickname =
-              newMapping[userID] ?? e.groupNickname ?? e.atUserID!;
+          final groupNickname = newMapping[userID] ?? e.groupNickname ?? e.atUserID!;
           mapping[userID] = getAtNickname(userID, groupNickname);
         });
       }
@@ -969,8 +947,6 @@ class IMUtils {
         // fullscreenDialog: true,
       );*/
 
-
-
   /// 处理消息点击事件
   /// [messageList] 预览图片消息的时候，可用左右滑动
   static void parseClickEvent(
@@ -984,8 +960,7 @@ class IMUtils {
     } else if (message.contentType == MessageType.card) {
     } else if (message.contentType == MessageType.merger) {
     } else if (message.contentType == MessageType.location) {
-    } else if (message.contentType == MessageType.custom_face) {
-    }
+    } else if (message.contentType == MessageType.custom_face) {}
   }
 
   static Future<bool> isExitFile(String? path) async {
@@ -1017,7 +992,7 @@ class IMUtils {
       case ".mp4":
         return "video/mp4";
       case ".mov":
-        return "video/mov";
+        return "video/quicktime";
       case ".htm":
       case ".html":
         return "text/html";
@@ -1089,18 +1064,15 @@ class IMUtils {
     if (mimeType == 'application/pdf') {
       return ImageRes.filePdf;
     } else if (mimeType == 'application/msword' ||
-        mimeType ==
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        mimeType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
       return ImageRes.fileWord;
     } else if (mimeType == 'application/vnd.ms-excel' ||
-        mimeType ==
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        mimeType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       return ImageRes.fileExcel;
     } else if (mimeType == 'application/vnd.ms-powerpoint') {
       return ImageRes.filePpt;
     } else if (mimeType.startsWith('audio/')) {
-    } else if (mimeType == 'application/zip' ||
-        mimeType == 'application/x-rar-compressed') {
+    } else if (mimeType == 'application/zip' || mimeType == 'application/x-rar-compressed') {
       return ImageRes.fileZip;
     }
     /*else if (mimeType.startsWith('audio/')) {
@@ -1174,8 +1146,7 @@ class IMUtils {
     return checkedMap;
   }
 
-  static List<Map<String, String?>> convertCheckedListToForwardObj(
-      List<dynamic> checkedList) {
+  static List<Map<String, String?>> convertCheckedListToForwardObj(List<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
       if (item is UserInfo) {
@@ -1211,8 +1182,7 @@ class IMUtils {
     return null;
   }
 
-  static List<Map<String, String?>> convertCheckedListToShare(
-      Iterable<dynamic> checkedList) {
+  static List<Map<String, String?>> convertCheckedListToShare(Iterable<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
       if (item is UserInfo) {
@@ -1288,11 +1258,9 @@ class IMUtils {
     return isZh ? 'MM月dd日 HH时mm分' : 'MM/dd HH:mm';
   }
 
-  static bool isValidPassword(String password) =>
-      passwordRegExp.hasMatch(password);
+  static bool isValidPassword(String password) => passwordRegExp.hasMatch(password);
 
-  static TextInputFormatter getPasswordFormatter() =>
-      FilteringTextInputFormatter.allow(
+  static TextInputFormatter getPasswordFormatter() => FilteringTextInputFormatter.allow(
         // RegExp(r'[a-zA-Z0-9]'),
         RegExp(r'[a-zA-Z0-9@#$%^&+=!.]'),
       );

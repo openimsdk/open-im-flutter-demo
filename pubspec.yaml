@@ -104,38 +104,23 @@ dependencies:
   rotated_corner_decoration: ^2.1.0
   chat_listview: ^0.0.2
   mime: ^1.0.4
-#  flutter_download_manager: ^0.5.5
   flutter_download_manager:
     git:
       url: https://github.com/hrxiang/flutter_download_manager.git
   synchronized: ^3.0.1
   pin_code_fields: ^7.3.0
   flutter_openim_sdk: ^3.0.0
-#  flutter_openim_sdk:
-#    git:
-#      url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
-#  flutter_openim_sdk:
-#    path: ../flutter_openim_sdk
-#  flutter_openim_unimp:
-#    path: ../flutter_openim_unimp
-  #  flutter_openim_live:
-  #    path: ../flutter_openim_live
-  #  flutter_openim_live_alert:
-  #    path: ../flutter_openim_live_alert
+
   openim_common:
     path: openim_common
-#  openim_organization:
-#    path: openim_organization
-#  openim_working_circle:
-#    path: openim_working_circle
-#  openim_live:
-#    path: openim_live
-#  openim_meeting:
-#    path: openim_meeting
+
 dependency_overrides:
-#  collection: 1.17.1
   lottie: 2.3.0
   animate_do: 3.0.2
+  flutter_openim_sdk:
+    git:
+      url: https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
+      ref: 2a8a6ff
 dev_dependencies:
   flutter_test:
     sdk: flutter
