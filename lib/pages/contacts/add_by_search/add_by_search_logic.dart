@@ -62,7 +62,7 @@ class AddContactsBySearchLogic extends GetxController {
     var list = await LoadingView.singleton.wrap(
       asyncFunction: () => Apis.searchUserFullInfo(
         content: searchKey,
-        pageNumber: pageNo = 0,
+        pageNumber: pageNo = 1,
         showNumber: 20,
       ),
     );
