@@ -47,7 +47,7 @@ A: Support, follow the system language by default
 
 ##### 2. What is the flutter version corresponding to the demo?
 
-A: stable branch 3.7.7
+A: stable branch 3.7.12
 
 ##### 3. Which platforms are supported?
 
