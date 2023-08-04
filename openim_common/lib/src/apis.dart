@@ -4,11 +4,9 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_common/openim_common.dart';
 
 class Apis {
-  static Options get imTokenOptions =>
-      Options(headers: {'token': DataSp.imToken});
+  static Options get imTokenOptions => Options(headers: {'token': DataSp.imToken});
 
-  static Options get chatTokenOptions =>
-      Options(headers: {'token': DataSp.chatToken});
+  static Options get chatTokenOptions => Options(headers: {'token': DataSp.chatToken});
 
   // static String get operationID =>
   //     DateTime.now().millisecondsSinceEpoch.toString();
@@ -189,9 +187,7 @@ class Apis {
       options: chatTokenOptions,
     );
     if (data['users'] is List) {
-      return (data['users'] as List)
-          .map((e) => UserFullInfo.fromJson(e))
-          .toList();
+      return (data['users'] as List).map((e) => UserFullInfo.fromJson(e)).toList();
     }
     return null;
   }
@@ -211,9 +207,7 @@ class Apis {
       options: chatTokenOptions,
     );
     if (data['users'] is List) {
-      return (data['users'] as List)
-          .map((e) => UserFullInfo.fromJson(e))
-          .toList();
+      return (data['users'] as List).map((e) => UserFullInfo.fromJson(e)).toList();
     }
     return null;
   }

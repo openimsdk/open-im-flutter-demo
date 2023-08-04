@@ -66,8 +66,6 @@
 	<string>请点击“好”以允许访问。若不允许，你将无法给好友发送或者上传本地相册图片及视频内容。</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>UIBackgroundModes</key>
-	<array/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
