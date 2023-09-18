@@ -97,6 +97,8 @@ A: Please set the CPU architecture to arm64, and then operate as follows
 - flutter pub get
 - cd ios
 - pod install
+- rm -f Podfile.lock
+- rm -rf Pods
 - Run Archive after connecting to the real device
 
 ![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
