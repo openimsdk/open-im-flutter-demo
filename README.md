@@ -89,7 +89,7 @@ ndk {
 }
 ```
 
-##### 7, ios build release package error
+##### 7, ios run/build release package error
 
 A: Please set the CPU architecture to arm64, and then operate as follows
 
