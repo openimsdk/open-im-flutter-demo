@@ -1,45 +1,56 @@
-<img src="https://github.com/OpenIMSDK/OpenIM-Docs/blob/main/docs/images/WechatIMG20.jpeg" alt="image" style="width: 350px; " />
+<p align="center">
+    <a href="https://www.openim.online">
+        <img src="./docs/images/openim-logo.gif" width="60%" height="30%"/>
+    </a>
+</p>
 
-## Can be used for free, must be added on the app startup page (powered by OpenIM)
+# OpenIM Flutter Demo 💬💻
 
-### OpenIM
+<p>
+  <a href="https://doc.rentsoft.cn/">OpenIM Docs</a>
+  •
+  <a href="https://github.com/openimsdk/open-im-server">OpenIM Server</a>
+  •
+  <a href="https://github.com/openimsdk/openim-sdk-core">openim-sdk-core</a>
+  •
+  <a href="https://github.com/openimsdk/open-im-sdk-flutter">open-im-sdk-flutter</a>
+
+</p>
+
+<br>
+
 A OpenIM flutter demo, only support android and ios.
 
-![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/1.gif)
+## Tech Stack 🛠️
 
+- This is a [`Flutter`](https://flutter.dev/) project.
+- App is built with [open-im-sdk-flutter](https://github.com/openimsdk/open-im-sdk-flutter) library.
 
-### Official demo use
+## Official demo use
 
-##### 1. Download the experience app
+- Download the experience app
 
-![Android](https://www.pgyer.com/app/qrcode/OpenIM-Flutter)
+  ![Android](https://www.pgyer.com/app/qrcode/OpenIM-Flutter)
 
-##### 2. Replace the server address with the server address built by yourself, and the default address is the official server address
+## Dev Setup 🛠️
+1. Android studio/vscode
+2. Flutter sdk version 3.7.12+
 
-![image](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/gif/2.gif)
-
-
-### source code usage
+## Build 🚀
 
 1. git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
 2. modify the server address in the [config.dart](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/lib/src/common/config.dart) file to the server address built by yourself
-3. flutter pub get
-4. flutter run
-
-### The sdk used by the new version UI is the main branch, flutter version 3.7.7
-
-###### Please replace the sdk dependency with git dependency
+3. Please replace the sdk dependency with git dependency
 ```dart
   flutter_openim_sdk:
     git:
         url: https: //github.com/OpenIMSDK/Open-IM-SDK-Flutter.git
 ```
 
-### other
+4. flutter pub get
+5. flutter run
 
-The im library link used by the demo: [flutter_openim_sdk ](https://github.com/OpenIMSDK/Open-IM-SDK-Flutter.git)
-
-### Issues
+### Issues :bookmark_tabs:
 
 ##### 1. Does it support multiple languages?
 
@@ -85,7 +96,7 @@ Add in android/build.gradle configuration
 
 ```
 ndk {
-    abiFilters "arm64-v8a", "armeabi-v7a", "armeabi", "x86", "x86_64"
+    abiFilters "armeabi-v7a",  "x86"
 }
 ```
 
@@ -130,3 +141,26 @@ post_install do |installer|
    end
 end
 ```
+
+## Community :busts_in_silhouette:
+
+- 📚 [OpenIM Community](https://github.com/OpenIMSDK/community)
+- 💕 [OpenIM Interest Group](https://github.com/Openim-sigs)
+- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q)
+- :eyes: [Join our wechat (微信群)](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
+
+## Community Meetings :calendar:
+
+We want anyone to get involved in our community and contributing code, we offer gifts and rewards, and we welcome you to join us every Thursday night.
+
+Our conference is in the [OpenIM Slack](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q) 🎯, then you can search the Open-IM-Server pipeline to join
+
+We take notes of each [biweekly meeting](https://github.com/orgs/OpenIMSDK/discussions/categories/meeting) in [GitHub discussions](https://github.com/openimsdk/open-im-server/discussions/categories/meeting), Our historical meeting notes, as well as replays of the meetings are available at [Google Docs :bookmark_tabs:](https://docs.google.com/document/d/1nx8MDpuG74NASx081JcCpxPgDITNTpIIos0DS6Vr9GU/edit?usp=sharing).
+
+## Who are using OpenIM :eyes:
+
+Check out our [user case studies](https://github.com/OpenIMSDK/community/blob/main/ADOPTERS.md) page for a list of the project users. Don't hesitate to leave a [📝comment](https://github.com/openimsdk/open-im-server/issues/379) and share your use case.
+
+## License :page_facing_up:
+
+OpenIM is licensed under the Apache 2.0 license. See [LICENSE](https://github.com/openimsdk/open-im-server/tree/main/LICENSE) for the full license text.
