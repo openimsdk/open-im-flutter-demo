@@ -23,13 +23,13 @@ import 'package:sprintf/sprintf.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 import 'package:video_compress/video_compress.dart';
 
-/// 间隔时间完成某事
 class IntervalDo {
   DateTime? last;
 
   void run({required Function() fuc, int milliseconds = 0}) {
     DateTime now = DateTime.now();
-    if (null == last || now.difference(last ?? now).inMilliseconds > milliseconds) {
+    if (null == last ||
+        now.difference(last ?? now).inMilliseconds > milliseconds) {
       last = now;
       fuc();
     }
@@ -39,10 +39,7 @@ class IntervalDo {
 class IMUtils {
   IMUtils._();
 
-  /// 密码正则表达式：6～20位数字+大小写字母
   static final passwordRegExp = RegExp(
-    // r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!.])(?=.{6,20}$)',
-    // r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,20}$',
     r'^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,20}$',
   );
 
@@ -80,14 +77,11 @@ class IMUtils {
     for (int i = 0, length = list.length; i < length; i++) {
       setAzPinyinAndTag(list[i]);
     }
-    // A-Z sort.
+
     SuspensionUtil.sortListBySuspensionTag(list);
 
-    // show sus tag.
     SuspensionUtil.setShowSuspensionStatus(list);
 
-    // add topList.
-    // contactsList.insertAll(0, topList);
     return list;
   }
 
@@ -128,20 +122,20 @@ class IMUtils {
     }
   }
 
-  static String? emptyStrToNull(String? str) => (null != str && str.trim().isEmpty) ? null : str;
+  static String? emptyStrToNull(String? str) =>
+      (null != str && str.trim().isEmpty) ? null : str;
 
   static bool isNotNullEmptyStr(String? str) => null != str && "" != str.trim();
 
   static bool isChinaMobile(String mobile) {
-    RegExp exp =
-        RegExp(r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+    RegExp exp = RegExp(
+        r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
     return exp.hasMatch(mobile);
   }
 
   static bool isMobile(String areaCode, String mobile) =>
       (areaCode == '+86' || areaCode == '86') ? isChinaMobile(mobile) : true;
 
-  /// 获取视频缩略图
   static Future<File> getVideoThumbnail(File file) async {
     final thumbnailFile = await VideoCompress.getFileThumbnail(
       file.path,
@@ -151,7 +145,6 @@ class IMUtils {
     return thumbnailFile;
   }
 
-  ///  compress video
   static Future<File?> compressVideoAndGetFile(File file) async {
     var mediaInfo = await VideoCompress.compressVideo(
       file.path,
@@ -161,7 +154,6 @@ class IMUtils {
     return mediaInfo?.file;
   }
 
-  ///  compress file and get file.
   static Future<File?> compressImageAndGetFile(File file) async {
     var path = file.path;
     var name = path.substring(path.lastIndexOf("/") + 1);
@@ -183,8 +175,6 @@ class IMUtils {
       quality: 90,
       minWidth: 480,
       minHeight: 800,
-      // minHeight: 1920,
-      // minWidth: 1080,
       format: format,
     );
     return result;
@@ -194,8 +184,9 @@ class IMUtils {
     required String dir,
     required String name,
   }) async {
-    final storage =
-        (Platform.isIOS ? await getTemporaryDirectory() : await getExternalStorageDirectory());
+    final storage = (Platform.isIOS
+        ? await getTemporaryDirectory()
+        : await getExternalStorageDirectory());
     Directory directory = Directory('${storage!.path}/$dir');
     if (!(await directory.exists())) {
       directory.create(recursive: true);
@@ -236,7 +227,6 @@ class IMUtils {
     }
   }
 
-  // md5 加密
   static String? generateMD5(String? data) {
     if (null == data) return null;
     var content = const Utf8Encoder().convert(data);
@@ -249,7 +239,6 @@ class IMUtils {
   }
 
   static String buildFriendApplicationID(FriendApplicationInfo info) {
-    /// 1686566803245 1686727472913
     return '${info.fromUserID}-${info.toUserID}-${info.createTime}';
   }
 
@@ -268,7 +257,8 @@ class IMUtils {
         externalStorageDirPath = directory?.path;
       }
     } else if (Platform.isIOS) {
-      externalStorageDirPath = (await getApplicationDocumentsDirectory()).absolute.path;
+      externalStorageDirPath =
+          (await getApplicationDocumentsDirectory()).absolute.path;
     }
     return externalStorageDirPath!;
   }
@@ -279,15 +269,14 @@ class IMUtils {
     if (path.contains(filePrefix)) {
       path = path.substring(filePrefix.length);
     } else if (path.contains(uriPrefix)) {
-      // Uri uri = Uri.parse(thumbnailPath); // Parsing uri string to uri
       File file = await toFile(path);
       path = file.path;
     }
     return path;
   }
 
-  /// 消息列表超过5分钟则显示时间
-  static List<Message> calChatTimeInterval(List<Message> list, {bool calculate = true}) {
+  static List<Message> calChatTimeInterval(List<Message> list,
+      {bool calculate = true}) {
     if (!calculate) return list;
     var milliseconds = list.firstOrNull?.sendTime;
     if (null == milliseconds) return list;
@@ -377,7 +366,6 @@ class IMUtils {
     return "${h < 10 ? '0$h' : h}:${m < 10 ? '0$m' : m}:${s < 10 ? '0$s' : s}";
   }
 
-  /// 消息按时间线分组
   static Map<String, List<Message>> groupingMessage(List<Message> list) {
     var languageCode = Get.locale?.languageCode ?? 'zh';
     var group = <String, List<Message>>{};
@@ -385,16 +373,12 @@ class IMUtils {
       var dateTime = DateTime.fromMillisecondsSinceEpoch(message.sendTime!);
       String dateStr;
       if (DateUtil.isToday(message.sendTime!)) {
-        // 今天
         dateStr = languageCode == 'zh' ? '今天' : 'Today';
       } else if (DateUtil.isWeek(message.sendTime!)) {
-        // 本周
         dateStr = languageCode == 'zh' ? '本周' : 'This Week';
       } else if (dateTime.isThisMonth) {
-        //当月
         dateStr = languageCode == 'zh' ? '这个月' : 'This Month';
       } else {
-        // 按年月
         dateStr = DateUtil.formatDate(dateTime, format: 'yyyy/MM');
       }
       group[dateStr] = (group[dateStr] ?? <Message>[])..add(message);
@@ -410,9 +394,9 @@ class IMUtils {
     return "${_combTime(days, StrRes.day)}${_combTime(hours, StrRes.hours)}${_combTime(minutes, StrRes.minute)}${_combTime(seconds, StrRes.seconds)}";
   }
 
-  static String _combTime(int value, String unit) => value > 0 ? '$value$unit' : '';
+  static String _combTime(int value, String unit) =>
+      value > 0 ? '$value$unit' : '';
 
-  /// 搜索聊天内容显示规则
   static String calContent({
     required String content,
     required String key,
@@ -441,7 +425,6 @@ class IMUtils {
     }
   }
 
-  // Here it is!
   static Size calculateTextSize(
     String text,
     TextStyle style, {
@@ -487,14 +470,15 @@ class IMUtils {
   }
 
   static String getGroupMemberShowName(GroupMembersInfo membersInfo) {
-    return membersInfo.userID == OpenIM.iMManager.userID ? StrRes.you : membersInfo.nickname!;
+    return membersInfo.userID == OpenIM.iMManager.userID
+        ? StrRes.you
+        : membersInfo.nickname!;
   }
 
   static String getShowName(String? userID, String? nickname) {
     return userID == OpenIM.iMManager.userID ? StrRes.you : nickname ?? '';
   }
 
-  /// 通知解析
   static String? parseNtf(
     Message message, {
     bool isConversation = false,
@@ -508,7 +492,7 @@ class IMUtils {
           case MessageType.groupCreatedNotification:
             {
               final ntf = GroupNotification.fromJson(map);
-              // a 创建了群聊
+
               final label = StrRes.createGroupNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.opUser!)]);
             }
@@ -516,10 +500,11 @@ class IMUtils {
           case MessageType.groupInfoSetNotification:
             {
               final ntf = GroupNotification.fromJson(map);
-              if (ntf.group?.notification != null && ntf.group!.notification!.isNotEmpty) {
+              if (ntf.group?.notification != null &&
+                  ntf.group!.notification!.isNotEmpty) {
                 return isConversation ? ntf.group!.notification! : null;
               }
-              // a 修改了群资料
+
               final label = StrRes.editGroupInfoNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.opUser!)]);
             }
@@ -527,7 +512,7 @@ class IMUtils {
           case MessageType.memberQuitNotification:
             {
               final ntf = QuitGroupNotification.fromJson(map);
-              // a 退出了群聊
+
               final label = StrRes.quitGroupNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.quitUser!)]);
             }
@@ -535,27 +520,32 @@ class IMUtils {
           case MessageType.memberInvitedNotification:
             {
               final ntf = InvitedJoinGroupNotification.fromJson(map);
-              // a 邀请 b 加入群聊
+
               final label = StrRes.invitedJoinGroupNtf;
-              final b =
-                  ntf.invitedUserList?.map((e) => getGroupMemberShowName(e)).toList().join('、');
-              text = sprintf(label, [getGroupMemberShowName(ntf.opUser!), b ?? '']);
+              final b = ntf.invitedUserList
+                  ?.map((e) => getGroupMemberShowName(e))
+                  .toList()
+                  .join('、');
+              text = sprintf(
+                  label, [getGroupMemberShowName(ntf.opUser!), b ?? '']);
             }
             break;
           case MessageType.memberKickedNotification:
             {
               final ntf = KickedGroupMemeberNotification.fromJson(map);
-              // b 被 a 踢出群聊
+
               final label = StrRes.kickedGroupNtf;
-              final b =
-                  ntf.kickedUserList!.map((e) => getGroupMemberShowName(e)).toList().join('、');
+              final b = ntf.kickedUserList!
+                  .map((e) => getGroupMemberShowName(e))
+                  .toList()
+                  .join('、');
               text = sprintf(label, [b, getGroupMemberShowName(ntf.opUser!)]);
             }
             break;
           case MessageType.memberEnterNotification:
             {
               final ntf = EnterGroupNotification.fromJson(map);
-              // a 加入了群聊
+
               final label = StrRes.joinGroupNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.entrantUser!)]);
             }
@@ -563,7 +553,7 @@ class IMUtils {
           case MessageType.dismissGroupNotification:
             {
               final ntf = GroupNotification.fromJson(map);
-              // a 解散了群聊
+
               final label = StrRes.dismissGroupNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.opUser!)]);
             }
@@ -571,7 +561,7 @@ class IMUtils {
           case MessageType.groupOwnerTransferredNotification:
             {
               final ntf = GroupRightsTransferNoticication.fromJson(map);
-              // a 将群转让给了 b
+
               final label = StrRes.transferredGroupNtf;
               text = sprintf(label, [
                 getGroupMemberShowName(ntf.opUser!),
@@ -582,7 +572,7 @@ class IMUtils {
           case MessageType.groupMemberMutedNotification:
             {
               final ntf = MuteMemberNotification.fromJson(map);
-              // b 被 a 禁言
+
               final label = StrRes.muteMemberNtf;
               final c = ntf.mutedSeconds;
               text = sprintf(label, [
@@ -595,16 +585,18 @@ class IMUtils {
           case MessageType.groupMemberCancelMutedNotification:
             {
               final ntf = MuteMemberNotification.fromJson(map);
-              // b 被 a 取消了禁言
+
               final label = StrRes.muteCancelMemberNtf;
-              text = sprintf(label,
-                  [getGroupMemberShowName(ntf.mutedUser!), getGroupMemberShowName(ntf.opUser!)]);
+              text = sprintf(label, [
+                getGroupMemberShowName(ntf.mutedUser!),
+                getGroupMemberShowName(ntf.opUser!)
+              ]);
             }
             break;
           case MessageType.groupMutedNotification:
             {
               final ntf = MuteMemberNotification.fromJson(map);
-              // a 开起了群禁言
+
               final label = StrRes.muteGroupNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.opUser!)]);
             }
@@ -612,14 +604,13 @@ class IMUtils {
           case MessageType.groupCancelMutedNotification:
             {
               final ntf = MuteMemberNotification.fromJson(map);
-              // a 关闭了群禁言
+
               final label = StrRes.muteCancelGroupNtf;
               text = sprintf(label, [getGroupMemberShowName(ntf.opUser!)]);
             }
             break;
           case MessageType.friendApplicationApprovedNotification:
             {
-              // 你们已成为好友
               text = StrRes.friendAddedNtf;
             }
             break;
@@ -635,7 +626,8 @@ class IMUtils {
             break;
           case MessageType.groupMemberInfoChangedNotification:
             final ntf = GroupMemberInfoChangedNotification.fromJson(map);
-            text = sprintf(StrRes.memberInfoChangedNtf, [getGroupMemberShowName(ntf.opUser!)]);
+            text = sprintf(StrRes.memberInfoChangedNtf,
+                [getGroupMemberShowName(ntf.opUser!)]);
             break;
           case MessageType.groupNoticeChangedNotification:
             if (isConversation) {
@@ -645,7 +637,8 @@ class IMUtils {
             break;
           case MessageType.groupNameChangedNotification:
             final ntf = GroupNotification.fromJson(map);
-            text = sprintf(StrRes.whoModifyGroupName, [getGroupMemberShowName(ntf.opUser!)]);
+            text = sprintf(StrRes.whoModifyGroupName,
+                [getGroupMemberShowName(ntf.opUser!)]);
             break;
         }
       }
@@ -708,14 +701,12 @@ class IMUtils {
           var map = json.decode(message.notificationElem!.detail!);
           var info = RevokedInfo.fromJson(map);
           if (message.isSingleChat) {
-            // 单聊
             if (isSelf) {
               content = '${StrRes.you} ${StrRes.revokeMsg}';
             } else {
               content = '${message.senderNickname} ${StrRes.revokeMsg}';
             }
           } else {
-            // 群聊撤回包含：撤回自己消息，群组或管理员撤回其他人消息
             if (info.revokerID == info.sourceMessageSendID) {
               if (isSelf) {
                 content = '${StrRes.you} ${StrRes.revokeMsg}';
@@ -751,7 +742,8 @@ class IMUtils {
           switch (customType) {
             case CustomMessageType.call:
               var type = map['data']['type'];
-              content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
+              content =
+                  '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
               break;
             case CustomMessageType.emoji:
               content = '[${StrRes.emoji}]';
@@ -761,7 +753,6 @@ class IMUtils {
                 final textElem = TextElem.fromJson(customData['textElem']);
                 content = textElem.content;
               } else if (null != customData['soundElem']) {
-                // final soundElem = SoundElem.fromJson(customData['soundElem']);
                 content = '[${StrRes.voice}]';
               } else {
                 content = '[${StrRes.unsupportedMessage}]';
@@ -791,7 +782,6 @@ class IMUtils {
           }
           break;
         case MessageType.oaNotification:
-          // OA通知
           String detail = message.notificationElem!.detail!;
           var oa = OANotification.fromJson(json.decode(detail));
           content = oa.text!;
@@ -825,7 +815,8 @@ class IMUtils {
                   switch (state) {
                     case 'beHangup':
                     case 'hangup':
-                      content = sprintf(StrRes.callDuration, [seconds2HMS(duration)]);
+                      content =
+                          sprintf(StrRes.callDuration, [seconds2HMS(duration)]);
                       break;
                     case 'cancel':
                       content = StrRes.cancelled;
@@ -888,7 +879,8 @@ class IMUtils {
         var list = message.atTextElem!.atUsersInfo;
         list?.forEach((e) {
           final userID = e.atUserID!;
-          final groupNickname = newMapping[userID] ?? e.groupNickname ?? e.atUserID!;
+          final groupNickname =
+              newMapping[userID] ?? e.groupNickname ?? e.atUserID!;
           mapping[userID] = getAtNickname(userID, groupNickname);
         });
       }
@@ -897,12 +889,6 @@ class IMUtils {
   }
 
   static String getAtNickname(String atUserID, String atNickname) {
-    // String nickname = atNickname;
-    // if (atUserID == OpenIM.iMManager.uid) {
-    //   nickname = StrRes.you;
-    // } else if (atUserID == 'atAllTag') {
-    //   nickname = StrRes.everyone;
-    // }
     return atUserID == 'atAllTag' ? StrRes.everyone : atNickname;
   }
 
@@ -928,27 +914,6 @@ class IMUtils {
         ),
       ));
 
-  /*Get.to(
-        () => ChatPicturePreview(
-          currentIndex: currentIndex,
-          images: urls,
-          // heroTag: message.clientMsgID,
-          heroTag: urls.elementAt(currentIndex),
-          onLongPress: (url) {
-            IMViews.openDownloadSheet(
-              url,
-              onDownload: () => HttpUtil.saveUrlPicture(url),
-            );
-          },
-        ),
-        // opaque: false,
-        transition: Transition.cupertino,
-        // popGesture: true,
-        // fullscreenDialog: true,
-      );*/
-
-  /// 处理消息点击事件
-  /// [messageList] 预览图片消息的时候，可用左右滑动
   static void parseClickEvent(
     Message message, {
     List<Message> messageList = const [],
@@ -967,7 +932,6 @@ class IMUtils {
     return isNotNullEmptyStr(path) ? await File(path!).exists() : false;
   }
 
-  //fileExt 文件后缀名
   static String? getMediaType(final String filePath) {
     var fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
     var fileExt = fileName.substring(fileName.lastIndexOf("."));
@@ -1011,7 +975,6 @@ class IMUtils {
     return null;
   }
 
-  /// 将字节数转化为MB
   static String formatBytes(int bytes) {
     int kb = 1024;
     int mb = kb * 1024;
@@ -1029,61 +992,26 @@ class IMUtils {
     }
   }
 
-  // static IconData fileIcon(String fileName) {
-  //   var mimeType = lookupMimeType(fileName) ?? '';
-  //   if (mimeType == 'application/pdf') {
-  //     return FontAwesomeIcons.solidFilePdf;
-  //   } else if (mimeType == 'application/msword' ||
-  //       mimeType ==
-  //           'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-  //     return FontAwesomeIcons.solidFileWord;
-  //   } else if (mimeType == 'application/vnd.ms-excel' ||
-  //       mimeType ==
-  //           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-  //     return FontAwesomeIcons.solidFileExcel;
-  //   } else if (mimeType == 'application/vnd.ms-powerpoint') {
-  //     return FontAwesomeIcons.solidFilePowerpoint;
-  //   } else if (mimeType.startsWith('audio/')) {
-  //   } else if (mimeType == 'application/zip' ||
-  //       mimeType == 'application/x-rar-compressed') {
-  //     return FontAwesomeIcons.solidFileZipper;
-  //   } else if (mimeType.startsWith('audio/')) {
-  //     return FontAwesomeIcons.solidFileAudio;
-  //   } else if (mimeType.startsWith('video/')) {
-  //     return FontAwesomeIcons.solidFileVideo;
-  //   } else if (mimeType.startsWith('image/')) {
-  //     return FontAwesomeIcons.solidFileImage;
-  //   } else if (mimeType == 'text/plain') {
-  //     return FontAwesomeIcons.solidFileCode;
-  //   }
-  //   return FontAwesomeIcons.solidFileLines;
-  // }
-
   static String fileIcon(String fileName) {
     var mimeType = lookupMimeType(fileName) ?? '';
     if (mimeType == 'application/pdf') {
       return ImageRes.filePdf;
     } else if (mimeType == 'application/msword' ||
-        mimeType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        mimeType ==
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
       return ImageRes.fileWord;
     } else if (mimeType == 'application/vnd.ms-excel' ||
-        mimeType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        mimeType ==
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       return ImageRes.fileExcel;
     } else if (mimeType == 'application/vnd.ms-powerpoint') {
       return ImageRes.filePpt;
     } else if (mimeType.startsWith('audio/')) {
-    } else if (mimeType == 'application/zip' || mimeType == 'application/x-rar-compressed') {
+    } else if (mimeType == 'application/zip' ||
+        mimeType == 'application/x-rar-compressed') {
       return ImageRes.fileZip;
     }
-    /*else if (mimeType.startsWith('audio/')) {
-      return FontAwesomeIcons.solidFileAudio;
-    } else if (mimeType.startsWith('video/')) {
-      return FontAwesomeIcons.solidFileVideo;
-    } else if (mimeType.startsWith('image/')) {
-      return FontAwesomeIcons.solidFileImage;
-    } else if (mimeType == 'text/plain') {
-      return FontAwesomeIcons.solidFileCode;
-    }*/
+
     return ImageRes.fileUnknown;
   }
 
@@ -1098,12 +1026,6 @@ class IMUtils {
       for (final value in values) {
         if (value is UserInfo) {
           checkedList.add(value);
-        } else if (value is DeptMemberInfo) {
-          checkedList.add(UserInfo(
-            userID: value.userID,
-            nickname: value.nickname,
-            faceURL: value.faceURL,
-          ));
         }
       }
       return checkedList;
@@ -1117,8 +1039,6 @@ class IMUtils {
       final values = result.values;
       for (final value in values) {
         if (value is UserInfo) {
-          checkedList.add(value.userID!);
-        } else if (value is DeptMemberInfo) {
           checkedList.add(value.userID!);
         }
       }
@@ -1135,8 +1055,6 @@ class IMUtils {
         checkedMap[item.isSingleChat ? item.userID! : item.groupID!] = item;
       } else if (item is UserInfo) {
         checkedMap[item.userID!] = item;
-      } else if (item is DeptMemberInfo) {
-        checkedMap[item.userID!] = item;
       } else if (item is GroupInfo) {
         checkedMap[item.groupID] = item;
       } else if (item is TagInfo) {
@@ -1146,12 +1064,11 @@ class IMUtils {
     return checkedMap;
   }
 
-  static List<Map<String, String?>> convertCheckedListToForwardObj(List<dynamic> checkedList) {
+  static List<Map<String, String?>> convertCheckedListToForwardObj(
+      List<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
       if (item is UserInfo) {
-        map.add({'nickname': item.nickname, 'faceURL': item.faceURL});
-      } else if (item is DeptMemberInfo) {
         map.add({'nickname': item.nickname, 'faceURL': item.faceURL});
       } else if (item is GroupInfo) {
         map.add({'nickname': item.groupName, 'faceURL': item.faceURL});
@@ -1167,8 +1084,6 @@ class IMUtils {
       return info.userID;
     } else if (info is ConversationInfo) {
       return info.userID;
-    } else if (info is DeptMemberInfo) {
-      return info.userID;
     }
     return null;
   }
@@ -1182,12 +1097,11 @@ class IMUtils {
     return null;
   }
 
-  static List<Map<String, String?>> convertCheckedListToShare(Iterable<dynamic> checkedList) {
+  static List<Map<String, String?>> convertCheckedListToShare(
+      Iterable<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
       if (item is UserInfo) {
-        map.add({'userID': item.userID, 'groupID': null});
-      } else if (item is DeptMemberInfo) {
         map.add({'userID': item.userID, 'groupID': null});
       } else if (item is GroupInfo) {
         map.add({'userID': null, 'groupID': item.groupID});
@@ -1258,10 +1172,11 @@ class IMUtils {
     return isZh ? 'MM月dd日 HH时mm分' : 'MM/dd HH:mm';
   }
 
-  static bool isValidPassword(String password) => passwordRegExp.hasMatch(password);
+  static bool isValidPassword(String password) =>
+      passwordRegExp.hasMatch(password);
 
-  static TextInputFormatter getPasswordFormatter() => FilteringTextInputFormatter.allow(
-        // RegExp(r'[a-zA-Z0-9]'),
+  static TextInputFormatter getPasswordFormatter() =>
+      FilteringTextInputFormatter.allow(
         RegExp(r'[a-zA-Z0-9@#$%^&+=!.]'),
       );
 }

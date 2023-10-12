@@ -51,7 +51,6 @@ class _MaterialControlsState extends State<CustomMaterialControls>
   late VideoPlayerController controller;
   ChewieController? _chewieController;
 
-  // We know that _chewieController is set in didChangeDependencies
   ChewieController get chewieController => _chewieController!;
 
   @override
@@ -145,7 +144,6 @@ class _MaterialControlsState extends State<CustomMaterialControls>
   Widget _buildActionBar() {
     return Positioned(
       top: 0,
-      // right: 0,
       width: 1.sw,
       child: SafeArea(
         child: AnimatedOpacity(
@@ -463,7 +461,6 @@ class _MaterialControlsState extends State<CustomMaterialControls>
   }
 
   Widget _buildSubtitleToggle() {
-    //if don't have subtitle hiden button
     if (chewieController.subtitle?.isEmpty ?? true) {
       return const SizedBox();
     }
@@ -581,7 +578,6 @@ class _MaterialControlsState extends State<CustomMaterialControls>
   void _updateState() {
     if (!mounted) return;
 
-    // display the progress bar indicator only after the buffering delay if it has been set
     if (chewieController.progressIndicatorDelay != null) {
       if (controller.value.isBuffering) {
         _bufferingDisplayTimer ??= Timer(

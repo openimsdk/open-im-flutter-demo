@@ -10,11 +10,8 @@ import '../../../core/controller/im_controller.dart';
 class MyInfoLogic extends GetxController {
   final imLogic = Get.find<IMController>();
 
-  // final userInfo = UserFullInfo.fromJson(OpenIM.iMManager.uInfo.toJson()).obs;
-
   @override
   void onInit() {
-    // imLogic.selfInfoUpdatedSubject.listen(_onChangedSefInfo);
     super.onInit();
   }
 
@@ -116,29 +113,10 @@ class MyInfoLogic extends GetxController {
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
 
-  void _queryMyFullIno() async {
-    // final info = await LoadingView.singleton.wrap(
-    //   asyncFunction: () => Apis.queryMyFullInfo(
-    //       // userID: OpenIM.iMManager.uid,
-    //       ),
-    // );
-    // if (null != info) {
-    //   userInfo.update((val) {
-    //     val?.nickname = _trimNullStr(info.nickname) ?? val.nickname;
-    //     val?.englishName = _trimNullStr(info.englishName) ?? val.englishName;
-    //     val?.faceURL = _trimNullStr(info.faceURL) ?? val.faceURL;
-    //     val?.gender = info.gender ?? val.gender;
-    //     val?.mobile = _trimNullStr(info.mobile) ?? val.mobile;
-    //     val?.telephone = _trimNullStr(info.telephone) ?? val.telephone;
-    //     val?.birth = info.birth ?? val.birth;
-    //     val?.email = _trimNullStr(info.email) ?? val.email;
-    //   });
-    // }
-  }
+  void _queryMyFullIno() async {}
 
   static _trimNullStr(String? value) => IMUtils.emptyStrToNull(value);
 }

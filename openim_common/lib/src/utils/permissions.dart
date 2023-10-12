@@ -13,105 +13,64 @@ class Permissions {
 
   static void camera(Function()? onGranted) async {
     if (await Permission.camera.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.camera.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.camera.isPermanentlyDenied) {}
   }
 
   static void storage(Function()? onGranted) async {
     if (await Permission.storage.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.storage.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.storage.isPermanentlyDenied) {}
   }
 
   static void microphone(Function()? onGranted) async {
     if (await Permission.microphone.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.microphone.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.microphone.isPermanentlyDenied) {}
   }
 
   static void location(Function()? onGranted) async {
     if (await Permission.location.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.location.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.location.isPermanentlyDenied) {}
   }
 
   static void speech(Function()? onGranted) async {
     if (await Permission.speech.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.speech.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.speech.isPermanentlyDenied) {}
   }
 
   static void photos(Function()? onGranted) async {
     if (await Permission.photos.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.photos.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.photos.isPermanentlyDenied) {}
   }
 
   static void notification(Function()? onGranted) async {
     if (await Permission.notification.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.notification.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.notification.isPermanentlyDenied) {}
   }
 
   static void ignoreBatteryOptimizations(Function()? onGranted) async {
     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
-    if (await Permission.ignoreBatteryOptimizations.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-    }
+    if (await Permission.ignoreBatteryOptimizations.isPermanentlyDenied) {}
   }
 
   static void cameraAndMicrophone(Function()? onGranted) async {
     final permissions = [
       Permission.camera,
       Permission.microphone,
-      // Permission.speech,
     ];
     bool isAllGranted = true;
     for (var permission in permissions) {
@@ -125,7 +84,6 @@ class Permissions {
 
   static Future<Map<Permission, PermissionStatus>> request(
       List<Permission> permissions) async {
-    // You can request multiple permissions at once.
     Map<Permission, PermissionStatus> statuses = await permissions.request();
     return statuses;
   }

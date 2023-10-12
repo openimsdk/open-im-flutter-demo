@@ -10,22 +10,20 @@ class ServerConfigLogic extends GetxController {
   var authCtrl = TextEditingController();
   var imApiCtrl = TextEditingController();
   var imWsCtrl = TextEditingController();
-  // var chatTokenCtrl = TextEditingController();
+
   var objectStorageCtrl = TextEditingController();
   var isIP = true.obs;
 
   void switchServer(bool isIp) {
     isIP.value = isIp;
     ipCtrl.clear();
-    // ipCtrl.text = "x.x.x";
-    final hintText = isIP.value ? 'ip' : '域名';
+
+    final hintText = isIP.value ? 'ip' : 'host';
     if (isIP.value) {
-      // chatTokenCtrl.text = 'http://$hintText:10009';
       authCtrl.text = 'http://$hintText:10008';
       imApiCtrl.text = 'http://$hintText:10002';
       imWsCtrl.text = 'ws://$hintText:10001';
     } else {
-      // chatTokenCtrl.text = 'https://$hintText/complete_admin/';
       authCtrl.text = 'https://$hintText/chat/';
       imApiCtrl.text = 'https://$hintText/api/';
       imWsCtrl.text = 'wss://$hintText/msg_gateway';
@@ -35,7 +33,7 @@ class ServerConfigLogic extends GetxController {
   @override
   void onInit() {
     ipCtrl.text = Config.serverIp;
-    // chatTokenCtrl.text = Config.chatTokenUrl;
+
     authCtrl.text = Config.appAuthUrl;
     imApiCtrl.text = Config.imApiUrl;
     imWsCtrl.text = Config.imWsUrl;
@@ -45,12 +43,10 @@ class ServerConfigLogic extends GetxController {
 
     ipCtrl.addListener(() {
       if (isIP.value) {
-        // chatTokenCtrl.text = 'http://${ipCtrl.text}:10009';
         authCtrl.text = 'http://${ipCtrl.text}:10008';
         imApiCtrl.text = 'http://${ipCtrl.text}:10002';
         imWsCtrl.text = 'ws://${ipCtrl.text}:10001';
       } else {
-        // chatTokenCtrl.text = 'https://${ipCtrl.text}/complete_admin/';
         authCtrl.text = 'https://${ipCtrl.text}/chat/';
         imApiCtrl.text = 'https://${ipCtrl.text}/api/';
         imWsCtrl.text = 'wss://${ipCtrl.text}/msg_gateway';
@@ -61,7 +57,6 @@ class ServerConfigLogic extends GetxController {
 
   @override
   void onClose() {
-    // chatTokenCtrl.dispose();
     authCtrl.dispose();
     imApiCtrl.dispose();
     imWsCtrl.dispose();
@@ -76,48 +71,21 @@ class ServerConfigLogic extends GetxController {
 
   void confirm() async {
     if (ipCtrl.text.isEmpty) {
-      IMViews.showToast('请输入服务器地址!');
+      IMViews.showToast('Please enter the server address!');
       return;
     }
     await DataSp.putServerConfig({
       'serverIP': ipCtrl.text,
-      // 'chatTokenUrl': chatTokenCtrl.text,
       'authUrl': authCtrl.text,
       'apiUrl': imApiCtrl.text,
       'wsUrl': imWsCtrl.text,
       'objectStorage': objectStorageCtrl.text,
     });
-    IMViews.showToast('重启app后配置生效');
+    IMViews.showToast(
+        'The configuration will take effect after restarting the app');
   }
 
   void toggleTab(i) {
     index.value = i;
-  }
-
-  void showObjectStorageSheet() {
-    Get.bottomSheet(
-      BottomSheetView(
-        items: [
-          SheetItem(
-            label: 'minio',
-            onTap: () {
-              objectStorageCtrl.text = 'minio';
-            },
-          ),
-          SheetItem(
-            label: 'cos（腾讯云）',
-            onTap: () {
-              objectStorageCtrl.text = 'cos';
-            },
-          ),
-          SheetItem(
-            label: 'oss（阿里云）',
-            onTap: () {
-              objectStorageCtrl.text = 'oss';
-            },
-          ),
-        ],
-      ),
-    );
   }
 }

@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
 enum ProgressType {
-  file, // 文件
-  video, // 视频
-  picture, // 图片
+  file,
+  video,
+  picture,
 }
 
 class ChatProgressView extends StatefulWidget {

@@ -65,7 +65,7 @@ class FriendRequestsPage extends StatelessWidget {
               ],
             ),
           ),
-          if (/*info.isWaitingHandle && */ isISendRequest)
+          if (isISendRequest)
             ImageRes.sendRequests.toImage
               ..width = 20.w
               ..height = 20.h,

@@ -26,7 +26,6 @@ class ChatApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
-          // DefaultCupertinoLocalizations.delegate,
         ],
         fallbackLocale: TranslationService.fallbackLocale,
         locale: locale,
@@ -51,9 +50,5 @@ class InitBinding extends Bindings {
     Get.put<PushController>(PushController());
     Get.put<CacheController>(CacheController());
     Get.put<DownloadController>(DownloadController());
-    // Get.lazyPut(() => JPushController());
-    // Get.lazyPut(() => CallController());
-    // Get.lazyPut(() => IMController());
-    // Get.lazyPut(() => PermissionController());
   }
 }

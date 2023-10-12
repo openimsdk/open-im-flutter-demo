@@ -1,4 +1,3 @@
-/// B端用户信息
 class UserFullInfo {
   String? userID;
   String? password;

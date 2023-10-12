@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openim_common/openim_common.dart';
 
-/// 触摸关闭键盘
 class TouchCloseSoftKeyboard extends StatelessWidget {
   final Widget child;
   final Function? onTouch;
@@ -19,7 +18,6 @@ class TouchCloseSoftKeyboard extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
-        // 触摸收起键盘
         FocusScope.of(context).requestFocus(FocusNode());
         onTouch?.call();
       },

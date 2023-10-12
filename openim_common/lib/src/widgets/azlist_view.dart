@@ -6,14 +6,11 @@ import 'package:openim_common/openim_common.dart';
 class WrapAzListView<T extends ISuspensionBean> extends StatelessWidget {
   const WrapAzListView({
     Key? key,
-    // this.itemScrollController,
     required this.data,
     required this.itemCount,
     required this.itemBuilder,
   }) : super(key: key);
 
-  /// Controller for jumping or scrolling to an item.
-  // final ItemScrollController? itemScrollController;
   final List<T> data;
   final int itemCount;
   final Widget Function(BuildContext context, T data, int index) itemBuilder;
@@ -22,13 +19,11 @@ class WrapAzListView<T extends ISuspensionBean> extends StatelessWidget {
   Widget build(BuildContext context) {
     return AzListView(
       data: data,
-      // physics: AlwaysScrollableScrollPhysics(),
       itemCount: itemCount,
       itemBuilder: (BuildContext context, int index) {
         var model = data[index];
         return itemBuilder(context, model, index);
       },
-      // itemScrollController: itemScrollController,
       susItemBuilder: (BuildContext context, int index) {
         var model = data[index];
         if ('↑' == model.getSuspensionTag()) {
@@ -41,10 +36,6 @@ class WrapAzListView<T extends ISuspensionBean> extends StatelessWidget {
       indexBarOptions: IndexBarOptions(
         needRebuild: true,
         selectTextStyle: Styles.ts_FFFFFF_12sp,
-        // selectItemDecoration: BoxDecoration(
-        //   shape: BoxShape.circle,
-        //   color: Color(0xFF333333),
-        // ),
         indexHintWidth: 96,
         indexHintHeight: 97,
         indexHintDecoration: const BoxDecoration(

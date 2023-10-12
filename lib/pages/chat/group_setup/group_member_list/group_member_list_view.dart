@@ -20,12 +20,6 @@ class GroupMemberListPage extends StatelessWidget {
             title: logic.opType == GroupMemberOpType.del
                 ? StrRes.removeGroupMember
                 : StrRes.groupMember,
-            // right: logic.opType == GroupMemberOpType.view
-            //     ? (ImageRes.moreBlack.toImage
-            //       ..width = 28.w
-            //       ..height = 28.h
-            //       ..onTap = logic.addOrDelMember)
-            //     : null,
           ),
           backgroundColor: Styles.c_F8F9FA,
           body: Column(

@@ -30,7 +30,6 @@ class HomeLogic extends GetxController {
     onScrollToUnreadMessage?.call();
   }
 
-  /// 获取消息未读数
   _getUnreadMsgCount() {
     OpenIM.iMManager.conversationManager.getTotalUnreadMsgCount().then((count) {
       unreadMsgCount.value = int.tryParse(count) ?? 0;
@@ -38,8 +37,6 @@ class HomeLogic extends GetxController {
     });
   }
 
-  /// 获取好友申请未处理数
-  /// 浏览过得不再计入红点
   void getUnhandledFriendApplicationCount() async {
     var i = 0;
     var list = await OpenIM.iMManager.friendshipManager
@@ -56,7 +53,6 @@ class HomeLogic extends GetxController {
     unhandledCount.value = unhandledGroupApplicationCount.value + i;
   }
 
-  /// 获取群申请未处理数
   void getUnhandledGroupApplicationCount() async {
     var i = 0;
     var list = await OpenIM.iMManager.groupManager

@@ -4,14 +4,12 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_common/openim_common.dart';
 
 class Apis {
-  static Options get imTokenOptions => Options(headers: {'token': DataSp.imToken});
+  static Options get imTokenOptions =>
+      Options(headers: {'token': DataSp.imToken});
 
-  static Options get chatTokenOptions => Options(headers: {'token': DataSp.chatToken});
+  static Options get chatTokenOptions =>
+      Options(headers: {'token': DataSp.chatToken});
 
-  // static String get operationID =>
-  //     DateTime.now().millisecondsSinceEpoch.toString();
-
-  /// login
   static Future<LoginCertificate> login({
     String? areaCode,
     String? phoneNumber,
@@ -27,7 +25,6 @@ class Apis {
         'password': null != password ? IMUtils.generateMD5(password) : null,
         'platform': IMUtils.getPlatform(),
         'verifyCode': verificationCode,
-        // 'operationID': operationID,
       });
       return LoginCertificate.fromJson(data!);
     } catch (e, s) {
@@ -36,7 +33,6 @@ class Apis {
     }
   }
 
-  /// register
   static Future<LoginCertificate> register({
     required String nickname,
     required String password,
@@ -54,7 +50,6 @@ class Apis {
         'deviceID': DataSp.getDeviceID(),
         'verifyCode': verificationCode,
         'platform': IMUtils.getPlatform(),
-        // 'operationID': operationID,
         'invitationCode': invitationCode,
         'autoLogin': true,
         'user': {
@@ -75,7 +70,6 @@ class Apis {
     }
   }
 
-  /// reset password
   static Future<dynamic> resetPassword({
     String? areaCode,
     String? phoneNumber,
@@ -92,13 +86,11 @@ class Apis {
         'password': IMUtils.generateMD5(password),
         'verifyCode': verificationCode,
         'platform': IMUtils.getPlatform(),
-        // 'operationID': operationID,
       },
       options: chatTokenOptions,
     );
   }
 
-  /// change password
   static Future<bool> changePassword({
     required String userID,
     required String currentPassword,
@@ -112,7 +104,6 @@ class Apis {
           'currentPassword': IMUtils.generateMD5(currentPassword),
           'newPassword': IMUtils.generateMD5(newPassword),
           'platform': IMUtils.getPlatform(),
-          // 'operationID': operationID,
         },
         options: chatTokenOptions,
       );
@@ -123,7 +114,6 @@ class Apis {
     }
   }
 
-  /// update user info
   static Future<dynamic> updateUserInfo({
     required String userID,
     String? account,
@@ -165,7 +155,6 @@ class Apis {
       data: {
         ...param,
         'platform': IMUtils.getPlatform(),
-        // 'operationID': operationID,
       },
       options: chatTokenOptions,
     );
@@ -182,12 +171,13 @@ class Apis {
         'pagination': {'pageNumber': pageNumber, 'showNumber': showNumber},
         'userIDs': userIDList,
         'platform': IMUtils.getPlatform(),
-        // 'operationID': operationID,
       },
       options: chatTokenOptions,
     );
     if (data['users'] is List) {
-      return (data['users'] as List).map((e) => UserFullInfo.fromJson(e)).toList();
+      return (data['users'] as List)
+          .map((e) => UserFullInfo.fromJson(e))
+          .toList();
     }
     return null;
   }
@@ -202,12 +192,13 @@ class Apis {
       data: {
         'pagination': {'pageNumber': pageNumber, 'showNumber': showNumber},
         'keyword': content,
-        // 'operationID': operationID,
       },
       options: chatTokenOptions,
     );
     if (data['users'] is List) {
-      return (data['users'] as List).map((e) => UserFullInfo.fromJson(e)).toList();
+      return (data['users'] as List)
+          .map((e) => UserFullInfo.fromJson(e))
+          .toList();
     }
     return null;
   }
@@ -231,8 +222,6 @@ class Apis {
     return UserFullInfo.fromJson(data);
   }
 
-  /// 获取验证码
-  /// [usedFor] 1：注册，2：重置密码 3：登录
   static Future<bool> requestVerificationCode({
     String? areaCode,
     String? phoneNumber,
@@ -246,7 +235,6 @@ class Apis {
         "areaCode": areaCode,
         "phoneNumber": phoneNumber,
         "email": email,
-        // 'operationID': operationID,
         'usedFor': usedFor,
         'invitationCode': invitationCode
       },
@@ -259,7 +247,6 @@ class Apis {
     });
   }
 
-  /// 校验验证码
   static Future<dynamic> checkVerificationCode({
     String? areaCode,
     String? phoneNumber,
@@ -276,22 +263,20 @@ class Apis {
         "email": email,
         "verifyCode": verificationCode,
         "usedFor": usedFor,
-        // 'operationID': operationID,
         'invitationCode': invitationCode
       },
     );
   }
 
-  /// 蒲公英更新检测
   static Future<UpgradeInfoV2> checkUpgradeV2() {
     return dio.post<Map<String, dynamic>>(
-      'https://www.pgyer.com/apiv2/app/check',
+      '',
       options: Options(
         contentType: 'application/x-www-form-urlencoded',
       ),
       data: {
-        '_api_key': '6f43600074306e8bc506ed0cd3275e9e',
-        'appKey': 'ce0af80f9da85116455731ac0ebcab37',
+        '_api_key': '',
+        'appKey': '',
       },
     ).then((resp) {
       Map<String, dynamic> map = resp.data!;
@@ -310,7 +295,6 @@ class Apis {
     var resp = await dio.post<Map<String, dynamic>>(
       Urls.userOnlineStatus,
       data: {
-        // 'operationID': operationID,
         "userIDList": uidList,
       },
       options: imTokenOptions,
@@ -325,19 +309,10 @@ class Apis {
     }
   }
 
-  /// discoverPageURL
-  /// ordinaryUserAddFriend,
-  /// bossUserID,
-  /// adminURL ,
-  /// allowSendMsgNotFriend
-  /// needInvitationCodeRegister
-  /// robots
   static Future<Map<String, dynamic>> getClientConfig() async {
     var result = await HttpUtil.post(
       Urls.getClientConfig,
-      data: {
-        // 'operationID': operationID,
-      },
+      data: {},
       options: chatTokenOptions,
       showErrorToast: false,
     );
@@ -353,13 +328,6 @@ class Apis {
     final status = <String, bool>{};
     for (var e in list) {
       if (e.status == 'online') {
-        // IOSPlatformStr     = "IOS"
-        // AndroidPlatformStr = "Android"
-        // WindowsPlatformStr = "Windows"
-        // OSXPlatformStr     = "OSX"
-        // WebPlatformStr     = "Web"
-        // MiniWebPlatformStr = "MiniWeb"
-        // LinuxPlatformStr   = "Linux"
         final pList = <String>[];
         for (var platform in e.detailPlatformStatus!) {
           if (platform.platform == "Android" || platform.platform == "IOS") {
@@ -388,9 +356,7 @@ class Apis {
   static Future<List<UniMPInfo>> queryUniMPList() async {
     var result = await HttpUtil.post(
       Urls.uniMPUrl,
-      data: {
-        // 'operationID': operationID,
-      },
+      data: {},
       options: chatTokenOptions,
       showErrorToast: false,
     );

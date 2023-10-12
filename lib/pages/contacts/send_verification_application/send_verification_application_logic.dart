@@ -53,7 +53,6 @@ class SendVerificationApplicationLogic extends GetxController {
     }
   }
 
-  /// By Invitation = 2 , Search = 3 , QRCode  = 4
   _applyEnterGroup() {
     LoadingView.singleton
         .wrap(

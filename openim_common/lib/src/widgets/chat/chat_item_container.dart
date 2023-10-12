@@ -99,7 +99,6 @@ class ChatItemContainer extends StatelessWidget {
                 nickname: showLeftNickname ? leftNickname : null,
                 timeStr: timeStr,
               ),
-              // timeStr.toText..style = Styles.ts_8E9AB0_12sp,
               4.verticalSpace,
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -124,7 +123,6 @@ class ChatItemContainer extends StatelessWidget {
                 nickname: showRightNickname ? rightNickname : null,
                 timeStr: timeStr,
               ),
-              // timeStr.toText..style = Styles.ts_8E9AB0_12sp,
               4.verticalSpace,
               Row(
                 mainAxisSize: MainAxisSize.min,

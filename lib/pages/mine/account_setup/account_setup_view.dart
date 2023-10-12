@@ -73,8 +73,6 @@ class AccountSetupPage extends StatelessWidget {
                 children: [
                   label.toText..style = textStyle ?? Styles.ts_0C1C33_17sp,
                   const Spacer(),
-                  // if (null != value)
-                  //   value.toText..style = Styles.ts_8E9AB0_17sp,
                   if (showSwitchButton)
                     CupertinoSwitch(
                       value: switchOn,

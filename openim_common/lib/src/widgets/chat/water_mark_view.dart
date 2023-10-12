@@ -103,18 +103,10 @@ class WaterMarkBgView extends StatelessWidget {
           runSpacing: 100.h,
           children: children,
         ),
-        // child: GridView(
-        //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //     crossAxisCount: rowCount,
-        //   ),
-        //   physics: NeverScrollableScrollPhysics(),
-        //   children: children,
-        // ),
       ),
     );
   }
 
-  // Here it is!
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(
         text: TextSpan(text: text, style: style),

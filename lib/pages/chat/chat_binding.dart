@@ -7,6 +7,5 @@ class ChatBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => ChatLogic(), tag: GetTags.chat);
-    // Get.put(ChatLogic(), tag: ChatGetTags.caches.last, permanent: false);
   }
 }

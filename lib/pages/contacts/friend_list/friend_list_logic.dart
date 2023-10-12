@@ -79,14 +79,9 @@ class FriendListLogic extends GetxController {
     final info = ISUserInfo.fromJson(json);
     friendList.add(IMUtils.setAzPinyinAndTag(info) as ISUserInfo);
 
-    // A-Z sort.
     SuspensionUtil.sortListBySuspensionTag(friendList);
 
-    // show sus tag.
     SuspensionUtil.setShowSuspensionStatus(friendList);
-    // IMUtil.convertToAZList(friendList);
-
-    // friendList.refresh();
   }
 
   void viewFriendInfo(ISUserInfo info) => AppNavigator.startUserProfilePane(

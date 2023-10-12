@@ -1,10 +1,3 @@
-/// 使用方法
-/// ```
-/// ImageRes.splashLogo
-///   .toImage
-///   ..width = 55.61.w
-///   ..height = 78.91.h,
-/// ```
 class ImageRes {
   ImageRes._();
 

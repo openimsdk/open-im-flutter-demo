@@ -1,7 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
-/// make hero better when slide out
 class SlideHeroWidget extends StatefulWidget {
   const SlideHeroWidget({
     super.key,
@@ -31,13 +30,11 @@ class _HeroWidgetState extends State<SlideHeroWidget> {
         _rectTween = RectTween(begin: begin, end: end);
         return _rectTween!;
       },
-      // make hero better when slide out
       flightShuttleBuilder: (BuildContext flightContext,
           Animation<double> animation,
           HeroFlightDirection flightDirection,
           BuildContext fromHeroContext,
           BuildContext toHeroContext) {
-        // make hero more smoothly
         final Hero hero = (flightDirection == HeroFlightDirection.pop
             ? fromHeroContext.widget
             : toHeroContext.widget) as Hero;
@@ -56,7 +53,6 @@ class _HeroWidgetState extends State<SlideHeroWidget> {
             builder: (BuildContext buildContext, Widget? child) {
               Widget animatedBuilderChild = hero.child;
 
-              // make hero more smoothly
               animatedBuilderChild = Stack(
                 clipBehavior: Clip.antiAlias,
                 alignment: Alignment.center,
@@ -78,7 +74,6 @@ class _HeroWidgetState extends State<SlideHeroWidget> {
                 ],
               );
 
-              // fix transform when slide out
               if (fixTransform) {
                 final Tween<Offset> offsetTween = Tween<Offset>(
                     begin: Offset.zero,

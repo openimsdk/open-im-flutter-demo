@@ -7,42 +7,32 @@ import 'package:openim_common/openim_common.dart';
 import 'select_contacts_view.dart';
 
 enum SelAction {
-  /// 转发到最近聊天，转发到好友，转发到群里，转发到组织架构
   forward,
 
-  /// 发送名片到该聊天：可从好友，组织架构
   carte,
 
-  /// 创建群聊：可从好友，组织架构
   crateGroup,
 
-  /// 添加群成员：可从好友，组织架构
   addMember,
 
-  /// 推荐：可推荐给最近聊天，好友，群里，组织架构
   recommend,
 
-  /// 创建tag组，可从好友, 组织架构
   createTag,
 
-  /// 朋友圈：可见或部分可见 选择从 好友，群
   whoCanWatch,
 
-  /// 朋友圈：提醒谁看 只有好友
   remindWhoToWatch,
 
-  /// 会议：好友，组织架构，群，最近会话
   meeting,
 
-  /// 下发通知 好友，组织架构，群，标签，最近会话
   notificationIssued,
 }
 
 class SelectContactsLogic extends GetxController
     implements OrganizationMultiSelBridge {
-  final checkedList = <String, dynamic>{}.obs; // 已经选中的
-  final defaultCheckedIDList = <String>{}.obs; // 默认选中，且不能修改
-  List<String>? excludeIDList; // 剔除某些数据
+  final checkedList = <String, dynamic>{}.obs;
+  final defaultCheckedIDList = <String>{}.obs;
+  List<String>? excludeIDList;
   late SelAction action;
   late bool openSelectedSheet;
   String? groupID;
@@ -80,7 +70,6 @@ class SelectContactsLogic extends GetxController
   @override
   bool get isMultiModel => action != SelAction.carte;
 
-  /// 隐藏群
   bool get hiddenGroup =>
       action == SelAction.carte ||
       action == SelAction.crateGroup ||
@@ -88,7 +77,6 @@ class SelectContactsLogic extends GetxController
       action == SelAction.createTag ||
       action == SelAction.remindWhoToWatch;
 
-  /// 隐藏最近会话
   bool get hiddenConversations =>
       action == SelAction.carte ||
       action == SelAction.crateGroup ||
@@ -97,11 +85,9 @@ class SelectContactsLogic extends GetxController
       action == SelAction.whoCanWatch ||
       action == SelAction.remindWhoToWatch;
 
-  /// 隐藏组织架构
   bool get hiddenOrganization =>
       action == SelAction.whoCanWatch || action == SelAction.remindWhoToWatch;
 
-  /// 隐藏标签组
   bool get hiddenTagGroup =>
       action == SelAction.forward ||
       action == SelAction.carte ||
@@ -113,7 +99,6 @@ class SelectContactsLogic extends GetxController
       action == SelAction.remindWhoToWatch ||
       action == SelAction.meeting;
 
-  /// 最近会话
   _queryConversationList() async {
     if (!hiddenConversations) {
       final list = await OpenIM.iMManager.conversationManager
@@ -129,8 +114,6 @@ class SelectContactsLogic extends GetxController
       return e.groupID;
     } else if (e is UserInfo) {
       return e.userID;
-    } else if (e is DeptMemberInfo) {
-      return e.userID;
     } else if (e is TagInfo) {
       return e.tagID;
     } else {
@@ -145,8 +128,6 @@ class SelectContactsLogic extends GetxController
       return e.groupName;
     } else if (e is UserInfo) {
       return e.nickname;
-    } else if (e is DeptMemberInfo) {
-      return e.nickname;
     } else if (e is TagInfo) {
       return e.tagName;
     } else {
@@ -160,8 +141,6 @@ class SelectContactsLogic extends GetxController
     } else if (e is GroupInfo) {
       return e.faceURL;
     } else if (e is UserInfo) {
-      return e.faceURL;
-    } else if (e is DeptMemberInfo) {
       return e.faceURL;
     } else {
       return null;
@@ -197,7 +176,6 @@ class SelectContactsLogic extends GetxController
     }
   }
 
-  /// 邀请群成员，标记已入群的人员
   @override
   updateDefaultCheckedList(List<String> userIDList) async {
     if (groupID != null) {
@@ -230,12 +208,7 @@ class SelectContactsLogic extends GetxController
     }
   }
 
-  selectFromOrganization() async {
-    // final result = await ONavigator.startSelectContactsFromOrganization();
-    // if (null != result) {
-    //   Get.back(result: result);
-    // }
-  }
+  selectFromOrganization() async {}
 
   void selectFromSearch() async {
     final result = await AppNavigator.startSelectContactsFromSearch();
@@ -244,12 +217,7 @@ class SelectContactsLogic extends GetxController
     }
   }
 
-  selectTagGroup() async {
-    // final result = await await AppNavigator.startSelectContactsFromTag();
-    // if (null != result) {
-    //   Get.back(result: result);
-    // }
-  }
+  selectTagGroup() async {}
 
   confirmSelectedList() async {
     if (action == SelAction.forward || action == SelAction.recommend) {

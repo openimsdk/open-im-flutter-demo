@@ -32,18 +32,14 @@ class IMViews {
         builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            // body = Text("pull up load");
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.loading) {
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            // body = Text("Load Failed!Click retry!");
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.canLoading) {
-            // body = Text("release to load more");
             body = const CupertinoActivityIndicator();
           } else {
-            // body = Text("No more Data");
             body = const SizedBox();
           }
           return SizedBox(
@@ -75,7 +71,6 @@ class IMViews {
           ),
         ],
       ),
-      // barrierColor: Colors.transparent,
     );
   }
 
@@ -99,7 +94,6 @@ class IMViews {
           ),
         ],
       ),
-      // barrierColor: Colors.transparent,
     );
   }
 
@@ -168,8 +162,6 @@ class IMViews {
     if (crop && !path.endsWith('.gif')) {
       cropFile = await IMUtils.uCrop(path);
       if (cropFile == null) {
-        // 放弃选择
-        // return {'path': cropFile?.path ?? path, 'url': url};
         return {'path': null, 'url': null};
       }
     }
@@ -178,10 +170,7 @@ class IMViews {
       dynamic result;
       if (null != cropFile) {
         Logger.print('-----------crop path: ${cropFile.path}');
-        // url = await HttpUtil.uploadImageForMinio(
-        //   path: cropFile.path,
-        //   compress: false,
-        // );
+
         result = await LoadingView.singleton.wrap(
           asyncFunction: () => OpenIM.iMManager.uploadFile(
             id: putID,
@@ -191,10 +180,7 @@ class IMViews {
         );
       } else {
         Logger.print('-----------source path: $path');
-        // url = await HttpUtil.uploadImageForMinio(
-        //   path: path,
-        //   compress: false,
-        // );
+
         result = await LoadingView.singleton.wrap(
           asyncFunction: () => OpenIM.iMManager.uploadFile(
             id: putID,
@@ -265,21 +251,6 @@ class IMViews {
       return TextSpan(text: weekday, style: Styles.ts_0C1C33_17sp_medium);
     }
 
-    // if (DateUtil.yearIsEqualByMs(ms, locTimeMs)) {
-    //   final date = IMUtils.formatDateMs(ms, format: 'MM月dd');
-    //   final one = date.split('月')[0];
-    //   final two = date.split('月')[1];
-    //   return TextSpan(
-    //     text: two,
-    //     style: Styles.ts_0C1C33_17sp_medium,
-    //     children: [
-    //       TextSpan(
-    //         text: '\n$one${languageCode == 'zh' ? '月' : ''}',
-    //         style: Styles.ts_0C1C33_12sp_medium,
-    //       ),
-    //     ],
-    //   );
-    // }
     final date = IMUtils.formatDateMs(ms, format: 'MM月dd');
     final one = date.split('月')[0];
     final two = date.split('月')[1];
@@ -305,16 +276,12 @@ class IMViews {
         backgroundColor: Colors.white,
         textStyle: TextStyle(fontSize: 16.sp, color: Colors.blueGrey),
         bottomSheetHeight: 500.h,
-        // Optional. Country list modal height
-        //Optional. Sets the border radius for the bottomsheet.
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(8.0.r),
           topRight: Radius.circular(8.0.r),
         ),
-        //Optional. Styles the search field.
         inputDecoration: InputDecoration(
           labelText: StrRes.search,
-          // hintText: 'Start typing to search',
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderSide: BorderSide(

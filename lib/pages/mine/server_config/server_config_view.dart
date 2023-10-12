@@ -56,8 +56,8 @@ class ServerConfigPage extends StatelessWidget {
     return TouchCloseSoftKeyboard(
       child: Scaffold(
         appBar: TitleBar.back(
-          title: '服务器配置',
-          right: '保存'.toText
+          title: 'Server Configuration',
+          right: 'Save'.toText
             ..style = Styles.ts_0C1C33_17sp
             ..onTap = logic.confirm,
         ),
@@ -65,59 +65,38 @@ class ServerConfigPage extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              '修改配置后，保存并重启才能生效'.toText
+              'After modifying the configuration, you need to save and restart for the changes to take effect'
+                  .toText
                 ..style = const TextStyle(color: Colors.red),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     onPressed: () => logic.switchServer(true),
-                    child: "切换为IP".toText,
+                    child: "Switch to IP".toText,
                   ),
                   ElevatedButton(
                     onPressed: () => logic.switchServer(false),
-                    child: "切换为域名".toText,
+                    child: "Switch to Domain".toText,
                   ),
                 ],
               ),
               Obx(() => _buildItemField(
-                    label: '请输入服务器地址',
-                    hintText: logic.isIP.value ? 'IP' : '域名',
-                    // hintText: Config.serverIp(),
+                    label: 'Enter the server address',
+                    hintText: logic.isIP.value ? 'IP' : 'Domain',
                     controller: logic.ipCtrl,
                   )),
               _buildItemField(
-                label: '登录注册服务器地址',
-                // hintText: Config.appAuthUrl(),
+                label: 'Login/Register Server Address',
                 controller: logic.authCtrl,
               ),
               _buildItemField(
-                label: 'IM API服务器地址',
-                // hintText: Config.imApiUrl(),
+                label: 'IM API Server Address',
                 controller: logic.imApiCtrl,
               ),
               _buildItemField(
-                label: 'IM WS地址',
-                // hintText: Config.imWsUrl(),
+                label: 'IM WebSocket Address',
                 controller: logic.imWsCtrl,
-              ),
-              // Visibility(
-              //   visible: false,
-              //   child: _buildItemField(
-              //     label: '商业版管理后台',
-              //     // hintText: Config.imWsUrl(),
-              //     controller: logic.chatTokenCtrl,
-              //   ),
-              // ),
-              GestureDetector(
-                onTap: logic.showObjectStorageSheet,
-                behavior: HitTestBehavior.translucent,
-                child: _buildItemField(
-                  label: '设置图片存储',
-                  hintText: '',
-                  controller: logic.objectStorageCtrl,
-                  enabled: false,
-                ),
               ),
             ],
           ),

@@ -38,11 +38,6 @@ class VerifyPhonePage extends StatelessWidget {
               animationType: AnimationType.fade,
               validator: (v) {
                 return null;
-                // if (v!.length < 3) {
-                //   return "I'm from validator";
-                // } else {
-                //   return null;
-                // }
               },
               pinTheme: PinTheme(
                 shape: PinCodeFieldShape.box,
@@ -57,13 +52,10 @@ class VerifyPhonePage extends StatelessWidget {
                 borderWidth: 1,
                 fieldHeight: 42.w,
                 fieldWidth: 42.h,
-                // activeFillColor: Colors.white,
               ),
               cursorColor: Colors.black,
               animationDuration: 300.milliseconds,
-              // enableActiveFill: true,
               errorAnimationController: logic.codeErrorCtrl,
-              // controller: logic.codeEditCtrl,
               keyboardType: TextInputType.number,
               onCompleted: (v) {
                 logic.completed(v);
@@ -71,15 +63,8 @@ class VerifyPhonePage extends StatelessWidget {
               onSubmitted: (v) {
                 logic.completed(v);
               },
-              // onTap: () {
-              //   print("Pressed");
-              // },
-              onChanged: (v) {
-                // logic.onCompleted(v);
-              },
+              onChanged: (v) {},
               beforeTextPaste: (text) {
-                //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                //but you can show anything you want here, like your pop up saying wrong paste format or etc
                 return true;
               },
             ),

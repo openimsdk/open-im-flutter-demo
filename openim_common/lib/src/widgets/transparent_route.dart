@@ -38,7 +38,6 @@ class TransparentRoute extends PageRoute {
   }
 }
 
-/// Transparent Page Route
 class TransparentPageRoute<T> extends PageRouteBuilder<T> {
   TransparentPageRoute({
     RouteSettings? settings,

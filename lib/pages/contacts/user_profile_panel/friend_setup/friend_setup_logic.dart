@@ -26,7 +26,6 @@ class FriendSetupLogic extends GetxController {
     }
   }
 
-  /// 加入黑名单
   void addBlacklist() async {
     var confirm =
         await Get.dialog(CustomDialog(title: StrRes.areYouSureAddBlacklist));
@@ -40,7 +39,6 @@ class FriendSetupLogic extends GetxController {
     }
   }
 
-  /// 从黑名单移除
   void removeBlacklist() async {
     await OpenIM.iMManager.friendshipManager.removeBlacklist(
       userID: userProfilesLogic.userInfo.value.userID!,
@@ -50,7 +48,6 @@ class FriendSetupLogic extends GetxController {
     });
   }
 
-  /// 解除好友关系
   void deleteFromFriendList() async {
     var confirm = await Get.dialog(CustomDialog(
       title: StrRes.areYouSureDelFriend,
@@ -64,25 +61,21 @@ class FriendSetupLogic extends GetxController {
         userProfilesLogic.userInfo.update((val) {
           val?.isFriendship = false;
         });
-        // final conversationID = await OpenIM.iMManager.conversationManager
-        //     .getConversationIDBySessionType(
-        //   sourceID: userInfo.value.userID!,
-        //   sessionType: ConversationType.single,
-        // );
+
         final userIDList = [
           userProfilesLogic.userInfo.value.userID,
           OpenIM.iMManager.userID,
         ];
         userIDList.sort();
         final conversationID = 'si_${userIDList.join('_')}';
-        // 删除会话
+
         await OpenIM.iMManager.conversationManager
             .deleteConversationAndDeleteAllMsg(conversationID: conversationID);
-        // 删除会话列表数据
+
         conversationLogic.list
             .removeWhere((e) => e.conversationID == conversationID);
       });
-      // 如果从聊天窗口查看用户资料
+
       if (userProfilesLogic.offAllWhenDelFriend == true) {
         AppNavigator.startBackMain();
       } else {

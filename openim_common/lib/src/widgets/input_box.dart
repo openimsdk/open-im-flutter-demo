@@ -318,10 +318,8 @@ class _InputBoxState extends State<InputBox> {
 }
 
 class VerifyCodedButton extends StatefulWidget {
-  /// 倒计时的秒数，默认60秒。
   final int seconds;
 
-  /// 用户点击时的回调函数。
   final Future<bool> Function()? onTapCallback;
 
   const VerifyCodedButton({

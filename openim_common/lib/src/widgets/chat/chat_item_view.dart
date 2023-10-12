@@ -66,7 +66,6 @@ class ChatItemView extends StatefulWidget {
     this.itemViewBuilder,
     this.customTypeBuilder,
     this.notificationTypeBuilder,
-    // required this.clickSubject,
     this.sendStatusSubject,
     this.sendProgressSubject,
     this.timelineStr,
@@ -76,7 +75,6 @@ class ChatItemView extends StatefulWidget {
     this.rightFaceUrl,
     required this.message,
     this.textScaleFactor = 1.0,
-    // required this.isBubbleMsg,
     this.ignorePointer = false,
     this.showLeftNickname = true,
     this.showRightNickname = false,
@@ -104,15 +102,12 @@ class ChatItemView extends StatefulWidget {
   final String? rightFaceUrl;
   final Message message;
 
-  /// 文字缩放系数
   final double textScaleFactor;
 
-  /// 禁止pop菜单 ，如禁言的时候
   final bool ignorePointer;
   final bool showLeftNickname;
   final bool showRightNickname;
 
-  ///
   final Color? highlightColor;
   final Map<String, String> allAtMap;
   final List<MatchPattern> patterns;
@@ -123,7 +118,6 @@ class ChatItemView extends StatefulWidget {
   final Function(String? text)? onVisibleTrulyText;
   final Function()? onClickItemView;
 
-  /// 失败重发
   final Function()? onFailedToResend;
 
   @override
@@ -146,14 +140,8 @@ class _ChatItemViewState extends State<ChatItemView> {
   @override
   void initState() {
     final keyboardVisibilityCtrl = KeyboardVisibilityController();
-    // Query
-    // Logger.print(
-    //     'Keyboard visibility direct query: ${keyboardVisibilityCtrl.isVisible}');
 
-    // Subscribe
-    _keyboardSubs = keyboardVisibilityCtrl.onChange.listen((bool visible) {
-      // Logger.print('Keyboard visibility update. Is visible: $visible');
-    });
+    _keyboardSubs = keyboardVisibilityCtrl.onChange.listen((bool visible) {});
 
     super.initState();
   }
@@ -167,10 +155,8 @@ class _ChatItemViewState extends State<ChatItemView> {
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Center(child: _child),
       ),
-      onVisibilityLost: () {
-      },
-      onVisibilityGained: () {
-      },
+      onVisibilityLost: () {},
+      onVisibilityGained: () {},
     );
   }
 
@@ -182,13 +168,7 @@ class _ChatItemViewState extends State<ChatItemView> {
     String? senderNickname;
     String? senderFaceURL;
     bool isBubbleBg = false;
-    /* if (_message.isCallType) {
-    } else if (_message.isMeetingType) {
-    } else if (_message.isDeletedByFriendType) {
-    } else if (_message.isBlockedByFriendType) {
-    } else if (_message.isEmojiType) {
-    } else if (_message.isTagType) {
-    }*/
+
     if (_message.isTextType) {
       isBubbleBg = true;
       child = ChatText(
@@ -236,19 +216,6 @@ class _ChatItemViewState extends State<ChatItemView> {
           child: ChatHintTextView(message: _message),
         );
       }
-      // final content = _message.noticeContent;
-      // final isNotice = IMUtils.isNotNullEmptyStr(content);
-      // child = widget.notificationTypeBuilder?.call(context, _message);
-      // if (null == child) {
-      //   if (isNotice) {
-      //     child = ChatNoticeView(isISend: _isISend, content: content!);
-      //   } else {
-      //     return ConstrainedBox(
-      //       constraints: BoxConstraints(maxWidth: maxWidth),
-      //       child: ChatHintTextView(message: _message),
-      //     );
-      //   }
-      // }
     }
     senderNickname ??= widget.leftNickname ?? _message.senderNickname;
     senderFaceURL ??= widget.leftFaceUrl ?? _message.senderFaceUrl;

@@ -162,7 +162,6 @@ class GroupSetupPage extends StatelessWidget {
                             ),
                             if (logic.groupInfo.value.ownerUserID ==
                                 info.userID)
-                              // if (info.roleLevel == GroupRoleLevel.owner)
                               Positioned(
                                 bottom: 0.h,
                                 child: Container(

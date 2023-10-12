@@ -90,7 +90,6 @@ import '../pages/splash/splash_view.dart';
 part 'app_routes.dart';
 
 class AppPages {
-  /// 左滑关闭页面用于android
   static _pageBuilder({
     required String name,
     required GetPageBuilder page,
@@ -323,8 +322,5 @@ class AppPages {
       page: () => SetSelfInfoPage(),
       binding: SetSelfInfoBinding(),
     ),
-    // ...OPages.pages, // 组织架构
-    // ...WPages.pages, // 工作圈
-    // ...MPages.pages, //
   ];
 }

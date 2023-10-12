@@ -11,7 +11,6 @@ class ProcessFriendRequestsLogic extends GetxController {
     super.onInit();
   }
 
-  /// 接受好友申请
   void acceptFriendApplication() async {
     LoadingView.singleton
         .wrap(
@@ -21,7 +20,6 @@ class ProcessFriendRequestsLogic extends GetxController {
         .catchError((_) => IMViews.showToast(StrRes.addFailed));
   }
 
-  /// 拒绝好友申请
   void refuseFriendApplication() async {
     LoadingView.singleton
         .wrap(

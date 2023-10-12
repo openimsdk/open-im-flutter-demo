@@ -49,20 +49,16 @@ class UpgradeManger {
           onProgress: (int count, int total) {
             subject.add(count / total);
             notificationService.createNotification(
-                100, ((count / total) * 100).toInt(), 0, '下载中');
+                100, ((count / total) * 100).toInt(), 0, 'Downloading');
             if (count == total) {
               AppInstaller.installApk(path);
             }
           },
         ).catchError((s, t) {
-          notificationService.createNotification(100, 0, 0, '下载失败');
+          notificationService.createNotification(100, 0, 0, 'Download failed');
         });
       });
-    } else {
-      // if (await canLaunch(upgradeInfo!.url!)) {
-      //   launch(upgradeInfo!.url!);
-      // }
-    }
+    } else {}
   }
 
   void checkUpdate() async {
@@ -73,7 +69,7 @@ class UpgradeManger {
     }).then((value) {
       upgradeInfoV2 = value;
       if (!canUpdate) {
-        IMViews.showToast('已是最新版本');
+        IMViews.showToast('Already the latest version');
         return;
       }
       Get.dialog(
@@ -88,7 +84,6 @@ class UpgradeManger {
     });
   }
 
-  /// 自动检测更新
   autoCheckVersionUpgrade() async {
     if (!Platform.isAndroid) return;
     if (isShowUpgradeDialog || isNowIgnoreUpdate) return;
@@ -123,7 +118,6 @@ class UpgradeManger {
 }
 
 class NotificationService {
-  // Handle displaying of notifications.
   static final NotificationService _notificationService =
       NotificationService._internal();
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -148,7 +142,6 @@ class NotificationService {
   }
 
   void createNotification(int count, int i, int id, String status) {
-    //show the notifications.
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'progress channel', 'progress channel',
         channelDescription: 'progress channel description',

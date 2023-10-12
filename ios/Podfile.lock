@@ -4,7 +4,6 @@ PODS:
   - ATBarSDK (1.4.1)
   - audio_session (0.0.1):
     - Flutter
-  - Bugly (2.5.93)
   - camera_avfoundation (0.0.1):
     - Flutter
   - device_info_plus (0.0.1):
@@ -48,9 +47,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_app_badger (1.3.0):
     - Flutter
-  - flutter_bugly (0.0.1):
-    - Bugly
-    - Flutter
   - flutter_image_compress (1.0.0):
     - Flutter
     - Mantle
@@ -71,16 +67,16 @@ PODS:
     - Flutter
   - flutter_openim_sdk (0.0.1):
     - Flutter
-    - OpenIMSDKCore (= 3.1.0)
+    - OpenIMSDKCore (= 3.3.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
   - getuiflut (0.0.1):
     - Flutter
     - GTSDK
-  - GTCommonSDK (3.0.7.0):
+  - GTCommonSDK (3.0.8.0):
     - ZXSDK
-  - GTSDK (3.0.1.0):
+  - GTSDK (3.0.2.0):
     - GTCommonSDK (>= 3.0.3.0)
   - image_cropper (0.0.4):
     - Flutter
@@ -91,17 +87,17 @@ PODS:
     - Flutter
   - just_audio (0.0.1):
     - Flutter
-  - libwebp (1.3.1):
-    - libwebp/demux (= 1.3.1)
-    - libwebp/mux (= 1.3.1)
-    - libwebp/sharpyuv (= 1.3.1)
-    - libwebp/webp (= 1.3.1)
-  - libwebp/demux (1.3.1):
+  - libwebp (1.3.2):
+    - libwebp/demux (= 1.3.2)
+    - libwebp/mux (= 1.3.2)
+    - libwebp/sharpyuv (= 1.3.2)
+    - libwebp/webp (= 1.3.2)
+  - libwebp/demux (1.3.2):
     - libwebp/webp
-  - libwebp/mux (1.3.1):
+  - libwebp/mux (1.3.2):
     - libwebp/demux
-  - libwebp/sharpyuv (1.3.1)
-  - libwebp/webp (1.3.1):
+  - libwebp/sharpyuv (1.3.2)
+  - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
   - local_auth_ios (0.0.1):
     - Flutter
@@ -114,7 +110,7 @@ PODS:
   - Mute (0.6.1)
   - open_filex (0.0.2):
     - Flutter
-  - OpenIMSDKCore (3.1.0)
+  - OpenIMSDKCore (3.3.0)
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter
@@ -135,10 +131,10 @@ PODS:
     - ZXingObjC (~> 3.6.5)
   - record (0.0.1):
     - Flutter
-  - SDWebImage (5.17.0):
-    - SDWebImage/Core (= 5.17.0)
-  - SDWebImage/Core (5.17.0)
-  - SDWebImageWebPCoder (0.13.0):
+  - SDWebImage (5.18.2):
+    - SDWebImage/Core (= 5.18.2)
+  - SDWebImage/Core (5.18.2)
+  - SDWebImageWebPCoder (0.14.0):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
   - shared_preferences_foundation (0.0.1):
@@ -164,9 +160,9 @@ PODS:
     - Flutter
   - wakelock (0.0.1):
     - Flutter
-  - ZXingObjC (3.6.5):
-    - ZXingObjC/All (= 3.6.5)
-  - ZXingObjC/All (3.6.5)
+  - ZXingObjC (3.6.9):
+    - ZXingObjC/All (= 3.6.9)
+  - ZXingObjC/All (3.6.9)
   - ZXSDK (3.2.4)
 
 DEPENDENCIES:
@@ -178,7 +174,6 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
-  - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
@@ -213,7 +208,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - ATBarSDK
-    - Bugly
     - DKImagePickerController
     - DKPhotoGallery
     - FMDB
@@ -249,8 +243,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_app_badger:
     :path: ".symlinks/plugins/flutter_app_badger/ios"
-  flutter_bugly:
-    :path: ".symlinks/plugins/flutter_bugly/ios"
   flutter_image_compress:
     :path: ".symlinks/plugins/flutter_image_compress/ios"
   flutter_inappwebview:
@@ -316,7 +308,6 @@ SPEC CHECKSUMS:
   app_installer: 4301996bd8f3c6f75776416b8885a6d92928306f
   ATBarSDK: b6aa2b6a120ac7d6b1ff041bd60b9edde6bb17c4
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  Bugly: b8715e6ec4004b7f7fbffab0643ba80545aee3da
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
@@ -325,29 +316,28 @@ SPEC CHECKSUMS:
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
-  flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   flutter_image_compress: 5a5e9aee05b6553048b8df1c3bc456d0afaac433
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
-  flutter_openim_sdk: d8d55038882429c3d2f5ee09e000329c22f94066
+  flutter_openim_sdk: d8e4eba0a37b735930733d972aa72bc2d21031a9
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   getuiflut: 8628ba2b64a738a847a07d2b67e0ac305778e2ee
-  GTCommonSDK: 90605de740eea20d77a608cdbb1cee77b2496add
-  GTSDK: c7c4af742d6910d23d9e8302d26af94aa6948cd8
+  GTCommonSDK: 5ff368025f543cf923e2bebafe986f1be3fa995e
+  GTSDK: 1a8065ef2f2c2facf744c70b4406b2a38299ac66
   image_cropper: 60c2789d1f1a78c873235d4319ca0c34a69f2d98
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
-  libwebp: 33dc822fbbf4503668d09f7885bbfedc76c45e96
+  libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   Mute: 20135a96076f140cc82bfc8b810e2d6150d8ec7e
   open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
-  OpenIMSDKCore: 4fc3ea821afce0aeb7f759f8ea15c9efd2859156
+  OpenIMSDKCore: eb8af354dd72c47384d79c6c3b82ca09c05cc527
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
@@ -356,8 +346,8 @@ SPEC CHECKSUMS:
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   r_scan: 5672d9b68f8cece3835895a6aaab12047acf65bd
   record: cae05d8dd3cdb1dea3511b20e5a5811a1ae00d0d
-  SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
-  SDWebImageWebPCoder: af09429398d99d524cae2fe00f6f0f6e491ed102
+  SDWebImage: c0de394d7cf7f9838aed1fd6bb6037654a4572e4
+  SDWebImageWebPCoder: 3027af94522d94df79c21c070894c8a2128927ff
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sound_mode: ef0072f20e7306c1c371984a443156e39be092d5
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
@@ -369,9 +359,9 @@ SPEC CHECKSUMS:
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
   video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
+  ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
   ZXSDK: 145a89f90f11e18e4fe62fe43175a60ade342ba8
 
-PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+PODFILE CHECKSUM: 0a9fc7618d969e885927d9b1f3e706df470472a7
 
 COCOAPODS: 1.12.1

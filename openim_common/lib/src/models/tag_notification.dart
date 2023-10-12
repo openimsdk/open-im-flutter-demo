@@ -51,7 +51,7 @@ class TagNotification {
         final customElem = CustomElem.fromJson(jsonDecode(content!));
         if (null != customElem.data) {
           final json = jsonDecode(customElem.data!);
-          // final customType = json['customType'];
+
           return TagNotificationContent.fromJson(json['data']);
         }
       } catch (e, s) {

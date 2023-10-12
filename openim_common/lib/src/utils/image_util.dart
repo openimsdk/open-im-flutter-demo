@@ -61,7 +61,7 @@ class ImageUtil {
                         ? loadingProgress!.cumulativeBytesLoaded /
                             loadingProgress.expectedTotalBytes!
                         : null;
-                // CupertinoActivityIndicator()
+
                 return SizedBox(
                   width: 15.0,
                   height: 15.0,
@@ -82,7 +82,6 @@ class ImageUtil {
             case LoadState.completed:
               return null;
             case LoadState.failed:
-              // remove memory cached
               state.imageProvider.evict();
               return errorWidget ??
                   (ImageRes.pictureError.toImage
@@ -125,7 +124,7 @@ class ImageUtil {
                         ? loadingProgress!.cumulativeBytesLoaded /
                             loadingProgress.expectedTotalBytes!
                         : null;
-                // CupertinoActivityIndicator()
+
                 return SizedBox(
                   width: 15.0,
                   height: 15.0,
@@ -142,7 +141,6 @@ class ImageUtil {
             case LoadState.completed:
               return null;
             case LoadState.failed:
-              // remove memory cached
               state.imageProvider.evict();
               return errorWidget ?? ImageRes.pictureError.toImage;
           }

@@ -41,7 +41,6 @@ class AppNavigator {
 
   static startOANtfList({required ConversationInfo info}) {}
 
-  /// 聊天页
   static Future<T?>? startChat<T>({
     required ConversationInfo conversationInfo,
     bool offUntilHome = true,
@@ -374,7 +373,6 @@ class AppNavigator {
         'invitationCode': invitationCode
       });
 
-  /// [usedFor] 1：注册，2：重置密码
   static void startSetPassword({
     required String phoneNumber,
     required String areaCode,

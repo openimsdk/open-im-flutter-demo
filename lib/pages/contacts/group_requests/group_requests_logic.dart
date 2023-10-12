@@ -23,7 +23,6 @@ class GroupRequestsLogic extends GetxController {
 
   @override
   void onInit() {
-    // imLogic.groupApplicationChangedSubject.listen((info) {});
     super.onInit();
   }
 
@@ -63,7 +62,7 @@ class GroupRequestsLogic extends GetxController {
 
       var map = <String, List<String>>{};
       var inviterList = <String>[];
-      // 统计未查看的群申请数量
+
       var haveReadList = DataSp.getHaveReadUnHandleGroupApplication();
       haveReadList ??= <String>[];
       for (var a in list[0]) {
@@ -75,7 +74,7 @@ class GroupRequestsLogic extends GetxController {
       DataSp.putHaveReadUnHandleGroupApplication(haveReadList);
 
       var groupIDList = <String>[];
-      // 记录邀请者id
+
       for (var a in allList) {
         if (isInvite(a)) {
           if (!map.containsKey(a.groupID)) {
@@ -91,19 +90,12 @@ class GroupRequestsLogic extends GetxController {
         }
       }
 
-      // 查询邀请者的群成员信息
       if (map.isNotEmpty) {
         await Future.wait(map.entries.map((e) => OpenIM.iMManager.groupManager
             .getGroupMembersInfo(groupID: e.key, userIDList: e.value)
             .then((list) => memberList.assignAll(list))));
-        // await Future.forEach<MapEntry>(map.entries, (element) {
-        //   OpenIM.iMManager.groupManager
-        //       .getGroupMembersInfo(groupId: element.key, uidList: element.value)
-        //       .then((list) => memberList.assignAll(list));
-        // });
       }
 
-      // 查询邀请者的用户信息
       if (inviterList.isNotEmpty) {
         await OpenIM.iMManager.userManager
             .getUsersInfo(userIDList: inviterList)
@@ -113,14 +105,6 @@ class GroupRequestsLogic extends GetxController {
       return allList;
     });
 
-    // list.sort((a, b) {
-    //   if (a.createTime! > b.createTime!) {
-    //     return -1;
-    //   } else if (a.createTime! < b.createTime!) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
     this.list.assignAll(list);
   }
 
@@ -155,13 +139,5 @@ class GroupRequestsLogic extends GetxController {
       info.handleResult = result;
       list.refresh();
     }
-    // var result = await AppNavigator.startHandleGroupApplication(
-    //   groupList[info.groupID]!,
-    //   info,
-    // );
-    // if (result is int) {
-    //   info.handleResult = result;
-    //   list.refresh();
-    // }
   }
 }

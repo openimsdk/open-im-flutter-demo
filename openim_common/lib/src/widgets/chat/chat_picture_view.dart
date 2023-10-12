@@ -24,7 +24,6 @@ class _ChatPictureViewState extends State<ChatPictureView> {
   String? _sourcePath;
   String? _sourceUrl;
 
-  // String? _snapshotPath;
   String? _snapshotUrl;
   late double _trulyWidth;
   late double _trulyHeight;
@@ -52,7 +51,7 @@ class _ChatPictureViewState extends State<ChatPictureView> {
     }
 
     final height = pictureWidth * 1.sh / 1.sw;
-    // 超长图显示为方形
+
     if (_trulyHeight > 2 * height) {
       _trulyHeight = _trulyWidth;
     }
@@ -101,12 +100,6 @@ class _ChatPictureViewState extends State<ChatPictureView> {
             width: _trulyWidth,
             fit: BoxFit.fitWidth,
           ),
-          // Image(
-          //   image: FileImage(File(path)),
-          //   height: _trulyHeight,
-          //   width: _trulyWidth,
-          //   fit: BoxFit.fitWidth,
-          // ),
           ChatProgressView(
             height: _trulyHeight,
             width: _trulyWidth,

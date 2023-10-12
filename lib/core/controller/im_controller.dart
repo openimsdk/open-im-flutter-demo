@@ -13,20 +13,20 @@ class IMController extends GetxController with IMCallback {
   @override
   void onClose() {
     super.close();
-    // OpenIM.iMManager.unInitSDK();
+
     super.onClose();
   }
 
   @override
   void onInit() async {
     super.onInit();
-    // Initialize SDK
+
     WidgetsBinding.instance
         .addPostFrameCallback((timeStamp) => _initialOpenIM());
   }
 
   void _initialOpenIM() async {
-    final initialized =   await OpenIM.iMManager.initSDK(
+    final initialized = await OpenIM.iMManager.initSDK(
       platformID: IMUtils.getPlatform(),
       apiAddr: Config.imApiUrl,
       wsAddr: Config.imWsUrl,
@@ -34,7 +34,6 @@ class IMController extends GetxController with IMCallback {
       objectStorage: Config.objectStorage,
       logLevel: 6,
       isLogStandardOutput: true,
-      // logFilePath: '${Config.cachePath}/',
       listener: OnConnectListener(
         onConnecting: () {
           imSdkStatus(IMSdkStatus.connecting);
@@ -50,33 +49,25 @@ class IMController extends GetxController with IMCallback {
       ),
     );
 
-    // Set listener
     OpenIM.iMManager
-    //
       ..userManager.setUserListener(OnUserListener(
         onSelfInfoUpdated: (u) {
           userInfo.update((val) {
             val?.nickname = u.nickname;
             val?.faceURL = u.faceURL;
-            // val?.gender = u.gender;
-            // val?.birth = u.birth;
-            // val?.email = u.email;
+
             val?.remark = u.remark;
             val?.ex = u.ex;
             val?.globalRecvMsgOpt = u.globalRecvMsgOpt;
           });
-          // _queryMyFullInfo();
         },
       ))
-    // Add message listener (remove when not in use)
       ..messageManager.setAdvancedMsgListener(OnAdvancedMsgListener(
         onRecvC2CReadReceipt: recvC2CMessageReadReceipt,
         onRecvNewMessage: recvNewMessage,
         onRecvGroupReadReceipt: recvGroupMessageReadReceipt,
         onNewRecvMessageRevoked: recvMessageRevoked,
       ))
-
-    // Set up message sending progress listener
       ..messageManager.setMsgSendProgressListener(OnMsgSendProgressListener(
         onProgress: progressCallback,
       ))
@@ -85,7 +76,6 @@ class IMController extends GetxController with IMCallback {
           onRecvCustomBusinessMessage: recvCustomBusinessMessage,
         ),
       )
-    // Set up friend relationship listener
       ..friendshipManager.setFriendshipListener(OnFriendshipListener(
         onBlackAdded: blacklistAdded,
         onBlackDeleted: blacklistDeleted,
@@ -97,8 +87,6 @@ class IMController extends GetxController with IMCallback {
         onFriendAdded: friendAdded,
         onFriendDeleted: friendDeleted,
       ))
-
-    // Set up conversation listener
       ..conversationManager.setConversationListener(OnConversationListener(
         onConversationChanged: conversationChanged,
         onNewConversation: newConversation,
@@ -113,8 +101,6 @@ class IMController extends GetxController with IMCallback {
           imSdkStatus(IMSdkStatus.syncStart);
         },
       ))
-
-    // Set up group listener
       ..groupManager.setGroupListener(OnGroupListener(
         onGroupApplicationAccepted: groupApplicationAccepted,
         onGroupApplicationAdded: groupApplicationAdded,
@@ -152,10 +138,8 @@ class IMController extends GetxController with IMCallback {
     return OpenIM.iMManager.logout();
   }
 
-  /// @所有人ID
   void _queryAtAllTag() async {
     atAllTag = OpenIM.iMManager.conversationManager.atAllTag;
-    // atAllTag = await OpenIM.iMManager.conversationManager.getAtAllTag();
   }
 
   void _queryMyFullInfo() async {

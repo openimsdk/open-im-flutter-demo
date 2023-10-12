@@ -60,7 +60,6 @@ class SelectContactsFromSearchPage extends StatelessWidget {
                     isGroup: info is GroupInfo,
                   ),
                   10.horizontalSpace,
-                  // info.getShowName().toText..style = Styles.ts_0C1C33_17sp,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,20 +71,6 @@ class SelectContactsFromSearchPage extends StatelessWidget {
                           style: Styles.ts_0C1C33_17sp,
                           keyStyle: Styles.ts_0089FF_17sp,
                         ),
-                        if (logic.parsePosition(info) != null)
-                          SearchKeywordText(
-                            text: logic.parsePosition(info)!,
-                            keyText: logic.searchCtrl.text.trim(),
-                            style: Styles.ts_8E9AB0_14sp,
-                            keyStyle: Styles.ts_0089FF_14sp,
-                          ),
-                        if (logic.parseDeptDetailInfo(info) != null)
-                          SearchKeywordText(
-                            text: logic.parseDeptDetailInfo(info)!,
-                            keyText: logic.searchCtrl.text.trim(),
-                            style: Styles.ts_8E9AB0_14sp,
-                            keyStyle: Styles.ts_0089FF_14sp,
-                          ),
                       ],
                     ),
                   ),
@@ -102,11 +87,6 @@ class SelectContactsFromSearchPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 157.verticalSpace,
-            // ImageRes.blacklistEmpty.toImage
-            //   ..width = 120.w
-            //   ..height = 120.h,
-            // 22.verticalSpace,
             44.verticalSpace,
             StrRes.searchNotFound.toText..style = Styles.ts_8E9AB0_17sp,
           ],

@@ -27,7 +27,6 @@ class ProcessGroupRequestsLogic extends GetxController {
   UserInfo? getUserInfo(inviterUserID) =>
       groupRequestsLogic.getUserInfo(inviterUserID);
 
-  /// 2：通过邀请  3：通过搜索  4：通过二维码
   String get sourceFrom {
     if (applicationInfo.joinSource == 2) {
       return '$inviterNickname${StrRes.byMemberInvite}';

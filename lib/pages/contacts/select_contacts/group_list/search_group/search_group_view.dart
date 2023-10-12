@@ -65,8 +65,6 @@ class SelectContactsFromSearchGroupPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // (info.groupName ?? '').toText
-                        //   ..style = Styles.ts_0C1C33_17sp,
                         SearchKeywordText(
                           text: info.groupName ?? '',
                           keyText: logic.searchCtrl.text.trim(),
@@ -93,11 +91,6 @@ class SelectContactsFromSearchGroupPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 157.verticalSpace,
-            // ImageRes.blacklistEmpty.toImage
-            //   ..width = 120.w
-            //   ..height = 120.h,
-            // 22.verticalSpace,
             44.verticalSpace,
             StrRes.searchNotFound.toText..style = Styles.ts_8E9AB0_17sp,
           ],

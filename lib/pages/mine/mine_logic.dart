@@ -24,8 +24,6 @@ class MineLogic extends GetxController {
 
   void aboutUs() => AppNavigator.startAboutUs();
 
-  // void workMoments() => WNavigator.startWorkMomentsList();
-
   void logout() async {
     var confirm = await Get.dialog(CustomDialog(title: StrRes.logoutHint));
     if (confirm == true) {
@@ -43,7 +41,6 @@ class MineLogic extends GetxController {
   }
 
   void kickedOffline() async {
-    // await imLogic.logout();
     Get.snackbar(StrRes.accountWarn, StrRes.accountException);
     await DataSp.removeLoginCertificate();
     pushLogic.logout();

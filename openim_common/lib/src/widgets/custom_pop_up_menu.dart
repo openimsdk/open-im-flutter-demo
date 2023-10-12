@@ -65,8 +65,6 @@ class CopyCustomPopupMenu extends StatefulWidget {
   final PreferredPosition? position;
   final void Function(bool)? menuOnChange;
 
-  /// Pass tap event to the widgets below the mask.
-  /// It only works when [barrierColor] is transparent.
   final bool enablePassEvent;
 
   @override
@@ -153,15 +151,13 @@ class _CustomPopupMenuState extends State<CopyCustomPopupMenu> {
               : HitTestBehavior.opaque,
           onPointerDown: (PointerDownEvent event) {
             Offset offset = event.localPosition;
-            // If tap position in menu
+
             if (_menuRect.contains(
                 Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
               return;
             }
             _controller?.hideMenu();
-            // When [enablePassEvent] works and we tap the [child] to [hideMenu],
-            // but the passed event would trigger [showMenu] again.
-            // So, we use time threshold to solve this bug.
+
             _canResponse = false;
             Future.delayed(const Duration(milliseconds: 300))
                 .then((_) => _canResponse = true);
@@ -247,7 +243,6 @@ class _CustomPopupMenuState extends State<CopyCustomPopupMenu> {
     if (Platform.isIOS) {
       return child;
     } else {
-      // android 左滑关闭页面事件
       bool menuIsShowing = _controller?.menuIsShowing ?? false;
       return WillPopScope(
         onWillPop: menuIsShowing
@@ -329,14 +324,11 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     bool isTop = false;
 
     if (position == null) {
-      // auto calculate position
-      // 修正弹起键盘菜单显示问题
       isTop = anchorBottomY > (size.height - keyboardHeight) / 2;
     } else {
       isTop = position == PreferredPosition.top;
     }
 
-    // 修正超过一屏菜单显示问题
     double minTopMargin = contentSize.height + arrowSize.height;
     if (null != touchY && anchorTopY < minTopMargin) {
       if (touchY < minTopMargin) {
@@ -433,7 +425,6 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     );
     bool isBottom = false;
     if (_MenuPosition.values.indexOf(menuPosition) < 3) {
-      // bottom
       isBottom = true;
     }
     if (hasChild(_MenuLayoutId.arrow)) {

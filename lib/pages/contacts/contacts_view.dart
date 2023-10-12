@@ -45,7 +45,6 @@ class ContactsPage extends StatelessWidget {
                 onTap: logic.myGroup,
               ),
               10.verticalSpace,
-              // const DeptItemView.contacts(),
             ],
           ),
         ),
@@ -90,22 +89,4 @@ class ContactsPage extends StatelessWidget {
           ),
         ),
       );
-
-// /// 我加入的部门
-// List<Widget> _buildMyDeptView() => logic.myDeptList
-//     .map((dept) => _buildItemView(
-//           height: 48.h,
-//           icon: SizedBox(
-//             width: 42.w,
-//             height: 42.h,
-//             child: Center(
-//               child: ImageRes.tree.toImage
-//                 ..width = 18.w
-//                 ..height = 18.h,
-//             ),
-//           ),
-//           label: dept.department?.name ?? '',
-//           onTap: () => logic.enterMyDepartment(dept.department),
-//         ))
-//     .toList();
 }

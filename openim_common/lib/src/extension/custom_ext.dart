@@ -7,13 +7,11 @@ import 'package:rxdart/rxdart.dart';
 extension SubjectExt<T> on Subject<T> {
   T addSafely(T data) {
     if (!isClosed) sink.add(data);
-    // if (!isClosed) add(data);
+
     return data;
   }
 }
 
-/// 解决当输入框内容全为字母且长度超过63不能继续输入的bug
-///
 extension TextEdCtrlExt on TextEditingController {
   void fixed63Length() {
     addListener(() {
@@ -30,7 +28,6 @@ extension TextEdCtrlExt on TextEditingController {
   }
 }
 
-/// 将文字转换成Image
 extension StrExt on String {
   ImageView get toImage {
     return ImageView(name: this);
@@ -45,7 +42,6 @@ extension StrExt on String {
   }
 }
 
-// ignore: must_be_immutable
 class LottieView extends StatelessWidget {
   LottieView({
     Key? key,
@@ -71,7 +67,6 @@ class LottieView extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class TextView extends StatelessWidget {
   TextView({
     Key? key,
@@ -106,7 +101,6 @@ class TextView extends StatelessWidget {
       );
 }
 
-// ignore: must_be_immutable
 class ImageView extends StatelessWidget {
   ImageView({
     Key? key,

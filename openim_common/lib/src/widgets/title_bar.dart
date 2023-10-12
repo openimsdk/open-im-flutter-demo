@@ -95,11 +95,6 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         right = Row(
           children: [
-            // ImageRes.callBack.toImage
-            //   ..width = 28.w
-            //   ..height = 28.h
-            //   ..onTap = onClickCallBtn,
-            // 16.horizontalSpace,
             PopButton(
               popCtrl: popCtrl,
               menus: [
@@ -123,15 +118,10 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
                   icon: ImageRes.popMenuCreateGroup,
                   onTap: onCreateGroup,
                 ),
-                // PopMenuInfo(
-                //   text: StrRes.videoMeeting,
-                //   icon: ImageRes.popMenuVideoMeeting,
-                //   onTap: onVideoMeeting,
-                // ),
               ],
               child: ImageRes.addBlack.toImage
                 ..width = 28.w
-                ..height = 28.h /*..onTap = onClickAddBtn*/,
+                ..height = 28.h,
             ),
           ],
         );
@@ -192,12 +182,6 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
         right = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // if (showCallBtn)
-            //   ImageRes.callBack.toImage
-            //     ..width = 28.w
-            //     ..height = 28.h
-            //     ..onTap = onClickCallBtn,
-            // 16.horizontalSpace,
             ImageRes.moreBlack.toImage
               ..width = 28.w
               ..height = 28.h

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-/// 蒲公英
 class UpgradeInfoV2 {
   String? buildBuildVersion;
   String? forceUpdateVersion;

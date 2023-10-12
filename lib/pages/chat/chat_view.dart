@@ -7,18 +7,15 @@ import 'package:openim_common/openim_common.dart';
 import 'chat_logic.dart';
 
 class ChatPage extends StatelessWidget {
-  // final logic = Get.find<ChatLogic>();
   final logic = Get.find<ChatLogic>(tag: GetTags.chat);
 
   ChatPage({super.key});
 
   Widget _buildItemView(Message message) => ChatItemView(
         key: logic.itemKey(message),
-        // isBubbleMsg: logic.showBubbleBg(message),
         message: message,
         allAtMap: logic.getAtMapping(message),
         timelineStr: logic.getShowTime(message),
-        // clickSubject: logic.clickSubject,
         sendStatusSubject: logic.sendStatusSub,
         sendProgressSubject: logic.sendProgressSub,
         leftNickname: logic.getNewestNickname(message),
@@ -37,8 +34,7 @@ class ChatPage extends StatelessWidget {
           logic.onTapLeftAvatar(message);
         },
         onTapRightAvatar: logic.onTapRightAvatar,
-        onVisibleTrulyText: (text) {
-        },
+        onVisibleTrulyText: (text) {},
         customTypeBuilder: _buildCustomTypeItemView,
       );
 
@@ -97,8 +93,6 @@ class ChatPage extends StatelessWidget {
           body: WaterMarkBgView(
             text: logic.markText,
             backgroundColor: Styles.c_FFFFFF,
-            // newMessageCount: logic.scrollingCacheMessageList.length,
-            // onSeeNewMessage: logic.scrollToIndex,
             bottomView: ChatInputBox(
               allAtMap: logic.atUserNameMappingMap,
               controller: logic.inputCtrl,

@@ -105,7 +105,6 @@ class CreateGroupPage extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: logic.length(),
               shrinkWrap: true,
-              // padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
                 crossAxisSpacing: 3.w,

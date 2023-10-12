@@ -6,13 +6,10 @@ import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 
 class VerifyCodeSendButton extends StatefulWidget {
-  /// 倒计时的秒数，默认60秒。
   final int sec;
 
-  /// 用户点击时的回调函数。
   final Future<bool> Function() onTapCallback;
 
-  /// 自动开始计时
   final bool auto;
 
   const VerifyCodeSendButton({

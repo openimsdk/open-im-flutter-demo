@@ -35,7 +35,6 @@ class FriendRequestsLogic extends GetxController {
     super.onClose();
   }
 
-  /// 获取好友申请列表
   void _getFriendRequestsList() async {
     final list = await Future.wait([
       OpenIM.iMManager.friendshipManager.getFriendApplicationListAsRecipient(),
@@ -71,12 +70,10 @@ class FriendRequestsLogic extends GetxController {
   bool isISendRequest(FriendApplicationInfo info) =>
       info.fromUserID == OpenIM.iMManager.userID;
 
-  /// 接受好友申请
   void acceptFriendApplication(FriendApplicationInfo info) =>
       AppNavigator.startProcessFriendRequests(
         applicationInfo: info,
       );
 
-  /// 拒绝好友申请
   void refuseFriendApplication(FriendApplicationInfo info) async {}
 }

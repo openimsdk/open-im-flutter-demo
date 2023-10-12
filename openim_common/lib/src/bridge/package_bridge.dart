@@ -41,7 +41,6 @@ abstract class ViewUserProfileBridge {
 }
 
 abstract class SelectContactsBridge {
-  /// [type] 0：谁可以看 1：提醒谁看 2: 分享视频会议
   Future<T?>? selectContacts<T>(
     int type, {
     List<String>? defaultCheckedIDList,
@@ -57,11 +56,9 @@ abstract class WorkingCircleBridge {
   Function(WorkMomentsNotification notification)?
       onRecvNewMessageForWorkingCircle;
 
-  /// 发布朋友圈，删除朋友圈
   final opEventSub = PublishSubject<dynamic>();
 }
 
-/// 解决重复启动同一个页面问题
 class GetTags {
   static final List<String> _chatTags = <String>[];
   static final List<String> _momentsTags = <String>[];

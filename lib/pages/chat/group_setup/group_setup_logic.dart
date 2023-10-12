@@ -19,7 +19,6 @@ import 'group_member_list/group_member_list_logic.dart';
 class GroupSetupLogic extends GetxController {
   final imLogic = Get.find<IMController>();
 
-  // final chatLogic = Get.find<ChatLogic>();
   final chatLogic = Get.find<ChatLogic>(tag: GetTags.chat);
   final appLogic = Get.find<AppController>();
   final conversationLogic = Get.find<ConversationLogic>();
@@ -79,7 +78,6 @@ class GroupSetupLogic extends GetxController {
           isJoinedGroup.value = false;
         } else {
           memberList.removeWhere((element) => element.userID == e.userID);
-          // memberList.refresh();
         }
       }
     });
@@ -88,9 +86,6 @@ class GroupSetupLogic extends GetxController {
 
   @override
   void onReady() {
-    // getGroupInfo();
-    // getGroupMembers();
-    // getMyGroupMemberInfo();
     _checkIsJoinedGroup();
     super.onReady();
   }
@@ -233,7 +228,6 @@ class GroupSetupLogic extends GetxController {
         groupInfo: groupInfo.value,
       );
   void _removeConversation() async {
-    // 删除群会话
     await OpenIM.iMManager.conversationManager
         .deleteConversationAndDeleteAllMsg(
       conversationID: conversationInfo.value.conversationID,
@@ -249,12 +243,9 @@ class GroupSetupLogic extends GetxController {
           title: StrRes.dismissGroupHint,
         ));
         if (confirm == true) {
-          // transferGroup();
           await OpenIM.iMManager.groupManager.dismissGroup(
             groupID: groupInfo.value.groupID,
           );
-          // 删除群会话
-          // _removeConversation();
         } else {
           return;
         }
@@ -263,18 +254,14 @@ class GroupSetupLogic extends GetxController {
           title: StrRes.quitGroupHint,
         ));
         if (confirm == true) {
-          // 退群
           await OpenIM.iMManager.groupManager.quitGroup(
             groupID: groupInfo.value.groupID,
           );
-          // 删除群会话
-          // _removeConversation();
         } else {
           return;
         }
       }
     } else {
-      // 删除群会话
       _removeConversation();
     }
 

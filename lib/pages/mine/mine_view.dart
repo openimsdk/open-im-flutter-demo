@@ -35,11 +35,6 @@ class MinePage extends StatelessWidget {
               onTap: logic.viewMyInfo,
               isTopRadius: true,
             ),
-            // _buildItemView(
-            //   icon: ImageRes.workingCircle,
-            //   label: StrRes.workingCircle,
-            //   onTap: logic.workMoments,
-            // ),
             _buildItemView(
               icon: ImageRes.accountSetup,
               label: StrRes.accountSetup,

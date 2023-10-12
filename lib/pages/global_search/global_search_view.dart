@@ -17,10 +17,10 @@ class GlobalSearchPage extends StatelessWidget {
         appBar: TitleBar.search(
           focusNode: logic.focusNode,
           controller: logic.searchCtrl,
+          onSubmitted: (_) => logic.search(),
           onCleared: () => logic.focusNode.requestFocus(),
         ),
         backgroundColor: Styles.c_F8F9FA,
-        // body: Obx(() => logic.isSearchNotResult ? _emptyListView : SizedBox()),
         body: _emptyListView,
       ),
     );
@@ -31,11 +31,6 @@ class GlobalSearchPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 157.verticalSpace,
-            // ImageRes.blacklistEmpty.toImage
-            //   ..width = 120.w
-            //   ..height = 120.h,
-            // 22.verticalSpace,
             44.verticalSpace,
             StrRes.searchNotFound.toText..style = Styles.ts_8E9AB0_17sp,
           ],

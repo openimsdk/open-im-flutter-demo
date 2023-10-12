@@ -76,11 +76,6 @@ class MyQrcodePage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Styles.c_FFFFFF,
                         border: Border.all(color: Styles.c_E8EAEF, width: 4.w),
-                        // gradient: const LinearGradient(
-                        //   begin: Alignment.topCenter,
-                        //   end: Alignment.bottomCenter,
-                        //   colors: [Color(0xFFFEB2B2), Color(0xFF5496E4)],
-                        // ),
                       ),
                       child: QrImageView(
                         data: logic.buildQRContent(),

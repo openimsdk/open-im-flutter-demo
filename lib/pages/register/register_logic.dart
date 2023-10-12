@@ -44,7 +44,6 @@ class RegisterLogic extends GetxController {
     if (null != code) areaCode.value = code;
   }
 
-  /// [usedFor] 1：注册，2：重置密码
   Future<bool> requestVerificationCode() => Apis.requestVerificationCode(
         areaCode: areaCode.value,
         phoneNumber: phoneCtrl.text.trim(),

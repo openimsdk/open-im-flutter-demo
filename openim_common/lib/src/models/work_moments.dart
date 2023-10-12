@@ -38,8 +38,8 @@ class WorkMoments {
   List<LikeUsers>? atUsers;
   List<LikeUsers>? permissionUsers;
   int? createTime;
-  int? permission; // 0：公开 1: 仅自己可见 2：部分可见 3：不给谁看
-  int? type; // 1 为你点了赞  2 提到了你   3 评论了你/xx回复xxx
+  int? permission;
+  int? type;
 
   WorkMoments({
     this.workMomentID,

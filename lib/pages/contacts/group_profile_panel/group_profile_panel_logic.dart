@@ -103,20 +103,10 @@ class GroupProfilePanelLogic extends GetxController {
         sessionType: groupInfo.value.sessionType,
       );
     } else {
-      // final result =
-      //     await OpenIM.iMManager.groupManager.getSendGroupApplicationList();
-      // final elem =
-      //     result.firstWhereOrNull((e) => e.groupID == info.value.groupID);
-      // if (elem == null) {
       AppNavigator.startSendVerificationApplication(
         groupID: groupInfo.value.groupID,
         joinGroupMethod: joinGroupMethod,
       );
-      // } else {
-      //   Get.dialog(CustomDialog(
-      //     title: '已经提交过加群申请了～',
-      //   ));
-      // }
     }
   }
 

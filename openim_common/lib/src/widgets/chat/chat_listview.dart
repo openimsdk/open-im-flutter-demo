@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
 extension ScrollControllerExt on ScrollController {
-  /// 滚动到底部
   Future scrollToBottom(Function()? onScrollStop) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       while (position.pixels != position.maxScrollExtent) {
@@ -16,7 +15,6 @@ extension ScrollControllerExt on ScrollController {
     });
   }
 
-  /// 滚动到顶部
   Future scrollToTop() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       while (position.pixels != position.minScrollExtent) {
@@ -28,12 +26,8 @@ extension ScrollControllerExt on ScrollController {
 }
 
 class CustomChatListViewController<E> extends ChangeNotifier {
-  /// 添加数据 insert(0,T) 或 insertAll(0,<T>[])
-  /// UI上index:length-1 -> 0
   final _topList = <E>[];
 
-  /// 添加数据 add(T) 或 addAll(<T>[])
-  /// UI上index:0->length-1
   final _bottomList = <E>[];
 
   List<E> get topList => _topList;
@@ -77,18 +71,13 @@ class CustomChatListViewController<E> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// [position] 使用 [CustomChatListViewItemBuilder]的position
   E elementAt(int position) => list.elementAt(position);
 
-  /// [position] 使用 [CustomChatListViewItemBuilder]的position
   E removeAt(int position) => list.removeAt(position);
 
   bool remove(Object? value) => list.remove(value);
 }
 
-/// [index] 在上下列表实际的index
-/// [position] 真个界面上的position
-/// [data] 数据
 typedef CustomChatListViewItemBuilder<T> = Widget Function(
   BuildContext context,
   int index,
@@ -109,33 +98,18 @@ class CustomChatListView extends StatefulWidget {
     this.indicatorColor,
   }) : super(key: key);
 
-  /// index: topList/bottomList的下标
-  /// position: 整个列表的下标
   final CustomChatListViewItemBuilder itemBuilder;
-
-  /// 添加数据 insert(0,T) 或 insertAll(0,<T>[])
-  /// UI上index:length-1 -> 0
-  // final List<T> topList;
-
-  /// 添加数据 add(T) 或 addAll(<T>[])
-  /// UI上index:0->length-1
-  // final List<T> bottomList;
 
   final CustomChatListViewController controller;
 
-  ///
   final ScrollController? scrollController;
 
-  /// 滚动到顶部加载，返回ture：还存在未加载完的数据。false：已经没有更多的数据了
   final Future<bool> Function()? onScrollToTopLoad;
 
-  /// 滚动到底部加载，返回ture：还存在未加载完的数据。false：已经没有更多的数据了
   final Future<bool> Function()? onScrollToBottomLoad;
 
-  /// 启用顶部加载
   final bool enabledTopLoad;
 
-  /// 启动底部加载
   final bool enabledBottomLoad;
 
   final Color? indicatorColor;
@@ -220,8 +194,6 @@ class _CustomChatListViewState extends State<CustomChatListView> {
       center: centerKey,
       controller: widget.scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      // reverse: true,
-      // shrinkWrap: false,
       slivers: <Widget>[
         if (_topHasMore && widget.enabledTopLoad)
           SliverToBoxAdapter(child: _buildLoadMoreView()),
@@ -279,15 +251,12 @@ class ChatListView extends StatefulWidget {
   final int? itemCount;
   final IndexedWidgetBuilder itemBuilder;
 
-  /// 往下滚动加载，拉取历史消息
   final Future<bool> Function()? onScrollToBottomLoad;
 
-  /// 往上滚动加载，在搜索消息是定位消息时用到
   final Future<bool> Function()? onScrollToTopLoad;
   final Function()? onScrollToBottom;
   final Function()? onScrollToTop;
 
-  /// 是否开启往上滚动加载，在搜索消息是定位消息时用到
   final bool enabledScrollTopLoad;
   final Function()? onTouch;
 
@@ -312,7 +281,6 @@ class _ChatListViewState extends State<ChatListView> {
 
   @override
   void initState() {
-    /// 默认加载
     _onScrollToBottomLoadMore();
     widget.controller?.addListener(_scrollListener);
     super.initState();

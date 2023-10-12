@@ -111,7 +111,6 @@ class SetSelfInfoPage extends StatelessWidget {
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
-                    // isDense: true,
                     counter: SizedBox(),
                   ),
                 ),

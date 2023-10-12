@@ -10,9 +10,7 @@ class AboutUsLogic extends GetxController {
 
   void getPackageInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    // String appName = packageInfo.appName;
-    // String packageName = packageInfo.packageName;
-    // String buildNumber = packageInfo.buildNumber;
+
     version.value = packageInfo.version;
     appName.value = packageInfo.appName;
   }
@@ -29,7 +27,6 @@ class AboutUsLogic extends GetxController {
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
 }

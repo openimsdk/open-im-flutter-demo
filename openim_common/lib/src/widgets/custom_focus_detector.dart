@@ -1,8 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-/// Fires callbacks every time the widget appears or disappears from the screen.
-/// Adapter to flutter 3.0
 class FocusDetector extends StatefulWidget {
   const FocusDetector({
     required this.child,
@@ -15,25 +13,18 @@ class FocusDetector extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  /// Called when the widget becomes visible or enters foreground while visible.
   final VoidCallback? onFocusGained;
 
-  /// Called when the widget becomes invisible or enters background while visible.
   final VoidCallback? onFocusLost;
 
-  /// Called when the widget becomes visible.
   final VoidCallback? onVisibilityGained;
 
-  /// Called when the widget becomes invisible.
   final VoidCallback? onVisibilityLost;
 
-  /// Called when the app entered the foreground while the widget is visible.
   final VoidCallback? onForegroundGained;
 
-  /// Called when the app is sent to background while the widget was visible.
   final VoidCallback? onForegroundLost;
 
-  /// The widget below this widget in the tree.
   final Widget child;
 
   @override
@@ -44,10 +35,8 @@ class _FocusDetectorState extends State<FocusDetector>
     with WidgetsBindingObserver {
   final _visibilityDetectorKey = UniqueKey();
 
-  /// Whether this widget is currently visible within the app.
   bool _isWidgetVisible = false;
 
-  /// Whether the app is in the foreground.
   bool _isAppInForeground = true;
 
   @override
@@ -61,7 +50,6 @@ class _FocusDetectorState extends State<FocusDetector>
     _notifyPlaneTransition(state);
   }
 
-  /// Notifies app's transitions to/from the foreground.
   void _notifyPlaneTransition(AppLifecycleState state) {
     if (!_isWidgetVisible) {
       return;
@@ -89,7 +77,6 @@ class _FocusDetectorState extends State<FocusDetector>
         key: _visibilityDetectorKey,
         onVisibilityChanged: (visibilityInfo) {
           try {
-            // 当widget高度超过一屏时visibilityInfo.visibleFraction的值达不到1
             final visibleBoundsBottom = visibilityInfo.visibleBounds.bottom;
             final height = visibilityInfo.size.height;
             final fraction = visibleBoundsBottom / height;
@@ -102,7 +89,6 @@ class _FocusDetectorState extends State<FocusDetector>
         child: widget.child,
       );
 
-  /// Notifies changes in the widget's visibility.
   void _notifyVisibilityStatusChange(double newVisibleFraction) {
     if (!_isAppInForeground) {
       return;

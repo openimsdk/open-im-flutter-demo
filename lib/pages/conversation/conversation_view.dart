@@ -27,7 +27,6 @@ class ConversationPage extends StatelessWidget {
             onAddFriend: logic.addFriend,
             onAddGroup: logic.addGroup,
             onCreateGroup: logic.createGroup,
-            // onVideoMeeting: logic.videoMeeting,
           ),
           backgroundColor: Styles.c_FFFFFF,
           body: Column(
@@ -165,8 +164,6 @@ class ConversationPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              // logic.getMsgContent(info).toText
-                              //   ..style = Styles.ts_8E9AB0_14sp,
                               const Spacer(),
                               if (logic.isNotDisturb(info))
                                 ImageRes.notDisturb.toImage

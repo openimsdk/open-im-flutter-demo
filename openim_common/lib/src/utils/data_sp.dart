@@ -40,11 +40,6 @@ class DataSp {
     return SpUtil().putObject(_loginCertificate, lc);
   }
 
-  /// {
-  ///   "phone"    :"",
-  ///   "areaCode" :"",
-  ///   "email"    :"",
-  /// }
   static Future<bool>? putLoginAccount(Map map) {
     return SpUtil().putObject(_loginAccount, map);
   }

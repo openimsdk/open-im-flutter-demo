@@ -2,9 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:openim_common/openim_common.dart';
 
-/// message content: @uid1 @uid2 xxxxxxx
-///
-
 enum TextModel { match, normal }
 
 class MatchTextView extends StatelessWidget {
@@ -13,21 +10,16 @@ class MatchTextView extends StatelessWidget {
   final TextStyle? matchTextStyle;
   final InlineSpan? prefixSpan;
 
-  /// isReceived ? TextAlign.left : TextAlign.right
   final TextAlign textAlign;
   final TextOverflow overflow;
   final int? maxLines;
   final double textScaleFactor;
 
-  /// all user info
-  /// key:userid
-  /// value:username
   final Map<String, String> allAtMap;
   final List<MatchPattern> patterns;
   final TextModel model;
   final Function(String? text)? onVisibleTrulyText;
 
-  // final TextAlign textAlign;
   const MatchTextView({
     Key? key,
     required this.text,
@@ -56,7 +48,6 @@ class MatchTextView extends StatelessWidget {
       _matchModel(children);
     }
 
-    // 复制@消息直接使用不在重复解析
     final textSpan = TextSpan(children: children);
     onVisibleTrulyText?.call(textSpan.toPlainText());
 
@@ -112,7 +103,6 @@ class MatchTextView extends StatelessWidget {
       pattern = regexEmoji;
     }
 
-    // match  text
     stripHtmlIfNeeded(text).splitMapJoin(
       RegExp(pattern),
       onMatch: (Match match) {
@@ -148,11 +138,7 @@ class MatchTextView extends StatelessWidget {
               text: matchText,
               style: mapping.style ?? matchTextStyle ?? textStyle,
             );
-          }
-          /* else if (mapping.type == PatternType.EMOJI) {
-            inlineSpan = ImageSpan();
-          } */
-          else {
+          } else {
             inlineSpan = TextSpan(
               text: matchText,
               style: mapping.style ?? matchTextStyle ?? textStyle,
@@ -209,28 +195,18 @@ class MatchPattern {
 
 enum PatternType { at, atAll, email, mobile, tel, url, emoji, custom }
 
-/// 空格@uid空格
 const regexAt = r"(@\d+\s)";
-// const regexAt = r"(\s@\S+\s)";
 
 const regexAtAll = r'@atAllTag ';
 
-/// Email Regex - A predefined type for handling email matching
 const regexEmail = r"\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b";
 
-/// URL Regex - A predefined type for handling URL matching
 const regexUrl =
     r"[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:._\+-~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:_\+.~#?&\/\/=]*)";
 
-/// Phone Regex - A predefined type for handling phone matching
-// const regexMobile =
-//     r"(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})";
-
-/// Regex of exact mobile.
 const String regexMobile =
     '^(\\+?86)?((13[0-9])|(14[57])|(15[0-35-9])|(16[2567])|(17[01235-8])|(18[0-9])|(19[1589]))\\d{8}\$';
 
-/// Regex of telephone number.
 const String regexTel = '^0\\d{2,3}[-]?\\d{7,8}';
 
 const emojiFaces = <String, String>{'[]': '[]'};

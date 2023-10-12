@@ -101,16 +101,7 @@ class AddContactsBySearchLogic extends GetxController {
 
   String getMatchContent(UserFullInfo userInfo) {
     final keyword = searchCtrl.text;
-    // String searchPrefix = "%s";
-    // if (keyword == userInfo.userID) {
-    //   searchPrefix = StrRes.searchIDIs;
-    // } else if (keyword == userInfo.phoneNumber) {
-    //   searchPrefix = StrRes.searchPhoneIs;
-    // } else if (keyword == userInfo.email) {
-    //   searchPrefix = StrRes.searchEmailIs;
-    // } else if (keyword == userInfo.nickname) {
-    //   searchPrefix = StrRes.searchNicknameIs;
-    // }
+
     return sprintf(StrRes.searchNicknameIs, [userInfo.nickname]);
   }
 

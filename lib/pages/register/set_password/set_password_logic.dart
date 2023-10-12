@@ -65,20 +65,6 @@ class SetPasswordLogic extends GetxController {
     if (_checkingInput()) {
       register();
     }
-    // if (usedFor == 1) {
-    //   // 注册
-    //
-    //   AppNavigator.startSetSelfInfo(
-    //     areaCode: areaCode,
-    //     phoneNumber: phoneNumber,
-    //     password: pwdCtrl.text.trim(),
-    //     usedFor: usedFor,
-    //     verificationCode: verificationCode,
-    //     invitationCode: invitationCode,
-    //   );
-    // } else if (usedFor == 2) {
-    //   //重置密码
-    // }
   }
 
   void register() async {

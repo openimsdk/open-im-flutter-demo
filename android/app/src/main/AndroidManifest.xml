@@ -70,7 +70,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="OpenM(C2.0)"
+        android:label="OpenM(3)"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">

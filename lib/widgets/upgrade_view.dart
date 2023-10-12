@@ -48,9 +48,6 @@ class _UpgradeViewV2State extends State<UpgradeViewV2> {
   void _startDownload() {
     if (Platform.isAndroid) {
       Get.back();
-      // setState(() {
-      //   _showProgress = true;
-      // });
     } else {
       if (!widget.upgradeInfo.needForceUpdate!) {
         Get.back();
@@ -153,23 +150,6 @@ class _UpgradeViewV2State extends State<UpgradeViewV2> {
                     )
                   ],
                 ),
-              // if (_showProgress)
-              //   Container(
-              //     height: 44.h,
-              //     child: Center(
-              //       child: LinearPercentIndicator(
-              //         lineHeight: 12.h,
-              //         percent: _progress,
-              //         center: Text(
-              //           "${(_progress * 100).toInt()}%",
-              //           style: PageStyle.ts_FFFFFF_10sp,
-              //         ),
-              //         linearStrokeCap: LinearStrokeCap.roundAll,
-              //         backgroundColor: Colors.grey.withOpacity(0.5),
-              //         progressColor: Colors.blueAccent,
-              //       ),
-              //     ),
-              //   ),
             ],
           ),
         ),
@@ -184,7 +164,6 @@ class _UpgradeViewV2State extends State<UpgradeViewV2> {
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(
-              // vertical: 10.h,
               horizontal: 14.w,
             ),
             child: Text(

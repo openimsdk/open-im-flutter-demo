@@ -29,7 +29,6 @@ class ChatNicknameView extends StatelessWidget {
                   ..overflow = TextOverflow.ellipsis,
               ),
             ),
-          // if (null != nickname) WidgetSpan(child: 6.horizontalSpace),
           TextSpan(text: timeStr),
         ],
       ),

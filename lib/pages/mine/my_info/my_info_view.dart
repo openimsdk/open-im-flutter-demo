@@ -45,11 +45,6 @@ class MyInfoPage extends StatelessWidget {
                           : StrRes.woman,
                       onTap: logic.selectGender,
                     ),
-                    // _buildItemView(
-                    //   label: StrRes.englishName,
-                    //   value: imLogic.userInfo.value.englishName,
-                    //   onTap: logic.editEnglishName,
-                    // ),
                     _buildItemView(
                       label: StrRes.birthDay,
                       value: DateUtil.formatDateMs(
@@ -63,15 +58,9 @@ class MyInfoPage extends StatelessWidget {
                 10.verticalSpace,
                 _buildCornerBgView(
                   children: [
-                    // _buildItemView(
-                    //   label: StrRes.tel,
-                    //   value: imLogic.userInfo.value.telephone,
-                    //   onTap: logic.editTel,
-                    // ),
                     _buildItemView(
                       label: StrRes.mobile,
                       value: imLogic.userInfo.value.phoneNumber,
-                      // onTap: logic.editMobile,
                       showRightArrow: false,
                     ),
                     _buildItemView(

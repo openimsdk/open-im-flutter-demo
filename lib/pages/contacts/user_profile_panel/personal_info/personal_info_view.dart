@@ -37,10 +37,6 @@ class PersonalInfoPage extends StatelessWidget {
                       label: StrRes.gender,
                       value: logic.isMale ? StrRes.man : StrRes.woman,
                     ),
-                    // _buildItemView(
-                    //   label: StrRes.englishName,
-                    //   value: logic.englishName,
-                    // ),
                     _buildItemView(
                       label: StrRes.birthDay,
                       value: logic.birth,
@@ -50,11 +46,6 @@ class PersonalInfoPage extends StatelessWidget {
                 10.verticalSpace,
                 _buildCornerBgView(
                   children: [
-                    // _buildItemView(
-                    //   label: StrRes.tel,
-                    //   value: logic.telephone,
-                    //   onTap: logic.clickTel,
-                    // ),
                     _buildItemView(
                       label: StrRes.mobile,
                       value: logic.phoneNumber,

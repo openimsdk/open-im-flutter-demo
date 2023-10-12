@@ -36,7 +36,6 @@ class FontSizeSlider extends StatelessWidget {
               inactiveMinorTickColor: Styles.c_8E9AB0_opacity30,
               thumbColor: Styles.c_FFFFFF,
               tickOffset: Offset(0, -10.h),
-              // labelOffset: Offset(0, -45.h),
             ),
             child: SfSlider(
               min: 0,
@@ -48,7 +47,6 @@ class FontSizeSlider extends StatelessWidget {
               labelFormatterCallback: (actualValue, formattedText) {
                 return '打';
               },
-              // enableTooltip: false,
               minorTicksPerInterval: 1,
               labelPlacement: LabelPlacement.onTicks,
               edgeLabelPlacement: EdgeLabelPlacement.inside,

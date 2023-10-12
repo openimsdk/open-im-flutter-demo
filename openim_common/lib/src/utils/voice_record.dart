@@ -39,7 +39,6 @@ class VoiceRecord {
       _timer?.cancel();
       _timer = null;
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-        // _long = (_now() - _long) ~/ 1000;
         final duration = ((_now() - _startTimestamp) ~/ 1000);
         onDuration?.call(duration);
         if (duration >= maxRecordSec) {

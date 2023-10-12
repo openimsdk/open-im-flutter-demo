@@ -32,25 +32,6 @@ class ChatToolBox extends StatelessWidget {
         icon: ImageRes.toolboxCamera,
         onTap: () => Permissions.camera(onTapCamera),
       ),
-      // ToolboxItemInfo(
-      //   text: StrRes.toolboxCall,
-      //   icon: ImageRes.toolboxCall,
-      //   onTap: () => Permissions.cameraAndMicrophone(onTapCall),
-      // ),
-      // ToolboxItemInfo(
-      //   text: StrRes.toolboxFile,
-      //   icon: ImageRes.toolboxFile,
-      //   onTap: () => Permissions.storage(onTapFile),
-      // ),
-      // ToolboxItemInfo(
-      //     text: StrRes.toolboxCard,
-      //     icon: ImageRes.toolboxCard,
-      //     onTap: onTapCard),
-      // ToolboxItemInfo(
-      //   text: StrRes.toolboxLocation,
-      //   icon: ImageRes.toolboxLocation,
-      //   onTap: () => Permissions.location(onTapLocation),
-      // ),
     ];
 
     return Container(
@@ -79,47 +60,6 @@ class ChatToolBox extends StatelessWidget {
           );
         },
       ),
-      // child: Column(
-      //   children: [
-      //     Row(
-      //       children: [
-      //         _buildItemView(
-      //             text: StrRes.toolboxAlbum,
-      //             icon: ImageRes.toolboxAlbum,
-      //             onTap: onTapAlbum),
-      //         30.horizontalSpace,
-      //         _buildItemView(
-      //             text: StrRes.toolboxCamera,
-      //             icon: ImageRes.toolboxCamera,
-      //             onTap: onTapCamera),
-      //         30.horizontalSpace,
-      //         _buildItemView(
-      //             text: StrRes.toolboxCall,
-      //             icon: ImageRes.toolboxCall,
-      //             onTap: onTapCall),
-      //         30.horizontalSpace,
-      //         _buildItemView(
-      //             text: StrRes.toolboxFile,
-      //             icon: ImageRes.toolboxFile,
-      //             onTap: onTapFile),
-      //       ],
-      //     ),
-      //     22.verticalSpace,
-      //     Row(
-      //       children: [
-      //         _buildItemView(
-      //             text: StrRes.toolboxCard,
-      //             icon: ImageRes.toolboxCard,
-      //             onTap: onTapCard),
-      //         30.horizontalSpace,
-      //         _buildItemView(
-      //             text: StrRes.toolboxLocation,
-      //             icon: ImageRes.toolboxLocation,
-      //             onTap: onTapLocation),
-      //       ],
-      //     ),
-      //   ],
-      // ),
     );
   }
 

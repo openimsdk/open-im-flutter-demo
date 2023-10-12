@@ -14,7 +14,6 @@ class ContactsLogic extends GetxController
   final imLogic = Get.find<IMController>();
   final homeLogic = Get.find<HomeLogic>();
 
-  // final organizationLogic = Get.find<OrganizationLogic>();
   final friendApplicationList = <UserInfo>[];
 
   int get friendApplicationCount =>
@@ -23,39 +22,13 @@ class ContactsLogic extends GetxController
   int get groupApplicationCount =>
       homeLogic.unhandledGroupApplicationCount.value;
 
-  // String? get organizationName => organizationLogic.organizationName;
-  //
-  // RxList<UserInDept> get myDeptList => organizationLogic.myDeptList;
-
   @override
   void onInit() {
-    // imLogic.friendApplicationSubject.listen((value) {
-    //
-    // });
-    // 收到新的好友申请
-    // imLogic.onFriendApplicationListAdded = (u) {
-    //   getFriendApplicationList();
-    // };
-    // 删除好友申请记录
-    // imLogic.onFriendApplicationListDeleted = (u) {
-    //   getFriendApplicationList();
-    // };
-    /// 我的申请被拒绝了
-    // imLogic.onFriendApplicationListRejected = (u) {
-    //   getFriendApplicationList();
-    // };
-    // 我的申请被接受了
-    // imLogic.onFriendApplicationListAccepted = (u) {
-    //   getFriendApplicationList();
-    // };
     PackageBridge.selectContactsBridge = this;
     PackageBridge.viewUserProfileBridge = this;
     PackageBridge.workingCircleBridge = this;
     PackageBridge.scanBridge = this;
 
-    // imLogic.momentsSubject.listen((value) {
-    //   onRecvNewMessageForWorkingCircle?.call(value);
-    // });
     super.onInit();
   }
 

@@ -74,41 +74,6 @@ class BottomBar extends StatelessWidget {
             ),
           ),
         ),
-        /*child: InkWell(
-          onTap: () {
-            if (item.onClick != null) item.onClick!(i);
-          },
-          onDoubleTap: () => item.onDoubleClick?.call(i),
-          // behavior: HitTestBehavior.translucent,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  (i == index
-                      ? item.selectedImgRes.toImage
-                      : item.unselectedImgRes.toImage)
-                    ..width = item.imgWidth
-                    ..height = item.imgHeight,
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Transform.translate(
-                      offset: const Offset(2, -2),
-                      child: UnreadCountView(count: item.count ?? 0),
-                    ),
-                  ),
-                ],
-              ),
-              4.verticalSpace,
-              item.label.toText
-                ..style = i == index
-                    ? (item.selectedStyle ?? Styles.ts_0089FF_10sp_semibold)
-                    : (item.unselectedStyle ?? Styles.ts_8E9AB0_10sp_semibold),
-            ],
-          ),
-        ),*/
       );
 }
 

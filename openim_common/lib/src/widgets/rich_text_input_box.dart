@@ -95,28 +95,24 @@ class _RichTextInputBoxState extends State<RichTextInputBox> {
                   ..height = 22.h
                   ..opacity = _opacity
                   ..onTap = widget.onTapAlbum,
-              // 22.horizontalSpace,
               if (widget.showCameraIcon)
                 ImageRes.toolboxCamera1.toImage
                   ..width = 26.w
                   ..height = 22.h
                   ..opacity = _opacity
                   ..onTap = widget.onTapCamera,
-              // 22.horizontalSpace,
               if (widget.showFileIcon)
                 ImageRes.toolboxFile1.toImage
                   ..width = 26.w
                   ..height = 22.h
                   ..opacity = _opacity
                   ..onTap = widget.onTapFile,
-              // 22.horizontalSpace,
               if (widget.showCardIcon)
                 ImageRes.toolboxCard1.toImage
                   ..width = 26.w
                   ..height = 22.h
                   ..opacity = _opacity
                   ..onTap = widget.onTapCard,
-              // 15.horizontalSpace,
               if (widget.showLocationIcon)
                 ImageRes.toolboxLocation1.toImage
                   ..width = 16.w

@@ -37,14 +37,8 @@ class EditMyInfoLogic extends GetxController {
         keyboardType = TextInputType.text;
         break;
       case EditAttr.englishName:
-        // title = StrRes.englishName;
-        // defaultValue = imLogic.userInfo.value.englishName;
-        // keyboardType = TextInputType.text;
         break;
       case EditAttr.telephone:
-        // title = StrRes.tel;
-        // defaultValue = imLogic.userInfo.value.telephone;
-        // keyboardType = TextInputType.phone;
         break;
       case EditAttr.mobile:
         title = StrRes.mobile;

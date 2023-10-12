@@ -68,7 +68,6 @@ class ChatPicturePreview extends StatelessWidget {
         enableSlideOutPage: true,
         initGestureConfigHandler: (ExtendedImageState state) {
           return GestureConfig(
-            //you must set inPageView true if you want to use ExtendedImageGesturePageView
             inPageView: true,
             initialScale: 1.0,
             maxScale: 5.0,
@@ -86,7 +85,7 @@ class ChatPicturePreview extends StatelessWidget {
                         ? loadingProgress!.cumulativeBytesLoaded /
                             loadingProgress.expectedTotalBytes!
                         : null;
-                // CupertinoActivityIndicator()
+
                 return SizedBox(
                   width: 15.0,
                   height: 15.0,
@@ -102,7 +101,6 @@ class ChatPicturePreview extends StatelessWidget {
             case LoadState.completed:
               return null;
             case LoadState.failed:
-              // remove memory cached
               state.imageProvider.evict();
               return ImageRes.pictureError.toImage;
           }

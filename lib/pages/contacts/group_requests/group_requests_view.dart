@@ -28,7 +28,6 @@ class GroupRequestsPage extends StatelessWidget {
   Widget _buildItemView(GroupApplicationInfo info) {
     final isISendRequest = info.userID == OpenIM.iMManager.userID;
     return Container(
-      // height: 68.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: Styles.c_FFFFFF,
@@ -100,7 +99,6 @@ class GroupRequestsPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                      // 4.verticalSpace,
                       if (null != IMUtils.emptyStrToNull(info.reqMsg))
                         Padding(
                           padding: EdgeInsets.only(top: 4.h),
@@ -116,7 +114,7 @@ class GroupRequestsPage extends StatelessWidget {
               ],
             ),
           ),
-          if (/*info.handleResult == 0 && */ isISendRequest)
+          if (isISendRequest)
             ImageRes.sendRequests.toImage
               ..width = 20.w
               ..height = 20.h,

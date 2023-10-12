@@ -40,7 +40,6 @@ class SendVerificationApplicationPage extends StatelessWidget {
                 color: Styles.c_FFFFFF,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 child: TextField(
-                  // expands: true,
                   controller: logic.inputCtrl,
                   autofocus: true,
                   maxLines: 10,

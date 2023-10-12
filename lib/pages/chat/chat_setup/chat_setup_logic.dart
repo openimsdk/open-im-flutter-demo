@@ -8,15 +8,12 @@ import '../../../routes/app_navigator.dart';
 import '../chat_logic.dart';
 
 class ChatSetupLogic extends GetxController {
-  // final chatLogic = Get.find<ChatLogic>();
   final chatLogic = Get.find<ChatLogic>(tag: GetTags.chat);
   final appLogic = Get.find<AppController>();
   final imLogic = Get.find<IMController>();
   late Rx<ConversationInfo> conversationInfo;
 
   String get conversationID => conversationInfo.value.conversationID;
-
-
 
   @override
   void onClose() {

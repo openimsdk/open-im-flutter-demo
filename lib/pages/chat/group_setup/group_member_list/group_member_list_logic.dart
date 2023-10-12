@@ -30,13 +30,11 @@ class GroupMemberListLogic extends GetxController {
   late GroupMemberOpType opType;
   late StreamSubscription mISub;
 
-  /// 多选模式
   bool get isMultiSelMode =>
       opType == GroupMemberOpType.call ||
       opType == GroupMemberOpType.at ||
       opType == GroupMemberOpType.del;
 
-  /// 需要移除自己
   bool get excludeSelfFromList =>
       opType == GroupMemberOpType.call ||
       opType == GroupMemberOpType.at ||
@@ -78,7 +76,6 @@ class GroupMemberListLogic extends GetxController {
       final member = memberList.firstWhereOrNull(equal);
       if (null != member && e.roleLevel != member.roleLevel) {
         member.roleLevel = e.roleLevel;
-        // memberList.refresh();
       }
       memberList.sort((a, b) {
         if (a.roleLevel == b.roleLevel) {
@@ -196,8 +193,6 @@ class GroupMemberListLogic extends GetxController {
       );
 
   void selectEveryone() {
-    // checkedList.add(_buildEveryoneMemberInfo());
-    // confirmSelectedMember();
     Get.back(result: <GroupMembersInfo>[_buildEveryoneMemberInfo()]);
   }
 

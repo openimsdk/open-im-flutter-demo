@@ -4,9 +4,6 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_common/openim_common.dart';
 
 extension MessageManagerExt on MessageManager {
-  /// 通话消息；语音/视频通话
-  /// [ type ] video/voice
-  /// [ state ] 已拒绝/对方已拒绝/已取消/对方已取消/其他
   Future<Message> createCallMessage({
     required String type,
     required String state,
@@ -25,7 +22,6 @@ extension MessageManagerExt on MessageManager {
         description: '',
       );
 
-  /// 自定义表情消息
   Future<Message> createCustomEmojiMessage({
     required String url,
     int? width,
@@ -44,8 +40,6 @@ extension MessageManagerExt on MessageManager {
         description: '',
       );
 
-  /// 根据tag下发通知
-  /// 包含语音内容或文字内容
   Future<Message> createTagMessage({
     String? url,
     int? duration,
@@ -64,7 +58,6 @@ extension MessageManagerExt on MessageManager {
         description: '',
       );
 
-  /// 视频会议
   Future<Message> createMeetingMessage({
     required String inviterUserID,
     required String inviterNickname,
@@ -90,7 +83,6 @@ extension MessageManagerExt on MessageManager {
           extension: '',
           description: '');
 
-  /// 失败提示消息
   Future<Message> createFailedHintMessage({required int type}) =>
       createCustomMessage(
         data: json.encode({
@@ -103,7 +95,6 @@ extension MessageManagerExt on MessageManager {
 }
 
 extension MessageExt on Message {
-  /// 引用消息
   Message? get quoteMessage {
     Message? quoteMsg;
     if (contentType == MessageType.quote) {
@@ -114,7 +105,6 @@ extension MessageExt on Message {
     return quoteMsg;
   }
 
-  /// 群公告消息
   bool get isNoticeType {
     final isGroupNtf = contentType! == MessageType.groupInfoSetNotification;
     if (isGroupNtf) {
@@ -144,7 +134,6 @@ extension MessageExt on Message {
     return null;
   }
 
-  /// 通话消息
   bool get isCallType {
     if (isCustomType) {
       try {
@@ -158,7 +147,6 @@ extension MessageExt on Message {
     return false;
   }
 
-  /// 会议消息
   bool get isMeetingType {
     if (isCustomType) {
       try {
@@ -172,7 +160,6 @@ extension MessageExt on Message {
     return false;
   }
 
-  /// 被删好友
   bool get isDeletedByFriendType {
     if (isCustomType) {
       try {
@@ -186,7 +173,6 @@ extension MessageExt on Message {
     return false;
   }
 
-  /// 被拉黑
   bool get isBlockedByFriendType {
     if (isCustomType) {
       try {
@@ -200,7 +186,6 @@ extension MessageExt on Message {
     return false;
   }
 
-  /// 自己定表情
   bool get isEmojiType {
     if (isCustomType) {
       try {
@@ -214,7 +199,6 @@ extension MessageExt on Message {
     return false;
   }
 
-  /// 标签
   bool get isTagType {
     if (isCustomType) {
       try {

@@ -43,38 +43,17 @@ class ChatInputBox extends StatefulWidget {
   State<ChatInputBox> createState() => _ChatInputBoxState();
 }
 
-class _ChatInputBoxState
-    extends State<ChatInputBox> /*with TickerProviderStateMixin */ {
+class _ChatInputBoxState extends State<ChatInputBox> {
   bool _toolsVisible = false;
   bool _emojiVisible = false;
   bool _leftKeyboardButton = false;
   bool _rightKeyboardButton = false;
   bool _sendButtonVisible = false;
 
-  // late AnimationController _controller;
-  // late Animation<double> _animation;
-
-  /// 不可使用时的透明度，如禁言开启
   double get _opacity => (widget.enabled ? 1 : .4);
 
   @override
   void initState() {
-    // _controller = AnimationController(
-    //   duration: const Duration(milliseconds: 200),
-    //   vsync: this,
-    // )..addStatusListener((status) {
-    //     if (status == AnimationStatus.completed) {
-    //       // controller.reverse();
-    //     } else if (status == AnimationStatus.dismissed) {
-    //       // controller.forward();
-    //     }
-    //   });
-    //
-    // _animation = Tween(begin: 1.0, end: 0.0).animate(_controller)
-    //   ..addListener(() {
-    //     setState(() {});
-    //   });
-
     widget.focusNode?.addListener(() {
       if (widget.focusNode!.hasFocus) {
         setState(() {
@@ -90,11 +69,6 @@ class _ChatInputBoxState
       setState(() {
         _sendButtonVisible = widget.controller!.text.isNotEmpty;
       });
-      // if (widget.controller!.text.isEmpty) {
-      //   _controller.reverse();
-      // } else {
-      //   _controller.forward();
-      // }
     });
 
     super.initState();
@@ -102,9 +76,6 @@ class _ChatInputBoxState
 
   @override
   void dispose() {
-    // _controller.dispose();
-    // widget.controller?.dispose();
-    // widget.focusNode?.dispose();
     super.dispose();
   }
 
@@ -118,7 +89,6 @@ class _ChatInputBoxState
             : Column(
                 children: [
                   Container(
-                    // height: 56.h,
                     constraints: BoxConstraints(minHeight: kInputBoxMinHeight),
                     color: Styles.c_F0F2F6,
                     child: Row(
@@ -131,10 +101,6 @@ class _ChatInputBoxState
                                 offstage: _leftKeyboardButton,
                                 child: _textFiled,
                               ),
-                              // Offstage(
-                              //   offstage: !_leftKeyboardButton,
-                              //   child: widget.voiceRecordBar,
-                              // ),
                             ],
                           ),
                         ),
@@ -148,18 +114,6 @@ class _ChatInputBoxState
                           ..opacity = _opacity
                           ..onTap = _sendButtonVisible ? send : toggleToolbox,
                         12.horizontalSpace,
-                        // Visibility(
-                        //   visible: !_leftKeyboardButton || !_rightKeyboardButton,
-                        //   child: Container(
-                        //     width: 60.0.w * (1.0 - _animation.value),
-                        //     margin: EdgeInsets.only(right: 4.w),
-                        //     child: Button(
-                        //       text: StrRes.send,
-                        //       height: 32.h,
-                        //       onTap: send,
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),

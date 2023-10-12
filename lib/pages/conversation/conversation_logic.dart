@@ -41,17 +41,14 @@ class ConversationLogic extends GetxController {
     super.onInit();
   }
 
-  /// 会话列表通过回调更新
   void onChanged(newList) {
     for (var newValue in newList) {
-      // promptSoundOrNotification(newValue);
       list.remove(newValue);
     }
     list.insertAll(0, newList);
     _sortConversationList();
   }
 
-  /// 提示音
   void promptSoundOrNotification(ConversationInfo info) {
     if (imLogic.userInfo.value.globalRecvMsgOpt == 0 &&
         info.recvMsgOpt == 0 &&
@@ -72,12 +69,10 @@ class ConversationLogic extends GetxController {
     return info.conversationID;
   }
 
-  /// 标记会话已读
   void markMessageHasRead(ConversationInfo info) {
     _markMessageHasRead(conversationID: info.conversationID);
   }
 
-  /// 置顶会话
   void pinConversation(ConversationInfo info) async {
     OpenIM.iMManager.conversationManager.pinConversation(
       conversationID: info.conversationID,
@@ -85,7 +80,6 @@ class ConversationLogic extends GetxController {
     );
   }
 
-  /// 删除会话
   void deleteConversation(ConversationInfo info) async {
     await OpenIM.iMManager.conversationManager
         .deleteConversationAndDeleteAllMsg(
@@ -94,12 +88,10 @@ class ConversationLogic extends GetxController {
     list.remove(info);
   }
 
-  /// 根据id移除会话
   void removeConversation(String id) {
     list.removeWhere((e) => e.conversationID == id);
   }
 
-  /// 设置草稿
   void setConversationDraft({required String cid, required String draftText}) {
     OpenIM.iMManager.conversationManager.setConversationDraft(
       conversationID: cid,
@@ -107,11 +99,9 @@ class ConversationLogic extends GetxController {
     );
   }
 
-  /// 会话前缀标签
   String? getPrefixTag(ConversationInfo info) {
     String? prefix;
     try {
-      // 草稿
       if (null != info.draftText && '' != info.draftText) {
         var map = json.decode(info.draftText!);
         String text = map['text'];
@@ -143,7 +133,6 @@ class ConversationLogic extends GetxController {
     return prefix;
   }
 
-  /// 解析消息内容
   String getContent(ConversationInfo info) {
     try {
       if (null != info.draftText && '' != info.draftText) {
@@ -192,7 +181,6 @@ class ConversationLogic extends GetxController {
     return {};
   }
 
-  /// 头像
   String? getAvatar(ConversationInfo info) {
     return info.faceURL;
   }
@@ -201,7 +189,6 @@ class ConversationLogic extends GetxController {
     return info.isGroupChat;
   }
 
-  /// 显示名
   String getShowName(ConversationInfo info) {
     if (info.showName == null || info.showName.isBlank!) {
       return info.userID!;
@@ -209,12 +196,10 @@ class ConversationLogic extends GetxController {
     return info.showName!;
   }
 
-  /// 时间
   String getTime(ConversationInfo info) {
     return IMUtils.getChatTimeline(info.latestMsgSendTime!);
   }
 
-  /// 未读数
   int getUnreadCount(ConversationInfo info) {
     return info.unreadCount ?? 0;
   }
@@ -223,7 +208,6 @@ class ConversationLogic extends GetxController {
     return getUnreadCount(info) > 0;
   }
 
-  /// 判断置顶
   bool isPinned(ConversationInfo info) {
     return info.isPinned!;
   }
@@ -234,8 +218,6 @@ class ConversationLogic extends GetxController {
 
   bool isUserGroup(int index) => list.elementAt(index).isGroupChat;
 
-  /// 草稿
-  /// 聊天页调用，不通过onWillPop事件返回，因为该事件会拦截ios的左滑返回上一页。
   void updateDartText({
     String? conversationID,
     required String text,
@@ -243,7 +225,6 @@ class ConversationLogic extends GetxController {
     if (null != conversationID) tempDraftText[conversationID] = text;
   }
 
-  /// 清空未读消息数
   void _markMessageHasRead({
     String? conversationID,
   }) {
@@ -252,7 +233,6 @@ class ConversationLogic extends GetxController {
     );
   }
 
-  /// 设置草稿
   void _setupDraftText({
     required String conversationID,
     required String oldDraftText,
@@ -262,7 +242,6 @@ class ConversationLogic extends GetxController {
       return;
     }
 
-    /// 保存草稿
     Logger.print('draftText:$newDraftText');
     OpenIM.iMManager.conversationManager.setConversationDraft(
       conversationID: conversationID,
@@ -291,7 +270,6 @@ class ConversationLogic extends GetxController {
       imStatus.value == IMSdkStatus.connectionFailed ||
       imStatus.value == IMSdkStatus.syncFailed;
 
-  /// 自定义会话列表排序规则
   void _sortConversationList() =>
       OpenIM.iMManager.conversationManager.simpleSort(list);
 
@@ -334,7 +312,6 @@ class ConversationLogic extends GetxController {
     return info.isValid;
   }
 
-  // use this if total item count is known
   int scrollListenerWithItemCount() {
     int itemCount = list.length;
     double scrollOffset = scrollController.position.pixels;
@@ -348,9 +325,7 @@ class ConversationLogic extends GetxController {
 
   void scrollTo() {
     if (list.isEmpty) return;
-    // int first = scrollListenerWithItemCount();
-    // int min = visibilityIndex.minOrNull ?? 0;
-    // int start = max(first, min);
+
     int start = scrollListenerWithItemCount();
     if (start < scrollIndex) {
       start = scrollIndex;
@@ -392,19 +367,16 @@ class ConversationLogic extends GetxController {
                 sessionType: sessionType,
               ));
 
-  /// 打开系统通知页面
   Future<bool> _jumpOANtf(ConversationInfo info) async {
     if (info.conversationType == ConversationType.notification) {
-      // 系统通知
       await AppNavigator.startOANtfList(info: info);
-      // 标记已读
+
       _markMessageHasRead(conversationID: info.conversationID);
       return true;
     }
     return false;
   }
 
-  /// 进入聊天页面
   void toChat({
     bool offUntilHome = true,
     String? userID,
@@ -415,26 +387,18 @@ class ConversationLogic extends GetxController {
     ConversationInfo? conversationInfo,
     Message? searchMessage,
   }) async {
-    // 获取会话信息，若不存在则创建
     conversationInfo ??= await _createConversation(
       sourceID: userID ?? groupID!,
       sessionType: userID == null ? sessionType! : ConversationType.single,
     );
 
-    // 标记已读
-    // _markMessageHasRead(conversationID: conversationInfo.conversationID);
-
-    // 如果是系统通知
     if (await _jumpOANtf(conversationInfo)) return;
 
-    // 保存旧草稿
     updateDartText(
       conversationID: conversationInfo.conversationID,
       text: conversationInfo.draftText ?? '',
     );
 
-    // 打开聊天窗口，关闭返回草稿
-    /*var newDraftText = */
     await AppNavigator.startChat(
       offUntilHome: offUntilHome,
       draftText: conversationInfo.draftText,
@@ -442,24 +406,18 @@ class ConversationLogic extends GetxController {
       searchMessage: searchMessage,
     );
 
-    // 读取草稿
     var newDraftText = tempDraftText[conversationInfo.conversationID];
 
-    // 标记已读
     _markMessageHasRead(conversationID: conversationInfo.conversationID);
 
-    // 记录草稿
     _setupDraftText(
       conversationID: conversationInfo.conversationID,
       oldDraftText: conversationInfo.draftText ?? '',
       newDraftText: newDraftText!,
     );
 
-    // 回到会话列表
-    // homeLogic.switchTab(0);
-
     bool equal(e) => e.conversationID == conversationInfo?.conversationID;
-    // 删除所有@标识/公告标识
+
     var groupAtType = list.firstWhereOrNull(equal)?.groupAtType;
     if (groupAtType != GroupAtType.atNormal) {
       OpenIM.iMManager.conversationManager.resetConversationGroupAtType(

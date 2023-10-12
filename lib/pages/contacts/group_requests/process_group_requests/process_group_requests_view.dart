@@ -39,7 +39,6 @@ class ProcessGroupRequestsPage extends StatelessWidget {
                   children: [
                     (logic.applicationInfo.nickname ?? '').toText
                       ..style = Styles.ts_0C1C33_17sp,
-                    // if (!logic.isInvite)
                     RichText(
                       text: TextSpan(
                         text: StrRes.applyJoin,
@@ -53,35 +52,6 @@ class ProcessGroupRequestsPage extends StatelessWidget {
                         ],
                       ),
                     )
-                    // else
-                    //   RichText(
-                    //     text: TextSpan(
-                    //       text: logic.getInviterNickname(),
-                    //       style: Styles.ts_0089FF_14sp,
-                    //       children: [
-                    //         WidgetSpan(child: 2.horizontalSpace),
-                    //         TextSpan(
-                    //           text: StrRes.invite,
-                    //           style: Styles.ts_8E9AB0_14sp,
-                    //         ),
-                    //         WidgetSpan(child: 2.horizontalSpace),
-                    //         TextSpan(
-                    //           text: logic.applicationInfo.nickname,
-                    //           style: Styles.ts_0089FF_14sp,
-                    //         ),
-                    //         WidgetSpan(child: 2.horizontalSpace),
-                    //         TextSpan(
-                    //           text: StrRes.joinIn,
-                    //           style: Styles.ts_8E9AB0_14sp,
-                    //         ),
-                    //         WidgetSpan(child: 2.horizontalSpace),
-                    //         TextSpan(
-                    //           text: logic.groupName,
-                    //           style: Styles.ts_0089FF_14sp,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
                   ],
                 ),
               ],

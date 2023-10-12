@@ -125,7 +125,6 @@ class AvatarView extends StatelessWidget {
         child: _nineGridColumn(),
       );
 
-  /// 9宫格列
   Widget _nineGridColumn() {
     double width = 0.0;
     double margin = 2.0;
@@ -210,7 +209,6 @@ class AvatarView extends StatelessWidget {
     );
   }
 
-  /// 9宫格行
   Widget _nineGridRow({
     required int length,
     required int start,

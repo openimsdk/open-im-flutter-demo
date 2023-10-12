@@ -23,18 +23,14 @@ class QrcodeView extends StatefulWidget {
 class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
   final _picker = ImagePicker();
 
-  // Barcode? result;
   QRViewController? controller;
 
-  // Stream? stream;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   AnimationController? _animationController;
   Timer? _timer;
   var scanArea = 300.w;
   var cutOutBottomOffset = 40.h;
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
@@ -57,7 +53,6 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // stream?.cancel();
     controller?.dispose();
     _clearAnimation();
     super.dispose();
@@ -212,14 +207,6 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       );
 
   Widget _buildQrView() {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    // var scanArea = 300.w;
-    // var scanArea = (MediaQuery.of(context).size.width < 400.w ||
-    //     MediaQuery.of(context).size.height < 400)
-    //     ? 150.0
-    //     : 300.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -239,8 +226,6 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       this.controller = controller;
     });
 
-    // call resumeCamera fucntion
-    // controller.resumeCamera();
     if (Platform.isAndroid) {
       controller.resumeCamera();
     }
@@ -248,10 +233,6 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
     this.controller?.scannedDataStream.asBroadcastStream().listen((scanData) {
       if (!mounted) return;
       _parse(scanData.code);
-      // result = scanData;
-      // setState(() {
-      // Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}
-      // });
     });
   }
 
@@ -261,15 +242,12 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       if (result.startsWith(Config.friendScheme)) {
         var userID = result.substring(Config.friendScheme.length);
         PackageBridge.scanBridge?.scanOutUserID(userID);
-        // AppNavigator.startFriendInfoFromScan(info: UserInfo(userID: uid));
       } else if (result.startsWith(Config.groupScheme)) {
         var groupID = result.substring(Config.groupScheme.length);
         PackageBridge.scanBridge?.scanOutGroupID(groupID);
-        // AppNavigator.startSearchAddGroupFromScan(info: GroupInfo(groupID: gid));
       } else if (IMUtils.isUrlValid(result)) {
         final uri = Uri.parse(Uri.encodeFull(result));
         if (!await launchUrl(uri)) {
-          // throw Exception('Could not launch $uri');
           IMViews.showToast('无法识别!');
           controller?.resumeCamera();
         }
@@ -285,8 +263,6 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
-    if (!p) {
-      //no Permission
-    }
+    if (!p) {}
   }
 }

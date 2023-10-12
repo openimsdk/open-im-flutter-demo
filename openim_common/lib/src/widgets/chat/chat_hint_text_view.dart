@@ -20,7 +20,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.groupCreatedNotification:
         {
           final ntf = GroupNotification.fromJson(map);
-          // a 创建了群聊
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -38,7 +38,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.groupInfoSetNotification:
         {
           final ntf = GroupNotification.fromJson(map);
-          // a 修改了群资料
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -56,7 +56,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.memberQuitNotification:
         {
           final ntf = QuitGroupNotification.fromJson(map);
-          // a 退出了群聊
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -76,11 +76,6 @@ class ChatHintTextView extends StatelessWidget {
           final aMap = <String, String>{};
           final bMap = <String, String>{};
           final ntf = InvitedJoinGroupNotification.fromJson(map);
-          // final a = IMUtils.getGroupMemberShowName(ntf.opUser!);
-          // final b = ntf.invitedUserList
-          //     ?.map((e) => IMUtils.getGroupMemberShowName(e))
-          //     .toList()
-          //     .join('、');
 
           aMap[ntf.opUser!.userID!] =
               IMUtils.getGroupMemberShowName(ntf.opUser!);
@@ -97,7 +92,6 @@ class ChatHintTextView extends StatelessWidget {
           final List<InlineSpan> children = <InlineSpan>[];
           text.splitMapJoin(
             RegExp(pattern),
-            // RegExp('($a|$b)'),
             onMatch: (match) {
               final text = match[0]!;
               final value = aMap[text] ?? bMap[text] ?? '';
@@ -109,7 +103,7 @@ class ChatHintTextView extends StatelessWidget {
               return '';
             },
           );
-          // a 邀请 b 加入群聊
+
           return RichText(
             text: TextSpan(children: children),
             textAlign: TextAlign.center,
@@ -120,12 +114,6 @@ class ChatHintTextView extends StatelessWidget {
           final aMap = <String, String>{};
           final bMap = <String, String>{};
           final ntf = KickedGroupMemeberNotification.fromJson(map);
-          // final a = IMUtils.getGroupMemberShowName(ntf.opUser!);
-          // final a = ntf.opUser!.userID;
-          // final b = ntf.kickedUserList
-          //     ?.map((e) => IMUtils.getGroupMemberShowName(e))
-          //     .toList()
-          //     .join('、');
 
           aMap[ntf.opUser!.userID!] =
               IMUtils.getGroupMemberShowName(ntf.opUser!);
@@ -142,7 +130,6 @@ class ChatHintTextView extends StatelessWidget {
           final List<InlineSpan> children = <InlineSpan>[];
           text.splitMapJoin(
             RegExp(pattern),
-            // RegExp('($a|$b)'),
             onMatch: (match) {
               final text = match[0]!;
               final value = aMap[text] ?? bMap[text] ?? '';
@@ -154,7 +141,7 @@ class ChatHintTextView extends StatelessWidget {
               return '';
             },
           );
-          // b 被 a 移出群聊
+
           return RichText(
             text: TextSpan(children: children),
             textAlign: TextAlign.center,
@@ -163,7 +150,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.memberEnterNotification:
         {
           final ntf = EnterGroupNotification.fromJson(map);
-          // a 加入了群聊
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -181,7 +168,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.dismissGroupNotification:
         {
           final ntf = GroupNotification.fromJson(map);
-          // a 解散了群聊
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -215,7 +202,7 @@ class ChatHintTextView extends StatelessWidget {
               return '';
             },
           );
-          // a 将群转让给了 b
+
           return RichText(
             text: TextSpan(children: children),
             textAlign: TextAlign.center,
@@ -241,7 +228,7 @@ class ChatHintTextView extends StatelessWidget {
               return '';
             },
           );
-          // b 被 a 禁言c小时
+
           return RichText(
             text: TextSpan(children: children),
             textAlign: TextAlign.center,
@@ -266,7 +253,7 @@ class ChatHintTextView extends StatelessWidget {
               return '';
             },
           );
-          //  b 被 a 取消了禁言
+
           return RichText(
             text: TextSpan(children: children),
             textAlign: TextAlign.center,
@@ -275,7 +262,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.groupMutedNotification:
         {
           final ntf = MuteMemberNotification.fromJson(map);
-          // a 开起了群禁言
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -293,7 +280,7 @@ class ChatHintTextView extends StatelessWidget {
       case MessageType.groupCancelMutedNotification:
         {
           final ntf = MuteMemberNotification.fromJson(map);
-          // a 关闭了群禁言
+
           return RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -310,13 +297,12 @@ class ChatHintTextView extends StatelessWidget {
         }
       case MessageType.friendApplicationApprovedNotification:
         {
-          // 你们已成为好友
           return StrRes.friendAddedNtf.toText..style = Styles.ts_8E9AB0_12sp;
         }
       case MessageType.burnAfterReadingNotification:
         {
           final ntf = BurnAfterReadingNotification.fromJson(map);
-          // 开启私聊/关闭私聊
+
           return (ntf.isPrivate == true
                   ? StrRes.openPrivateChatNtf
                   : StrRes.closePrivateChatNtf)
@@ -325,7 +311,7 @@ class ChatHintTextView extends StatelessWidget {
         }
       case MessageType.groupMemberInfoChangedNotification:
         final ntf = GroupMemberInfoChangedNotification.fromJson(map);
-        // a编辑了自己的群成员资料
+
         return RichText(
           textAlign: TextAlign.center,
           text: TextSpan(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 
-/// 好友关系异常提示
 class ChatFriendRelationshipAbnormalHintView extends StatelessWidget {
   const ChatFriendRelationshipAbnormalHintView({
     Key? key,

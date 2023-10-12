@@ -35,7 +35,6 @@ class ChatLogic extends GetxController {
   final scrollController = ScrollController();
   final refreshController = RefreshController();
 
-  // final clickSubject = PublishSubject<Message>();
   final forceCloseToolbox = PublishSubject<bool>();
   final forceCloseMenuSub = PublishSubject<bool>();
   final sendStatusSub = PublishSubject<MsgStreamEv<bool>>();
@@ -65,7 +64,6 @@ class ChatLogic extends GetxController {
   GroupInfo? groupInfo;
   GroupMembersInfo? groupMembersInfo;
 
-  // sdk的isNotInGroup不能用
   final isInGroup = true.obs;
   final memberCount = 0.obs;
   final isInBlacklist = false.obs;
@@ -82,12 +80,8 @@ class ChatLogic extends GetxController {
   late StreamSubscription connectionSub;
   final syncStatus = IMSdkStatus.syncEnded.obs;
 
-  // late StreamSubscription signalingMessageSub;
-
-  /// super group
   int? lastMinSeq;
 
-  /// 同步中收到了新消息
   bool _isReceivedMessageWhenSyncing = false;
   bool _isStartSyncing = false;
   bool _isFirstLoad = false;
@@ -102,16 +96,14 @@ class ChatLogic extends GetxController {
 
   bool get isGroupChat => null != groupID && groupID!.trim().isNotEmpty;
 
-  /// 是当前聊天窗口
   bool isCurrentChat(Message message) {
     var senderId = message.sendID;
     var receiverId = message.recvID;
     var groupId = message.groupID;
-    // var sessionType = message.sessionType;
+
     var isCurSingleChat = message.isSingleChat &&
         isSingleChat &&
         (senderId == userID ||
-            // 其他端当前登录用户向uid发送的消息
             senderId == OpenIM.iMManager.userID && receiverId == userID);
     var isCurGroupChat =
         message.isGroupChat && isGroupChat && groupID == groupId;
@@ -128,7 +120,7 @@ class ChatLogic extends GetxController {
   void onReady() {
     _checkInBlacklist();
     _isJoinedGroup();
-    // _queryMyGroupMemberInfo();
+
     super.onReady();
   }
 
@@ -141,27 +133,20 @@ class ChatLogic extends GetxController {
     faceUrl.value = conversationInfo.faceURL ?? '';
 
     _setSdkSyncDataListener();
-    // 获取在线状态
-    // _startQueryOnlineStatus();
-    // 新增消息监听
+
     imLogic.onRecvNewMessage = (Message message) {
-      // 如果是当前窗口的消息
       if (isCurrentChat(message)) {
-        // 对方正在输入消息
         if (message.contentType == MessageType.typing) {
           if (message.typingElem?.msgTips == 'yes') {
-            // 对方正在输入
             if (null == typingTimer) {
               typing.value = true;
               typingTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-                // 两秒后取消定时器
                 typing.value = false;
                 typingTimer?.cancel();
                 typingTimer = null;
               });
             }
           } else {
-            // 对方停止输入
             typing.value = false;
             typingTimer?.cancel();
             typingTimer = null;
@@ -176,35 +161,22 @@ class ChatLogic extends GetxController {
               messageList.add(message);
               scrollBottom();
             }
-            // ios 退到后台再次唤醒消息乱序
-            // messageList.sort((a, b) {
-            //   if (a.sendTime! > b.sendTime!) {
-            //     return 1;
-            //   } else if (a.sendTime! > b.sendTime!) {
-            //     return -1;
-            //   } else {
-            //     return 0;
-            //   }
-            // });
           }
         }
       }
     };
 
-    // 已被撤回消息监听（新版本）
     imLogic.onRecvMessageRevoked = (RevokedInfo info) {
       var message = messageList
           .firstWhereOrNull((e) => e.clientMsgID == info.clientMsgID);
       message?.notificationElem = NotificationElem(detail: jsonEncode(info));
       message?.contentType = MessageType.revokeMessageNotification;
-      // message?.content = jsonEncode(info);
-      // message?.contentType = MessageType.advancedRevoke;
 
       if (null != message) {
         messageList.refresh();
       }
     };
-    // 消息已读回执监听
+
     imLogic.onRecvC2CReadReceipt = (List<ReadReceiptInfo> list) {
       try {
         for (var readInfo in list) {
@@ -220,7 +192,7 @@ class ChatLogic extends GetxController {
         messageList.refresh();
       } catch (e) {}
     };
-    // 消息已读回执监听
+
     imLogic.onRecvGroupReadReceipt = (List<ReadReceiptInfo> list) {
       try {
         for (var readInfo in list) {
@@ -239,7 +211,7 @@ class ChatLogic extends GetxController {
         messageList.refresh();
       } catch (e) {}
     };
-    // 消息发送进度
+
     imLogic.onMsgSendProgress = (String msgId, int progress) {
       sendProgressSub.addSafely(
         MsgStreamEv<int>(id: msgId, value: progress),
@@ -260,7 +232,6 @@ class ChatLogic extends GetxController {
       }
     });
 
-    // 有新成员进入
     memberAddSub = imLogic.memberAddedSubject.listen((info) {
       var groupId = info.groupID;
       if (groupId == groupID) {
@@ -275,7 +246,6 @@ class ChatLogic extends GetxController {
       }
     });
 
-    // 成员信息改变
     memberInfoChangedSub = imLogic.memberInfoChangedSubject.listen((info) {
       if (info.groupID == groupID) {
         if (info.userID == OpenIM.iMManager.userID) {
@@ -285,7 +255,6 @@ class ChatLogic extends GetxController {
       }
     });
 
-    // 群信息变化
     groupInfoUpdatedSub = imLogic.groupInfoUpdatedSubject.listen((value) {
       if (groupID == value.groupID) {
         nickname.value = value.groupName ?? '';
@@ -294,19 +263,13 @@ class ChatLogic extends GetxController {
       }
     });
 
-    // 好友信息变化
     friendInfoChangedSub = imLogic.friendInfoChangedSubject.listen((value) {
       if (userID == value.userID) {
         nickname.value = value.getShowName();
         faceUrl.value = value.faceURL ?? '';
       }
     });
-    // 自定义消息点击事件
-    // clickSubject.listen((Message message) {
-    //   parseClickEvent(message);
-    // });
 
-    // 输入框监听
     inputCtrl.addListener(() {
       intervalSendTypingMsg.run(
         fuc: () => sendTypingMsg(focus: true),
@@ -315,7 +278,6 @@ class ChatLogic extends GetxController {
       clearCurAtMap();
     });
 
-    // 输入框聚焦
     focusNode.addListener(() {
       _lastCursorIndex = inputCtrl.selection.start;
       focusNodeChanged(focusNode.hasFocus);
@@ -332,7 +294,6 @@ class ChatLogic extends GetxController {
     curMsgAtUser.removeWhere((uid) => !inputCtrl.text.contains('@$uid '));
   }
 
-  /// 记录群成员信息
   void _putMemberInfo(List<GroupMembersInfo>? list) {
     list?.forEach((member) {
       _setAtMapping(
@@ -342,15 +303,12 @@ class ChatLogic extends GetxController {
       );
       memberUpdateInfoMap[member.userID!] = member;
     });
-    // 更新群成员信息
+
     messageList.refresh();
     atUserNameMappingMap[OpenIM.iMManager.userID] = StrRes.you;
     atUserInfoMappingMap[OpenIM.iMManager.userID] = OpenIM.iMManager.userInfo;
-
-    // DataSp.putAtUserMap(groupID!, atUserNameMappingMap);
   }
 
-  /// 发送文字内容，包含普通内容，引用回复内容，@内容
   void sendTextMsg() async {
     var content = IMUtils.safeTrim(inputCtrl.text);
     if (content.isEmpty) return;
@@ -361,7 +319,6 @@ class ChatLogic extends GetxController {
             groupNickname: atUserNameMappingMap[id],
           );
 
-      // 发送 @ 消息
       message = await OpenIM.iMManager.messageManager.createTextAtMessage(
         text: content,
         atUserIDList: curMsgAtUser,
@@ -369,13 +326,11 @@ class ChatLogic extends GetxController {
         quoteMessage: quoteMsg,
       );
     } else if (quoteMsg != null) {
-      // 发送引用消息
       message = await OpenIM.iMManager.messageManager.createQuoteMessage(
         text: content,
         quoteMsg: quoteMsg!,
       );
     } else {
-      // 发送普通消息
       message = await OpenIM.iMManager.messageManager.createTextMessage(
         text: content,
       );
@@ -383,7 +338,6 @@ class ChatLogic extends GetxController {
     _sendMessage(message);
   }
 
-  /// 发送图片
   void sendPicture({required String path}) async {
     var message =
         await OpenIM.iMManager.messageManager.createImageMessageFromFullPath(
@@ -392,7 +346,6 @@ class ChatLogic extends GetxController {
     _sendMessage(message);
   }
 
-  ///  发送视频
   void sendVideo({
     required String videoPath,
     required String mimeType,
@@ -409,7 +362,6 @@ class ChatLogic extends GetxController {
     _sendMessage(message);
   }
 
-  /// 提示对方正在输入
   void sendTypingMsg({bool focus = false}) async {
     if (isSingleChat) {
       OpenIM.iMManager.messageManager.typingStatusUpdate(
@@ -432,14 +384,13 @@ class ChatLogic extends GetxController {
         userId == userID && userId != null ||
         groupId == groupID && groupId != null) {
       if (addToUI) {
-        // 失败重复不需要添加到ui
         messageList.add(message);
         scrollBottom();
       }
     }
     Logger.print('uid:$userID userId:$userId gid:$groupID groupId:$groupId');
     _reset(message);
-    // 借用当前聊天窗口，给其他用户或群发送信息，如合并转发，分享名片。
+
     bool useOuterValue = null != userId || null != groupId;
     OpenIM.iMManager.messageManager
         .sendMessage(
@@ -453,10 +404,9 @@ class ChatLogic extends GetxController {
         .whenComplete(() => _completed());
   }
 
-  ///  消息发送成功
   void _sendSucceeded(Message oldMsg, Message newMsg) {
     Logger.print('message send success----');
-    // message.status = MessageStatus.succeeded;
+
     oldMsg.update(newMsg);
     sendStatusSub.addSafely(MsgStreamEv<bool>(
       id: oldMsg.clientMsgID!,
@@ -464,7 +414,6 @@ class ChatLogic extends GetxController {
     ));
   }
 
-  ///  消息发送失败
   void _senFailed(Message message, String? groupId, error, stack) async {
     Logger.print('message send failed e :$error  $stack');
     message.status = MessageStatus.failed;
@@ -495,7 +444,8 @@ class ChatLogic extends GetxController {
         }
       } else {
         if ((code == SDKErrorCode.userIsNotInGroup ||
-            code == SDKErrorCode.groupDisbanded) && null == groupId) {
+                code == SDKErrorCode.groupDisbanded) &&
+            null == groupId) {
           final status = groupInfo?.status;
           final hintMessage = (await OpenIM.iMManager.messageManager
               .createFailedHintMessage(
@@ -523,15 +473,10 @@ class ChatLogic extends GetxController {
     }
   }
 
-  /// todo
   void _completed() {
     messageList.refresh();
-    // setQuoteMsg(-1);
-    // closeMultiSelMode();
-    // inputCtrl.clear();
   }
 
-  /// 打开相册
   void onTapAlbum() async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       Get.context!,
@@ -543,7 +488,6 @@ class ChatLogic extends GetxController {
     }
   }
 
-  /// 打开相机
   void onTapCamera() async {
     var resolutionPreset = ResolutionPreset.max;
     if (Platform.isAndroid) {
@@ -573,48 +517,9 @@ class ChatLogic extends GetxController {
       switch (asset.type) {
         case AssetType.image:
           sendPicture(path: path);
-          // Uint8List? editedImage;
-          // if (!path.endsWith('.gif')) {
-          //   final data = await asset.originBytes;
-          //   editedImage = await Get.to(() => ImageEditor(image: data));
-          // }
-          // if (null == editedImage) {
-          //   sendPicture(path: path);
-          // } else {
-          //   try {
-          //     final result = await ImageGallerySaver.saveImage(editedImage);
-          //     final filePath = await IMUtil.toFilePath(result['filePath']);
-          //     sendPicture(path: filePath);
-          //   } catch (e, s) {
-          //     log('e:$e  s:$s');
-          //     sendPicture(path: path);
-          //   }
-          // }
+
           break;
         case AssetType.video:
-          // var trulyW = asset.width;
-          // var trulyH = asset.height;
-          // var scaleW = 100.w;
-          // var scaleH = scaleW * trulyH / trulyW;
-          // var data = await asset.thumbnailDataWithSize(
-          //   ThumbnailSize(scaleW.toInt(), scaleH.toInt()),
-          // );
-          // final result = await ImageGallerySaver.saveImage(
-          //   data!,
-          //   isReturnImagePathOfIOS: true,
-          //   quality: 100,
-          // );
-          // var thumbnailPath = result['filePath'];
-          // const filePrefix = 'file://';
-          // const uriPrefix = 'content://';
-          // if ('$thumbnailPath'.contains(filePrefix)) {
-          //   thumbnailPath = thumbnailPath.substring(filePrefix.length);
-          // } else if ('$thumbnailPath'.contains(uriPrefix)) {
-          //   // Uri uri = Uri.parse(thumbnailPath); // Parsing uri string to uri
-          //   File file = await toFile(thumbnailPath);
-          //   thumbnailPath = file.path;
-          // }
-          // var mediaInfo = await VideoCompress.getMediaInfo(videoPath);
           var thumbnailFile = await VideoCompress.getFileThumbnail(
             path,
             quality: 85,
@@ -623,10 +528,9 @@ class ChatLogic extends GetxController {
             videoPath: path,
             mimeType: asset.mimeType ?? IMUtils.getMediaType(path) ?? '',
             duration: asset.duration,
-            // duration: mediaInfo.duration?.toInt() ?? 0,
             thumbnailPath: thumbnailFile.path,
           );
-          // sendVoice(duration: asset.duration, path: path);
+
           break;
         default:
           break;
@@ -634,7 +538,6 @@ class ChatLogic extends GetxController {
     }
   }
 
-  /// 处理消息点击事件
   void parseClickEvent(Message msg) async {
     log('parseClickEvent:${jsonEncode(msg)}');
     if (msg.contentType == MessageType.custom) {
@@ -642,8 +545,7 @@ class ChatLogic extends GetxController {
       var map = json.decode(data!);
       var customType = map['customType'];
       if (CustomMessageType.call == customType && !isInBlacklist.value) {
-      } else if (CustomMessageType.meeting == customType) {
-      }
+      } else if (CustomMessageType.meeting == customType) {}
       return;
     }
     if (msg.contentType == MessageType.voice) {
@@ -656,10 +558,7 @@ class ChatLogic extends GetxController {
     );
   }
 
-
-  /// 群聊天长按头像为@用户
-  void onLongPressLeftAvatar(Message message) {
-  }
+  void onLongPressLeftAvatar(Message message) {}
 
   void onTapLeftAvatar(Message message) {
     viewUserInfo(UserInfo()
@@ -682,12 +581,10 @@ class ChatLogic extends GetxController {
     );
   }
 
-  /// 生成草稿draftText
   String createDraftText() {
     return json.encode({});
   }
 
-  /// 退出界面前处理
   exit() async {
     Get.back(result: createDraftText());
     return true;
@@ -717,7 +614,7 @@ class ChatLogic extends GetxController {
   void onClose() {
     inputCtrl.dispose();
     focusNode.dispose();
-    // clickSubject.close();
+
     forceCloseToolbox.close();
     sendStatusSub.close();
     sendProgressSub.close();
@@ -727,13 +624,12 @@ class ChatLogic extends GetxController {
     memberInfoChangedSub.cancel();
     groupInfoUpdatedSub.cancel();
     friendInfoChangedSub.cancel();
-    // signalingMessageSub?.cancel();
+
     forceCloseMenuSub.close();
     joinedGroupAddedSub.cancel();
     joinedGroupDeletedSub.cancel();
     connectionSub.cancel();
-    // onlineStatusTimer?.cancel();
-    // destroyMsg();
+
     super.onClose();
   }
 
@@ -756,7 +652,6 @@ class ChatLogic extends GetxController {
           ? '${nickname.value}(${memberCount.value})'
           : nickname.value);
 
-  /// 失败重发
   void failedResend(Message message) {
     sendStatusSub.addSafely(MsgStreamEv<bool>(
       id: message.clientMsgID!,
@@ -765,33 +660,8 @@ class ChatLogic extends GetxController {
     _sendMessage(message..status = MessageStatus.sending, addToUI: false);
   }
 
-  /// 计算这条消息应该被阅读的人数
-  // int getNeedReadCount(Message message) {
-  //   if (isSingleChat) return 0;
-  //   return groupMessageReadMembers[message.clientMsgID!]?.length ??
-  //       _calNeedReadCount(message);
-  // }
-
-  /// 1，排除自己
-  /// 2，获取比消息发送时间早的入群成员数
-  // int _calNeedReadCount(Message message) {
-  //   memberList.values.forEach((element) {
-  //     if (element.userID != OpenIM.iMManager.uid) {
-  //       if ((element.joinTime! * 1000) < message.sendTime!) {
-  //         var list = groupMessageReadMembers[message.clientMsgID!] ?? [];
-  //         if (!list.contains(element.userID)) {
-  //           groupMessageReadMembers[message.clientMsgID!] = list
-  //             ..add(element.userID!);
-  //         }
-  //       }
-  //     }
-  //   });
-  //   return groupMessageReadMembers[message.clientMsgID!]?.length ?? 0;
-  // }
-
   static int get _timestamp => DateTime.now().millisecondsSinceEpoch;
 
-  /// 获取个人群资料
   void _queryMyGroupMemberInfo() async {
     if (isGroupChat) {
       var list = await OpenIM.iMManager.groupManager.getGroupMembersInfo(
@@ -816,13 +686,8 @@ class ChatLogic extends GetxController {
     }
   }
 
-  /// 获取群资料
   void _queryGroupInfo() async {
     if (isGroupChat) {
-      // final isJoinedGroup = await OpenIM.iMManager.groupManager.isJoinedGroup(
-      //   groupID: groupID!,
-      // );
-      // if (!isJoinedGroup) return;
       var list = await OpenIM.iMManager.groupManager.getGroupsInfo(
         groupIDList: [groupID!],
       );
@@ -833,33 +698,16 @@ class ChatLogic extends GetxController {
     }
   }
 
-  /// 禁言权限
-  /// 1普通成员, 2群主，3管理员
   bool get havePermissionMute =>
-      isGroupChat &&
-      (groupInfo?.ownerUserID ==
-          OpenIM.iMManager
-              .userID /*||
-          groupMembersInfo?.roleLevel == 2*/
-      );
+      isGroupChat && (groupInfo?.ownerUserID == OpenIM.iMManager.userID);
 
-  /// 通知类型消息
   bool isNotificationType(Message message) => message.contentType! >= 1000;
 
   Map<String, String> getAtMapping(Message message) {
     return {};
   }
 
-  /// 搜索定位消息位置
-  void lockMessageLocation(Message message) {
-    // var upList = list.sublist(0, 15);
-    // var downList = list.sublist(15);
-    // messageList.assignAll(downList);
-    // WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-    //   scrollController.jumpTo(scrollController.position.maxScrollExtent - 50);
-    //   messageList.insertAll(0, upList);
-    // });
-  }
+  void lockMessageLocation(Message message) {}
 
   void _checkInBlacklist() async {
     if (userID != null) {
@@ -880,15 +728,12 @@ class ChatLogic extends GetxController {
       nickname: nickname,
       faceURL: faceURL,
     );
-    // DataSp.putAtUserMap(groupID!, atUserNameMappingMap);
   }
 
-  /// 未超过24小时
   bool isExceed24H(Message message) {
     int milliseconds = message.sendTime!;
     return !DateUtil.isToday(milliseconds);
   }
-
 
   String? getNewestNickname(Message message) {
     if (isSingleChat) null;
@@ -902,12 +747,10 @@ class ChatLogic extends GetxController {
 
   bool get isInvalidGroup => !isInGroup.value && isGroupChat;
 
-  /// 公告或其他通知以消息类型显示
   bool isNoticeMessage(Message message) => message.contentType! > 1000;
 
   void joinGroupCalling() async {}
 
-  /// 当滚动位置处于底部时，将新镇的消息放入列表里
   void onScrollToTop() {
     if (scrollingCacheMessageList.isNotEmpty) {
       messageList.addAll(scrollingCacheMessageList);
@@ -942,11 +785,11 @@ class ChatLogic extends GetxController {
   void _setSdkSyncDataListener() {
     connectionSub = imLogic.imSdkStatusSubject.listen((value) {
       syncStatus.value = value;
-      // -1 链接失败 0 链接中 1 链接成功 2 同步开始 3 同步结束 4 同步错误
+
       if (value == IMSdkStatus.syncStart) {
         _isStartSyncing = true;
       } else if (value == IMSdkStatus.syncEnded) {
-        if (/*_isReceivedMessageWhenSyncing &&*/ _isStartSyncing) {
+        if (_isStartSyncing) {
           _isReceivedMessageWhenSyncing = false;
           _isStartSyncing = false;
           _isFirstLoad = true;

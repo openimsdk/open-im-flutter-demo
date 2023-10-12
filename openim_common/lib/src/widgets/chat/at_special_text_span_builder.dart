@@ -8,8 +8,6 @@ typedef AtTextCallback = Function(String showText, String actualText);
 class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   final AtTextCallback? atCallback;
 
-  /// key:userid
-  /// value:username
   final Map<String, String> allAtMap;
   final TextStyle? atStyle;
 
@@ -29,9 +27,7 @@ class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     if (kIsWeb) {
       return TextSpan(text: data, style: textStyle);
     }
-    // if (allAtMap.isEmpty) {
-    //   return TextSpan(text: data, style: textStyle);
-    // }
+
     final List<InlineSpan> children = <InlineSpan>[];
 
     var regexEmoji = emojiFaces.keys
@@ -48,7 +44,6 @@ class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
     data.splitMapJoin(
       RegExp(pattern),
-      // RegExp(r"(@\S+\s)"),
       onMatch: (Match m) {
         late InlineSpan inlineSpan;
         String value = m.group(0)!;
@@ -57,12 +52,7 @@ class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
             String id = value.replaceFirst("@", "").trim();
             if (allAtMap.containsKey(id)) {
               var name = allAtMap[id]!;
-              // inlineSpan = ExtendedWidgetSpan(
-              //   child: Text('@$name ', style: atStyle),
-              //   style: atStyle,
-              //   actualText: '$value',
-              //   start: m.start,
-              // );
+
               inlineSpan = SpecialTextSpan(
                 text: '@$name ',
                 actualText: value,
@@ -82,17 +72,7 @@ class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
               style: atStyle,
             );
             buffer.write('@${StrRes.everyone} ');
-          }
-          /*else if (emojiReg.hasMatch(value)) {
-            inlineSpan = ImageSpan(
-              ImageUtil.emojiImage(value),
-              imageWidth: atStyle!.fontSize!,
-              imageHeight: atStyle!.fontSize!,
-              start: m.start,
-              actualText: value,
-            );
-          }*/
-          else {
+          } else {
             inlineSpan = TextSpan(text: value, style: textStyle);
             buffer.write(value);
           }

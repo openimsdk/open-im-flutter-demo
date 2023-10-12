@@ -69,7 +69,7 @@ class UserProfilePanelLogic extends GetxController {
         });
       }
     });
-    // 禁言时间被改变，或群成员资料改变
+
     _memberInfoChangedSub = imLogic.memberInfoChangedSubject.listen((value) {
       if (value.userID == userInfo.value.userID) {
         groupUserNickname.value = value.nickname ?? '';
@@ -83,14 +83,12 @@ class UserProfilePanelLogic extends GetxController {
     _getUsersInfo();
     _queryGroupInfo();
     _queryGroupMemberInfo();
-    // _queryUserOnlineStatus();
+
     super.onReady();
   }
 
-  /// 是当前登录用户的资料页
   bool get isMyself => userInfo.value.userID == OpenIM.iMManager.userID;
 
-  /// 当前是群成员资料页面
   bool get isGroupMemberPage => null != groupID && groupID!.isNotEmpty;
 
   bool get isFriendship => userInfo.value.isFriendship == true;
@@ -124,7 +122,6 @@ class UserProfilePanelLogic extends GetxController {
     }
   }
 
-  /// 查询我与当前页面用户的群成员信息
   _queryGroupMemberInfo() async {
     if (isGroupMemberPage) {
       final list = await OpenIM.iMManager.groupManager.getGroupMembersInfo(
@@ -144,18 +141,16 @@ class UserProfilePanelLogic extends GetxController {
 
       hasAdminPermission.value = other?.roleLevel == GroupRoleLevel.admin;
 
-      // 是我查看其他人的资料
       if (!isMyself) {
         var me =
             list.firstWhereOrNull((e) => e.userID == OpenIM.iMManager.userID);
-        // 只有群主可以设置管理员
+
         iAmOwner.value = me?.roleLevel == GroupRoleLevel.owner;
       }
     }
   }
 
   _getJoinGroupMethod(GroupMembersInfo? other) async {
-    // 入群方式 2：邀请加入 3：搜索加入 4：通过二维码加入
     if (other?.joinSource == 2) {
       if (other?.inviterUserID != null) {
         final list = await OpenIM.iMManager.groupManager.getGroupMembersInfo(
@@ -178,14 +173,6 @@ class UserProfilePanelLogic extends GetxController {
   String getShowName() {
     if (isGroupMemberPage) {
       if (isFriendship) {
-        // if (userInfo.value.nickname != groupUserNickname.value) {
-        //   return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark) ?? userInfo.value.nickname})';
-        // } else {
-        //   if (userInfo.value.remark != null &&
-        //       userInfo.value.remark!.isNotEmpty) {
-        //     return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark)})';
-        //   }
-        // }
         if (null != IMUtils.emptyStrToNull(userInfo.value.remark)) {
           return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark)})';
         }

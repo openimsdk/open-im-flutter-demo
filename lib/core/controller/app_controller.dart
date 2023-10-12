@@ -28,8 +28,6 @@ class AppController extends GetxController with UpgradeManger {
   final initializationSettingsAndroid =
       const AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  /// Note: permissions aren't requested here just to demonstrate that can be
-  /// done later
   final DarwinInitializationSettings initializationSettingsDarwin =
       DarwinInitializationSettings(
     requestAlertPermission: false,
@@ -44,29 +42,17 @@ class AppController extends GetxController with UpgradeManger {
   );
 
   final _ring = 'assets/audio/message_ring.wav';
-  final _audioPlayer = AudioPlayer(
-      // Handle audio_session events ourselves for the purpose of this demo.
-      // handleInterruptions: false,
-      // androidApplyAudioAttributes: false,
-      // handleAudioSessionActivation: false,
-      );
+  final _audioPlayer = AudioPlayer();
 
   late BaseDeviceInfo deviceInfo;
 
-  /// discoverPageURL
-  /// ordinaryUserAddFriend,
-  /// bossUserID,
-  /// adminURL ,
-  /// allowSendMsgNotFriend
-  /// needInvitationCodeRegister
-  /// robots
   final clientConfigMap = <String, dynamic>{}.obs;
 
   Future<void> runningBackground(bool run) async {
     Logger.print('-----App running background : $run-------------');
 
     if (isRunningBackground && !run) {}
-    // OpenIM.iMManager.setAppBackgroundStatus(isBackground: run);
+
     isRunningBackground = run;
     backgroundSubject.sink.add(run);
     if (!run) {
@@ -86,7 +72,7 @@ class AppController extends GetxController with UpgradeManger {
       initializationSettings,
       onDidReceiveNotificationResponse: (notificationResponse) {},
     );
-    // _startForegroundService();
+
     isAppBadgeSupported = await FlutterAppBadger.isAppBadgeSupported();
     super.onInit();
   }
@@ -108,14 +94,9 @@ class AppController extends GetxController with UpgradeManger {
 
   Future<void> showNotification(im.Message message) async {
     if (_isGlobalNotDisturb() ||
-            message.attachedInfoElem?.notSenderNotificationPush == true ||
-            message.contentType ==
-                im.MessageType
-                    .typing /* ||
-        message.contentType! >= 1000*/
-        ) return;
+        message.attachedInfoElem?.notSenderNotificationPush == true ||
+        message.contentType == im.MessageType.typing) return;
 
-    // 开启免打扰的不提示
     var sourceID = message.sessionType == ConversationType.single
         ? message.sendID
         : message.groupID;
@@ -138,15 +119,18 @@ class AppController extends GetxController with UpgradeManger {
         final id = seq;
 
         const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-            'chat', 'OpenIM聊天消息',
-            channelDescription: '来自OpenIM的信息',
+            'chat', 'OpenIM chat message',
+            channelDescription: 'Information from OpenIM',
             importance: Importance.max,
             priority: Priority.high,
             ticker: 'ticker');
         const NotificationDetails platformChannelSpecifics =
             NotificationDetails(android: androidPlatformChannelSpecifics);
         await flutterLocalNotificationsPlugin.show(
-            id, '您收到了一条新消息', '消息内容：.....', platformChannelSpecifics,
+            id,
+            'You have received a new message',
+            'Message content: .....',
+            platformChannelSpecifics,
             payload: '');
       }
     }
@@ -154,29 +138,6 @@ class AppController extends GetxController with UpgradeManger {
 
   Future<void> _cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
-  }
-
-  Future<void> _startForegroundService() async {
-    await getAppInfo();
-    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'pro', 'OpenIM后台进程',
-        channelDescription: '保证app能收到信息',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.startForegroundService(1, packageInfo!.appName, '正在运行...',
-            notificationDetails: androidPlatformChannelSpecifics, payload: '');
-  }
-
-  Future<void> _stopForegroundService() async {
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.stopForegroundService();
   }
 
   void showBadge(count) {
@@ -198,7 +159,7 @@ class AppController extends GetxController with UpgradeManger {
   @override
   void onClose() {
     backgroundSubject.close();
-    // _stopForegroundService();
+
     closeSubject();
     _audioPlayer.dispose();
     super.onClose();
@@ -220,7 +181,6 @@ class AppController extends GetxController with UpgradeManger {
 
   @override
   void onReady() {
-    // _startForegroundService();
     _queryClientConfig();
     _getDeviceInfo();
     _cancelAllNotifications();
@@ -228,7 +188,6 @@ class AppController extends GetxController with UpgradeManger {
     super.onReady();
   }
 
-  /// 全局免打扰
   bool _isGlobalNotDisturb() {
     bool isRegistered = Get.isRegistered<IMController>();
     if (isRegistered) {
@@ -240,8 +199,7 @@ class AppController extends GetxController with UpgradeManger {
 
   void _initPlayer() {
     _audioPlayer.setAsset(_ring, package: 'openim_common');
-    // _audioPlayer.setLoopMode(LoopMode.off);
-    // _audioPlayer.setVolume(1.0);
+
     _audioPlayer.playerStateStream.listen((state) {
       switch (state.processingState) {
         case ProcessingState.idle:
@@ -251,13 +209,12 @@ class AppController extends GetxController with UpgradeManger {
           break;
         case ProcessingState.completed:
           _stopMessageSound();
-          // _audioPlayer.seek(null);
+
           break;
       }
     });
   }
 
-  /// 播放提示音
   void _playMessageSound() async {
     bool isRegistered = Get.isRegistered<IMController>();
     bool isAllowVibration = true;
@@ -267,7 +224,7 @@ class AppController extends GetxController with UpgradeManger {
       isAllowVibration = logic.userInfo.value.allowVibration == 1;
       isAllowBeep = logic.userInfo.value.allowBeep == 1;
     }
-    // 获取系统静音、震动状态
+
     RingerModeStatus ringerStatus = await SoundMode.ringerModeStatus;
 
     if (!_audioPlayer.playerState.playing &&
@@ -290,7 +247,6 @@ class AppController extends GetxController with UpgradeManger {
     }
   }
 
-  /// 关闭提示音
   void _stopMessageSound() async {
     if (_audioPlayer.playerState.playing) {
       _audioPlayer.stop();

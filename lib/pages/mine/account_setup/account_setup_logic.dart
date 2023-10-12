@@ -15,7 +15,6 @@ class AccountSetupLogic extends GetxController {
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
 
@@ -38,7 +37,6 @@ class AccountSetupLogic extends GetxController {
       });
     }
   }
-
 
   void blacklist() => AppNavigator.startBlacklist();
 

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
-// typedef PopupMenuItemBuilder = Widget Function(PopMenuInfo info);
-
 class PopMenuInfo {
   final String? icon;
   final String text;

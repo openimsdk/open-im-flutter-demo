@@ -44,16 +44,6 @@ class SelectContactsPage extends StatelessWidget {
                               label: StrRes.myGroup,
                               onTap: logic.selectFromMyGroup,
                             ),
-                          // if (!logic.hiddenOrganization)
-                          //   _buildCategoryItemView(
-                          //     label: StrRes.organizationStructure,
-                          //     onTap: logic.selectFromOrganization,
-                          //   ),
-                          // if (!logic.hiddenTagGroup)
-                          //   _buildCategoryItemView(
-                          //     label: StrRes.tagGroup,
-                          //     onTap: logic.selectTagGroup,
-                          //   ),
                         ],
                       ),
                       itemExtent: 56.h,
@@ -284,9 +274,6 @@ class SelectedContactsListView extends StatelessWidget {
       faceURL = info.faceURL;
       isGroup = true;
     } else if (info is UserInfo) {
-      name = info.nickname;
-      faceURL = info.faceURL;
-    } else if (info is DeptMemberInfo) {
       name = info.nickname;
       faceURL = info.faceURL;
     } else if (info is TagInfo) {

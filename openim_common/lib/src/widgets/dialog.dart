@@ -37,7 +37,6 @@ class CustomDialog extends StatelessWidget {
             width: 280.w,
             color: Styles.c_FFFFFF,
             child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
@@ -94,7 +93,6 @@ class CustomDialog extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              // borderRadius: BorderRadius.circular(6),
               color: bgColor,
             ),
             height: 48.h,

@@ -38,7 +38,6 @@ class CreateGroupLogic extends GetxController {
 
   completeCreation() async {
     if (allList.length > 2) {
-      // convertMemberRole(UserInfo u) => GroupMemberRole(userID: u.userID);
       var info = await LoadingView.singleton.wrap(
         asyncFunction: () => OpenIM.iMManager.groupManager.createGroup(
           groupInfo: GroupInfo(
