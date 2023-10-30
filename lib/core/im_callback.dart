@@ -38,8 +38,7 @@ class IMCallback {
 
   final unreadMsgCountEventSubject = PublishSubject<int>();
 
-  final friendApplicationChangedSubject =
-      BehaviorSubject<FriendApplicationInfo>();
+  final friendApplicationChangedSubject = BehaviorSubject<FriendApplicationInfo>();
 
   final friendAddSubject = BehaviorSubject<FriendInfo>();
 
@@ -51,8 +50,7 @@ class IMCallback {
 
   final groupInfoUpdatedSubject = BehaviorSubject<GroupInfo>();
 
-  final groupApplicationChangedSubject =
-      BehaviorSubject<GroupApplicationInfo>();
+  final groupApplicationChangedSubject = BehaviorSubject<GroupApplicationInfo>();
 
   final initializedSubject = PublishSubject<bool>();
 
@@ -193,8 +191,6 @@ class IMCallback {
     initLogic.showBadge(count);
     unreadMsgCountEventSubject.addSafely(count);
   }
-
-  void meetingSteamChanged(MeetingStreamEvent event) {}
 
   void close() {
     initializedSubject.close();
