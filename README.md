@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://www.openim.online">
+    <a href="https://www.openim.io">
         <img src="./openim-logo.gif" width="60%" height="30%"/>
     </a>
 </p>
@@ -30,7 +30,7 @@ A OpenIM flutter demo, only support android and ios.
 
 - Download the experience app
 
-  ![Android](https://www.pgyer.com/app/qrcode/OpenIM-Flutter)
+  ![Android](https://www.pgyer.com/app/qrcode/OpenIM-Flutter-Full)
 
 ## Dev Setup 🛠️
 1. Android studio/vscode
