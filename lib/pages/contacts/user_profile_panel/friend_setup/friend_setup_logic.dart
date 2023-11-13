@@ -8,8 +8,7 @@ import '../user_profile _panel_logic.dart';
 
 class FriendSetupLogic extends GetxController {
   final conversationLogic = Get.find<ConversationLogic>();
-  final userProfilesLogic =
-      Get.find<UserProfilePanelLogic>(tag: GetTags.userProfile);
+  final userProfilesLogic = Get.find<UserProfilePanelLogic>(tag: GetTags.userProfile);
   late String userID;
 
   @override
@@ -18,8 +17,9 @@ class FriendSetupLogic extends GetxController {
     super.onInit();
   }
 
-  void toggleBlacklist() {
-    if (userProfilesLogic.userInfo.value.isBlacklist == true) {
+  Future<void> toggleBlacklist() async {
+    final result = await OpenIM.iMManager.friendshipManager.checkFriend(userIDList: [userID]);
+    if (result.first.result == 1) {
       removeBlacklist();
     } else {
       addBlacklist();
@@ -27,8 +27,7 @@ class FriendSetupLogic extends GetxController {
   }
 
   void addBlacklist() async {
-    var confirm =
-        await Get.dialog(CustomDialog(title: StrRes.areYouSureAddBlacklist));
+    var confirm = await Get.dialog(CustomDialog(title: StrRes.areYouSureAddBlacklist));
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.addBlacklist(
         userID: userProfilesLogic.userInfo.value.userID!,
@@ -69,11 +68,9 @@ class FriendSetupLogic extends GetxController {
         userIDList.sort();
         final conversationID = 'si_${userIDList.join('_')}';
 
-        await OpenIM.iMManager.conversationManager
-            .deleteConversationAndDeleteAllMsg(conversationID: conversationID);
+        await OpenIM.iMManager.conversationManager.deleteConversationAndDeleteAllMsg(conversationID: conversationID);
 
-        conversationLogic.list
-            .removeWhere((e) => e.conversationID == conversationID);
+        conversationLogic.list.removeWhere((e) => e.conversationID == conversationID);
       });
 
       if (userProfilesLogic.offAllWhenDelFriend == true) {

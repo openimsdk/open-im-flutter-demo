@@ -18,9 +18,7 @@ class EditGroupNameLogic extends GetxController {
   void onInit() {
     type = Get.arguments['type'];
     inputCtrl = TextEditingController(
-      text: type == EditNameType.groupNickname
-          ? groupSetupLogic.groupInfo.value.groupName
-          : groupSetupLogic.myGroupMembersInfo.value.nickname,
+      text: type == EditNameType.groupNickname ? groupSetupLogic.groupInfo.value.groupName : groupSetupLogic.myGroupMembersInfo.value.nickname,
     );
     super.onInit();
   }
@@ -31,16 +29,14 @@ class EditGroupNameLogic extends GetxController {
     super.onClose();
   }
 
-  String? get title => type == EditNameType.myGroupMemberNickname
-      ? StrRes.myGroupMemberNickname
-      : StrRes.groupName;
+  String? get title => type == EditNameType.myGroupMemberNickname ? StrRes.myGroupMemberNickname : StrRes.groupName;
 
   void save() async {
     await LoadingView.singleton.wrap(asyncFunction: () async {
       if (type == EditNameType.groupNickname) {
+        final groupInfo = GroupInfo(groupID: groupSetupLogic.groupInfo.value.groupID, groupName: inputCtrl.text.trim());
         await OpenIM.iMManager.groupManager.setGroupInfo(
-          groupID: groupSetupLogic.groupInfo.value.groupID,
-          groupName: inputCtrl.text.trim(),
+          groupInfo,
         );
       } else if (type == EditNameType.myGroupMemberNickname) {
         await OpenIM.iMManager.groupManager.setGroupMemberNickname(

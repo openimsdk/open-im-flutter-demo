@@ -62,7 +62,6 @@ dependencies:
   dart_date: 1.1.1
   video_compress: 3.1.2
   just_audio: 0.9.31
-  flutter_inappwebview: 5.7.2+3
   vibration: 1.7.6
   getuiflut: 0.2.18
   scroll_to_index: 3.0.1
@@ -91,7 +90,7 @@ dependencies:
   flutter_download_manager:
     git:
       url: https://github.com/hrxiang/flutter_download_manager.git
-  flutter_openim_sdk: any
+  flutter_openim_sdk: 3.4.0
 
 dev_dependencies:
   flutter_test:

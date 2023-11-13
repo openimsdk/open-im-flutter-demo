@@ -77,8 +77,7 @@ class ChatHintTextView extends StatelessWidget {
           final bMap = <String, String>{};
           final ntf = InvitedJoinGroupNotification.fromJson(map);
 
-          aMap[ntf.opUser!.userID!] =
-              IMUtils.getGroupMemberShowName(ntf.opUser!);
+          aMap[ntf.opUser!.userID!] = IMUtils.getGroupMemberShowName(ntf.opUser!);
 
           for (var user in ntf.invitedUserList!) {
             bMap[user.userID!] = IMUtils.getGroupMemberShowName(user);
@@ -115,8 +114,7 @@ class ChatHintTextView extends StatelessWidget {
           final bMap = <String, String>{};
           final ntf = KickedGroupMemeberNotification.fromJson(map);
 
-          aMap[ntf.opUser!.userID!] =
-              IMUtils.getGroupMemberShowName(ntf.opUser!);
+          aMap[ntf.opUser!.userID!] = IMUtils.getGroupMemberShowName(ntf.opUser!);
 
           for (var user in ntf.kickedUserList!) {
             bMap[user.userID!] = IMUtils.getGroupMemberShowName(user);
@@ -303,11 +301,7 @@ class ChatHintTextView extends StatelessWidget {
         {
           final ntf = BurnAfterReadingNotification.fromJson(map);
 
-          return (ntf.isPrivate == true
-                  ? StrRes.openPrivateChatNtf
-                  : StrRes.closePrivateChatNtf)
-              .toText
-            ..style = Styles.ts_8E9AB0_12sp;
+          return (ntf.isPrivate == true ? StrRes.openPrivateChatNtf : StrRes.closePrivateChatNtf).toText..style = Styles.ts_8E9AB0_12sp;
         }
       case MessageType.groupMemberInfoChangedNotification:
         final ntf = GroupMemberInfoChangedNotification.fromJson(map);
@@ -325,7 +319,7 @@ class ChatHintTextView extends StatelessWidget {
             ],
           ),
         );
-      case MessageType.groupNameChangedNotification:
+      case MessageType.groupInfoSetNameNotification:
         final ntf = GroupNotification.fromJson(map);
         return RichText(
           textAlign: TextAlign.center,

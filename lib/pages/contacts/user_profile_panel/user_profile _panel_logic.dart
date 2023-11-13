@@ -15,7 +15,7 @@ class UserProfilePanelLogic extends GetxController {
   final appLogic = Get.find<AppController>();
   final imLogic = Get.find<IMController>();
   final conversationLogic = Get.find<ConversationLogic>();
-  late Rx<UserInfo> userInfo;
+  late Rx<ISUserInfo> userInfo;
   GroupMembersInfo? groupMembersInfo;
   GroupInfo? groupInfo;
   String? groupID;
@@ -42,7 +42,7 @@ class UserProfilePanelLogic extends GetxController {
 
   @override
   void onInit() {
-    userInfo = (UserInfo()
+    userInfo = (ISUserInfo()
           ..userID = Get.arguments['userID']
           ..nickname = Get.arguments['nickname']
           ..faceURL = Get.arguments['faceURL'])
@@ -61,10 +61,6 @@ class UserProfilePanelLogic extends GetxController {
       if (user.userID == userInfo.value.userID) {
         userInfo.update((val) {
           val?.nickname = user.nickname;
-          val?.gender = user.gender;
-          val?.phoneNumber = user.phoneNumber;
-          val?.birth = user.birth;
-          val?.email = user.email;
           val?.remark = user.remark;
         });
       }
@@ -103,12 +99,6 @@ class UserProfilePanelLogic extends GetxController {
         val?.nickname = user.nickname;
         val?.faceURL = user.faceURL;
         val?.remark = user.remark;
-        val?.gender = user.gender;
-        val?.phoneNumber = user.phoneNumber;
-        val?.birth = user.birth;
-        val?.email = user.email;
-        val?.isBlacklist = user.isBlacklist;
-        val?.isFriendship = user.isFriendship;
       });
     }
   }
@@ -126,13 +116,9 @@ class UserProfilePanelLogic extends GetxController {
     if (isGroupMemberPage) {
       final list = await OpenIM.iMManager.groupManager.getGroupMembersInfo(
         groupID: groupID!,
-        userIDList: [
-          userInfo.value.userID!,
-          if (!isMyself) OpenIM.iMManager.userID
-        ],
+        userIDList: [userInfo.value.userID!, if (!isMyself) OpenIM.iMManager.userID],
       );
-      final other =
-          list.firstWhereOrNull((e) => e.userID == userInfo.value.userID);
+      final other = list.firstWhereOrNull((e) => e.userID == userInfo.value.userID);
       groupMembersInfo = other;
       groupUserNickname.value = other?.nickname ?? '';
       joinGroupTime.value = other?.joinTime ?? 0;
@@ -142,8 +128,7 @@ class UserProfilePanelLogic extends GetxController {
       hasAdminPermission.value = other?.roleLevel == GroupRoleLevel.admin;
 
       if (!isMyself) {
-        var me =
-            list.firstWhereOrNull((e) => e.userID == OpenIM.iMManager.userID);
+        var me = list.firstWhereOrNull((e) => e.userID == OpenIM.iMManager.userID);
 
         iAmOwner.value = me?.roleLevel == GroupRoleLevel.owner;
       }

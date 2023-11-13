@@ -40,9 +40,7 @@ class MyInfoPage extends StatelessWidget {
                     ),
                     _buildItemView(
                       label: StrRes.gender,
-                      value: imLogic.userInfo.value.isMale
-                          ? StrRes.man
-                          : StrRes.woman,
+                      value: imLogic.userInfo.value.gender == 1 ? StrRes.man : StrRes.woman,
                       onTap: logic.selectGender,
                     ),
                     _buildItemView(
@@ -117,8 +115,7 @@ class MyInfoPage extends StatelessWidget {
                   textStyle: Styles.ts_FFFFFF_10sp,
                 )
               else
-                (IMUtils.emptyStrToNull(value) ?? '').toText
-                  ..style = Styles.ts_0C1C33_17sp,
+                (IMUtils.emptyStrToNull(value) ?? '').toText..style = Styles.ts_0C1C33_17sp,
               if (showRightArrow)
                 ImageRes.rightArrow.toImage
                   ..width = 24.w

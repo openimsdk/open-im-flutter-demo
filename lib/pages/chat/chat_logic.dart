@@ -101,12 +101,8 @@ class ChatLogic extends GetxController {
     var receiverId = message.recvID;
     var groupId = message.groupID;
 
-    var isCurSingleChat = message.isSingleChat &&
-        isSingleChat &&
-        (senderId == userID ||
-            senderId == OpenIM.iMManager.userID && receiverId == userID);
-    var isCurGroupChat =
-        message.isGroupChat && isGroupChat && groupID == groupId;
+    var isCurSingleChat = message.isSingleChat && isSingleChat && (senderId == userID || senderId == OpenIM.iMManager.userID && receiverId == userID);
+    var isCurGroupChat = message.isGroupChat && isGroupChat && groupID == groupId;
     return isCurSingleChat || isCurGroupChat;
   }
 
@@ -152,8 +148,7 @@ class ChatLogic extends GetxController {
             typingTimer = null;
           }
         } else {
-          if (!messageList.contains(message) &&
-              !scrollingCacheMessageList.contains(message)) {
+          if (!messageList.contains(message) && !scrollingCacheMessageList.contains(message)) {
             _isReceivedMessageWhenSyncing = true;
             if (scrollController.offset != 0) {
               scrollingCacheMessageList.add(message);
@@ -167,8 +162,7 @@ class ChatLogic extends GetxController {
     };
 
     imLogic.onRecvMessageRevoked = (RevokedInfo info) {
-      var message = messageList
-          .firstWhereOrNull((e) => e.clientMsgID == info.clientMsgID);
+      var message = messageList.firstWhereOrNull((e) => e.clientMsgID == info.clientMsgID);
       message?.notificationElem = NotificationElem(detail: jsonEncode(info));
       message?.contentType = MessageType.revokeMessageNotification;
 
@@ -198,11 +192,8 @@ class ChatLogic extends GetxController {
         for (var readInfo in list) {
           if (readInfo.groupID == groupID) {
             for (var e in messageList) {
-              var uidList =
-                  e.attachedInfoElem?.groupHasReadInfo?.hasReadUserIDList;
-              if (null != uidList &&
-                  !uidList.contains(readInfo.userID!) &&
-                  (readInfo.msgIDList?.contains(e.clientMsgID) == true)) {
+              var uidList = e.attachedInfoElem?.groupHasReadInfo?.hasReadUserIDList;
+              if (null != uidList && !uidList.contains(readInfo.userID!) && (readInfo.msgIDList?.contains(e.clientMsgID) == true)) {
                 uidList.add(readInfo.userID!);
               }
             }
@@ -339,8 +330,7 @@ class ChatLogic extends GetxController {
   }
 
   void sendPicture({required String path}) async {
-    var message =
-        await OpenIM.iMManager.messageManager.createImageMessageFromFullPath(
+    var message = await OpenIM.iMManager.messageManager.createImageMessageFromFullPath(
       imagePath: path,
     );
     _sendMessage(message);
@@ -352,8 +342,7 @@ class ChatLogic extends GetxController {
     required int duration,
     required String thumbnailPath,
   }) async {
-    var message =
-        await OpenIM.iMManager.messageManager.createVideoMessageFromFullPath(
+    var message = await OpenIM.iMManager.messageManager.createVideoMessageFromFullPath(
       videoPath: videoPath,
       videoType: mimeType,
       duration: duration,
@@ -380,9 +369,7 @@ class ChatLogic extends GetxController {
     log('send : ${json.encode(message)}');
     userId = IMUtils.emptyStrToNull(userId);
     groupId = IMUtils.emptyStrToNull(groupId);
-    if (null == userId && null == groupId ||
-        userId == userID && userId != null ||
-        groupId == groupID && groupId != null) {
+    if (null == userId && null == groupId || userId == userID && userId != null || groupId == groupID && groupId != null) {
       if (addToUI) {
         messageList.add(message);
         scrollBottom();
@@ -431,8 +418,7 @@ class ChatLogic extends GetxController {
           customType = CustomMessageType.deletedByFriend;
         }
         if (null != customType) {
-          final hintMessage = (await OpenIM.iMManager.messageManager
-              .createFailedHintMessage(type: customType))
+          final hintMessage = (await OpenIM.iMManager.messageManager.createFailedHintMessage(type: customType))
             ..status = 2
             ..isRead = true;
           messageList.add(hintMessage);
@@ -443,15 +429,10 @@ class ChatLogic extends GetxController {
           );
         }
       } else {
-        if ((code == SDKErrorCode.userIsNotInGroup ||
-                code == SDKErrorCode.groupDisbanded) &&
-            null == groupId) {
+        if ((code == SDKErrorCode.userIsNotInGroup || code == SDKErrorCode.groupDisbanded) && null == groupId) {
           final status = groupInfo?.status;
           final hintMessage = (await OpenIM.iMManager.messageManager
-              .createFailedHintMessage(
-                  type: status == 2
-                      ? CustomMessageType.groupDisbanded
-                      : CustomMessageType.removedFromGroup))
+              .createFailedHintMessage(type: status == 2 ? CustomMessageType.groupDisbanded : CustomMessageType.removedFromGroup))
             ..status = 2
             ..isRead = true;
           messageList.add(hintMessage);
@@ -466,9 +447,7 @@ class ChatLogic extends GetxController {
   }
 
   void _reset(Message message) {
-    if (message.contentType == MessageType.text ||
-        message.contentType == MessageType.at_text ||
-        message.contentType == MessageType.quote) {
+    if (message.contentType == MessageType.text || message.contentType == MessageType.atText || message.contentType == MessageType.quote) {
       inputCtrl.clear();
     }
   }
@@ -492,8 +471,7 @@ class ChatLogic extends GetxController {
     var resolutionPreset = ResolutionPreset.max;
     if (Platform.isAndroid) {
       final deviceInfo = appLogic.deviceInfo;
-      if (deviceInfo is AndroidDeviceInfo &&
-          deviceInfo.brand.toLowerCase() == 'xiaomi') {
+      if (deviceInfo is AndroidDeviceInfo && deviceInfo.brand.toLowerCase() == 'xiaomi') {
         resolutionPreset = ResolutionPreset.medium;
       }
     }
@@ -602,8 +580,7 @@ class ChatLogic extends GetxController {
     IMUtils.copy(text: message.textElem!.content!);
   }
 
-  Message indexOfMessage(int index, {bool calculate = true}) =>
-      IMUtils.calChatTimeInterval(
+  Message indexOfMessage(int index, {bool calculate = true}) => IMUtils.calChatTimeInterval(
         messageList,
         calculate: calculate,
       ).reversed.elementAt(index);
@@ -646,11 +623,7 @@ class ChatLogic extends GetxController {
 
   String? get subTile => typing.value ? StrRes.typing : null;
 
-  String get title => isSingleChat
-      ? nickname.value
-      : (memberCount.value > 0
-          ? '${nickname.value}(${memberCount.value})'
-          : nickname.value);
+  String get title => isSingleChat ? nickname.value : (memberCount.value > 0 ? '${nickname.value}(${memberCount.value})' : nickname.value);
 
   void failedResend(Message message) {
     sendStatusSub.addSafely(MsgStreamEv<bool>(
@@ -669,8 +642,7 @@ class ChatLogic extends GetxController {
         userIDList: [OpenIM.iMManager.userID],
       );
       groupMembersInfo = list.firstOrNull;
-      groupMemberRoleLevel.value =
-          groupMembersInfo?.roleLevel ?? GroupRoleLevel.member;
+      groupMemberRoleLevel.value = groupMembersInfo?.roleLevel ?? GroupRoleLevel.member;
       if (null != groupMembersInfo) {
         memberUpdateInfoMap[OpenIM.iMManager.userID] = groupMembersInfo!;
       }
@@ -698,8 +670,7 @@ class ChatLogic extends GetxController {
     }
   }
 
-  bool get havePermissionMute =>
-      isGroupChat && (groupInfo?.ownerUserID == OpenIM.iMManager.userID);
+  bool get havePermissionMute => isGroupChat && (groupInfo?.ownerUserID == OpenIM.iMManager.userID);
 
   bool isNotificationType(Message message) => message.contentType! >= 1000;
 
@@ -759,7 +730,7 @@ class ChatLogic extends GetxController {
   }
 
   String get markText {
-    String? phoneNumber = OpenIM.iMManager.userInfo.phoneNumber;
+    String? phoneNumber = imLogic.userInfo.value.phoneNumber;
     if (phoneNumber != null) {
       int start = phoneNumber.length > 4 ? phoneNumber.length - 4 : 0;
       final sub = phoneNumber.substring(start);
@@ -773,14 +744,12 @@ class ChatLogic extends GetxController {
       var data = message.customElem!.data;
       var map = json.decode(data!);
       var customType = map['customType'];
-      return customType == CustomMessageType.deletedByFriend ||
-          customType == CustomMessageType.blockedByFriend;
+      return customType == CustomMessageType.deletedByFriend || customType == CustomMessageType.blockedByFriend;
     }
     return false;
   }
 
-  void sendFriendVerification() =>
-      AppNavigator.startSendVerificationApplication(userID: userID);
+  void sendFriendVerification() => AppNavigator.startSendVerificationApplication(userID: userID);
 
   void _setSdkSyncDataListener() {
     connectionSub = imLogic.imSdkStatusSubject.listen((value) {
@@ -820,8 +789,7 @@ class ChatLogic extends GetxController {
     return !isNotificationType(message) && !isFailedHintMessage(message);
   }
 
-  Future<AdvancedMessage> _requestHistoryMessage() =>
-      OpenIM.iMManager.messageManager.getAdvancedHistoryMessageList(
+  Future<AdvancedMessage> _requestHistoryMessage() => OpenIM.iMManager.messageManager.getAdvancedHistoryMessageList(
         conversationID: conversationInfo.conversationID,
         count: 20,
         startMsg: _isFirstLoad ? null : messageList.firstOrNull,

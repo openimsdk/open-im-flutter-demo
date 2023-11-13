@@ -67,7 +67,7 @@ PODS:
     - Flutter
   - flutter_openim_sdk (0.0.1):
     - Flutter
-    - OpenIMSDKCore (= 3.3.0)
+    - OpenIMSDKCore (= 3.4.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -110,7 +110,7 @@ PODS:
   - Mute (0.6.1)
   - open_filex (0.0.2):
     - Flutter
-  - OpenIMSDKCore (3.3.0)
+  - OpenIMSDKCore (3.4.0)
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter
@@ -131,10 +131,10 @@ PODS:
     - ZXingObjC (~> 3.6.5)
   - record (0.0.1):
     - Flutter
-  - SDWebImage (5.18.2):
-    - SDWebImage/Core (= 5.18.2)
-  - SDWebImage/Core (5.18.2)
-  - SDWebImageWebPCoder (0.14.0):
+  - SDWebImage (5.18.3):
+    - SDWebImage/Core (= 5.18.3)
+  - SDWebImage/Core (5.18.3)
+  - SDWebImageWebPCoder (0.14.2):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
   - shared_preferences_foundation (0.0.1):
@@ -317,11 +317,11 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
   flutter_image_compress: 5a5e9aee05b6553048b8df1c3bc456d0afaac433
-  flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
+  flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
-  flutter_openim_sdk: d8e4eba0a37b735930733d972aa72bc2d21031a9
+  flutter_openim_sdk: 54d1c836ff60ebb5b99d246521ef0cb1d834fb13
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   getuiflut: 8628ba2b64a738a847a07d2b67e0ac305778e2ee
   GTCommonSDK: 5ff368025f543cf923e2bebafe986f1be3fa995e
@@ -337,7 +337,7 @@ SPEC CHECKSUMS:
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   Mute: 20135a96076f140cc82bfc8b810e2d6150d8ec7e
   open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
-  OpenIMSDKCore: eb8af354dd72c47384d79c6c3b82ca09c05cc527
+  OpenIMSDKCore: 47e0e830afe0d2dd905ad3dda255e6a6d26a555c
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
@@ -346,8 +346,8 @@ SPEC CHECKSUMS:
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   r_scan: 5672d9b68f8cece3835895a6aaab12047acf65bd
   record: cae05d8dd3cdb1dea3511b20e5a5811a1ae00d0d
-  SDWebImage: c0de394d7cf7f9838aed1fd6bb6037654a4572e4
-  SDWebImageWebPCoder: 3027af94522d94df79c21c070894c8a2128927ff
+  SDWebImage: 96e0c18ef14010b7485210e92fac888587ebb958
+  SDWebImageWebPCoder: 633b813fca24f1de5e076bcd7f720c038b23892b
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sound_mode: ef0072f20e7306c1c371984a443156e39be092d5
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
@@ -362,6 +362,6 @@ SPEC CHECKSUMS:
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
   ZXSDK: 145a89f90f11e18e4fe62fe43175a60ade342ba8
 
-PODFILE CHECKSUM: 0a9fc7618d969e885927d9b1f3e706df470472a7
+PODFILE CHECKSUM: 1c9b2ee9df933be11537645890ee7d8406aa1d0a
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0

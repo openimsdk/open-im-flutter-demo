@@ -29,7 +29,7 @@ class AccountSetupLogic extends GetxController {
       asyncFunction: () => Apis.queryMyFullInfo(),
     );
     if (data is UserFullInfo) {
-      final userInfo = UserInfo.fromJson(data.toJson());
+      final userInfo = ISUserInfo.fromJson(data.toJson());
       imLogic.userInfo.update((val) {
         val?.allowAddFriend = userInfo.allowAddFriend;
         val?.allowBeep = userInfo.allowBeep;

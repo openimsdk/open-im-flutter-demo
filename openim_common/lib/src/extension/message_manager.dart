@@ -83,8 +83,7 @@ extension MessageManagerExt on MessageManager {
           extension: '',
           description: '');
 
-  Future<Message> createFailedHintMessage({required int type}) =>
-      createCustomMessage(
+  Future<Message> createFailedHintMessage({required int type}) => createCustomMessage(
         data: json.encode({
           "customType": type,
           "data": {},
@@ -99,7 +98,7 @@ extension MessageExt on Message {
     Message? quoteMsg;
     if (contentType == MessageType.quote) {
       quoteMsg = quoteElem?.quoteMessage;
-    } else if (contentType == MessageType.at_text) {
+    } else if (contentType == MessageType.atText) {
       quoteMsg = atTextElem?.quoteMessage;
     }
     return quoteMsg;
@@ -120,8 +119,7 @@ extension MessageExt on Message {
   }
 
   String? get noticeContent {
-    final isGroupNtf =
-        contentType! == MessageType.groupNoticeChangedNotification;
+    final isGroupNtf = contentType! == MessageType.groupInfoSetAnnouncementNotification;
     if (isGroupNtf) {
       try {
         final map = json.decode(notificationElem!.detail!);
@@ -232,7 +230,7 @@ extension MessageExt on Message {
 
   bool get isTextType => contentType == MessageType.text;
 
-  bool get isAtTextType => contentType == MessageType.at_text;
+  bool get isAtTextType => contentType == MessageType.atText;
 
   bool get isPictureType => contentType == MessageType.picture;
 
@@ -250,7 +248,7 @@ extension MessageExt on Message {
 
   bool get isCardType => contentType == MessageType.card;
 
-  bool get isCustomFaceType => contentType == MessageType.custom_face;
+  bool get isCustomFaceType => contentType == MessageType.customFace;
 
   bool get isCustomType => contentType == MessageType.custom;
 

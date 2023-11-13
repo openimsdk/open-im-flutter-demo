@@ -54,8 +54,7 @@ class GroupSetupLogic extends GetxController {
     });
 
     _mISub = imLogic.memberInfoChangedSubject.listen((e) {
-      if (e.groupID == groupInfo.value.groupID &&
-          e.userID == myGroupMembersInfo.value.userID) {
+      if (e.groupID == groupInfo.value.groupID && e.userID == myGroupMembersInfo.value.userID) {
         myGroupMembersInfo.update((val) {
           val?.nickname = e.nickname;
           val?.roleLevel = e.roleLevel;
@@ -114,8 +113,7 @@ class GroupSetupLogic extends GetxController {
 
   bool get isOwnerOrAdmin => isOwner || isAdmin;
 
-  bool get isAdmin =>
-      myGroupMembersInfo.value.roleLevel == GroupRoleLevel.admin;
+  bool get isAdmin => myGroupMembersInfo.value.roleLevel == GroupRoleLevel.admin;
 
   bool get isOwner => groupInfo.value.ownerUserID == OpenIM.iMManager.userID;
 
@@ -213,14 +211,13 @@ class GroupSetupLogic extends GetxController {
     String? notification,
     String? introduction,
     String? faceUrl,
-  }) =>
-      OpenIM.iMManager.groupManager.setGroupInfo(
-        groupID: groupInfo.value.groupID,
-        groupName: groupName,
-        notification: notification,
-        introduction: introduction,
-        faceURL: faceUrl,
-      );
+  }) async {
+    final g =
+        GroupInfo(groupID: groupInfo.value.groupID, groupName: groupName, notification: notification, introduction: introduction, faceURL: faceUrl);
+    await OpenIM.iMManager.groupManager.setGroupInfo(
+      g,
+    );
+  }
 
   void viewGroupQrcode() => AppNavigator.startGroupQrcode();
 
@@ -228,8 +225,7 @@ class GroupSetupLogic extends GetxController {
         groupInfo: groupInfo.value,
       );
   void _removeConversation() async {
-    await OpenIM.iMManager.conversationManager
-        .deleteConversationAndDeleteAllMsg(
+    await OpenIM.iMManager.conversationManager.deleteConversationAndDeleteAllMsg(
       conversationID: conversationInfo.value.conversationID,
     );
 
@@ -274,9 +270,7 @@ class GroupSetupLogic extends GetxController {
 
   int length() {
     int buttons = isOwnerOrAdmin ? 2 : 1;
-    return (memberList.length + buttons) > 10
-        ? 10
-        : (memberList.length + buttons);
+    return (memberList.length + buttons) > 10 ? 10 : (memberList.length + buttons);
   }
 
   Widget itemBuilder({
@@ -344,8 +338,7 @@ class GroupSetupLogic extends GetxController {
     }
   }
 
-  void viewMemberInfo(GroupMembersInfo membersInfo) =>
-      AppNavigator.startUserProfilePane(
+  void viewMemberInfo(GroupMembersInfo membersInfo) => AppNavigator.startUserProfilePane(
         userID: membersInfo.userID!,
         nickname: membersInfo.nickname,
         faceURL: membersInfo.faceURL,

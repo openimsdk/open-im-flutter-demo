@@ -2,14 +2,14 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 
 class BlacklistLogic extends GetxController {
-  final blacklist = <UserInfo>[].obs;
+  final blacklist = <BlacklistInfo>[].obs;
 
   void _getBlacklist() async {
     var list = await OpenIM.iMManager.friendshipManager.getBlacklist();
     blacklist.addAll(list);
   }
 
-  remove(UserInfo info) async {
+  remove(BlacklistInfo info) async {
     await OpenIM.iMManager.friendshipManager.removeBlacklist(
       userID: info.userID!,
     );

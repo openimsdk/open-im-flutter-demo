@@ -160,8 +160,7 @@ class _ChatItemViewState extends State<ChatItemView> {
     );
   }
 
-  Widget get _child =>
-      widget.itemViewBuilder?.call(context, _message) ?? _buildChildView();
+  Widget get _child => widget.itemViewBuilder?.call(context, _message) ?? _buildChildView();
 
   Widget _buildChildView() {
     Widget? child;
@@ -209,7 +208,7 @@ class _ChatItemViewState extends State<ChatItemView> {
         }
       }
     } else if (_message.isNotificationType) {
-      if (_message.contentType == MessageType.groupNoticeChangedNotification) {
+      if (_message.contentType == MessageType.groupInfoSetAnnouncementNotification) {
       } else {
         return ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),

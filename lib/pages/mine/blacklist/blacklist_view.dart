@@ -30,7 +30,7 @@ class BlacklistPage extends StatelessWidget {
   }
 
   Widget _buildItemView(
-    UserInfo info, {
+    BlacklistInfo info, {
     bool underline = true,
   }) =>
       Ink(
@@ -60,8 +60,7 @@ class BlacklistPage extends StatelessWidget {
                 ),
                 12.horizontalSpace,
                 Expanded(
-                  child: (info.nickname ?? '').toText
-                    ..style = Styles.ts_0C1C33_17sp,
+                  child: (info.nickname ?? '').toText..style = Styles.ts_0C1C33_17sp,
                 ),
                 StrRes.remove.toText..style = Styles.ts_0089FF_17sp,
               ],
