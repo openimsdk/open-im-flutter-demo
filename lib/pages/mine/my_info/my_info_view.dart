@@ -40,7 +40,7 @@ class MyInfoPage extends StatelessWidget {
                     ),
                     _buildItemView(
                       label: StrRes.gender,
-                      value: imLogic.userInfo.value.gender == 1 ? StrRes.man : StrRes.woman,
+                      value: imLogic.userInfo.value.isMale ? StrRes.man : StrRes.woman,
                       onTap: logic.selectGender,
                     ),
                     _buildItemView(

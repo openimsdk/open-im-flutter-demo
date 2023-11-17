@@ -7,7 +7,7 @@ import 'package:openim_common/openim_common.dart';
 import '../im_callback.dart';
 
 class IMController extends GetxController with IMCallback {
-  late Rx<ISUserInfo> userInfo;
+  late Rx<UserFullInfo> userInfo;
   late String atAllTag;
 
   @override
@@ -123,7 +123,7 @@ class IMController extends GetxController with IMCallback {
         token: token,
         defaultValue: () async => UserInfo(userID: userID),
       );
-      userInfo = ISUserInfo.fromJson(user.obs.toJson()).obs;
+      userInfo = UserFullInfo.fromJson(user.obs.toJson()).obs;
       _queryMyFullInfo();
       _queryAtAllTag();
     } catch (e, s) {

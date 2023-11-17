@@ -15,7 +15,7 @@ class UserProfilePanelLogic extends GetxController {
   final appLogic = Get.find<AppController>();
   final imLogic = Get.find<IMController>();
   final conversationLogic = Get.find<ConversationLogic>();
-  late Rx<ISUserInfo> userInfo;
+  late Rx<UserFullInfo> userInfo;
   GroupMembersInfo? groupMembersInfo;
   GroupInfo? groupInfo;
   String? groupID;
@@ -42,7 +42,7 @@ class UserProfilePanelLogic extends GetxController {
 
   @override
   void onInit() {
-    userInfo = (ISUserInfo()
+    userInfo = (UserFullInfo()
           ..userID = Get.arguments['userID']
           ..nickname = Get.arguments['nickname']
           ..faceURL = Get.arguments['faceURL'])
@@ -65,7 +65,7 @@ class UserProfilePanelLogic extends GetxController {
         });
       }
     });
-
+    // 禁言时间被改变，或群成员资料改变
     _memberInfoChangedSub = imLogic.memberInfoChangedSubject.listen((value) {
       if (value.userID == userInfo.value.userID) {
         groupUserNickname.value = value.nickname ?? '';
@@ -90,15 +90,25 @@ class UserProfilePanelLogic extends GetxController {
   bool get isFriendship => userInfo.value.isFriendship == true;
 
   void _getUsersInfo() async {
-    final list = await OpenIM.iMManager.userManager.getUsersInfo(
-      userIDList: [userInfo.value.userID!],
+    final userID = userInfo.value.userID!;
+    final list = await OpenIM.iMManager.userManager.getUsersInfoWithCache(
+      [userID],
     );
+    final list2 = await Apis.getUserFullInfo(userIDList: [userID]);
     final user = list.firstOrNull;
-    if (null != user) {
+    final fullInfo = list2?.firstOrNull;
+
+    final isFriendship = user?.friendInfo != null;
+    final isBlack = user?.blackInfo != null;
+
+    if (null != user && null != fullInfo) {
       userInfo.update((val) {
         val?.nickname = user.nickname;
         val?.faceURL = user.faceURL;
-        val?.remark = user.remark;
+        val?.remark = user.friendInfo?.remark;
+        val?.isBlacklist = isBlack;
+        val?.isFriendship = isFriendship;
+        val?.allowAddFriend = fullInfo.allowAddFriend;
       });
     }
   }
@@ -129,7 +139,6 @@ class UserProfilePanelLogic extends GetxController {
 
       if (!isMyself) {
         var me = list.firstWhereOrNull((e) => e.userID == OpenIM.iMManager.userID);
-
         iAmOwner.value = me?.roleLevel == GroupRoleLevel.owner;
       }
     }
@@ -137,10 +146,10 @@ class UserProfilePanelLogic extends GetxController {
 
   _getJoinGroupMethod(GroupMembersInfo? other) async {
     if (other?.joinSource == 2) {
-      if (other?.inviterUserID != null) {
+      if (other!.inviterUserID != null && other.inviterUserID != other.userID) {
         final list = await OpenIM.iMManager.groupManager.getGroupMembersInfo(
           groupID: groupID!,
-          userIDList: [other!.inviterUserID!],
+          userIDList: [other.inviterUserID!],
         );
         var inviterUserInfo = list.firstOrNull;
         joinGroupMethod.value = sprintf(
@@ -162,6 +171,9 @@ class UserProfilePanelLogic extends GetxController {
           return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark)})';
         }
       }
+      if (groupUserNickname.value.isEmpty) {
+        return userInfo.value.nickname ??= "";
+      }
       return groupUserNickname.value;
     }
     if (userInfo.value.remark != null && userInfo.value.remark!.isNotEmpty) {
@@ -173,7 +185,7 @@ class UserProfilePanelLogic extends GetxController {
   void toChat() {
     conversationLogic.toChat(
       userID: userInfo.value.userID,
-      nickname: userInfo.value.getShowName(),
+      nickname: userInfo.value.showName,
       faceURL: userInfo.value.faceURL,
     );
   }

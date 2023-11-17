@@ -188,19 +188,7 @@ class ChatLogic extends GetxController {
     };
 
     imLogic.onRecvGroupReadReceipt = (List<ReadReceiptInfo> list) {
-      try {
-        for (var readInfo in list) {
-          if (readInfo.groupID == groupID) {
-            for (var e in messageList) {
-              var uidList = e.attachedInfoElem?.groupHasReadInfo?.hasReadUserIDList;
-              if (null != uidList && !uidList.contains(readInfo.userID!) && (readInfo.msgIDList?.contains(e.clientMsgID) == true)) {
-                uidList.add(readInfo.userID!);
-              }
-            }
-          }
-        }
-        messageList.refresh();
-      } catch (e) {}
+      try {} catch (e) {}
     };
 
     imLogic.onMsgSendProgress = (String msgId, int progress) {

@@ -99,7 +99,7 @@ class GroupRequestsLogic extends GetxController {
       if (inviterList.isNotEmpty) {
         await OpenIM.iMManager.userManager
             .getUsersInfo(userIDList: inviterList)
-            .then((list) => userInfoList.assignAll(list));
+            .then((list) => userInfoList.assignAll(list.map((e) => e.simpleUserInfo)));
       }
 
       return allList;

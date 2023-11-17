@@ -36,17 +36,17 @@ class MyInfoLogic extends GetxController {
       );
 
   void openPhotoSheet() {
-    IMViews.openPhotoSheet(onData: (path, url) async {
-      if (url != null) {
-        LoadingView.singleton.wrap(
-          asyncFunction: () =>
-              Apis.updateUserInfo(userID: OpenIM.iMManager.userID, faceURL: url)
-                  .then((value) => imLogic.userInfo.update((val) {
-                        val?.faceURL = url;
-                      })),
-        );
-      }
-    });
+    IMViews.openPhotoSheet(
+      onData: (path, url) async {
+        if (url != null) {
+          LoadingView.singleton.wrap(
+            asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, faceURL: url).then((value) => imLogic.userInfo.update((val) {
+                  val?.faceURL = url;
+                })),
+          );
+        }
+      },
+    );
   }
 
   void openDatePicker() {
@@ -86,11 +86,9 @@ class MyInfoLogic extends GetxController {
 
   void _updateGender(int gender) {
     LoadingView.singleton.wrap(
-      asyncFunction: () =>
-          Apis.updateUserInfo(userID: OpenIM.iMManager.userID, gender: gender)
-              .then((value) => imLogic.userInfo.update((val) {
-                    val?.gender = gender;
-                  })),
+      asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, gender: gender).then((value) => imLogic.userInfo.update((val) {
+            val?.gender = gender;
+          })),
     );
   }
 
@@ -113,10 +111,25 @@ class MyInfoLogic extends GetxController {
 
   @override
   void onClose() {
+    // TODO: implement onClose
     super.onClose();
   }
 
-  void _queryMyFullIno() async {}
+  void _queryMyFullIno() async {
+    final info = await LoadingView.singleton.wrap(
+      asyncFunction: () => Apis.queryMyFullInfo(),
+    );
+    if (null != info) {
+      imLogic.userInfo.update((val) {
+        val?.nickname = info.nickname;
+        val?.faceURL = info.faceURL;
+        val?.gender = info.gender;
+        val?.phoneNumber = info.phoneNumber;
+        val?.birth = info.birth;
+        val?.email = info.email;
+      });
+    }
+  }
 
   static _trimNullStr(String? value) => IMUtils.emptyStrToNull(value);
 }

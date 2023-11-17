@@ -5,6 +5,7 @@ class UserFullInfo {
   String? phoneNumber;
   String? areaCode;
   String? nickname;
+  String? remark;
   String? englishName;
   String? faceURL;
   int? gender;
@@ -20,10 +21,16 @@ class UserFullInfo {
   int? allowBeep;
   int? allowVibration;
   int? forbidden;
+  String? ex;
   String? station;
+  int? globalRecvMsgOpt;
+  bool isFriendship = true;
+  bool isBlacklist = false;
   List<DepartmentInfo>? departmentList;
 
   bool get isMale => gender == 1;
+
+  String get showName => remark?.isNotEmpty == true ? remark! : (nickname?.isNotEmpty == true ? nickname! : userID!);
 
   UserFullInfo({
     this.userID,
@@ -32,6 +39,7 @@ class UserFullInfo {
     this.phoneNumber,
     this.areaCode,
     this.nickname,
+    this.remark,
     this.englishName,
     this.faceURL,
     this.gender,
@@ -48,6 +56,10 @@ class UserFullInfo {
     this.allowVibration,
     this.forbidden,
     this.station,
+    this.ex,
+    this.globalRecvMsgOpt,
+    this.isFriendship = true,
+    this.isBlacklist = false,
     this.departmentList,
   });
 
@@ -58,6 +70,7 @@ class UserFullInfo {
     phoneNumber = json['phoneNumber'];
     areaCode = json['areaCode'];
     nickname = json['nickname'];
+    remark = json['remark'];
     englishName = json['englishName'];
     faceURL = json['faceURL'];
     gender = json['gender'];
@@ -74,11 +87,11 @@ class UserFullInfo {
     allowVibration = json['allowVibration'];
     forbidden = json['forbidden'];
     station = json['station'];
-    departmentList = json['departmentList'] == null
-        ? null
-        : (json['departmentList'] as List)
-            .map((e) => DepartmentInfo.fromJson(e))
-            .toList();
+    ex = json['ex'];
+    globalRecvMsgOpt = json['globalRecvMsgOpt'];
+    isFriendship = json['isFriendship'] ?? true;
+    isBlacklist = json['isBlacklist'] ?? false;
+    departmentList = json['departmentList'] == null ? null : (json['departmentList'] as List).map((e) => DepartmentInfo.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +102,7 @@ class UserFullInfo {
     data['phoneNumber'] = phoneNumber;
     data['areaCode'] = areaCode;
     data['nickname'] = nickname;
+    data['remark'] = remark;
     data['englishName'] = englishName;
     data['faceURL'] = faceURL;
     data['gender'] = gender;
@@ -104,6 +118,10 @@ class UserFullInfo {
     data['allowVibration'] = allowVibration;
     data['forbidden'] = forbidden;
     data['station'] = station;
+    data['ex'] = ex;
+    data['globalRecvMsgOpt'] = globalRecvMsgOpt;
+    data['isFriendship'] = isFriendship;
+    data['isBlacklist'] = isBlacklist;
     data['departmentList'] = departmentList?.map((e) => e.toJson()).toList();
     return data;
   }

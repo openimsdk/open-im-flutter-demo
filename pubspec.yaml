@@ -108,7 +108,7 @@ dependencies:
       url: https://github.com/hrxiang/flutter_download_manager.git
   synchronized: 3.0.1
   pin_code_fields: 7.3.0
-  flutter_openim_sdk: 3.4.0
+  flutter_openim_sdk: 3.4.0+1
 
   openim_common:
     path: openim_common

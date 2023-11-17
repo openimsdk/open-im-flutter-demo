@@ -90,7 +90,7 @@ dependencies:
   flutter_download_manager:
     git:
       url: https://github.com/hrxiang/flutter_download_manager.git
-  flutter_openim_sdk: 3.4.0
+  flutter_openim_sdk: 3.4.0+1
 
 dev_dependencies:
   flutter_test:
