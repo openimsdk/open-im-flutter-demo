@@ -34,7 +34,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ## Dev Setup 🛠️
 1. Android studio/vscode
-2. Flutter sdk version 3.7.12
+2. Flutter sdk version 3.16
 
 ## Build 🚀
 
@@ -42,7 +42,7 @@ A OpenIM flutter demo, only support android and ios.
 2. modify the server address in the [config.dart](https://github.com/OpenIMSDK/Open-IM-Flutter-Demo/blob/master/lib/src/common/config.dart) file to the server address built by yourself
 3. Please replace the sdk dependency with git dependency
 ```dart
-  flutter_openim_sdk: 3.4.0
+  flutter_openim_sdk: 3.4.0+2
 ```
 
 4. flutter pub get
@@ -56,7 +56,7 @@ A: Support, follow the system language by default
 
 ##### 2. What is the flutter version corresponding to the demo?
 
-A: stable branch 3.7.12
+A: stable branch 3.16
 
 ##### 3. Which platforms are supported?
 
@@ -105,9 +105,9 @@ A: Please set the CPU architecture to arm64, and then operate as follows
 - flutter clean
 - flutter pub get
 - cd ios
-- pod install
 - rm -f Podfile.lock
 - rm -rf Pods
+- pod install
 - Run Archive after connecting to the real device
 
 ![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
