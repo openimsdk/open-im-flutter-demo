@@ -1,14 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:r_scan/r_scan.dart';
+import 'package:scan/scan.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'qr_scan_box.dart';
@@ -22,24 +20,13 @@ class QrcodeView extends StatefulWidget {
 
 class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
   final _picker = ImagePicker();
-
-  QRViewController? controller;
+  MobileScannerController controller = MobileScannerController();
 
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   AnimationController? _animationController;
   Timer? _timer;
   var scanArea = 300.w;
   var cutOutBottomOffset = 40.h;
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller!.resumeCamera();
-    }
-  }
 
   void _upState() {
     setState(() {});
@@ -53,14 +40,13 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller.dispose();
     _clearAnimation();
     super.dispose();
   }
 
   void _initAnimation() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1000));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
     _animationController!
       ..addListener(_upState)
       ..addStatusListener((state) {
@@ -91,8 +77,8 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
         source: ImageSource.gallery,
       );
       if (null != image) {
-        final result = await RScan.scanImagePath(image.path);
-        _parse(result.message);
+        final result = await Scan.parse(image.path);
+        _parse(result);
       }
     });
   }
@@ -137,26 +123,27 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
                 ),
               ),
               GestureDetector(
-                onTap: () async {
-                  await controller?.toggleFlash();
-                  setState(() {});
-                },
-                child: Container(
-                  width: 80.w,
-                  height: 80.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(40.r)),
-                    border: Border.all(color: Colors.white30, width: 12.w),
-                  ),
-                  alignment: Alignment.center,
-                  child: FutureBuilder(
-                    future: controller?.getFlashStatus(),
-                    builder: (context, snapshot) {
-                      return snapshot.data == true ? flashOpen : flashClose;
-                    },
-                  ),
-                ),
-              ),
+                  onTap: () => controller.toggleTorch(),
+                  child: Container(
+                    width: 80.w,
+                    height: 80.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(40.r)),
+                      border: Border.all(color: Colors.white30, width: 12.w),
+                    ),
+                    alignment: Alignment.center,
+                    child: ValueListenableBuilder(
+                      valueListenable: controller.torchState,
+                      builder: (context, state, child) {
+                        switch (state as TorchState) {
+                          case TorchState.off:
+                            return flashClose;
+                          case TorchState.on:
+                            return flashOpen;
+                        }
+                      },
+                    ),
+                  )),
               SizedBox(width: 45.w, height: 45.h),
             ],
           ),
@@ -187,8 +174,7 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
             painter: QrScanBoxPainter(
               boxLineColor: Colors.cyanAccent,
               animationValue: _animationController?.value ?? 0,
-              isForward:
-                  _animationController?.status == AnimationStatus.forward,
+              isForward: _animationController?.status == AnimationStatus.forward,
             ),
           ),
         ),
@@ -207,49 +193,36 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       );
 
   Widget _buildQrView() {
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-          borderColor: Colors.white,
-          borderRadius: 12.r,
-          borderLength: 0,
-          borderWidth: 0,
-          cutOutBottomOffset: cutOutBottomOffset,
-          cutOutSize: scanArea),
-      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
+    return MobileScanner(
+      // fit: BoxFit.contain,
+      controller: controller,
+      onDetect: (capture) {
+        final barcodes = capture.barcodes;
+        if (barcodes.isNotEmpty) {
+          _parse(barcodes.first.displayValue);
+        }
+      },
     );
-  }
-
-  void _onQRViewCreated(QRViewController controller) async {
-    setState(() {
-      this.controller = controller;
-    });
-
-    if (Platform.isAndroid) {
-      controller.resumeCamera();
-    }
-
-    this.controller?.scannedDataStream.asBroadcastStream().listen((scanData) {
-      if (!mounted) return;
-      _parse(scanData.code);
-    });
   }
 
   void _parse(String? result) async {
     if (null != result) {
-      controller?.pauseCamera();
+      controller.stop();
       if (result.startsWith(Config.friendScheme)) {
         var userID = result.substring(Config.friendScheme.length);
         PackageBridge.scanBridge?.scanOutUserID(userID);
+        // AppNavigator.startFriendInfoFromScan(info: UserInfo(userID: uid));
       } else if (result.startsWith(Config.groupScheme)) {
         var groupID = result.substring(Config.groupScheme.length);
         PackageBridge.scanBridge?.scanOutGroupID(groupID);
+        // AppNavigator.startSearchAddGroupFromScan(info: GroupInfo(groupID: gid));
       } else if (IMUtils.isUrlValid(result)) {
         final uri = Uri.parse(Uri.encodeFull(result));
         if (!await launchUrl(uri)) {
+          // throw Exception('Could not launch $uri');
           IMViews.showToast('无法识别!');
-          controller?.resumeCamera();
+          // controller?.resumeCamera();
+          controller.start();
         }
       } else {
         Get.back(result: result);
@@ -259,10 +232,5 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       Get.back();
       IMViews.showToast('无法识别');
     }
-  }
-
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
-    if (!p) {}
   }
 }

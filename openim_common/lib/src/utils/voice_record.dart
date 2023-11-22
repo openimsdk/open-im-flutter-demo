@@ -16,7 +16,7 @@ class VoiceRecord {
   final RecordFc onInterrupt;
   final int maxRecordSec;
   final Function(int duration)? onDuration;
-  final _audioRecorder = Record();
+  final _audioRecorder = AudioRecorder();
   Timer? _timer;
 
   VoiceRecord({
@@ -34,11 +34,12 @@ class VoiceRecord {
       if (!(await file.exists())) {
         await file.create(recursive: true);
       }
-      await _audioRecorder.start(path: _path);
+      await _audioRecorder.start(RecordConfig(), path: _path);
       _startTimestamp = _now();
       _timer?.cancel();
       _timer = null;
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+        // _long = (_now() - _long) ~/ 1000;
         final duration = ((_now() - _startTimestamp) ~/ 1000);
         onDuration?.call(duration);
         if (duration >= maxRecordSec) {

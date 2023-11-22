@@ -56,10 +56,9 @@ class Config {
   static const friendScheme = "io.openim.app/addFriend/";
   static const groupScheme = "io.openim.app/joinGroup/";
 
-  static const _host = "14.29.213.197";
+  static const _host = "203.56.175.233";
 
-  static const _ipRegex =
-      '((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)';
+  static const _ipRegex = '((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)';
 
   static bool get _isIP => RegExp(_ipRegex).hasMatch(_host);
 
@@ -101,15 +100,5 @@ class Config {
       Logger.print('缓存wsUrl: $url');
     }
     return url ?? (_isIP ? "ws://$_host:10001" : "wss://$_host/msg_gateway");
-  }
-
-  static String get objectStorage {
-    String? storage;
-    var server = DataSp.getServerConfig();
-    if (null != server) {
-      storage = server['objectStorage'];
-      Logger.print('缓存objectStorage: $storage');
-    }
-    return storage ?? 'minio';
   }
 }

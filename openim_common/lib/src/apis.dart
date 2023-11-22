@@ -4,11 +4,9 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_common/openim_common.dart';
 
 class Apis {
-  static Options get imTokenOptions =>
-      Options(headers: {'token': DataSp.imToken});
+  static Options get imTokenOptions => Options(headers: {'token': DataSp.imToken});
 
-  static Options get chatTokenOptions =>
-      Options(headers: {'token': DataSp.chatToken});
+  static Options get chatTokenOptions => Options(headers: {'token': DataSp.chatToken});
 
   static Future<LoginCertificate> login({
     String? areaCode,
@@ -175,9 +173,7 @@ class Apis {
       options: chatTokenOptions,
     );
     if (data['users'] is List) {
-      return (data['users'] as List)
-          .map((e) => UserFullInfo.fromJson(e))
-          .toList();
+      return (data['users'] as List).map((e) => UserFullInfo.fromJson(e)).toList();
     }
     return null;
   }
@@ -196,9 +192,7 @@ class Apis {
       options: chatTokenOptions,
     );
     if (data['users'] is List) {
-      return (data['users'] as List)
-          .map((e) => UserFullInfo.fromJson(e))
-          .toList();
+      return (data['users'] as List).map((e) => UserFullInfo.fromJson(e)).toList();
     }
     return null;
   }
@@ -231,13 +225,7 @@ class Apis {
   }) async {
     return HttpUtil.post(
       Urls.getVerificationCode,
-      data: {
-        "areaCode": areaCode,
-        "phoneNumber": phoneNumber,
-        "email": email,
-        'usedFor': usedFor,
-        'invitationCode': invitationCode
-      },
+      data: {"areaCode": areaCode, "phoneNumber": phoneNumber, "email": email, 'usedFor': usedFor, 'invitationCode': invitationCode},
     ).then((value) {
       IMViews.showToast(StrRes.sentSuccessfully);
       return true;
@@ -287,38 +275,6 @@ class Apis {
     });
   }
 
-  static void queryUserOnlineStatus({
-    required List<String> uidList,
-    Function(Map<String, String>)? onlineStatusDescCallback,
-    Function(Map<String, bool>)? onlineStatusCallback,
-  }) async {
-    var resp = await dio.post<Map<String, dynamic>>(
-      Urls.userOnlineStatus,
-      data: {
-        "userIDList": uidList,
-      },
-      options: imTokenOptions,
-    );
-    Map<String, dynamic> map = resp.data!;
-    if (map['errCode'] == 0 && map['data'] is List) {
-      _handleStatus(
-        (map['data'] as List).map((e) => OnlineStatus.fromJson(e)).toList(),
-        onlineStatusCallback: onlineStatusCallback,
-        onlineStatusDescCallback: onlineStatusDescCallback,
-      );
-    }
-  }
-
-  static Future<Map<String, dynamic>> getClientConfig() async {
-    var result = await HttpUtil.post(
-      Urls.getClientConfig,
-      data: {},
-      options: chatTokenOptions,
-      showErrorToast: false,
-    );
-    return result;
-  }
-
   static _handleStatus(
     List<OnlineStatus> list, {
     Function(Map<String, String>)? onlineStatusDescCallback,
@@ -351,15 +307,5 @@ class Apis {
     }
     onlineStatusDescCallback?.call(statusDesc);
     onlineStatusCallback?.call(status);
-  }
-
-  static Future<List<UniMPInfo>> queryUniMPList() async {
-    var result = await HttpUtil.post(
-      Urls.uniMPUrl,
-      data: {},
-      options: chatTokenOptions,
-      showErrorToast: false,
-    );
-    return (result as List).map((e) => UniMPInfo.fromJson(e)).toList();
   }
 }
