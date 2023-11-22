@@ -30,7 +30,6 @@ class IMController extends GetxController with IMCallback {
       apiAddr: Config.imApiUrl,
       wsAddr: Config.imWsUrl,
       dataDir: '${Config.cachePath}/',
-      objectStorage: Config.objectStorage,
       logLevel: 6,
       isLogStandardOutput: true,
       listener: OnConnectListener(

@@ -28,30 +28,20 @@ class MapView extends StatelessWidget {
           Expanded(
             child: FlutterMap(
               options: MapOptions(
-                center: LatLng(latitude, longitude),
-                zoom: 15.0,
+                initialCenter: LatLng(latitude, longitude),
+                initialZoom: 15.0,
                 maxZoom: 18.0,
-                screenSize: Size(1.sw, 1.sh),
               ),
-              nonRotatedChildren: [
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: '© OpenIM'.toText
-                    ..style = Styles.ts_0089FF_17sp_semibold,
-                ),
-              ],
               children: [
                 TileLayer(
-                  urlTemplate:
-                      'https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+                  urlTemplate: 'https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
                   userAgentPackageName: '',
                 ),
                 MarkerLayer(
                   markers: [
                     Marker(
                       point: LatLng(latitude, longitude),
-                      anchorPos: AnchorPos.align(AnchorAlign.top),
-                      builder: (ctx) => Icon(
+                      child: Icon(
                         Icons.location_on_sharp,
                         color: Styles.c_FF381F,
                         size: 30,

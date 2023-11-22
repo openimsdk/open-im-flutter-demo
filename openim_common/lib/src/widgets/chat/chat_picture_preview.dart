@@ -11,9 +11,7 @@ class ChatPicturePreview extends StatelessWidget {
     this.heroTag,
     this.onTap,
     this.onLongPress,
-  })  : controller = images.length > 1
-            ? ExtendedPageController(initialPage: currentIndex, pageSpacing: 50)
-            : null,
+  })  : controller = images.length > 1 ? ExtendedPageController(initialPage: currentIndex, pageSpacing: 50) : null,
         super(key: key);
   final int currentIndex;
   final List<String> images;
@@ -26,8 +24,7 @@ class ChatPicturePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExtendedImageSlidePage(
       slideAxis: SlideAxis.vertical,
-      slidePageBackgroundHandler: (offset, pageSize) =>
-          defaultSlidePageBackgroundHandler(
+      slidePageBackgroundHandler: (offset, pageSize) => defaultSlidePageBackgroundHandler(
         color: Colors.black,
         offset: offset,
         pageSize: pageSize,
@@ -51,7 +48,6 @@ class ChatPicturePreview extends StatelessWidget {
   Widget get _pageView => ExtendedImageGesturePageView.builder(
         controller: controller,
         onPageChanged: (int index) {},
-        preloadPagesCount: 2,
         itemCount: images.length,
         itemBuilder: (BuildContext context, int index) {
           return _networkGestureImage(images.elementAt(index));
@@ -81,10 +77,7 @@ class ChatPicturePreview extends StatelessWidget {
               {
                 final ImageChunkEvent? loadingProgress = state.loadingProgress;
                 final double? progress =
-                    loadingProgress?.expectedTotalBytes != null
-                        ? loadingProgress!.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null;
+                    loadingProgress?.expectedTotalBytes != null ? loadingProgress!.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null;
 
                 return SizedBox(
                   width: 15.0,

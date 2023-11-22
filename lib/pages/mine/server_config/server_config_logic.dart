@@ -11,7 +11,6 @@ class ServerConfigLogic extends GetxController {
   var imApiCtrl = TextEditingController();
   var imWsCtrl = TextEditingController();
 
-  var objectStorageCtrl = TextEditingController();
   var isIP = true.obs;
 
   void switchServer(bool isIp) {
@@ -37,7 +36,6 @@ class ServerConfigLogic extends GetxController {
     authCtrl.text = Config.appAuthUrl;
     imApiCtrl.text = Config.imApiUrl;
     imWsCtrl.text = Config.imWsUrl;
-    objectStorageCtrl.text = Config.objectStorage;
 
     isIP.value = RegexUtil.isIP(ipCtrl.text);
 
@@ -60,7 +58,6 @@ class ServerConfigLogic extends GetxController {
     authCtrl.dispose();
     imApiCtrl.dispose();
     imWsCtrl.dispose();
-    objectStorageCtrl.dispose();
     ipCtrl.dispose();
     super.onClose();
   }
@@ -79,10 +76,8 @@ class ServerConfigLogic extends GetxController {
       'authUrl': authCtrl.text,
       'apiUrl': imApiCtrl.text,
       'wsUrl': imWsCtrl.text,
-      'objectStorage': objectStorageCtrl.text,
     });
-    IMViews.showToast(
-        'The configuration will take effect after restarting the app');
+    IMViews.showToast('The configuration will take effect after restarting the app');
   }
 
   void toggleTab(i) {

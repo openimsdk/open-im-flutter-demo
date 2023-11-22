@@ -173,7 +173,7 @@ class IMUtils {
       minHeight: 800,
       format: format,
     );
-    return result;
+    return result != null ? File(result.path) : file;
   }
 
   static Future<String> createTempFile({
