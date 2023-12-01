@@ -7,7 +7,7 @@
 # OpenIM Flutter Demo 💬💻
 
 <p>
-  <a href="https://doc.rentsoft.cn/">OpenIM Docs</a>
+  <a href="https://doc.openim.io/">OpenIM Docs</a>
   •
   <a href="https://github.com/openimsdk/open-im-server">OpenIM Server</a>
   •
@@ -30,7 +30,7 @@ A OpenIM flutter demo, only support android and ios.
 
 - Download the experience app
 
-  ![Android](https://www.pgyer.com/app/qrcode/OpenIM-Flutter-Full)
+  ![Android](https://www.pgyer.com/app/qrcode/IM-FCER)
 
 ## Dev Setup 🛠️
 1. Android studio/vscode
