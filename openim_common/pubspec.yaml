@@ -91,7 +91,7 @@ dependencies:
   syncfusion_flutter_core: 23.2.4
   syncfusion_flutter_sliders: 23.2.4
   synchronized: 3.0.1
-  flutter_openim_sdk: 3.4.0+2
+  flutter_openim_sdk: 3.5.0-rc.1+1
 
   flutter_download_manager:
     path: ../local_plugin/flutter_download_manager
