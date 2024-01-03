@@ -42,7 +42,7 @@ A OpenIM flutter demo, only support android and ios.
 2. modify the server address in the [config.dart](https://github.com/openimsdk/open-im-flutter-demo/blob/main/openim_common/lib/src/config.dart) file to the server address built by yourself
 3. Please replace the sdk dependency with git dependency
 ```dart
-  flutter_openim_sdk: 3.4.0+2
+  flutter_openim_sdk: lastest
 ```
 
 4. flutter pub get
