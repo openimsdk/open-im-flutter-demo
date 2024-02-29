@@ -5,15 +5,14 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:common_utils/common_utils.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:openim_live/openim_live.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:video_compress/video_compress.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -96,11 +95,15 @@ class ChatLogic extends GetxController {
 
   bool get isGroupChat => null != groupID && groupID!.trim().isNotEmpty;
 
+  RTCBridge? rtcBridge = PackageBridge.rtcBridge;
+
+  bool get rtcIsBusy => rtcBridge?.hasConnection == true;
+
   bool isCurrentChat(Message message) {
     var senderId = message.sendID;
     var receiverId = message.recvID;
     var groupId = message.groupID;
-
+    // var sessionType = message.sessionType;
     var isCurSingleChat = message.isSingleChat && isSingleChat && (senderId == userID || senderId == OpenIM.iMManager.userID && receiverId == userID);
     var isCurGroupChat = message.isGroupChat && isGroupChat && groupID == groupId;
     return isCurSingleChat || isCurGroupChat;
@@ -318,8 +321,10 @@ class ChatLogic extends GetxController {
   }
 
   void sendPicture({required String path}) async {
+    final file = await IMUtils.compressImageAndGetFile(File(path));
+
     var message = await OpenIM.iMManager.messageManager.createImageMessageFromFullPath(
-      imagePath: path,
+      imagePath: file!.path,
     );
     _sendMessage(message);
   }
@@ -330,10 +335,11 @@ class ChatLogic extends GetxController {
     required int duration,
     required String thumbnailPath,
   }) async {
+    var d = duration > 1000.0 ? duration / 1000.0 : duration;
     var message = await OpenIM.iMManager.messageManager.createVideoMessageFromFullPath(
       videoPath: videoPath,
       videoType: mimeType,
-      duration: duration,
+      duration: d.toInt(),
       snapshotPath: thumbnailPath,
     );
     _sendMessage(message);
@@ -456,21 +462,15 @@ class ChatLogic extends GetxController {
   }
 
   void onTapCamera() async {
-    var resolutionPreset = ResolutionPreset.max;
-    if (Platform.isAndroid) {
-      final deviceInfo = appLogic.deviceInfo;
-      if (deviceInfo is AndroidDeviceInfo && deviceInfo.brand.toLowerCase() == 'xiaomi') {
-        resolutionPreset = ResolutionPreset.medium;
-      }
-    }
     final AssetEntity? entity = await CameraPicker.pickFromCamera(
       Get.context!,
       locale: Get.locale,
       pickerConfig: CameraPickerConfig(
-        enableAudio: true,
-        enableRecording: true,
-        resolutionPreset: resolutionPreset,
-      ),
+          enableAudio: true,
+          enableRecording: true,
+          enableScaledPreview: false,
+          resolutionPreset: ResolutionPreset.medium,
+          maximumRecordingDuration: 60.seconds),
     );
     _handleAssets(entity);
   }
@@ -483,15 +483,15 @@ class ChatLogic extends GetxController {
       switch (asset.type) {
         case AssetType.image:
           sendPicture(path: path);
-
           break;
         case AssetType.video:
-          var thumbnailFile = await VideoCompress.getFileThumbnail(
-            path,
-            quality: 85,
-          );
+          var thumbnailFile = await IMUtils.getVideoThumbnail(File(path));
+          LoadingView.singleton.show();
+          final file = await IMUtils.compressVideoAndGetFile(File(path));
+          LoadingView.singleton.dismiss();
+
           sendVideo(
-            videoPath: path,
+            videoPath: file!.path,
             mimeType: asset.mimeType ?? IMUtils.getMediaType(path) ?? '',
             duration: asset.duration,
             thumbnailPath: thumbnailFile.path,
@@ -710,6 +710,21 @@ class ChatLogic extends GetxController {
 
   void joinGroupCalling() async {}
 
+  void call() {
+    if (rtcIsBusy) {
+      IMViews.showToast(StrRes.callingBusy);
+      return;
+    }
+
+    IMViews.openIMCallSheet(nickname.value, (index) {
+      imLogic.call(
+        callObj: CallObj.single,
+        callType: index == 0 ? CallType.audio : CallType.video,
+        inviteeUserIDList: [if (isSingleChat) userID!],
+      );
+    });
+  }
+
   void onScrollToTop() {
     if (scrollingCacheMessageList.isNotEmpty) {
       messageList.addAll(scrollingCacheMessageList);
@@ -724,7 +739,7 @@ class ChatLogic extends GetxController {
       final sub = phoneNumber.substring(start);
       return "${OpenIM.iMManager.userInfo.nickname!}$sub";
     }
-    return OpenIM.iMManager.userInfo.nickname!;
+    return OpenIM.iMManager.userInfo.nickname ?? '';
   }
 
   bool isFailedHintMessage(Message message) {
@@ -795,8 +810,39 @@ class ChatLogic extends GetxController {
       messageList.assignAll(list);
       scrollBottom();
     } else {
+      removeCallingCustomMessage(list);
+
+      if (list.isNotEmpty && list.length < 20) {
+        final result = await _requestHistoryMessage();
+        if (result.messageList?.isNotEmpty == true) {
+          list = result.messageList!;
+          lastMinSeq = result.lastMinSeq;
+        }
+        removeCallingCustomMessage(list);
+      }
       messageList.insertAll(0, list);
     }
     return list.length >= 20;
+  }
+
+  void removeCallingCustomMessage(List<Message> list) {
+    list.removeWhere((element) {
+      if (element.isCustomType) {
+        if (element.customElem?.data != null) {
+          var map = json.decode(element.customElem!.data!);
+          var customType = map['customType'];
+
+          final result = customType == CustomMessageType.callingInvite ||
+              customType == CustomMessageType.callingAccept ||
+              customType == CustomMessageType.callingReject ||
+              customType == CustomMessageType.callingHungup ||
+              customType == CustomMessageType.callingCancel;
+
+          return result;
+        }
+      }
+
+      return false;
+    });
   }
 }

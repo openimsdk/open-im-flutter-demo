@@ -1,39 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:openim_common/openim_common.dart';
-import 'package:rxdart/rxdart.dart';
-
 class PackageBridge {
   PackageBridge._();
 
   static SelectContactsBridge? selectContactsBridge;
   static ViewUserProfileBridge? viewUserProfileBridge;
-  static OrganizationMultiSelBridge? organizationBridge;
-  static WorkingCircleBridge? workingCircleBridge;
   static ScanBridge? scanBridge;
+  static RTCBridge? rtcBridge;
 }
 
 abstract class ScanBridge {
   scanOutUserID(String userID);
 
   scanOutGroupID(String groupID);
-}
-
-abstract class OrganizationMultiSelBridge {
-  Widget get checkedConfirmView;
-
-  bool get isMultiModel;
-
-  bool isChecked(dynamic info);
-
-  bool isDefaultChecked(dynamic info);
-
-  Function()? onTap(dynamic info);
-
-  toggleChecked(dynamic info);
-
-  removeItem(dynamic info);
-
-  updateDefaultCheckedList(List<String> userIDList);
 }
 
 abstract class ViewUserProfileBridge {
@@ -52,11 +29,9 @@ abstract class SelectContactsBridge {
   });
 }
 
-abstract class WorkingCircleBridge {
-  Function(WorkMomentsNotification notification)?
-      onRecvNewMessageForWorkingCircle;
-
-  final opEventSub = PublishSubject<dynamic>();
+abstract class RTCBridge {
+  bool get hasConnection;
+  void dismiss();
 }
 
 class GetTags {

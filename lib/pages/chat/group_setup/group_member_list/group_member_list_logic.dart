@@ -48,7 +48,7 @@ class GroupMemberListLogic extends GetxController {
 
   bool get isOwnerOrAdmin => isAdmin || isOwner;
 
-  int get maxLength => min(groupInfo.memberCount!, 999);
+  int get maxLength => min(groupInfo.memberCount!, 10);
 
   @override
   void onClose() {
@@ -106,7 +106,7 @@ class GroupMemberListLogic extends GetxController {
         groupID: groupInfo.groupID,
         count: count,
         offset: memberList.length,
-        filter: isDelMember ? (isOwner ? 4 : (isAdmin ? 1 : 0)) : 0,
+        filter: isDelMember ? (isOwner ? 4 : (isAdmin ? 3 : 0)) : 0,
       );
 
   onLoad() async {
@@ -130,7 +130,7 @@ class GroupMemberListLogic extends GetxController {
     if (isMultiSelMode) {
       if (isChecked(membersInfo)) {
         checkedList.remove(membersInfo);
-      } else {
+      } else if (checkedList.length < maxLength) {
         checkedList.add(membersInfo);
       }
     } else {

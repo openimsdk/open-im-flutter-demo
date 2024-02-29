@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
@@ -40,12 +39,11 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 )
               : null,
-          child: Stack(
-            alignment: Alignment.center,
+          child: Row(
             children: [
-              if (null != left) Positioned(left: 0, child: left!),
+              if (null != left) left!,
               if (null != center) center!,
-              if (null != right) Positioned(right: 0, child: right!),
+              if (null != right) right!,
             ],
           ),
         ),
@@ -56,44 +54,23 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(height ?? 44.h);
 
-  TitleBar.conversation({
-    super.key,
-    String? statusStr,
-    bool isFailed = false,
-    Function()? onClickCallBtn,
-    Function()? onScan,
-    Function()? onAddFriend,
-    Function()? onAddGroup,
-    Function()? onCreateGroup,
-    Function()? onVideoMeeting,
-    CustomPopupMenuController? popCtrl,
-  })  : backgroundColor = null,
+  TitleBar.conversation(
+      {super.key,
+      String? statusStr,
+      bool isFailed = false,
+      Function()? onClickCallBtn,
+      Function()? onScan,
+      Function()? onAddFriend,
+      Function()? onAddGroup,
+      Function()? onCreateGroup,
+      CustomPopupMenuController? popCtrl,
+      this.left})
+      : backgroundColor = null,
         height = 62.h,
         showUnderline = false,
         center = null,
-        left = Row(
-          children: [
-            AvatarView(
-              width: 42.w,
-              height: 42.h,
-              text: OpenIM.iMManager.userInfo.nickname,
-              url: OpenIM.iMManager.userInfo.faceURL,
-            ),
-            10.horizontalSpace,
-            if (null != OpenIM.iMManager.userInfo.nickname)
-              OpenIM.iMManager.userInfo.nickname!.toText
-                ..style = Styles.ts_0C1C33_17sp
-                ..maxLines = 1
-                ..overflow = TextOverflow.ellipsis,
-            10.horizontalSpace,
-            if (null != statusStr)
-              SyncStatusView(
-                isFailed: isFailed,
-                statusStr: statusStr,
-              ),
-          ],
-        ),
         right = Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             PopButton(
               popCtrl: popCtrl,
@@ -121,7 +98,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
               ],
               child: ImageRes.addBlack.toImage
                 ..width = 28.w
-                ..height = 28.h,
+                ..height = 28.h /*..onTap = onClickAddBtn*/,
             ),
           ],
         );
@@ -129,32 +106,49 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   TitleBar.chat({
     super.key,
     String? title,
+    String? member,
     String? subTitle,
     bool showOnlineStatus = false,
     bool isOnline = false,
     bool isMultiModel = false,
     bool showCallBtn = true,
+    bool isMuted = false,
     Function()? onClickCallBtn,
     Function()? onClickMoreBtn,
     Function()? onCloseMultiModel,
   })  : backgroundColor = null,
         height = 48.h,
         showUnderline = true,
-        center = Column(
+        center = Flexible(
+            child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (null != title)
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 160.w),
-                child: title.toText
-                  ..style = Styles.ts_0C1C33_17sp_semibold
-                  ..maxLines = 1
-                  ..overflow = TextOverflow.ellipsis,
-              ),
-            if (null != subTitle)
               Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                      flex: 5,
+                      child: Container(
+                        child: title.trim().toText
+                          ..style = Styles.ts_0C1C33_17sp_semibold
+                          ..maxLines = 1
+                          ..overflow = TextOverflow.ellipsis
+                          ..textAlign = TextAlign.center,
+                      )),
+                  if (null != member)
+                    Flexible(
+                        flex: 2,
+                        child: Container(
+                            child: member.toText
+                              ..style = Styles.ts_0C1C33_17sp_semibold
+                              ..maxLines = 1))
+                ],
+              ),
+            if (subTitle?.isNotEmpty == true)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (showOnlineStatus)
                     Container(
@@ -163,31 +157,42 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
                       margin: EdgeInsets.only(right: 4.w),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isOnline ? Styles.c_18E875 : Styles.c_FF381F,
+                        color: isOnline ? Styles.c_18E875 : Styles.c_8E9AB0,
                       ),
                     ),
-                  subTitle.toText..style = Styles.ts_8E9AB0_10sp,
+                  subTitle!.toText..style = Styles.ts_8E9AB0_10sp,
                 ],
               ),
           ],
-        ),
-        left = isMultiModel
-            ? (StrRes.cancel.toText
-              ..style = Styles.ts_0C1C33_17sp
-              ..onTap = onCloseMultiModel)
-            : (ImageRes.backBlack.toImage
-              ..width = 24.w
-              ..height = 24.h
-              ..onTap = (() => Get.back())),
-        right = Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ImageRes.moreBlack.toImage
-              ..width = 28.w
-              ..height = 28.h
-              ..onTap = onClickMoreBtn,
-          ],
-        );
+        )),
+        left = SizedBox(
+            width: showCallBtn ? 48.w : 24.w,
+            child: isMultiModel
+                ? (StrRes.cancel.toText
+                  ..style = Styles.ts_0C1C33_17sp
+                  ..onTap = onCloseMultiModel)
+                : (ImageRes.backBlack.toImage
+                  ..width = 24.w
+                  ..height = 24.h
+                  ..onTap = (() => Get.back()))),
+        right = SizedBox(
+            width: 16.w + (showCallBtn ? 56.w : 28.w),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (showCallBtn)
+                  ImageRes.callBack.toImage
+                    ..width = 28.w
+                    ..height = 28.h
+                    ..opacity = isMuted ? 0.4 : 1
+                    ..onTap = isMuted ? null : onClickCallBtn,
+                16.horizontalSpace,
+                ImageRes.moreBlack.toImage
+                  ..width = 28.w
+                  ..height = 28.h
+                  ..onTap = onClickMoreBtn,
+              ],
+            ));
 
   TitleBar.back({
     super.key,
@@ -203,8 +208,10 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     Function()? onTap,
   })  : height = 44.h,
         backgroundColor = backgroundColor ?? Styles.c_FFFFFF,
-        center = (title ?? '').toText
-          ..style = (titleStyle ?? Styles.ts_0C1C33_17sp_semibold),
+        center = Expanded(
+            child: (title ?? '').toText
+              ..style = (titleStyle ?? Styles.ts_0C1C33_17sp_semibold)
+              ..textAlign = TextAlign.center),
         left = GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: onTap ?? (() => Get.back(result: result)),
@@ -215,9 +222,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
                 ..width = 24.w
                 ..height = 24.h
                 ..color = backIconColor,
-              if (null != leftTitle)
-                leftTitle.toText
-                  ..style = (leftTitleStyle ?? Styles.ts_0C1C33_17sp_semibold),
+              if (null != leftTitle) leftTitle.toText..style = (leftTitleStyle ?? Styles.ts_0C1C33_17sp_semibold),
             ],
           ),
         );
@@ -229,10 +234,15 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     Function()? onClickAddContacts,
   })  : height = 44.h,
         backgroundColor = Styles.c_FFFFFF,
-        center = null,
+        center = Spacer(),
         left = StrRes.contacts.toText..style = Styles.ts_0C1C33_20sp_semibold,
         right = Row(
           children: [
+            ImageRes.searchBlack.toImage
+              ..width = 28.w
+              ..height = 28.h
+              ..onTap = onClickSearch,
+            16.horizontalSpace,
             ImageRes.addContacts.toImage
               ..width = 28.w
               ..height = 28.h
@@ -260,9 +270,9 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     ValueChanged<String>? onChanged,
   })  : height = 44.h,
         backgroundColor = Styles.c_FFFFFF,
-        center = Container(
-          margin: EdgeInsets.only(left: 35.w),
-          child: SearchBox(
+        center = Expanded(
+          child: Container(
+              child: SearchBox(
             enabled: true,
             autofocus: autofocus,
             hintText: hintText,
@@ -271,7 +281,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
             onSubmitted: onSubmitted,
             onCleared: onCleared,
             onChanged: onChanged,
-          ),
+          )),
         ),
         showUnderline = true,
         right = null,

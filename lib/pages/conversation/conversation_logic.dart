@@ -52,8 +52,7 @@ class ConversationLogic extends GetxController {
   void promptSoundOrNotification(ConversationInfo info) {
     if (imLogic.userInfo.value.globalRecvMsgOpt == 0 &&
         info.recvMsgOpt == 0 &&
-        info.unreadCount != null &&
-        info.unreadCount! > 0 &&
+        info.unreadCount > 0 &&
         info.latestMsg?.sendID != OpenIM.iMManager.userID) {
       appLogic.promptSoundOrNotification(info.latestMsg!.seq!);
     }
@@ -146,8 +145,9 @@ class ConversationLogic extends GetxController {
 
       final text = IMUtils.parseNtf(info.latestMsg!, isConversation: true);
       if (text != null) return text;
+      if (info.isSingleChat || info.latestMsg!.sendID == OpenIM.iMManager.userID) return IMUtils.parseMsg(info.latestMsg!, isConversation: true);
 
-      return IMUtils.parseMsg(info.latestMsg!, isConversation: true);
+      return "${info.latestMsg!.senderNickname}: ${IMUtils.parseMsg(info.latestMsg!, isConversation: true)} ";
     } catch (e, s) {
       Logger.print('------e:$e s:$s');
     }

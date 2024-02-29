@@ -1,37 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:openim_live/openim_live.dart';
 
 import '../im_callback.dart';
 
-class IMController extends GetxController with IMCallback {
+class IMController extends GetxController with IMCallback, OpenIMLive {
   late Rx<UserFullInfo> userInfo;
   late String atAllTag;
 
   @override
   void onClose() {
     super.close();
-
     super.onClose();
+    onCloseLive();
   }
 
   @override
   void onInit() async {
     super.onInit();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _initialOpenIM());
+    onInitLive();
+    // Initialize SDK
+    WidgetsBinding.instance.addPostFrameCallback((_) => initOpenIM());
   }
 
-  void _initialOpenIM() async {
+  void initOpenIM() async {
     final initialized = await OpenIM.iMManager.initSDK(
       platformID: IMUtils.getPlatform(),
       apiAddr: Config.imApiUrl,
       wsAddr: Config.imWsUrl,
-      dataDir: '${Config.cachePath}/',
+      dataDir: Config.cachePath,
       logLevel: 6,
-      isLogStandardOutput: true,
+      logFilePath: Config.cachePath,
       listener: OnConnectListener(
         onConnecting: () {
           imSdkStatus(IMSdkStatus.connecting);
@@ -43,37 +47,76 @@ class IMController extends GetxController with IMCallback {
           imSdkStatus(IMSdkStatus.connectionSucceeded);
         },
         onKickedOffline: kickedOffline,
-        onUserTokenExpired: () {},
+        onUserTokenExpired: kickedOffline,
       ),
     );
-
+    // Set listener
     OpenIM.iMManager
       ..userManager.setUserListener(OnUserListener(
         onSelfInfoUpdated: (u) {
           userInfo.update((val) {
             val?.nickname = u.nickname;
             val?.faceURL = u.faceURL;
-
             val?.remark = u.remark;
             val?.ex = u.ex;
             val?.globalRecvMsgOpt = u.globalRecvMsgOpt;
           });
         },
       ))
+      // Add message listener (remove when not in use)
       ..messageManager.setAdvancedMsgListener(OnAdvancedMsgListener(
-        onRecvC2CReadReceipt: recvC2CMessageReadReceipt,
-        onRecvNewMessage: recvNewMessage,
-        onRecvGroupReadReceipt: recvGroupMessageReadReceipt,
-        onNewRecvMessageRevoked: recvMessageRevoked,
-      ))
+          onRecvC2CReadReceipt: recvC2CMessageReadReceipt,
+          onRecvNewMessage: (msg) {
+            bool skip = false;
+
+            if (msg.isCustomType) {
+              final data = msg.customElem!.data;
+              final map = jsonDecode(data!);
+              final customType = map['customType'];
+              if (customType == CustomMessageType.callingInvite ||
+                  customType == CustomMessageType.callingAccept ||
+                  customType == CustomMessageType.callingReject ||
+                  customType == CustomMessageType.callingCancel ||
+                  customType == CustomMessageType.callingHungup) {
+                skip = true;
+
+                final signaling = SignalingInfo(invitation: InvitationInfo.fromJson(map['data']));
+
+                switch (customType) {
+                  case CustomMessageType.callingInvite:
+                    receiveNewInvitation(signaling);
+                    break;
+                  case CustomMessageType.callingAccept:
+                    inviteeAccepted(signaling);
+                    break;
+                  case CustomMessageType.callingReject:
+                    inviteeRejected(signaling);
+                    break;
+                  case CustomMessageType.callingCancel:
+                    invitationCancelled(signaling);
+                    break;
+                  case CustomMessageType.callingHungup:
+                    beHangup(signaling);
+                    break;
+                }
+              }
+            }
+
+            if (!skip) {
+              recvNewMessage(msg);
+            }
+          },
+          onRecvGroupReadReceipt: (v) {},
+          onNewRecvMessageRevoked: recvMessageRevoked))
+
+      // Set up message sending progress listener
       ..messageManager.setMsgSendProgressListener(OnMsgSendProgressListener(
         onProgress: progressCallback,
       ))
-      ..messageManager.setCustomBusinessListener(
-        OnCustomBusinessListener(
-          onRecvCustomBusinessMessage: recvCustomBusinessMessage,
-        ),
-      )
+      ..messageManager.setCustomBusinessListener(OnCustomBusinessListener(
+        onRecvCustomBusinessMessage: recvCustomBusinessMessage,
+      ))
+      // Set up friend relationship listener
       ..friendshipManager.setFriendshipListener(OnFriendshipListener(
         onBlackAdded: blacklistAdded,
         onBlackDeleted: blacklistDeleted,
@@ -85,6 +128,8 @@ class IMController extends GetxController with IMCallback {
         onFriendAdded: friendAdded,
         onFriendDeleted: friendDeleted,
       ))
+
+      // Set up conversation listener
       ..conversationManager.setConversationListener(OnConversationListener(
         onConversationChanged: conversationChanged,
         onNewConversation: newConversation,
@@ -122,13 +167,13 @@ class IMController extends GetxController with IMCallback {
         token: token,
         defaultValue: () async => UserInfo(userID: userID),
       );
-      userInfo = UserFullInfo.fromJson(user.obs.toJson()).obs;
+      userInfo = UserFullInfo.fromJson(user.toJson()).obs;
       _queryMyFullInfo();
       _queryAtAllTag();
     } catch (e, s) {
       Logger.print('e: $e  s:$s');
       await _handleLoginRepeatError(e);
-      rethrow;
+      return Future.error(e, s);
     }
   }
 

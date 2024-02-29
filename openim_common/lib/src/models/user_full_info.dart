@@ -24,7 +24,7 @@ class UserFullInfo {
   String? ex;
   String? station;
   int? globalRecvMsgOpt;
-  bool isFriendship = true;
+  bool isFriendship = false;
   bool isBlacklist = false;
   List<DepartmentInfo>? departmentList;
 
@@ -58,7 +58,7 @@ class UserFullInfo {
     this.station,
     this.ex,
     this.globalRecvMsgOpt,
-    this.isFriendship = true,
+    this.isFriendship = false,
     this.isBlacklist = false,
     this.departmentList,
   });

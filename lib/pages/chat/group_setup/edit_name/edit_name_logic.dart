@@ -34,10 +34,8 @@ class EditGroupNameLogic extends GetxController {
   void save() async {
     await LoadingView.singleton.wrap(asyncFunction: () async {
       if (type == EditNameType.groupNickname) {
-        final groupInfo = GroupInfo(groupID: groupSetupLogic.groupInfo.value.groupID, groupName: inputCtrl.text.trim());
-        await OpenIM.iMManager.groupManager.setGroupInfo(
-          groupInfo,
-        );
+        await OpenIM.iMManager.groupManager
+            .setGroupInfo(GroupInfo(groupID: groupSetupLogic.groupInfo.value.groupID, groupName: inputCtrl.text.trim()));
       } else if (type == EditNameType.myGroupMemberNickname) {
         await OpenIM.iMManager.groupManager.setGroupMemberNickname(
           groupID: groupSetupLogic.groupInfo.value.groupID,

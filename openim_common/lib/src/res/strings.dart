@@ -55,8 +55,7 @@ class StrRes {
 
   static String get resendVerificationCode => 'resendVerificationCode'.tr;
 
-  static String get verificationCodeTimingReminder =>
-      'verificationCodeTimingReminder'.tr;
+  static String get verificationCodeTimingReminder => 'verificationCodeTimingReminder'.tr;
 
   static String get defaultVerificationCode => 'defaultVerificationCode'.tr;
 
@@ -262,8 +261,7 @@ class StrRes {
 
   static String get releaseToSend => 'releaseToSend'.tr;
 
-  static String get releaseToSendSwipeUpToCancel =>
-      'releaseToSendSwipeUpToCancel'.tr;
+  static String get releaseToSendSwipeUpToCancel => 'releaseToSendSwipeUpToCancel'.tr;
 
   static String get liftFingerToCancelSend => 'liftFingerToCancelSend'.tr;
 
@@ -681,8 +679,7 @@ class StrRes {
 
   static String get confirm => 'confirm'.tr;
 
-  static String get confirmTransferGroupToUser =>
-      'confirmTransferGroupToUser'.tr;
+  static String get confirmTransferGroupToUser => 'confirmTransferGroupToUser'.tr;
 
   static String get removeGroupMember => 'removeGroupMember'.tr;
 
@@ -930,8 +927,7 @@ class StrRes {
 
   static String get confirmTheChanges => 'confirmTheChanges'.tr;
 
-  static String get invitesYouToVideoConference =>
-      'invitesYouToVideoConference'.tr;
+  static String get invitesYouToVideoConference => 'invitesYouToVideoConference'.tr;
 
   static String get over => 'over'.tr;
 
@@ -1035,12 +1031,15 @@ class StrRes {
 
   static String get sendAnother => 'sendAnother'.tr;
 
-  static String get confirmDelTagNotificationHint =>
-      'confirmDelTagNotificationHint'.tr;
+  static String get confirmDelTagNotificationHint => 'confirmDelTagNotificationHint'.tr;
 
   static String get contentNotBlank => 'contentNotBlank'.tr;
 
   static String get plsEnterDescription => 'plsEnterDescription'.tr;
 
   static String get gifNotSupported => 'gifNotSupported'.tr;
+
+  static String get otherCallHandle => 'otherCallHandle'.tr;
+
+  static String get callFail => 'callFail'.tr;
 }

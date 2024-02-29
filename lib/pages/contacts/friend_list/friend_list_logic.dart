@@ -44,10 +44,15 @@ class FriendListLogic extends GetxController {
     final list = await OpenIM.iMManager.friendshipManager
         .getFriendListMap()
         .then((list) => list.where(_filterBlacklist))
-        .then((list) => list.map((e) => ISUserInfo.fromJson(e)).toList())
+        .then((list) => list.map((e) {
+              final fullUser = FullUserInfo.fromJson(e);
+              final user = fullUser.friendInfo != null
+                  ? ISUserInfo.fromJson(fullUser.friendInfo!.toJson())
+                  : ISUserInfo.fromJson(fullUser.publicInfo!.toJson());
+              return user;
+            }).toList())
         .then((list) => IMUtils.convertToAZList(list));
-    final blackList = await OpenIM.iMManager.friendshipManager.getBlacklist();
-    userIDList.removeWhere((e) => blackList.firstWhereOrNull((element) => element.userID == e) != null);
+
     onUserIDList(userIDList);
     friendList.assignAll(list.cast<ISUserInfo>());
   }
@@ -55,10 +60,15 @@ class FriendListLogic extends GetxController {
   void onUserIDList(List<String> userIDList) {}
 
   bool _filterBlacklist(e) {
-    final user = UserInfo.fromJson(e);
-    userIDList.add(user.userID!);
+    final user = FullUserInfo.fromJson(e);
+    final isBlack = user.blackInfo != null;
 
-    return true;
+    if (isBlack) {
+      return false;
+    } else {
+      userIDList.add(user.userID);
+      return true;
+    }
   }
 
   _addFriend(dynamic user) {

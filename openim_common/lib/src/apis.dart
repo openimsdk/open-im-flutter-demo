@@ -153,13 +153,33 @@ class Apis {
       data: {
         ...param,
         'platform': IMUtils.getPlatform(),
+        // 'operationID': operationID,
       },
       options: chatTokenOptions,
     );
   }
 
+  static Future<List<FriendInfo>> searchFriendInfo(
+    String keyword, {
+    int pageNumber = 1,
+    int showNumber = 10,
+  }) async {
+    final data = await HttpUtil.post(
+      Urls.searchFriendInfo,
+      data: {
+        'pagination': {'pageNumber': pageNumber, 'showNumber': showNumber},
+        'keyword': keyword,
+      },
+      options: chatTokenOptions,
+    );
+    if (data['users'] is List) {
+      return (data['users'] as List).map((e) => FriendInfo.fromJson(e)).toList();
+    }
+    return [];
+  }
+
   static Future<List<UserFullInfo>?> getUserFullInfo({
-    int pageNumber = 0,
+    int pageNumber = 1,
     int showNumber = 10,
     required List<String> userIDList,
   }) async {
@@ -180,7 +200,7 @@ class Apis {
 
   static Future<List<UserFullInfo>?> searchUserFullInfo({
     required String content,
-    int pageNumber = 0,
+    int pageNumber = 1,
     int showNumber = 10,
   }) async {
     final data = await HttpUtil.post(
@@ -232,6 +252,22 @@ class Apis {
     }).catchError((e, s) {
       Logger.print('e:$e s:$s');
       return false;
+    });
+  }
+
+  static Future<SignalingCertificate> getTokenForRTC(String roomID, String userID) async {
+    return HttpUtil.post(
+      Urls.getTokenForRTC,
+      data: {
+        "room": roomID,
+        "identity": userID,
+      },
+      options: chatTokenOptions,
+    ).then((value) {
+      final signaling = SignalingCertificate.fromJson(value)..roomID = roomID;
+      return signaling;
+    }).catchError((e, s) {
+      Logger.print('e:$e s:$s');
     });
   }
 

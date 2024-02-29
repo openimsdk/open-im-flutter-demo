@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../select_contacts_logic.dart';
-import '../select_contacts_view.dart';
 import 'friend_list_logic.dart';
 
 class SelectContactsFromFriendsPage extends StatelessWidget {
@@ -88,10 +87,10 @@ class SelectContactsFromFriendsPage extends StatelessWidget {
                     ),
                   AvatarView(
                     url: info.faceURL,
-                    text: info.getShowName(),
+                    text: info.showName,
                   ),
                   10.horizontalSpace,
-                  info.getShowName().toText..style = Styles.ts_0C1C33_17sp,
+                  info.showName.toText..style = Styles.ts_0C1C33_17sp,
                 ],
               ),
             ),

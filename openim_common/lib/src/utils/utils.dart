@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -25,13 +26,26 @@ import 'package:video_compress/video_compress.dart';
 
 class IntervalDo {
   DateTime? last;
+  Timer? lastTimer;
 
+  //call---milliseconds---call
   void run({required Function() fuc, int milliseconds = 0}) {
     DateTime now = DateTime.now();
     if (null == last || now.difference(last ?? now).inMilliseconds > milliseconds) {
       last = now;
       fuc();
     }
+  }
+
+  //---milliseconds----milliseconds....---call  在milliseconds时连续的调用会被丢弃并重置milliseconds的时间，milliseconds后才会call
+  void drop({required Function() fun, int milliseconds = 0}) {
+    lastTimer?.cancel();
+    lastTimer = null;
+    lastTimer = Timer(Duration(milliseconds: milliseconds), () {
+      lastTimer!.cancel();
+      lastTimer = null;
+      fun.call();
+    });
   }
 }
 
@@ -67,6 +81,15 @@ class IMUtils {
     );
   }
 
+  static String getSuffix(String url) {
+    if (!url.contains(".")) return "";
+    return url.substring(url.lastIndexOf('.'), url.length);
+  }
+
+  static bool isGif(String url) {
+    return IMUtils.getSuffix(url).contains("gif");
+  }
+
   static void copy({required String text}) {
     Clipboard.setData(ClipboardData(text: text));
     IMViews.showToast(StrRes.copySuccessfully);
@@ -86,7 +109,7 @@ class IMUtils {
 
   static ISuspensionBean setAzPinyinAndTag(ISuspensionBean info) {
     if (info is ISUserInfo) {
-      String pinyin = PinyinHelper.getPinyinE(info.getShowName());
+      String pinyin = PinyinHelper.getPinyinE(info.showName);
       if (pinyin.trim().isEmpty) {
         info.tagIndex = "#";
       } else {
@@ -154,6 +177,10 @@ class IMUtils {
     var path = file.path;
     var name = path.substring(path.lastIndexOf("/") + 1);
     var targetPath = await createTempFile(name: name, dir: 'pic');
+    if (name.endsWith('.gif')) {
+      return file;
+    }
+
     CompressFormat format = CompressFormat.jpeg;
     if (name.endsWith(".jpg") || name.endsWith(".jpeg")) {
       format = CompressFormat.jpeg;
@@ -180,16 +207,23 @@ class IMUtils {
     required String dir,
     required String name,
   }) async {
-    final storage = (Platform.isIOS ? await getTemporaryDirectory() : await getExternalStorageDirectory());
-    Directory directory = Directory('${storage!.path}/$dir');
-    if (!(await directory.exists())) {
-      directory.create(recursive: true);
-    }
-    File file = File('${directory.path}/$name');
+    final storage = await createTempDir(dir: dir);
+    File file = File('$storage/$name');
     if (!(await file.exists())) {
       file.create();
     }
     return file.path;
+  }
+
+  static Future<String> createTempDir({
+    required String dir,
+  }) async {
+    final storage = (Platform.isIOS ? await getApplicationCacheDirectory() : await getExternalStorageDirectory());
+    Directory directory = Directory('${storage!.path}/$dir');
+    if (!(await directory.exists())) {
+      directory.create(recursive: true);
+    }
+    return directory.path;
   }
 
   static int compareVersion(String val1, String val2) {
@@ -459,7 +493,7 @@ class IMUtils {
   }
 
   static String getShowName(String? userID, String? nickname) {
-    return userID == OpenIM.iMManager.userID ? StrRes.you : nickname ?? '';
+    return (userID == OpenIM.iMManager.userID ? OpenIM.iMManager.userInfo.nickname : nickname) ?? '';
   }
 
   static String? parseNtf(
@@ -621,10 +655,10 @@ class IMUtils {
     try {
       switch (message.contentType) {
         case MessageType.text:
-          content = message.textElem!.content!.trim();
+          content = message.textElem!.content!;
           break;
         case MessageType.atText:
-          content = message.atTextElem!.text!.trim();
+          content = message.atTextElem!.text!;
           if (replaceIdToNickname) {
             var list = message.atTextElem?.atUsersInfo;
             list?.forEach((e) {
@@ -703,6 +737,13 @@ class IMUtils {
           var customType = map['customType'];
           var customData = map['data'];
           switch (customType) {
+            case CustomMessageType.callingAccept:
+            case CustomMessageType.callingHungup:
+            case CustomMessageType.callingCancel:
+            case CustomMessageType.callingReject:
+              var type = map['data']['mediaType'];
+              content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
+              break;
             case CustomMessageType.call:
               var type = map['data']['type'];
               content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
@@ -756,6 +797,7 @@ class IMUtils {
       Logger.print('Exception details:\n $e');
       Logger.print('Stack trace:\n $s');
     }
+    content = content?.replaceAll("\n", " ");
     return content ?? '[${StrRes.unsupportedMessage}]';
   }
 
@@ -768,6 +810,17 @@ class IMUtils {
             var map = json.decode(data!);
             var customType = map['customType'];
             switch (customType) {
+              case CustomMessageType.callingAccept:
+              case CustomMessageType.callingHungup:
+              case CustomMessageType.callingCancel:
+              case CustomMessageType.callingReject:
+                var type = map['data']['mediaType'];
+                final content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
+                return {
+                  'viewType': CustomMessageType.call,
+                  'type': type,
+                  'content': content,
+                };
               case CustomMessageType.call:
                 {
                   final duration = map['data']['duration'];
@@ -916,7 +969,7 @@ class IMUtils {
       case ".mp4":
         return "video/mp4";
       case ".mov":
-        return "video/quicktime";
+        return "video/mov";
       case ".htm":
       case ".html":
         return "text/html";
@@ -979,7 +1032,13 @@ class IMUtils {
       final checkedList = <UserInfo>[];
       final values = result.values;
       for (final value in values) {
-        if (value is UserInfo) {
+        if (value is ISUserInfo) {
+          checkedList.add(UserInfo.fromJson(value.toJson()));
+        } else if (value is UserFullInfo) {
+          checkedList.add(UserInfo.fromJson(value.toJson()));
+        } else if (value is FriendInfo) {
+          checkedList.add(UserInfo.fromJson(value.toJson()));
+        } else if (value is UserInfo) {
           checkedList.add(value);
         }
       }
@@ -993,7 +1052,7 @@ class IMUtils {
       final checkedList = <String>[];
       final values = result.values;
       for (final value in values) {
-        if (value is UserInfo) {
+        if (value is UserInfo || value is FriendInfo || value is UserFullInfo || value is ISUserInfo) {
           checkedList.add(value.userID!);
         }
       }
@@ -1008,7 +1067,7 @@ class IMUtils {
     for (var item in checkedList) {
       if (item is ConversationInfo) {
         checkedMap[item.isSingleChat ? item.userID! : item.groupID!] = item;
-      } else if (item is UserInfo) {
+      } else if (item is UserInfo || item is UserFullInfo || item is ISUserInfo) {
         checkedMap[item.userID!] = item;
       } else if (item is GroupInfo) {
         checkedMap[item.groupID] = item;
@@ -1022,7 +1081,7 @@ class IMUtils {
   static List<Map<String, String?>> convertCheckedListToForwardObj(List<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
-      if (item is UserInfo) {
+      if (item is UserInfo || item is UserFullInfo || item is ISUserInfo) {
         map.add({'nickname': item.nickname, 'faceURL': item.faceURL});
       } else if (item is GroupInfo) {
         map.add({'nickname': item.groupName, 'faceURL': item.faceURL});
@@ -1034,7 +1093,7 @@ class IMUtils {
   }
 
   static String? convertCheckedToUserID(dynamic info) {
-    if (info is UserInfo) {
+    if (info is UserInfo || info is UserFullInfo || info is ISUserInfo) {
       return info.userID;
     } else if (info is ConversationInfo) {
       return info.userID;
@@ -1054,7 +1113,7 @@ class IMUtils {
   static List<Map<String, String?>> convertCheckedListToShare(Iterable<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
-      if (item is UserInfo) {
+      if (item is UserInfo || item is UserFullInfo || item is ISUserInfo) {
         map.add({'userID': item.userID, 'groupID': null});
       } else if (item is GroupInfo) {
         map.add({'userID': null, 'groupID': item.groupID});

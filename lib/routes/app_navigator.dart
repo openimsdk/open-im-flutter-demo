@@ -167,10 +167,8 @@ class AppNavigator {
 
   static startMyInfo() => Get.toNamed(AppRoutes.myInfo);
 
-  static startEditMyInfo({
-    EditAttr attr = EditAttr.nickname,
-  }) =>
-      Get.toNamed(AppRoutes.editMyInfo, arguments: {'editAttr': attr});
+  static startEditMyInfo({EditAttr attr = EditAttr.nickname, int? maxLength}) =>
+      Get.toNamed(AppRoutes.editMyInfo, arguments: {'editAttr': attr, 'maxLength': maxLength});
 
   static startAccountSetup() => Get.toNamed(AppRoutes.accountSetup);
 
@@ -191,7 +189,7 @@ class AppNavigator {
         'conversationInfo': conversationInfo,
       });
 
-  static startSetBackgroundImage() => Get.toNamed(AppRoutes.setBackgroundImage);
+  static startSetBackgroundImage() => Get.offAndToNamed(AppRoutes.setBackgroundImage);
 
   static startSetFontSize() => Get.toNamed(AppRoutes.setFontSize);
 

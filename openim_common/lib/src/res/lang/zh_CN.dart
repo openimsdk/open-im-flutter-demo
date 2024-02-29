@@ -509,4 +509,6 @@ const Map<String, String> zh_CN = {
   "contentNotBlank": "内容不能为空",
   "plsEnterDescription": "请输入描述文字",
   "gifNotSupported": "不支持gif图片",
+  'otherCallHandle': '已在其他平台%s呼叫请求',
+  'callFail': '你无法呼叫该用户',
 };

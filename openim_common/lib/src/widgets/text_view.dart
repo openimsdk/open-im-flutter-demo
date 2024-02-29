@@ -138,7 +138,11 @@ class MatchTextView extends StatelessWidget {
               text: matchText,
               style: mapping.style ?? matchTextStyle ?? textStyle,
             );
-          } else {
+          }
+          /* else if (mapping.type == PatternType.EMOJI) {
+            inlineSpan = ImageSpan();
+          } */
+          else {
             inlineSpan = TextSpan(
               text: matchText,
               style: mapping.style ?? matchTextStyle ?? textStyle,
@@ -156,7 +160,7 @@ class MatchTextView extends StatelessWidget {
         return '';
       },
       onNonMatch: (text) {
-        children.add(TextSpan(text: text, style: textStyle));
+        children.add(TextSpan(text: text.fixAutoLines(), style: textStyle));
         return '';
       },
     );
@@ -177,7 +181,7 @@ class MatchTextView extends StatelessWidget {
   }
 
   static String stripHtmlIfNeeded(String text) {
-    return text.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ');
+    return text.replaceAll(RegExp(r'<[^>]*>|&[^;]+;|[]'), ' ');
   }
 }
 
@@ -197,7 +201,7 @@ enum PatternType { at, atAll, email, mobile, tel, url, emoji, custom }
 
 const regexAt = r"(@\d+\s)";
 
-const regexAtAll = r'@atAllTag ';
+const regexAtAll = r'@AtAllTag ';
 
 const regexEmail = r"\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b";
 

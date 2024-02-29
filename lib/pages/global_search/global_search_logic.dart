@@ -60,12 +60,14 @@ class GlobalSearchLogic extends CommonSearchLogic {
               ),
             ]));
     final friendList = (result[0] as List<FriendInfo>).map((e) => UserInfo(userID: e.userID, nickname: e.nickname, faceURL: e.faceURL));
-
     final gList = result[1] as List<GroupInfo>;
     final textMessageResult = (result[2] as SearchResult).searchResultItems;
     final fileMessageResult = (result[3] as SearchResult).searchResultItems;
 
-    contactsList.addAll(friendList);
+    clearList();
+
+    contactsList
+        .addAll(friendList);
     groupList.assignAll(gList);
     textSearchResultItems.assignAll(textMessageResult ?? []);
     fileMessageList.clear();
@@ -183,6 +185,10 @@ abstract class CommonSearchLogic extends GetxController {
   String get searchKey => searchCtrl.text.trim();
 
   Future<List<FriendInfo>> searchFriend() => OpenIM.iMManager.friendshipManager.searchFriends(keywordList: [searchCtrl.text.trim()]);
+  // Plan B: query data from chat server.
+  // Future<List<FriendInfo>> searchFriend() =>
+  //     Apis.searchFriendInfo(searchCtrl.text.trim()).then((list) => list.map((e) => FriendInfo.fromJson(e.toJson())).toList());
+
 
   Future<List<GroupInfo>> searchGroup() =>
       OpenIM.iMManager.groupManager.searchGroups(keywordList: [searchCtrl.text.trim()], isSearchGroupName: true, isSearchGroupID: true);

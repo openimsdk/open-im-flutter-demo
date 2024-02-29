@@ -40,6 +40,10 @@ extension StrExt on String {
   LottieView get toLottie {
     return LottieView(name: this);
   }
+
+  String fixAutoLines() {
+    return Characters(this).join('\u{200B}');
+  }
 }
 
 class LottieView extends StatelessWidget {

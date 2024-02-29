@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:chewie/chewie.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:video_player/video_player.dart';
 
+import '../custom_cupertino_controls.dart';
+
 abstract class VideoControllerService {
   Future<VideoPlayerController> getVideo(String videoUrl);
+  Future<File?> getCacheFile(String videoUrl);
 }
 
 class CachedVideoControllerService extends VideoControllerService {
@@ -19,9 +23,9 @@ class CachedVideoControllerService extends VideoControllerService {
 
   @override
   Future<VideoPlayerController> getVideo(String videoUrl) async {
-    final fileInfo = await _cacheManager.getFileFromCache(videoUrl);
+    final file = await getCacheFile(videoUrl);
 
-    if (fileInfo == null) {
+    if (file == null) {
       Logger.print('[VideoControllerService]: No video in cache');
 
       Logger.print('[VideoControllerService]: Saving video to cache');
@@ -30,8 +34,16 @@ class CachedVideoControllerService extends VideoControllerService {
       return VideoPlayerController.network(videoUrl);
     } else {
       Logger.print('[VideoControllerService]: Loading video from cache');
-      return VideoPlayerController.file(fileInfo.file);
+      return VideoPlayerController.file(file);
     }
+  }
+
+  @override
+  Future<File?> getCacheFile(String videoUrl) async {
+    // TODO: implement getCacheFile
+    final fileInfo = await _cacheManager.getFileFromCache(videoUrl);
+
+    return fileInfo?.file;
   }
 }
 
@@ -41,25 +53,30 @@ class ChatVideoPlayerView extends StatefulWidget {
     this.path,
     this.url,
     this.coverUrl,
+    this.file,
     this.heroTag,
     this.oDownload,
+    this.autoPlay = true,
+    this.muted = false,
   }) : super(key: key);
   final String? path;
   final String? url;
+  final File? file;
   final String? coverUrl;
   final String? heroTag;
+  final bool autoPlay;
+  final bool muted;
   final Function(String? url)? oDownload;
 
   @override
   State<ChatVideoPlayerView> createState() => _ChatVideoPlayerViewState();
 }
 
-class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> {
+class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> with SingleTickerProviderStateMixin {
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
 
-  final _cachedVideoControllerService =
-      CachedVideoControllerService(DefaultCacheManager());
+  final _cachedVideoControllerService = CachedVideoControllerService(DefaultCacheManager());
 
   @override
   void initState() {
@@ -69,32 +86,36 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> {
 
   @override
   void dispose() {
+    _chewieController?.pause();
     _videoPlayerController.dispose();
     _chewieController?.dispose();
     super.dispose();
   }
 
   Future<void> initializePlayer() async {
-    File? file;
-    bool existFile = false;
-    if (IMUtils.isNotNullEmptyStr(_path) &&
-        (await Permissions.checkStorage())) {
-      file = File(_path!);
-      existFile = await file.exists();
-      if (!existFile) {
-        file = null;
+    var file = widget.file;
+
+    if (file == null) {
+      bool existFile = false;
+      if (IMUtils.isNotNullEmptyStr(_path) && (await Permissions.checkStorage())) {
+        file = File(_path!);
+        existFile = await file.exists();
+        if (!existFile) {
+          file = null;
+        }
       }
     }
 
-    if (null != file) {
+    if (null != file && file.existsSync()) {
       _videoPlayerController = VideoPlayerController.file(file);
     } else {
-      _videoPlayerController =
-          await _cachedVideoControllerService.getVideo(_url!);
+      _videoPlayerController = await _cachedVideoControllerService.getVideo(_url!);
     }
 
     await _videoPlayerController.initialize();
-
+    if (widget.muted) {
+      _videoPlayerController.setVolume(0);
+    }
     _createChewieController();
     setState(() {});
   }
@@ -102,10 +123,13 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> {
   void _createChewieController() {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
-      autoPlay: true,
+      autoPlay: widget.autoPlay,
       looping: false,
+      allowFullScreen: false,
+      allowPlaybackSpeedChanging: false,
       showControlsOnInitialize: true,
-      customControls: const CustomMaterialControls(),
+      customControls: CustomCupertinoControls(backgroundColor: Colors.black.withOpacity(0.7), iconColor: Colors.white),
+      // hideControlsTimer: const Duration(seconds: 1),
       optionsTranslation: OptionsTranslation(
         playbackSpeedButtonText: StrRes.playSpeed,
         cancelButtonText: StrRes.cancel,
@@ -116,7 +140,7 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> {
             widget.oDownload?.call(widget.url);
             Get.back();
           },
-          iconData: Icons.download,
+          iconData: Icons.download_outlined,
           title: StrRes.download,
         ),
       ],
@@ -130,37 +154,35 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black,
-      child: widget.heroTag != null
-          ? Hero(tag: widget.heroTag!, child: _buildChildView())
-          : _buildChildView(),
+    return SafeArea(
+      child: Stack(
+        children: [
+          if (_chewieController != null && _chewieController!.videoPlayerController.value.isInitialized)
+            Chewie(controller: _chewieController!)
+          else
+            _buildCoverView(context),
+        ],
+      ),
     );
   }
 
-  Widget _buildChildView() => SafeArea(
-        child: Stack(
-          children: [
-            if (_chewieController != null &&
-                _chewieController!.videoPlayerController.value.isInitialized)
-              Chewie(controller: _chewieController!)
-            else
-              _buildCoverView(),
-          ],
-        ),
-      );
-
-  Widget _buildCoverView() => Stack(
+  Widget _buildCoverView(BuildContext context) => Stack(
         alignment: Alignment.center,
         children: [
           if (null != widget.coverUrl)
             Center(
               child: ImageUtil.networkImage(
-                url: widget.coverUrl!,
-                loadProgress: false,
-              ),
+                  url: widget.coverUrl!,
+                  loadProgress: false,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.fitWidth),
             ),
-          const CircularProgressIndicator(),
+          const Center(
+            child: CupertinoActivityIndicator(
+              color: Colors.white,
+            ),
+          ),
         ],
       );
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -43,10 +42,13 @@ class ChatPage extends StatelessWidget {
     if (null != data) {
       final viewType = data['viewType'];
       if (viewType == CustomMessageType.call) {
-      } else if (viewType == CustomMessageType.deletedByFriend ||
-          viewType == CustomMessageType.blockedByFriend) {
+        final type = data['type'];
+        final content = data['content'];
+        final view = ChatCallItemView(type: type, content: content);
+        return CustomTypeInfo(view);
+      } else if (viewType == CustomMessageType.deletedByFriend || viewType == CustomMessageType.blockedByFriend) {
         final view = ChatFriendRelationshipAbnormalHintView(
-          name: logic.title,
+          name: logic.nickname.value,
           onTap: logic.sendFriendVerification,
           blockedByFriend: viewType == CustomMessageType.blockedByFriend,
           deletedByFriend: viewType == CustomMessageType.deletedByFriend,
@@ -69,18 +71,6 @@ class ChatPage extends StatelessWidget {
     return null;
   }
 
-  Widget? get _syncView => logic.syncStatusStr == null
-      ? null
-      : Column(
-          children: [
-            10.verticalSpace,
-            SyncStatusView(
-              isFailed: logic.isSyncFailed,
-              statusStr: logic.syncStatusStr!,
-            ),
-          ],
-        );
-
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
@@ -89,6 +79,7 @@ class ChatPage extends StatelessWidget {
             subTitle: logic.subTile,
             onCloseMultiModel: logic.exit,
             onClickMoreBtn: logic.chatSetup,
+            onClickCallBtn: logic.call,
           ),
           body: WaterMarkBgView(
             text: logic.markText,
@@ -102,6 +93,7 @@ class ChatPage extends StatelessWidget {
               toolbox: ChatToolBox(
                 onTapAlbum: logic.onTapAlbum,
                 onTapCamera: logic.onTapCamera,
+                onTapCall: logic.call,
               ),
             ),
             child: ChatListView(

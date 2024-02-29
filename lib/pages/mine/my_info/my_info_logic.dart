@@ -33,20 +33,21 @@ class MyInfoLogic extends GetxController {
 
   void editEmail() => AppNavigator.startEditMyInfo(
         attr: EditAttr.email,
+    maxLength: 30
       );
 
   void openPhotoSheet() {
     IMViews.openPhotoSheet(
-      onData: (path, url) async {
-        if (url != null) {
-          LoadingView.singleton.wrap(
-            asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, faceURL: url).then((value) => imLogic.userInfo.update((val) {
-                  val?.faceURL = url;
-                })),
-          );
-        }
-      },
-    );
+        onData: (path, url) async {
+          if (url != null) {
+            LoadingView.singleton.wrap(
+              asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, faceURL: url).then((value) => imLogic.userInfo.update((val) {
+                    val?.faceURL = url;
+                  })),
+            );
+          }
+        },
+        quality: 15);
   }
 
   void openDatePicker() {
@@ -56,6 +57,7 @@ class MyInfoLogic extends GetxController {
       Get.context!,
       locale: isZh ? LocaleType.zh : LocaleType.en,
       maxTime: DateTime.now(),
+      currentTime: DateTime.fromMillisecondsSinceEpoch(imLogic.userInfo.value.birth ?? 0),
       theme: DatePickerTheme(
         cancelStyle: Styles.ts_0C1C33_17sp,
         doneStyle: Styles.ts_0089FF_17sp,

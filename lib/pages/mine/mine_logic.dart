@@ -42,6 +42,7 @@ class MineLogic extends GetxController {
 
   void kickedOffline() async {
     Get.snackbar(StrRes.accountWarn, StrRes.accountException);
+    PackageBridge.rtcBridge?.dismiss();
     await DataSp.removeLoginCertificate();
     pushLogic.logout();
     AppNavigator.startLogin();

@@ -265,19 +265,13 @@ class SelectedContactsListView extends StatelessWidget {
     String? name;
     String? faceURL;
     bool isGroup = false;
+    name = SelectContactsLogic.parseName(info);
+    faceURL = SelectContactsLogic.parseFaceURL(info);
     if (info is ConversationInfo) {
-      name = info.showName;
-      faceURL = info.faceURL;
       isGroup = !info.isSingleChat;
-    } else if (info is GroupInfo) {
-      name = info.groupName;
-      faceURL = info.faceURL;
+    }else
+    if (info is GroupInfo) {
       isGroup = true;
-    } else if (info is UserInfo) {
-      name = info.nickname;
-      faceURL = info.faceURL;
-    } else if (info is TagInfo) {
-      name = info.tagName;
     }
     return Container(
       height: 64.h,

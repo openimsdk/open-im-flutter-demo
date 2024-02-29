@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
+// typedef PopupMenuItemBuilder = Widget Function(PopMenuInfo info);
+
 class PopMenuInfo {
   final String? icon;
+  final Widget? iconWidget;
   final String text;
   final Function()? onTap;
 
   PopMenuInfo({
     this.icon,
+    this.iconWidget,
     required this.text,
     this.onTap,
   });
@@ -84,9 +88,7 @@ class PopButton extends StatelessWidget {
       menuBuilder: () => _buildPopBgView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: menus
-              .map((e) => _buildPopItemView(e, showLine: menus.lastOrNull != e))
-              .toList(),
+          children: menus.map((e) => _buildPopItemView(e, showLine: menus.lastOrNull != e)).toList(),
         ),
       ),
     );
@@ -117,8 +119,7 @@ class PopButton extends StatelessWidget {
         child: child,
       );
 
-  Widget _buildPopItemView(PopMenuInfo info, {bool showLine = true}) =>
-      GestureDetector(
+  Widget _buildPopItemView(PopMenuInfo info, {bool showLine = true}) => GestureDetector(
         onTap: () {
           popCtrl?.hideMenu();
           info.onTap?.call();
@@ -140,20 +141,31 @@ class PopButton extends StatelessWidget {
                   ),
                 )
               : null,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (null != info.icon)
-                Padding(
-                  padding: EdgeInsets.only(right: 12.w),
-                  child: info.icon!.toImage
-                    ..width = (menuItemIconWidth ?? 20.w)
-                    ..height = (menuItemIconHeight ?? 20.h),
+          child: info.iconWidget != null
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (null != info.iconWidget)
+                      Padding(
+                        padding: EdgeInsets.only(right: 12.w),
+                        child: info.iconWidget,
+                      ),
+                    info.text.toText..style = (menuItemTextStyle ?? Styles.ts_0C1C33_17sp),
+                  ],
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (null != info.icon)
+                      Padding(
+                        padding: EdgeInsets.only(right: 12.w),
+                        child: info.icon!.toImage
+                          ..width = (menuItemIconWidth ?? 20.w)
+                          ..height = (menuItemIconHeight ?? 20.h),
+                      ),
+                    info.text.toText..style = (menuItemTextStyle ?? Styles.ts_0C1C33_17sp),
+                  ],
                 ),
-              info.text.toText
-                ..style = (menuItemTextStyle ?? Styles.ts_0C1C33_17sp),
-            ],
-          ),
         ),
       );
 }

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:azlistview/azlistview.dart';
-import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:openim_common/openim_common.dart';
 
-class ISUserInfo extends UserInfo with ISuspensionBean {
+class ISUserInfo extends UserFullInfo with ISuspensionBean {
   String? tagIndex;
   String? pinyin;
   String? shortPinyin;
@@ -23,7 +23,6 @@ class ISUserInfo extends UserInfo with ISuspensionBean {
     map['pinyin'] = pinyin;
     map['shortPinyin'] = shortPinyin;
     map['namePinyin'] = namePinyin;
-
     return map;
   }
 

@@ -93,7 +93,7 @@ class IMCallback {
   }
 
   void recvNewMessage(Message msg) {
-    initLogic.showNotification(msg);
+    initLogic.showNotification(msg, showNotification: false);
     onRecvNewMessage?.call(msg);
   }
 

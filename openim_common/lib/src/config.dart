@@ -11,10 +11,10 @@ class Config {
   static Future init(Function() runApp) async {
     WidgetsFlutterBinding.ensureInitialized();
     try {
-      cachePath = (await getApplicationDocumentsDirectory()).path;
+      final path = (await getApplicationDocumentsDirectory()).path;
+      cachePath = '$path/';
       await DataSp.init();
-      await Hive.initFlutter(cachePath);
-
+      await Hive.initFlutter(path);
       HttpUtil.init();
     } catch (_) {}
 
@@ -56,7 +56,7 @@ class Config {
   static const friendScheme = "io.openim.app/addFriend/";
   static const groupScheme = "io.openim.app/joinGroup/";
 
-  static const _host = "203.56.175.233";
+  static const _host = "43.154.157.177";
 
   static const _ipRegex = '((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)';
 
@@ -77,7 +77,7 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['authUrl'];
-      Logger.print('缓存authUrl: $url');
+      Logger.print('authUrl: $url');
     }
     return url ?? (_isIP ? "http://$_host:10008" : "https://$_host/chat");
   }
@@ -87,7 +87,7 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['apiUrl'];
-      Logger.print('缓存apiUrl: $url');
+      Logger.print('apiUrl: $url');
     }
     return url ?? (_isIP ? 'http://$_host:10002' : "https://$_host/api");
   }
@@ -97,7 +97,7 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['wsUrl'];
-      Logger.print('缓存wsUrl: $url');
+      Logger.print('wsUrl: $url');
     }
     return url ?? (_isIP ? "ws://$_host:10001" : "wss://$_host/msg_gateway");
   }

@@ -9,7 +9,6 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:sound_mode/sound_mode.dart';
 import 'package:sound_mode/utils/ringer_mode_statuses.dart';
 import 'package:vibration/vibration.dart';
@@ -20,13 +19,14 @@ import 'push_controller.dart';
 
 class AppController extends GetxController with UpgradeManger {
   var isRunningBackground = false;
-  var backgroundSubject = PublishSubject<bool>();
   var isAppBadgeSupported = false;
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   final initializationSettingsAndroid = const AndroidInitializationSettings('@mipmap/ic_launcher');
 
+  /// Note: permissions aren't requested here just to demonstrate that can be
+  /// done later
   final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
     requestAlertPermission: false,
     requestBadgePermission: false,
@@ -39,8 +39,15 @@ class AppController extends GetxController with UpgradeManger {
     ) async {},
   );
 
+  RTCBridge? rtcBridge = PackageBridge.rtcBridge;
+
   final _ring = 'assets/audio/message_ring.wav';
-  final _audioPlayer = AudioPlayer();
+  final _audioPlayer = AudioPlayer(
+      // Handle audio_session events ourselves for the purpose of this demo.
+      // handleInterruptions: false,
+      // androidApplyAudioAttributes: false,
+      // handleAudioSessionActivation: false,
+      );
 
   late BaseDeviceInfo deviceInfo;
 
@@ -50,9 +57,7 @@ class AppController extends GetxController with UpgradeManger {
     Logger.print('-----App running background : $run-------------');
 
     if (isRunningBackground && !run) {}
-
     isRunningBackground = run;
-    backgroundSubject.sink.add(run);
     if (!run) {
       _cancelAllNotifications();
     }
@@ -70,7 +75,6 @@ class AppController extends GetxController with UpgradeManger {
       initializationSettings,
       onDidReceiveNotificationResponse: (notificationResponse) {},
     );
-
     isAppBadgeSupported = await FlutterAppBadger.isAppBadgeSupported();
     super.onInit();
   }
@@ -84,8 +88,13 @@ class AppController extends GetxController with UpgradeManger {
         );
   }
 
-  Future<void> showNotification(im.Message message) async {
-    if (_isGlobalNotDisturb() || message.attachedInfoElem?.notSenderNotificationPush == true || message.contentType == im.MessageType.typing) return;
+  Future<void> showNotification(im.Message message, {bool showNotification = true}) async {
+    if (_isGlobalNotDisturb() ||
+            message.attachedInfoElem?.notSenderNotificationPush == true ||
+            message.contentType == im.MessageType.typing ||
+            message.sendID == OpenIM.iMManager.userID /* ||
+        message.contentType! >= 1000*/
+        ) return;
 
     var sourceID = message.sessionType == ConversationType.single ? message.sendID : message.groupID;
     if (sourceID != null && message.sessionType != null) {
@@ -96,7 +105,9 @@ class AppController extends GetxController with UpgradeManger {
       if (i.recvMsgOpt != 0) return;
     }
 
-    promptSoundOrNotification(message.seq!);
+    if (showNotification) {
+      promptSoundOrNotification(message.seq!);
+    }
   }
 
   Future<void> promptSoundOrNotification(int seq) async {
@@ -119,8 +130,24 @@ class AppController extends GetxController with UpgradeManger {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
+  Future<void> _startForegroundService() async {
+    await getAppInfo();
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails('pro', 'OpenIM后台进程',
+        channelDescription: '保证app能收到信息', importance: Importance.max, priority: Priority.high, ticker: 'ticker');
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.startForegroundService(1, packageInfo!.appName, '正在运行...', notificationDetails: androidPlatformChannelSpecifics, payload: '');
+  }
+
+  Future<void> _stopForegroundService() async {
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.stopForegroundService();
+  }
+
   void showBadge(count) {
     if (isAppBadgeSupported) {
+      OpenIM.iMManager.messageManager.setAppBadge(count);
+
       if (count == 0) {
         removeBadge();
         PushController.resetBadge();
@@ -137,8 +164,7 @@ class AppController extends GetxController with UpgradeManger {
 
   @override
   void onClose() {
-    backgroundSubject.close();
-
+    // backgroundSubject.close();
     closeSubject();
     _audioPlayer.dispose();
     super.onClose();
@@ -162,7 +188,6 @@ class AppController extends GetxController with UpgradeManger {
   void onReady() {
     _getDeviceInfo();
     _cancelAllNotifications();
-    autoCheckVersionUpgrade();
     super.onReady();
   }
 

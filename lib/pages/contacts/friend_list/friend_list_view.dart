@@ -51,10 +51,10 @@ class FriendListPage extends StatelessWidget {
               children: [
                 AvatarView(
                   url: info.faceURL,
-                  text: info.getShowName(),
+                  text: info.showName,
                 ),
                 10.horizontalSpace,
-                info.getShowName().toText..style = Styles.ts_0C1C33_17sp,
+                info.showName.toText..style = Styles.ts_0C1C33_17sp,
               ],
             ),
           ),

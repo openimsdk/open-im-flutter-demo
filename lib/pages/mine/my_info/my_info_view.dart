@@ -115,7 +115,13 @@ class MyInfoPage extends StatelessWidget {
                   textStyle: Styles.ts_FFFFFF_10sp,
                 )
               else
-                (IMUtils.emptyStrToNull(value) ?? '').toText..style = Styles.ts_0C1C33_17sp,
+                Expanded(
+                    flex: 3,
+                    child: (IMUtils.emptyStrToNull(value) ?? '').toText
+                      ..style = Styles.ts_0C1C33_17sp
+                      ..maxLines = 1
+                      ..overflow = TextOverflow.ellipsis
+                      ..textAlign = TextAlign.right),
               if (showRightArrow)
                 ImageRes.rightArrow.toImage
                   ..width = 24.w

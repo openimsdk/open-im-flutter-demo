@@ -70,10 +70,8 @@ const Map<String, String> en_US = {
   "chatRecord": "Chat Records",
   "revokeMsg": "withdrew a message",
   "aRevokeBMsg": "%s withdrew %s's message",
-  'blockedByFriendHint':
-      'The message has been sent but rejected by the recipient',
-  'deletedByFriendHint':
-      '%s enabled friend verification. You are not their friend yet.',
+  'blockedByFriendHint': 'The message has been sent but rejected by the recipient',
+  'deletedByFriendHint': '%s enabled friend verification. You are not their friend yet.',
   'sendFriendVerification': 'Send Friend Verification',
   'removedFromGroupHint': 'You have been removed from the group',
   'groupDisbanded': 'The group has been disbanded',
@@ -94,8 +92,7 @@ const Map<String, String> en_US = {
   "webOnline": "Web",
   "webMiniOnline": "Mini Program",
   "upgradeFind": "Discover New Version",
-  "upgradeVersion":
-      "A new version %s is available. Your current version is %s.",
+  "upgradeVersion": "A new version %s is available. Your current version is %s.",
   "upgradeDescription": "Update Description:",
   "upgradeIgnore": "Ignore",
   "upgradeLater": "Later",
@@ -137,8 +134,7 @@ const Map<String, String> en_US = {
   "addFailed": "Add Failed",
   "setSuccessfully": "Set Successfully",
   'callingBusy': 'You are already in a call and cannot perform this operation!',
-  'groupCallHint':
-      'The group is currently in a call. Are you sure you want to join the ongoing call?',
+  'groupCallHint': 'The group is currently in a call. Are you sure you want to join the ongoing call?',
   'joinIn': 'Join',
   'menuCopy': 'Copy',
   'menuDel': 'Delete',
@@ -236,8 +232,7 @@ const Map<String, String> en_US = {
   'addToBlacklist': 'Add to Blacklist',
   'unfriend': 'Unfriend',
   "areYouSureDelFriend": "Are you sure you want to delete this friend?",
-  "areYouSureAddBlacklist":
-      "Are you sure you want to add this friend to the blacklist?",
+  "areYouSureAddBlacklist": "Are you sure you want to add this friend to the blacklist?",
   "remark": "Remark",
   "save": "Save",
   "saveSuccessfully": "Saved Successfully",
@@ -312,10 +307,8 @@ const Map<String, String> en_US = {
   "muteAllMember": "Mute All",
   "exitGroup": "Exit Group",
   "dismissGroup": "Dismiss Group",
-  "dismissGroupHint":
-      "Once the group is dismissed, you will lose contact with group members",
-  "quitGroupHint":
-      "After quitting the group, you will no longer receive messages from this group.",
+  "dismissGroupHint": "Once the group is dismissed, you will lose contact with group members",
+  "quitGroupHint": "After quitting the group, you will no longer receive messages from this group.",
   'joinGroupSet': 'Group Verification',
   'allowAnyoneJoinGroup': 'Allow Anyone',
   'inviteNotVerification': 'No Verification for Member Invitation',
@@ -336,8 +329,7 @@ const Map<String, String> en_US = {
   'selectedPeopleCount': 'Selected (%s)',
   'confirmSelectedPeople': 'Confirm (%s/%s)',
   'confirm': 'Confirm',
-  "confirmTransferGroupToUser":
-      "Are you sure you want to transfer group ownership to: %s?",
+  "confirmTransferGroupToUser": "Are you sure you want to transfer group ownership to: %s?",
   "removeGroupMember": "Remove Group Member",
   "searchNotResult": "No results found",
   "groupQrcode": "Group QR Code",
@@ -365,8 +357,7 @@ const Map<String, String> en_US = {
   "selectAll": "Select All",
   "plsEnterGroupNameHint": "Choose a group name for easy search",
   "completeCreation": "Complete Creation",
-  "sendCarteConfirmHint":
-      "Are you sure you want to send this contact to the chat?",
+  "sendCarteConfirmHint": "Are you sure you want to send this contact to the chat?",
   "sentSeparatelyTo": "Sent separately to:",
   "sentTo": "Sent to:",
   "leaveMessage": "Leave a message",
@@ -426,8 +417,7 @@ const Map<String, String> en_US = {
   "waitingCallHint": "Calling...",
   "waitingVoiceCallHint": "Waiting for the other party to pick up...",
   "invitedVoiceCallHint": "Inviting you for a voice call...",
-  "waitingVideoCallHint":
-      "Waiting for the other party to accept the invitation",
+  "waitingVideoCallHint": "Waiting for the other party to accept the invitation",
   "invitedVideoCallHint": "Inviting you for a video call...",
   "waitingToAnswer": "Waiting to answer",
   "invitedYouToCall": "Invited you to a call",
@@ -492,18 +482,15 @@ const Map<String, String> en_US = {
   'members': 'Members',
   'screenShare': 'Screen Share',
   'screenShareHint': 'OpenIM is sharing the screen.',
-  'meetingClosedHint':
-      'The meeting has been closed or the connection has been lost. Are you sure you want to leave?',
+  'meetingClosedHint': 'The meeting has been closed or the connection has been lost. Are you sure you want to leave?',
   'meetingIsOver': 'The meeting has ended!',
   'networkError': 'Network error. Please try again later!',
   'shareSuccessfully': 'Shared successfully!',
   'notFoundMinP': 'No mini-programs published yet',
-  'notSendMessageNotInGroup':
-      'Can\'t send messages in a group chat that\'s signed out',
+  'notSendMessageNotInGroup': 'Can\'t send messages in a group chat that\'s signed out',
   'whoModifyGroupName': '%s modified the group name',
   "accountWarn": "Warn!",
-  "accountException":
-      "Your account has been logged in to another device, please change your password in time.",
+  "accountException": "Your account has been logged in to another device, please change your password in time.",
   "tagGroup": "TAG",
   "issueNotice": "Notification Issued",
   "createTagGroup": "Create tags",
@@ -518,9 +505,10 @@ const Map<String, String> en_US = {
   "emptyNotification": "No notice yet",
   "notificationReceiver": "%s recipients: %s",
   "sendAnother": "Send another",
-  "confirmDelTagNotificationHint":
-      "Are you sure to remove this notification record?",
+  "confirmDelTagNotificationHint": "Are you sure to remove this notification record?",
   "contentNotBlank": "The content can not be blank",
   "plsEnterDescription": "Please enter a description",
   "gifNotSupported": "Gif images are not supported",
+  'otherCallHandle': 'Already on other platforms %s call request',
+  'callFail': 'You cannot call this user',
 };

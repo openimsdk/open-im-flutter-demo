@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
@@ -25,13 +27,24 @@ class ChatToolBox extends StatelessWidget {
       ToolboxItemInfo(
         text: StrRes.toolboxAlbum,
         icon: ImageRes.toolboxAlbum,
-        onTap: () => Permissions.storage(onTapAlbum),
+        onTap: () {
+          if (Platform.isAndroid) {
+            Permissions.storage(onTapAlbum);
+          } else {
+            Permissions.photos(onTapAlbum);
+          }
+        },
       ),
       ToolboxItemInfo(
         text: StrRes.toolboxCamera,
         icon: ImageRes.toolboxCamera,
         onTap: () => Permissions.camera(onTapCamera),
       ),
+      ToolboxItemInfo(
+        text: StrRes.toolboxCall,
+        icon: ImageRes.toolboxCall,
+        onTap: onTapCall,
+      )
     ];
 
     return Container(

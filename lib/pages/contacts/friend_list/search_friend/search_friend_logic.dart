@@ -25,8 +25,7 @@ class SearchFriendLogic extends GetxController {
     super.onClose();
   }
 
-  bool get isSearchNotResult =>
-      searchCtrl.text.trim().isNotEmpty && resultList.isEmpty;
+  bool get isSearchNotResult => searchCtrl.text.trim().isNotEmpty && resultList.isEmpty;
 
   _clearInput() {
     final key = searchCtrl.text.trim();
@@ -40,7 +39,7 @@ class SearchFriendLogic extends GetxController {
     resultList.clear();
     if (key.isNotEmpty) {
       for (var element in logic.friendList) {
-        if (element.getShowName().toUpperCase().contains(key.toUpperCase())) {
+        if (element.showName.toUpperCase().contains(key.toUpperCase())) {
           resultList.add(element);
         }
       }

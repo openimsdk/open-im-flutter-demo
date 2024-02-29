@@ -28,8 +28,7 @@ enum SelAction {
   notificationIssued,
 }
 
-class SelectContactsLogic extends GetxController
-    implements OrganizationMultiSelBridge {
+class SelectContactsLogic extends GetxController {
   final checkedList = <String, dynamic>{}.obs;
   final defaultCheckedIDList = <String>{}.obs;
   List<String>? excludeIDList;
@@ -49,14 +48,12 @@ class SelectContactsLogic extends GetxController
     checkedList.addAll(Get.arguments['checkedList'] ?? {});
     openSelectedSheet = Get.arguments['openSelectedSheet'];
     ex = Get.arguments['ex'];
-    PackageBridge.organizationBridge = this;
     super.onInit();
   }
 
   @override
   void onClose() {
     inputCtrl.dispose();
-    PackageBridge.organizationBridge = null;
     super.onClose();
   }
 
@@ -85,8 +82,7 @@ class SelectContactsLogic extends GetxController
       action == SelAction.whoCanWatch ||
       action == SelAction.remindWhoToWatch;
 
-  bool get hiddenOrganization =>
-      action == SelAction.whoCanWatch || action == SelAction.remindWhoToWatch;
+  bool get hiddenOrganization => action == SelAction.whoCanWatch || action == SelAction.remindWhoToWatch;
 
   bool get hiddenTagGroup =>
       action == SelAction.forward ||
@@ -101,8 +97,7 @@ class SelectContactsLogic extends GetxController
 
   _queryConversationList() async {
     if (!hiddenConversations) {
-      final list = await OpenIM.iMManager.conversationManager
-          .getConversationListSplit(count: 10);
+      final list = await OpenIM.iMManager.conversationManager.getConversationListSplit(count: 10);
       conversationList.addAll(list);
     }
   }
@@ -112,7 +107,7 @@ class SelectContactsLogic extends GetxController
       return e.isSingleChat ? e.userID : e.groupID;
     } else if (e is GroupInfo) {
       return e.groupID;
-    } else if (e is UserInfo) {
+    } else if (e is UserInfo || e is FriendInfo || e is UserFullInfo) {
       return e.userID;
     } else if (e is TagInfo) {
       return e.tagID;
@@ -126,7 +121,7 @@ class SelectContactsLogic extends GetxController
       return e.showName;
     } else if (e is GroupInfo) {
       return e.groupName;
-    } else if (e is UserInfo) {
+    } else if (e is UserInfo || e is FriendInfo || e is UserFullInfo) {
       return e.nickname;
     } else if (e is TagInfo) {
       return e.tagName;
@@ -140,7 +135,7 @@ class SelectContactsLogic extends GetxController
       return e.faceURL;
     } else if (e is GroupInfo) {
       return e.faceURL;
-    } else if (e is UserInfo) {
+    } else if (e is UserInfo || e is FriendInfo || e is UserFullInfo) {
       return e.faceURL;
     } else {
       return null;
@@ -154,8 +149,7 @@ class SelectContactsLogic extends GetxController
   bool isDefaultChecked(info) => defaultCheckedIDList.contains(parseID(info));
 
   @override
-  Function()? onTap(dynamic info) =>
-      isDefaultChecked(info) ? null : () => toggleChecked(info);
+  Function()? onTap(dynamic info) => isDefaultChecked(info) ? null : () => toggleChecked(info);
 
   @override
   removeItem(dynamic info) {
@@ -237,21 +231,19 @@ class SelectContactsLogic extends GetxController
     }
   }
 
-  confirmSelectedItem(dynamic info) async {
+  confirmSelectedItem(ISUserInfo info) async {
     if (action == SelAction.carte) {
       final sure = await Get.dialog(CustomDialog(
         title: StrRes.sendCarteConfirmHint,
       ));
       if (sure == true) {
-        Get.back(result: info);
+        Get.back(result: UserInfo.fromJson(info.toJson()));
       }
     }
   }
 
-  bool get enabledConfirmButton =>
-      checkedList.isNotEmpty || action == SelAction.remindWhoToWatch;
+  bool get enabledConfirmButton => checkedList.isNotEmpty || action == SelAction.remindWhoToWatch;
 
   @override
-  Widget get checkedConfirmView =>
-      isMultiModel ? CheckedConfirmView() : const SizedBox();
+  Widget get checkedConfirmView => isMultiModel ? CheckedConfirmView() : const SizedBox();
 }

@@ -258,6 +258,12 @@ extension MessageExt on Message {
 }
 
 class CustomMessageType {
+  static const callingInvite = 200;
+  static const callingAccept = 201;
+  static const callingReject = 202;
+  static const callingCancel = 203;
+  static const callingHungup = 204;
+
   static const call = 901;
   static const emoji = 902;
   static const tag = 903;
