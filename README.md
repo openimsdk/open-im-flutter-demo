@@ -33,8 +33,8 @@ A OpenIM flutter demo, only support android and ios.
   ![Android](https://www.pgyer.com/app/qrcode/IM-FCER)
 
 ## Dev Setup 🛠️
-1. Android studio/vscode
-2. Flutter sdk version 3.16
+1. Android Studio/VsCode
+2. Flutter version 3.19.0
 
 ## Build 🚀
 
