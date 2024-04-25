@@ -140,7 +140,7 @@ end
 
 - 📚 [OpenIM Community](https://github.com/OpenIMSDK/community)
 - 💕 [OpenIM Interest Group](https://github.com/Openim-sigs)
-- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q)
+- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-2hljfom5u-9ZuzP3NfEKW~BJKbpLm0Hw)
 - :eyes: [Join our wechat (微信群)](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
 
 ## Community Meetings :calendar:
