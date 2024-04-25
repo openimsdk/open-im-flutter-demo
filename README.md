@@ -54,15 +54,11 @@ A OpenIM flutter demo, only support android and ios.
 
 A: Support, follow the system language by default
 
-##### 2. What is the flutter version corresponding to the demo?
-
-A: stable branch 3.16
-
-##### 3. Which platforms are supported?
+##### 2. Which platforms are supported?
 
 A: The demo currently supports android and ios.
 
-##### 4. The debug of the android installation package can run, but the release starts with a white screen?
+##### 3. The debug of the android installation package can run, but the release starts with a white screen?
 
 A: The release package of flutter is obfuscated by default. You can use the command: flutter build release --no -shrink. If this command is invalid, you can do the following
 
@@ -76,7 +72,7 @@ release {
 }
 ```
 
-##### 5. What should I do if the code must be confused?
+##### 4. What should I do if the code must be confused?
 
 A: Add the following rules to the obfuscation rules
 
@@ -86,7 +82,7 @@ A: Add the following rules to the obfuscation rules
 -keep class open_im_sdk_callback.**{*;}
 ```
 
-##### 6. The android installation package cannot be installed on the emulator?
+##### 5. The android installation package cannot be installed on the emulator?
 
 A: Because the Demo has removed some cpu architectures, if you want to run it on the emulator, please do the following:
 
@@ -98,7 +94,7 @@ ndk {
 }
 ```
 
-##### 7, ios run/build release package error
+##### 6, ios run/build release package error
 
 A: Please set the CPU architecture to arm64, and then operate as follows
 
