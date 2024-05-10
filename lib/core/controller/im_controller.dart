@@ -81,6 +81,7 @@ class IMController extends GetxController with IMCallback, OpenIMLive {
                 skip = true;
 
                 final signaling = SignalingInfo(invitation: InvitationInfo.fromJson(map['data']));
+                signaling.userID = signaling.invitation?.inviterUserID;
 
                 switch (customType) {
                   case CustomMessageType.callingInvite:

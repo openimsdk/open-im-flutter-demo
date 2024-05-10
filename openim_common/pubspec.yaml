@@ -86,7 +86,7 @@ dependencies:
 
   flutter_download_manager:
     path: ../local_plugin/flutter_download_manager
-  flutter_openim_sdk: any
+  flutter_openim_sdk: 3.5.1
 
 dependency_overrides:
   wechat_assets_picker: ^8.9.0-dev.1
