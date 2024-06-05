@@ -44,8 +44,12 @@ A OpenIM flutter demo, only support android and ios.
 ```dart
   static const _host = "your-server-ip/domain";
 ```
-3. Please replace the sdk dependency with git dependency
+3. Please replace the IM SDK version
 ```dart
+// openim_common/pubspec.yaml
+// openim_live/pubspec.yaml
+// pubspec.yaml
+
   flutter_openim_sdk: lastest
 ```
 
@@ -112,11 +116,11 @@ A: Please set the CPU architecture to arm64, and then operate as follows
 
 ![ios cpu](https://user-images.githubusercontent.com/7018230/155913400-6231329a-aee9-4082-8d24-a25baad55261.png)
 
-##### 8. What is the minimum version number for ios to run?
+##### 7. What is the minimum version number for ios to run?
 
 A: 13.0
 
-#### 9. Some developers encountered the following problems:
+#### 8. Some developers encountered the following problems:
 ```
 Could not build the precompiled application for the device.
 Error (Xcode): Signing for "TOCropViewController-TOCropViewControllerBundle" requires a development team. Select a development team
@@ -144,7 +148,7 @@ end
 
 - 📚 [OpenIM Community](https://github.com/OpenIMSDK/community)
 - 💕 [OpenIM Interest Group](https://github.com/Openim-sigs)
-- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-2hljfom5u-9ZuzP3NfEKW~BJKbpLm0Hw)
+- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-2ijy1ys1f-O0aEDCr7ExRZ7mwsHAVg9A)
 - :eyes: [Join our wechat (微信群)](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
 
 ## Community Meetings :calendar:
