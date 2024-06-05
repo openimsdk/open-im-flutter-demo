@@ -38,8 +38,8 @@ A OpenIM flutter demo, only support android and ios.
 
 ## Build 🚀
 
-1. git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
-2. modify the server address in the [config.dart](https://github.com/openimsdk/open-im-flutter-demo/blob/main/openim_common/lib/src/config.dart) file to the server address built by yourself
+1. Git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
+2. Modify the server address in the [config.dart](https://github.com/openimsdk/open-im-flutter-demo/blob/main/openim_common/lib/src/config.dart) file to the server address built by yourself
 
 ```dart
   static const _host = "your-server-ip/domain";
@@ -52,9 +52,11 @@ A OpenIM flutter demo, only support android and ios.
 
   flutter_openim_sdk: lastest
 ```
-
-4. flutter pub get
-5. flutter run
+4. Get dependencies and perform compilation operations.
+```dash
+ $ flutter pub get
+ $ flutter run
+```
 
 ### Issues :bookmark_tabs:
 
