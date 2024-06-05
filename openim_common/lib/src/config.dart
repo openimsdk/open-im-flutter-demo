@@ -56,7 +56,7 @@ class Config {
   static const friendScheme = "io.openim.app/addFriend/";
   static const groupScheme = "io.openim.app/joinGroup/";
 
-  static const _host = "43.154.157.177";
+  static const _host = "127.0.0.1";
 
   static const _ipRegex = '((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)';
 
@@ -67,7 +67,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       ip = server['serverIP'];
-      Logger.print('缓存serverIP: $ip');
     }
     return ip ?? _host;
   }

@@ -130,20 +130,6 @@ class AppController extends GetxController with UpgradeManger {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  Future<void> _startForegroundService() async {
-    await getAppInfo();
-    const androidPlatformChannelSpecifics = AndroidNotificationDetails('pro', 'OpenIM后台进程',
-        channelDescription: '保证app能收到信息', importance: Importance.max, priority: Priority.high, ticker: 'ticker');
-
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.startForegroundService(1, packageInfo!.appName, '正在运行...', notificationDetails: androidPlatformChannelSpecifics, payload: '');
-  }
-
-  Future<void> _stopForegroundService() async {
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.stopForegroundService();
-  }
-
   void showBadge(count) {
     if (isAppBadgeSupported) {
       OpenIM.iMManager.messageManager.setAppBadge(count);

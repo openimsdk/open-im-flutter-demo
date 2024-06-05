@@ -92,7 +92,6 @@ class _SingleRoomViewState extends SignalState<SingleRoomView> {
       if (null != _listener) _setUpListeners();
       if (null != _room) roomDidUpdateSubject.add(_room!);
       _sortParticipants();
-      // 播放等待提示音
       if (CallState.call == callState || CallState.connecting == callState) {
         widget.onWaitingAccept?.call();
       }
