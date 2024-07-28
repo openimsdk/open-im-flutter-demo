@@ -69,7 +69,6 @@ PODS:
     - Flutter
   - flutter_openim_sdk (0.0.1):
     - Flutter
-    - OpenIMSDKCore (= 3.5.1)
   - flutter_webrtc (0.9.36):
     - Flutter
     - WebRTC-SDK (= 114.5735.08)
@@ -97,22 +96,22 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.3.2)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
-  - GoogleUtilities/Environment (7.13.2):
+  - GoogleUtilities/Environment (7.13.3):
     - GoogleUtilities/Privacy
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.13.2):
+  - GoogleUtilities/Logger (7.13.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (7.13.2)
-  - GoogleUtilities/UserDefaults (7.13.2):
+  - GoogleUtilities/Privacy (7.13.3)
+  - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
-  - GTCommonSDK (3.1.2.0):
+  - GTCommonSDK (3.1.3.0):
     - ZXSDK
   - GTMSessionFetcher/Core (2.3.0)
-  - GTSDK (3.0.5.0):
+  - GTSDK (3.0.6.0):
     - GTCommonSDK (> 3.0.9.0)
   - image_cropper (0.0.4):
     - Flutter
@@ -138,7 +137,7 @@ PODS:
   - livekit_client (1.5.3):
     - Flutter
     - WebRTC-SDK (= 114.5735.08)
-  - local_auth_ios (0.0.1):
+  - local_auth_darwin (0.0.1):
     - Flutter
   - Mantle (2.2.0):
     - Mantle/extobjc (= 2.2.0)
@@ -174,7 +173,6 @@ PODS:
   - nanopb/encode (2.30910.0)
   - open_filex (0.0.2):
     - Flutter
-  - OpenIMSDKCore (3.5.1)
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter
@@ -187,15 +185,15 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
-  - ReachabilitySwift (5.2.2)
+  - ReachabilitySwift (5.2.3)
   - record_darwin (1.0.0):
     - Flutter
     - FlutterMacOS
   - scan (0.0.1):
     - Flutter
-  - SDWebImage (5.19.1):
-    - SDWebImage/Core (= 5.19.1)
-  - SDWebImage/Core (5.19.1)
+  - SDWebImage (5.19.4):
+    - SDWebImage/Core (= 5.19.4)
+  - SDWebImage/Core (5.19.4)
   - SDWebImageWebPCoder (0.14.6):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
@@ -249,7 +247,7 @@ DEPENDENCIES:
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - livekit_client (from `.symlinks/plugins/livekit_client/ios`)
-  - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
+  - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
@@ -289,7 +287,6 @@ SPEC REPOS:
     - MLKitVision
     - Mute
     - nanopb
-    - OpenIMSDKCore
     - OrderedSet
     - PromisesObjC
     - ReachabilitySwift
@@ -345,8 +342,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/just_audio/ios"
   livekit_client:
     :path: ".symlinks/plugins/livekit_client/ios"
-  local_auth_ios:
-    :path: ".symlinks/plugins/local_auth_ios/ios"
+  local_auth_darwin:
+    :path: ".symlinks/plugins/local_auth_darwin/darwin"
   map_launcher:
     :path: ".symlinks/plugins/map_launcher/ios"
   mobile_scanner:
@@ -386,8 +383,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_installer: 4301996bd8f3c6f75776416b8885a6d92928306f
-  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
+  audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
+  camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
@@ -400,25 +397,25 @@ SPEC CHECKSUMS:
   flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
-  flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
-  flutter_openim_sdk: 81a70127bb8523bc3dd4f4b8198c24a5a5596b19
+  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
+  flutter_openim_sdk: 4226e36c2e6abd875bc00e2c1687c3129dfcfa77
   flutter_webrtc: 55df3aaa802114dad390191a46c2c8d535751268
   getuiflut: 8628ba2b64a738a847a07d2b67e0ac305778e2ee
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
-  GoogleUtilities: c56430aef51a1aa57b25da78c3f8397e522c67b7
+  GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
-  GTCommonSDK: c9f2637a4dacb8ae05e18301ccdbdac8f88756c2
+  GTCommonSDK: 4eccd0c8593cc8f458976463e25be8a733896a05
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
-  GTSDK: cc04d169c5c6cb8f8884849153eaac9e6ccfdd7c
+  GTSDK: b002384999146d5b86f1c9b56e20882ffbfd2796
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
-  image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
+  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   livekit_client: 108b5e32d6036dfc1af5e2237251d2b723a10f76
-  local_auth_ios: c6cf091ded637a88f24f86a8875d8b0f526e2605
+  local_auth_darwin: 4d56c90c2683319835a61274b57620df9c4520ab
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   MLImage: 7bb7c4264164ade9bf64f679b40fb29c8f33ee9b
@@ -429,28 +426,27 @@ SPEC CHECKSUMS:
   Mute: 20135a96076f140cc82bfc8b810e2d6150d8ec7e
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
-  OpenIMSDKCore: 002ccd940d261619d117eedcb8e6236aae718aaa
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
-  photo_manager: 4f6810b7dfc4feb03b461ac1a70dacf91fba7604
+  photo_manager: ff695c7a1dd5bc379974953a2b5c0a293f7c4c8a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  ReachabilitySwift: 2128f3a8c9107e1ad33574c6e58e8285d460b149
-  record_darwin: 1f6619f2abac4d1ca91d3eeab038c980d76f1517
+  ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
+  record_darwin: df0a677188e5fed18472550298e675f19ddaffbe
   scan: aea35bb4aa59ccc8839c576a18cd57c7d492cc86
-  SDWebImage: 40b0b4053e36c660a764958bff99eed16610acbb
+  SDWebImage: 066c47b573f408f18caa467d71deace7c0f8280d
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
-  sensors_plus: 4ee32bc7d61a055f27f88d3215ad6b6fb96a2b8e
-  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
+  sensors_plus: 18a9b346c43e157da17d2c8e99def703f9efb9d8
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sound_mode: ef0072f20e7306c1c371984a443156e39be092d5
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
-  url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
-  video_player_avfoundation: 02011213dab73ae3687df27ce441fbbcc82b5579
+  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
   WebRTC-SDK: c24d2a6c9f571f2ed42297cb8ffba9557093142b
   ZXSDK: 414bed508b670437a9bdf7c75d49816b8cb7b2d4

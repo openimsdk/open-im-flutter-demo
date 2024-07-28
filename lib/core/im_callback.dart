@@ -15,7 +15,7 @@ enum IMSdkStatus {
   syncFailed,
 }
 
-class IMCallback {
+mixin IMCallback {
   final initLogic = Get.find<AppController>();
 
   Function(RevokedInfo info)? onRecvMessageRevoked;

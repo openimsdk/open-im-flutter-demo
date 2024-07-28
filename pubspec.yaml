@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 3.5.1+31
 
 environment:
-  sdk: '>=2.19.2 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -53,7 +53,7 @@ dependencies:
   permission_handler: 11.0.1
   flutter_slidable: 3.0.1
   wechat_assets_picker: 8.9.0-dev.1
-  wechat_camera_picker: 4.1.1
+  wechat_camera_picker: 4.3.1
   extended_image: 8.2.0
   flutter_screenutil: 5.9.0
   country_picker: 2.0.22
@@ -82,7 +82,7 @@ dependencies:
   app_installer: 1.1.0
   flutter_datetime_picker_plus: 2.1.0
   font_awesome_flutter: 10.6.0
-  dart_date: 1.3.2
+  dart_date: 1.3.3
   video_compress: 3.1.2
   just_audio: 0.9.36
   flutter_inappwebview: 5.8.0
@@ -90,9 +90,7 @@ dependencies:
   getuiflut: 0.2.18
   scroll_to_index: 3.0.1
   flutter_screen_lock: 9.0.1
-  local_auth: 2.1.7
-  local_auth_android: 1.0.35
-  local_auth_ios: 1.1.5
+  local_auth: 2.2.0
   gesture_password_widget: 2.0.1
   sound_mode: 2.0.2
   device_info_plus: 9.1.0
@@ -113,7 +111,7 @@ dependencies:
 dependency_overrides:
   wechat_assets_picker: ^8.9.0-dev.1
   photo_manager: ^3.0.0-dev.2
-  flutter_openim_sdk: 3.5.1
+  flutter_openim_sdk: 3.8.0-rc.16
 
 dev_dependencies:
   flutter_test:

@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../widgets/upgrade_view.dart';
 
-class UpgradeManger {
+mixin UpgradeManger {
   PackageInfo? packageInfo;
   UpgradeInfoV2? upgradeInfoV2;
   var isShowUpgradeDialog = false;
@@ -48,8 +48,7 @@ class UpgradeManger {
           cachePath: path,
           onProgress: (int count, int total) {
             subject.add(count / total);
-            notificationService.createNotification(
-                100, ((count / total) * 100).toInt(), 0, 'Downloading');
+            notificationService.createNotification(100, ((count / total) * 100).toInt(), 0, 'Downloading');
             if (count == total) {
               AppInstaller.installApk(path);
             }
@@ -118,12 +117,9 @@ class UpgradeManger {
 }
 
 class NotificationService {
-  static final NotificationService _notificationService =
-      NotificationService._internal();
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  final AndroidInitializationSettings _androidInitializationSettings =
-      const AndroidInitializationSettings('@mipmap/ic_launcher');
+  static final NotificationService _notificationService = NotificationService._internal();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final AndroidInitializationSettings _androidInitializationSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');
 
   factory NotificationService() {
     return _notificationService;
@@ -134,16 +130,14 @@ class NotificationService {
   }
 
   void init() async {
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
+    final InitializationSettings initializationSettings = InitializationSettings(
       android: _androidInitializationSettings,
     );
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void createNotification(int count, int i, int id, String status) {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'progress channel', 'progress channel',
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails('progress channel', 'progress channel',
         channelDescription: 'progress channel description',
         channelShowBadge: false,
         importance: Importance.max,
@@ -152,9 +146,7 @@ class NotificationService {
         showProgress: true,
         maxProgress: count,
         progress: i);
-    var platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    _flutterLocalNotificationsPlugin
-        .show(id, status, '$i%', platformChannelSpecifics, payload: 'item x');
+    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+    _flutterLocalNotificationsPlugin.show(id, status, '$i%', platformChannelSpecifics, payload: 'item x');
   }
 }
