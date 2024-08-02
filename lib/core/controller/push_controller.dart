@@ -81,6 +81,9 @@ class PushController extends GetxController {
         Logger.print("Getui flutter onTransmitUserMessageReceive: $event");
       },
       onGrantAuthorization: (String res) async {},
+      onLiveActivityResult: (Map<String, dynamic> event) async {
+        Logger.print("Getui flutter onLiveActivityResult: $event");
+      },
     );
   }
 

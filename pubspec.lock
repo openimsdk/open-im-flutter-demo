@@ -760,7 +760,7 @@ packages:
       path: "../../sdk/open_im_sdk_flutter"
       relative: true
     source: path
-    version: "3.8.0-rc.15"
+    version: "3.8.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -871,10 +871,10 @@ packages:
     dependency: "direct main"
     description:
       name: getuiflut
-      sha256: "52ba4466ab540675e4176712641fba6bb7fe66d81922d4d304d3707064c4a5fc"
+      sha256: a3962996a1b4a3dc0e460325a9ec7640c1adfab888ba575f63ddeeb23b97c310
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.18"
+    version: "0.2.29"
   glob:
     dependency: transitive
     description:

@@ -87,7 +87,7 @@ dependencies:
   just_audio: 0.9.36
   flutter_inappwebview: 5.8.0
   vibration: 1.8.3
-  getuiflut: 0.2.18
+  getuiflut: 0.2.29
   scroll_to_index: 3.0.1
   flutter_screen_lock: 9.0.1
   local_auth: 2.2.0
@@ -111,7 +111,7 @@ dependencies:
 dependency_overrides:
   wechat_assets_picker: ^8.9.0-dev.1
   photo_manager: ^3.0.0-dev.2
-  flutter_openim_sdk: 3.8.0-rc.16
+  flutter_openim_sdk: 3.8.0
 
 dev_dependencies:
   flutter_test:
