@@ -135,13 +135,13 @@ class IMController extends GetxController with IMCallback, OpenIMLive {
         onConversationChanged: conversationChanged,
         onNewConversation: newConversation,
         onTotalUnreadMessageCountChanged: totalUnreadMsgCountChanged,
-        onSyncServerFailed: () {
+        onSyncServerFailed: (_) {
           imSdkStatus(IMSdkStatus.syncFailed);
         },
-        onSyncServerFinish: () {
+        onSyncServerFinish: (_) {
           imSdkStatus(IMSdkStatus.syncEnded);
         },
-        onSyncServerStart: () {
+        onSyncServerStart: (_) {
           imSdkStatus(IMSdkStatus.syncStart);
         },
       ))

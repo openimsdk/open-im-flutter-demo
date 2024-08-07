@@ -40,7 +40,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 24
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
@@ -117,20 +117,17 @@ flutter {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    // 个推
-    // 根据所需厂商选择集成
-    implementation 'com.huawei.hms:push:5.3.0.301'
-    implementation 'com.getui.opt:hwp:3.1.0'   // 华为
-    implementation 'com.getui.opt:xmp:3.2.0'   // 小米
+    implementation 'com.huawei.hms:push:6.12.0.300'
+    implementation 'com.getui.opt:hwp:3.1.0'   // huawei
+    implementation 'com.getui.opt:xmp:3.2.0'   // mi
     implementation('com.assist-v3:oppo:3.1.0') {
         exclude group: 'commons-codec'
     }   // oppo
     implementation 'com.assist-v3:vivo:3.1.0'  // vivo
-    implementation 'com.getui.opt:mzp:3.2.0'   // 魅族
-    implementation 'com.getui.opt:ups:3.0.3'   // ups，ups目前支持坚果，索尼，海信手机
-    implementation 'com.getui.opt:honor:3.2.0' // 荣耀
+    implementation 'com.getui.opt:mzp:3.2.0'   // meizu
+    implementation 'com.getui.opt:ups:3.0.3'   // ups，ups
+    implementation 'com.getui.opt:honor:3.2.0' // honor
 
-//    implementation('com.amap.api:location:5.6.0')
     implementation 'com.android.support:multidex:1.0.3'
 }
 
