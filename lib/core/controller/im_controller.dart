@@ -48,6 +48,7 @@ class IMController extends GetxController with IMCallback, OpenIMLive {
         },
         onKickedOffline: kickedOffline,
         onUserTokenExpired: kickedOffline,
+        onUserTokenInvalid: kickedOffline,
       ),
     );
     // Set listener
