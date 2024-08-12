@@ -104,7 +104,9 @@ class ChatLogic extends GetxController {
     var receiverId = message.recvID;
     var groupId = message.groupID;
     // var sessionType = message.sessionType;
-    var isCurSingleChat = message.isSingleChat && isSingleChat && (senderId == userID || senderId == OpenIM.iMManager.userID && receiverId == userID);
+    var isCurSingleChat = message.isSingleChat &&
+        isSingleChat &&
+        (senderId == userID || senderId == OpenIM.iMManager.userID && receiverId == userID);
     var isCurGroupChat = message.isGroupChat && isGroupChat && groupID == groupId;
     return isCurSingleChat || isCurGroupChat;
   }
@@ -119,7 +121,6 @@ class ChatLogic extends GetxController {
   void onReady() {
     _checkInBlacklist();
     _isJoinedGroup();
-
     super.onReady();
   }
 
@@ -363,7 +364,9 @@ class ChatLogic extends GetxController {
     log('send : ${json.encode(message)}');
     userId = IMUtils.emptyStrToNull(userId);
     groupId = IMUtils.emptyStrToNull(groupId);
-    if (null == userId && null == groupId || userId == userID && userId != null || groupId == groupID && groupId != null) {
+    if (null == userId && null == groupId ||
+        userId == userID && userId != null ||
+        groupId == groupID && groupId != null) {
       if (addToUI) {
         messageList.add(message);
         scrollBottom();
@@ -425,8 +428,8 @@ class ChatLogic extends GetxController {
       } else {
         if ((code == SDKErrorCode.userIsNotInGroup || code == SDKErrorCode.groupDisbanded) && null == groupId) {
           final status = groupInfo?.status;
-          final hintMessage = (await OpenIM.iMManager.messageManager
-              .createFailedHintMessage(type: status == 2 ? CustomMessageType.groupDisbanded : CustomMessageType.removedFromGroup))
+          final hintMessage = (await OpenIM.iMManager.messageManager.createFailedHintMessage(
+              type: status == 2 ? CustomMessageType.groupDisbanded : CustomMessageType.removedFromGroup))
             ..status = 2
             ..isRead = true;
           messageList.add(hintMessage);
@@ -441,7 +444,9 @@ class ChatLogic extends GetxController {
   }
 
   void _reset(Message message) {
-    if (message.contentType == MessageType.text || message.contentType == MessageType.atText || message.contentType == MessageType.quote) {
+    if (message.contentType == MessageType.text ||
+        message.contentType == MessageType.atText ||
+        message.contentType == MessageType.quote) {
       inputCtrl.clear();
     }
   }
@@ -611,7 +616,9 @@ class ChatLogic extends GetxController {
 
   String? get subTile => typing.value ? StrRes.typing : null;
 
-  String get title => isSingleChat ? nickname.value : (memberCount.value > 0 ? '${nickname.value}(${memberCount.value})' : nickname.value);
+  String get title => isSingleChat
+      ? nickname.value
+      : (memberCount.value > 0 ? '${nickname.value}(${memberCount.value})' : nickname.value);
 
   void failedResend(Message message) {
     sendStatusSub.addSafely(MsgStreamEv<bool>(

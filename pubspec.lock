@@ -757,10 +757,11 @@ packages:
   flutter_openim_sdk:
     dependency: "direct overridden"
     description:
-      name: flutter_openim_sdk
-      sha256: dea89065939e9ab528c986b21671bef1816b1c8146a7aa92fabaff272a276156
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "29b43d0"
+      resolved-ref: "29b43d03acf819dd38298d91c839c0072ef3c2d2"
+      url: "https://github.com/openimsdk/open-im-sdk-flutter.git"
+    source: git
     version: "3.8.1-rc.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive

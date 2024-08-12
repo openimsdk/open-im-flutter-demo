@@ -24,21 +24,17 @@ class GroupMemberListLogic extends GetxController {
   final controller = RefreshController();
   final memberList = <GroupMembersInfo>[].obs;
   final checkedList = <GroupMembersInfo>[].obs;
-  final count = 20;
+  final count = 500;
   final myGroupMemberLevel = 1.obs;
   late GroupInfo groupInfo;
   late GroupMemberOpType opType;
   late StreamSubscription mISub;
 
   bool get isMultiSelMode =>
-      opType == GroupMemberOpType.call ||
-      opType == GroupMemberOpType.at ||
-      opType == GroupMemberOpType.del;
+      opType == GroupMemberOpType.call || opType == GroupMemberOpType.at || opType == GroupMemberOpType.del;
 
   bool get excludeSelfFromList =>
-      opType == GroupMemberOpType.call ||
-      opType == GroupMemberOpType.at ||
-      opType == GroupMemberOpType.transferRight;
+      opType == GroupMemberOpType.call || opType == GroupMemberOpType.at || opType == GroupMemberOpType.transferRight;
 
   bool get isDelMember => opType == GroupMemberOpType.del;
 
@@ -101,8 +97,7 @@ class GroupMemberListLogic extends GetxController {
     });
   }
 
-  Future<List<GroupMembersInfo>> _getGroupMembers() =>
-      OpenIM.iMManager.groupManager.getGroupMemberList(
+  Future<List<GroupMembersInfo>> _getGroupMembers() => OpenIM.iMManager.groupManager.getGroupMemberList(
         groupID: groupInfo.groupID,
         count: count,
         offset: memberList.length,
@@ -119,8 +114,7 @@ class GroupMemberListLogic extends GetxController {
     }
   }
 
-  bool isChecked(GroupMembersInfo membersInfo) =>
-      checkedList.contains(membersInfo);
+  bool isChecked(GroupMembersInfo membersInfo) => checkedList.contains(membersInfo);
 
   clickMember(GroupMembersInfo membersInfo) async {
     if (opType == GroupMemberOpType.transferRight) {
@@ -151,8 +145,7 @@ class GroupMemberListLogic extends GetxController {
     checkedList.remove(membersInfo);
   }
 
-  viewMemberInfo(GroupMembersInfo membersInfo) =>
-      AppNavigator.startUserProfilePane(
+  viewMemberInfo(GroupMembersInfo membersInfo) => AppNavigator.startUserProfilePane(
         userID: membersInfo.userID!,
         groupID: membersInfo.groupID,
         nickname: membersInfo.nickname,

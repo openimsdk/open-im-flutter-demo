@@ -27,7 +27,10 @@ dependencies:
   device_info_plus:
   openim_common:
     path: ../openim_common
-  flutter_openim_sdk: 3.8.0
+  flutter_openim_sdk: 
+    git: 
+      url: https://github.com/openimsdk/open-im-sdk-flutter.git
+      ref: 29b43d0
 
 dev_dependencies:
   flutter_test:
