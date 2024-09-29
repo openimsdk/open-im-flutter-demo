@@ -275,7 +275,7 @@ class CustomMessageType {
   static const groupDisbanded = 913;
 }
 
-extension FullUserInfoExt on FullUserInfo {
+extension PublicUserInfoExt on PublicUserInfo {
   UserInfo get simpleUserInfo {
     return UserInfo(userID: userID, nickname: nickname, faceURL: faceURL);
   }

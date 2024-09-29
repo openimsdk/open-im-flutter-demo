@@ -16,6 +16,9 @@ class FriendListLogic extends GetxController {
   late StreamSubscription addSub;
   late StreamSubscription infoChangedSub;
 
+  int _offset = 0;
+  int _count = 10000;
+
   @override
   void onInit() {
     delSub = imLoic.friendDelSubject.listen(_delFriend);
@@ -41,35 +44,35 @@ class FriendListLogic extends GetxController {
   }
 
   _getFriendList() async {
-    final list = await OpenIM.iMManager.friendshipManager
-        .getFriendListMap()
-        .then((list) => list.where(_filterBlacklist))
-        .then((list) => list.map((e) {
-              final fullUser = FullUserInfo.fromJson(e);
-              final user = fullUser.friendInfo != null
-                  ? ISUserInfo.fromJson(fullUser.friendInfo!.toJson())
-                  : ISUserInfo.fromJson(fullUser.publicInfo!.toJson());
-              return user;
-            }).toList())
-        .then((list) => IMUtils.convertToAZList(list));
+    List<PublicUserInfo> list = [];
+    for (int i = 0;; i++) {
+      final temp = await OpenIM.iMManager.friendshipManager.getFriendListPage(
+        offset: _offset,
+        count: _count,
+        filterBlack: true,
+      );
+
+      if (temp.isEmpty) {
+        break;
+      }
+      _offset += temp.length;
+      _count = 1000;
+      list.addAll(temp);
+    }
+
+    final result = list.map((e) {
+      userIDList.add(e.userID!);
+
+      return ISUserInfo.fromJson(e.toJson());
+    }).toList();
+
+    final convertResult = IMUtils.convertToAZList(result);
 
     onUserIDList(userIDList);
-    friendList.assignAll(list.cast<ISUserInfo>());
+    friendList.assignAll(convertResult.cast<ISUserInfo>());
   }
 
   void onUserIDList(List<String> userIDList) {}
-
-  bool _filterBlacklist(e) {
-    final user = FullUserInfo.fromJson(e);
-    final isBlack = user.blackInfo != null;
-
-    if (isBlack) {
-      return false;
-    } else {
-      userIDList.add(user.userID);
-      return true;
-    }
-  }
 
   _addFriend(dynamic user) {
     if (user is FriendInfo || user is BlacklistInfo) {
@@ -92,13 +95,20 @@ class FriendListLogic extends GetxController {
     final info = ISUserInfo.fromJson(json);
     friendList.add(IMUtils.setAzPinyinAndTag(info) as ISUserInfo);
 
+    // A-Z sort.
     SuspensionUtil.sortListBySuspensionTag(friendList);
 
+    // show sus tag.
     SuspensionUtil.setShowSuspensionStatus(friendList);
+    // IMUtil.convertToAZList(friendList);
+
+    // friendList.refresh();
   }
 
   void viewFriendInfo(ISUserInfo info) => AppNavigator.startUserProfilePane(
         userID: info.userID!,
+        nickname: info.nickname,
+        faceURL: info.faceURL,
       );
 
   void searchFriend() => AppNavigator.startSearchFriend();

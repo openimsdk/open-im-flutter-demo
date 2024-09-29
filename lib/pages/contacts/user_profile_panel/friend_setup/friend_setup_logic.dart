@@ -17,9 +17,8 @@ class FriendSetupLogic extends GetxController {
     super.onInit();
   }
 
-  Future<void> toggleBlacklist() async {
-    final result = await OpenIM.iMManager.friendshipManager.checkFriend(userIDList: [userID]);
-    if (result.first.result == 1) {
+  void toggleBlacklist() {
+    if (userProfilesLogic.userInfo.value.isBlacklist == true) {
       removeBlacklist();
     } else {
       addBlacklist();

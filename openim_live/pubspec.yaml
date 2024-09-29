@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_screenutil:
   get: 4.6.6
-  livekit_client: 1.5.3
+  livekit_client: 2.2.5
   flutter_background: 1.1.0
   eva_icons_flutter: 3.1.0
   flutter_svg: 2.0.9
@@ -27,10 +27,7 @@ dependencies:
   device_info_plus:
   openim_common:
     path: ../openim_common
-  flutter_openim_sdk: 
-    git: 
-      url: https://github.com/openimsdk/open-im-sdk-flutter.git
-      ref: 29b43d0
+  flutter_openim_sdk: 3.8.1
 
 dev_dependencies:
   flutter_test:

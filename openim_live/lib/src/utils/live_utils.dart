@@ -48,7 +48,7 @@ class LiveUtils {
   }
 
   static VideoTrack? activeVideoTrack(RemoteParticipant participant) {
-    for (final trackPublication in participant.videoTracks) {
+    for (final trackPublication in participant.videoTrackPublications) {
       Logger.print(
           'video track ${trackPublication.sid} subscribed ${trackPublication.subscribed} muted ${trackPublication.muted}');
       if (trackPublication.subscribed && !trackPublication.muted) {
@@ -60,7 +60,7 @@ class LiveUtils {
 
   /// 剔除房间观察者
   static List<RemoteParticipant> removeObserver(String roomID, Room room) {
-    return room.participants.values.where((element) {
+    return room.remoteParticipants.values.where((element) {
       Logger.print(
           'removeObserver roomID:$roomID  userID:${element.identity}   ${roomID == element.identity}');
       return roomID != element.identity;
@@ -69,7 +69,7 @@ class LiveUtils {
 
   /// 单聊获取真正通话的对象
   static RemoteParticipant? getRemoteParticipant(String? roomID, Room? room) {
-    return room?.participants.values
+    return room?.remoteParticipants.values
         .where((element) => roomID != element.identity)
         .firstOrNull;
   }

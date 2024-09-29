@@ -47,7 +47,7 @@ class _SingleRoomViewState extends SignalState<SingleRoomView> {
     (() async {
       _room?.removeListener(_onRoomDidUpdate);
       await _listener?.dispose();
-      await _room?.participants.values.firstOrNull?.dispose();
+      await _room?.remoteParticipants.values.firstOrNull?.dispose();
       await _room?.localParticipant?.dispose();
       await _room?.disconnect();
       await _room?.dispose();
@@ -151,7 +151,7 @@ class _SingleRoomViewState extends SignalState<SingleRoomView> {
     final localParticipant = _room!.localParticipant;
     if (null != localParticipant) {
       VideoTrack? videoTrack;
-      for (var t in localParticipant.videoTracks) {
+      for (var t in localParticipant.videoTrackPublications) {
         if (!t.isScreenShare) {
           videoTrack = t.track;
           break;
@@ -164,10 +164,10 @@ class _SingleRoomViewState extends SignalState<SingleRoomView> {
       );
     }
 
-    final participant = _room!.participants.values.firstOrNull;
+    final participant = _room!.remoteParticipants.values.firstOrNull;
     if (null != participant) {
       VideoTrack? videoTrack;
-      for (var t in participant.videoTracks) {
+      for (var t in participant.videoTrackPublications) {
         if (!t.isScreenShare) {
           videoTrack = t.track;
           break;
@@ -188,6 +188,6 @@ class _SingleRoomViewState extends SignalState<SingleRoomView> {
 
   @override
   bool existParticipants() {
-    return _room?.participants.isNotEmpty == true;
+    return _room?.remoteParticipants.isNotEmpty == true;
   }
 }

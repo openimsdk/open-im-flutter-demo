@@ -225,7 +225,7 @@ class _ControlsViewState extends State<ControlsView> {
 
   void _toggleCamera() async {
     //
-    final track = _participant?.videoTracks.firstOrNull?.track;
+    final track = _participant?.videoTrackPublications.firstOrNull?.track;
     if (track == null) return;
     Helper.switchCamera(track.mediaStreamTrack);
     // try {

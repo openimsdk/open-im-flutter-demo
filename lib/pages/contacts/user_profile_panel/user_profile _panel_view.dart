@@ -16,41 +16,60 @@ class UserProfilePanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
-          appBar: TitleBar.back(
-            right: logic.isFriendship
-                ? (ImageRes.moreBlack.toImage
-                  ..width = 24.w
-                  ..height = 24.h
-                  ..onTap = logic.friendSetup)
-                : null,
-          ),
-          backgroundColor: Styles.c_F8F9FA,
-          body: SizedBox(
-            height: 1.sh,
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildBaseInfoView(),
-                      if (logic.isGroupMemberPage) _buildEnterGroupMethodView(),
-                      if (logic.isFriendship)
-                        _buildItemView(
-                          label: StrRes.personalInfo,
-                          showRightArrow: true,
-                          onTap: logic.viewPersonalInfo,
-                        ),
-                      SizedBox(height: 108.h),
-                    ],
-                  ),
+    return Obx(
+      () => Scaffold(
+        appBar: TitleBar.back(
+          right: logic.isFriendship
+              ? (ImageRes.moreBlack.toImage
+                ..width = 24.w
+                ..height = 24.h
+                ..onTap = logic.friendSetup)
+              : null,
+        ),
+        backgroundColor: Styles.c_F8F9FA,
+        body: SizedBox(
+          height: 1.sh,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildBaseInfoView(),
+                    if (logic.isGroupMemberPage) _buildEnterGroupMethodView(),
+                    if (logic.iAmOwner.value && logic.groupMembersInfo != null)
+                      _buildItemView(
+                        label: StrRes.setAsAdmin,
+                        showSwitchButton: true,
+                        switchOn: logic.hasAdminPermission.value,
+                        onChanged: (_) => logic.toggleAdmin(),
+                      ),
+                    if (logic.iHasMutePermissions.value && logic.groupMembersInfo != null)
+                      _buildItemView(
+                        label: StrRes.setMute,
+                        value: IMUtils.emptyStrToNull(logic.mutedTime.value),
+                        onTap: logic.setMute,
+                        showRightArrow: true,
+                        addMargin: true,
+                      ),
+                    // DeptItemView.userProfilesPanel(
+                    //   userID: logic.userInfo.value.userID,
+                    // ),
+                    if (logic.isFriendship || logic.isMyself || logic.isGroupMemberPage && !logic.notAllowLookGroupMemberProfiles.value)
+                      _buildItemView(
+                        label: StrRes.personalInfo,
+                        showRightArrow: true,
+                        onTap: logic.viewPersonalInfo,
+                      ),
+                    SizedBox(height: 108.h),
+                  ],
                 ),
-                if ((logic.isFriendship) && !logic.isMyself)
-                  _buildButtonGroup(),
-              ],
-            ),
+              ),
+              if ((logic.isFriendship || logic.allowSendMsgNotFriend) && !logic.isMyself) _buildButtonGroup(),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildBaseInfoView() => Container(
@@ -78,7 +97,7 @@ class UserProfilePanelPage extends StatelessWidget {
                     ..style = Styles.ts_0C1C33_17sp_medium
                     ..maxLines = 1
                     ..overflow = TextOverflow.ellipsis,
-                  if (!logic.isGroupMemberPage)
+                  if (!logic.isGroupMemberPage || logic.isGroupMemberPage && !logic.notAllowAddGroupMemberFriend.value)
                     Padding(
                       padding: EdgeInsets.only(top: 4.h),
                       child: (logic.userInfo.value.userID ?? '').toText
@@ -89,8 +108,9 @@ class UserProfilePanelPage extends StatelessWidget {
               ),
             ),
             if (!logic.isMyself &&
+                logic.isAllowAddFriend &&
                 !logic.isFriendship &&
-                (!logic.isGroupMemberPage))
+                (!logic.isGroupMemberPage || logic.isGroupMemberPage && !logic.notAllowAddGroupMemberFriend.value))
               Material(
                 child: Ink(
                   decoration: BoxDecoration(
@@ -122,14 +142,19 @@ class UserProfilePanelPage extends StatelessWidget {
         ),
       );
 
-  Widget _buildEnterGroupMethodView() => Container(
-        color: Styles.c_FFFFFF,
-        margin: EdgeInsets.only(bottom: 10.h),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Table(
-          defaultVerticalAlignment: TableCellVerticalAlignment.top,
-          columnWidths: {0: FixedColumnWidth(100.w)},
-          children: [
+  Widget _buildEnterGroupMethodView() {
+    if (logic.joinGroupTime.value == 0 && logic.joinGroupMethod.value.isEmpty) {
+      return Container();
+    }
+    return Container(
+      color: Styles.c_FFFFFF,
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.top,
+        columnWidths: {0: FixedColumnWidth(100.w)},
+        children: [
+          if (logic.joinGroupTime.value > 0)
             _buildTabRowView(
               label: StrRes.joinGroupDate,
               value: DateUtil.formatDateMs(
@@ -137,13 +162,15 @@ class UserProfilePanelPage extends StatelessWidget {
                 format: DateFormats.zh_y_mo_d,
               ),
             ),
+          if (logic.joinGroupMethod.value.isNotEmpty)
             _buildTabRowView(
               label: StrRes.joinGroupMethod,
               value: logic.joinGroupMethod.value,
             ),
-          ],
-        ),
-      );
+        ],
+      ),
+    );
+  }
 
   TableRow _buildTabRowView({
     required String label,
@@ -153,14 +180,14 @@ class UserProfilePanelPage extends StatelessWidget {
         children: [
           TableCell(
             child: Container(
-              height: 40.h,
+              constraints: BoxConstraints(minHeight: 40.h),
               alignment: Alignment.centerLeft,
               child: label.toText..style = Styles.ts_8E9AB0_17sp,
             ),
           ),
           TableCell(
             child: Container(
-              height: 40.h,
+              constraints: BoxConstraints(minHeight: 40.h),
               alignment: Alignment.centerLeft,
               child: (value ?? '').toText..style = Styles.ts_0C1C33_17sp,
             ),
@@ -197,8 +224,7 @@ class UserProfilePanelPage extends StatelessWidget {
                       activeColor: Styles.c_0089FF,
                       onChanged: onChanged,
                     ),
-                  if (null != value)
-                    value.toText..style = Styles.ts_0C1C33_17sp,
+                  if (null != value) value.toText..style = Styles.ts_0C1C33_17sp,
                   if (showRightArrow)
                     ImageRes.rightArrow.toImage
                       ..width = 24.w
@@ -222,6 +248,12 @@ class UserProfilePanelPage extends StatelessWidget {
               height: 108.h,
               child: Row(
                 children: [
+                  Expanded(
+                    child: ImageTextButton.call(
+                      onTap: logic.toCall,
+                    ),
+                  ),
+                  11.horizontalSpace,
                   Expanded(
                     child: ImageTextButton.message(
                       onTap: logic.toChat,

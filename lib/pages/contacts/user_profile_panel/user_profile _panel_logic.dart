@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:common_utils/common_utils.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:openim_live/openim_live.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../core/controller/app_controller.dart';
@@ -20,6 +24,7 @@ class UserProfilePanelLogic extends GetxController {
   GroupInfo? groupInfo;
   String? groupID;
   bool? offAllWhenDelFriend = false;
+  final iHasMutePermissions = false.obs;
   final iAmOwner = false.obs;
   final mutedTime = "".obs;
   final onlineStatus = false.obs;
@@ -28,6 +33,9 @@ class UserProfilePanelLogic extends GetxController {
   final joinGroupTime = 0.obs;
   final joinGroupMethod = ''.obs;
   final hasAdminPermission = false.obs;
+  final notAllowLookGroupMemberProfiles = true.obs;
+  final notAllowAddGroupMemberFriend = false.obs;
+  final iHaveAdminOrOwnerPermission = false.obs;
   late StreamSubscription _friendAddedSub;
   late StreamSubscription _friendInfoChangedSub;
   late StreamSubscription _memberInfoChangedSub;
@@ -65,9 +73,11 @@ class UserProfilePanelLogic extends GetxController {
         });
       }
     });
-    // 禁言时间被改变，或群成员资料改变
     _memberInfoChangedSub = imLogic.memberInfoChangedSubject.listen((value) {
       if (value.userID == userInfo.value.userID) {
+        if (null != value.muteEndTime) {
+          _calMuteTime(value.muteEndTime!);
+        }
         groupUserNickname.value = value.nickname ?? '';
       }
     });
@@ -79,7 +89,7 @@ class UserProfilePanelLogic extends GetxController {
     _getUsersInfo();
     _queryGroupInfo();
     _queryGroupMemberInfo();
-
+    // _queryUserOnlineStatus();
     super.onReady();
   }
 
@@ -89,26 +99,73 @@ class UserProfilePanelLogic extends GetxController {
 
   bool get isFriendship => userInfo.value.isFriendship == true;
 
+  bool get isAllowAddFriend => userInfo.value.allowAddFriend == 1;
+
+  bool get allowSendMsgNotFriend {
+    final r = null == appLogic.clientConfigMap['allowSendMsgNotFriend'] ||
+        appLogic.clientConfigMap['allowSendMsgNotFriend'] == '1';
+    return r;
+  }
+
   void _getUsersInfo() async {
     final userID = userInfo.value.userID!;
+    final existUser = UserCacheManager().getUserInfo(userID);
+    if (existUser != null) {
+      userInfo.update((val) {
+        val?.nickname = existUser.nickname;
+        val?.faceURL = existUser.faceURL;
+        val?.status = existUser.status;
+        val?.level = existUser.level;
+        val?.phoneNumber = existUser.phoneNumber;
+        val?.areaCode = existUser.areaCode;
+        val?.birth = existUser.birth;
+        val?.email = existUser.email;
+        val?.gender = existUser.gender;
+        val?.mobile = existUser.mobile;
+      });
+    }
+
     final list = await OpenIM.iMManager.userManager.getUsersInfoWithCache(
       [userID],
     );
-    final list2 = await Apis.getUserFullInfo(userIDList: [userID]);
+    final friendInfo = (await OpenIM.iMManager.friendshipManager.getFriendsInfo(
+      userIDList: [userID],
+      filterBlack: true,
+    ))
+        .firstOrNull;
+
+    final blackList = await OpenIM.iMManager.friendshipManager.getBlacklist();
+
     final user = list.firstOrNull;
-    final fullInfo = list2?.firstOrNull;
+    final isFriendship = friendInfo != null;
+    final isBlack = blackList.firstWhereOrNull((e) => e.userID == friendInfo?.userID) != null;
 
-    final isFriendship = user?.friendInfo != null;
-    final isBlack = user?.blackInfo != null;
-
-    if (null != user && null != fullInfo) {
+    if (user != null) {
       userInfo.update((val) {
         val?.nickname = user.nickname;
         val?.faceURL = user.faceURL;
-        val?.remark = user.friendInfo?.remark;
+        val?.remark = friendInfo?.nickname;
         val?.isBlacklist = isBlack;
         val?.isFriendship = isFriendship;
+      });
+    }
+
+    final list2 = await Apis.getUserFullInfo(userIDList: [userID]);
+    final fullInfo = list2?.firstOrNull;
+
+    if (null != fullInfo) {
+      UserCacheManager().addOrUpdateUserInfo(userID, fullInfo);
+
+      userInfo.update((val) {
         val?.allowAddFriend = fullInfo.allowAddFriend;
+        val?.status = fullInfo.status;
+        val?.level = fullInfo.level;
+        val?.phoneNumber = fullInfo.phoneNumber;
+        val?.areaCode = fullInfo.areaCode;
+        val?.birth = fullInfo.birth;
+        val?.email = fullInfo.email;
+        val?.gender = fullInfo.gender;
+        val?.mobile = fullInfo.mobile;
       });
     }
   }
@@ -119,6 +176,8 @@ class UserProfilePanelLogic extends GetxController {
         groupIDList: [groupID!],
       );
       groupInfo = list.firstOrNull;
+      notAllowLookGroupMemberProfiles.value = groupInfo?.lookMemberInfo == 1;
+      notAllowAddGroupMemberFriend.value = groupInfo?.applyMemberFriend == 1;
     }
   }
 
@@ -140,6 +199,14 @@ class UserProfilePanelLogic extends GetxController {
       if (!isMyself) {
         var me = list.firstWhereOrNull((e) => e.userID == OpenIM.iMManager.userID);
         iAmOwner.value = me?.roleLevel == GroupRoleLevel.owner;
+        iHasMutePermissions.value = me?.roleLevel == GroupRoleLevel.owner ||
+            (me?.roleLevel == GroupRoleLevel.admin && other?.roleLevel == GroupRoleLevel.member);
+        iHaveAdminOrOwnerPermission.value =
+            me?.roleLevel == GroupRoleLevel.owner || me?.roleLevel == GroupRoleLevel.admin;
+      }
+
+      if (null != other && null != other.muteEndTime && other.muteEndTime! > 0) {
+        _calMuteTime(other.muteEndTime!);
       }
     }
   }
@@ -164,9 +231,28 @@ class UserProfilePanelLogic extends GetxController {
     }
   }
 
+  _calMuteTime(int time) {
+    var date = DateUtil.formatDateMs(time, format: IMUtils.getTimeFormat2());
+    var now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    var diff = time - now;
+    if (diff > 0) {
+      mutedTime.value = date;
+    } else {
+      mutedTime.value = "";
+    }
+  }
+
   String getShowName() {
     if (isGroupMemberPage) {
       if (isFriendship) {
+        // if (userInfo.value.nickname != groupUserNickname.value) {
+        //   return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark) ?? userInfo.value.nickname})';
+        // } else {
+        //   if (userInfo.value.remark != null &&
+        //       userInfo.value.remark!.isNotEmpty) {
+        //     return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark)})';
+        //   }
+        // }
         if (null != IMUtils.emptyStrToNull(userInfo.value.remark)) {
           return '${groupUserNickname.value}(${IMUtils.emptyStrToNull(userInfo.value.remark)})';
         }
@@ -182,6 +268,24 @@ class UserProfilePanelLogic extends GetxController {
     return userInfo.value.nickname ?? '';
   }
 
+  void toggleAdmin() async {
+    final hasPermission = !hasAdminPermission.value;
+    final roleLevel = hasPermission ? GroupRoleLevel.admin : GroupRoleLevel.member;
+    await LoadingView.singleton.wrap(
+        asyncFunction: () => OpenIM.iMManager.groupManager.setGroupMemberRoleLevel(
+              groupID: groupID!,
+              userID: userInfo.value.userID!,
+              roleLevel: roleLevel,
+            ));
+
+    groupMembersInfo?.roleLevel = roleLevel;
+    hasAdminPermission.value = hasPermission;
+    if (null != groupMembersInfo) {
+      imLogic.memberInfoChangedSubject.add(groupMembersInfo!);
+    }
+    IMViews.showToast(StrRes.setSuccessfully);
+  }
+
   void toChat() {
     conversationLogic.toChat(
       userID: userInfo.value.userID,
@@ -189,6 +293,21 @@ class UserProfilePanelLogic extends GetxController {
       faceURL: userInfo.value.faceURL,
     );
   }
+
+  void toCall() {
+    IMViews.openIMCallSheet(userInfo.value.showName, (index) {
+      imLogic.call(
+        callObj: CallObj.single,
+        callType: index == 0 ? CallType.audio : CallType.video,
+        inviteeUserIDList: [userInfo.value.userID!],
+      );
+    });
+  }
+
+  void setMute() => AppNavigator.startSetMuteForGroupMember(
+        groupID: groupID!,
+        userID: userInfo.value.userID!,
+      );
 
   void copyID() {
     IMUtils.copy(text: userInfo.value.userID!);
@@ -205,4 +324,28 @@ class UserProfilePanelLogic extends GetxController {
   void friendSetup() => AppNavigator.startFriendSetup(
         userID: userInfo.value.userID!,
       );
+
+  void viewDynamics() => {};
+}
+
+class UserCacheManager {
+  static final UserCacheManager _instance = UserCacheManager._();
+  UserCacheManager._();
+  final Map<String, UserFullInfo> _userInfoMap = {};
+
+  void addOrUpdateUserInfo(String userID, UserFullInfo userInfo) {
+    _userInfoMap[userID] = userInfo;
+  }
+
+  UserFullInfo? getUserInfo(String userID) {
+    return _userInfoMap[userID];
+  }
+
+  void removeUserInfo(String userID) {
+    _userInfoMap.remove(userID);
+  }
+
+  factory UserCacheManager() {
+    return _instance;
+  }
 }

@@ -108,7 +108,6 @@ class IMController extends GetxController with IMCallback, OpenIMLive {
               recvNewMessage(msg);
             }
           },
-          onRecvGroupReadReceipt: (v) {},
           onNewRecvMessageRevoked: recvMessageRevoked))
 
       // Set up message sending progress listener
@@ -136,6 +135,9 @@ class IMController extends GetxController with IMCallback, OpenIMLive {
         onConversationChanged: conversationChanged,
         onNewConversation: newConversation,
         onTotalUnreadMessageCountChanged: totalUnreadMsgCountChanged,
+        onInputStatusChanged: (value) {
+          Logger.print('${value.userID}');
+        },
         onSyncServerFailed: (_) {
           imSdkStatus(IMSdkStatus.syncFailed);
         },

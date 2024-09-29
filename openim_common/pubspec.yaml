@@ -84,10 +84,7 @@ dependencies:
 
   flutter_download_manager:
     path: ../local_plugin/flutter_download_manager
-  flutter_openim_sdk: 
-    git: 
-      url: https://github.com/openimsdk/open-im-sdk-flutter.git
-      ref: 29b43d0
+  flutter_openim_sdk: 3.8.1
 
 dependency_overrides:
   wechat_assets_picker: ^8.9.0-dev.1
