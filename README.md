@@ -55,7 +55,7 @@ A OpenIM flutter demo, only support android and ios.
 4. Get dependencies and perform compilation operations.
 ```dash
  $ flutter pub get
- $ flutter run
+ $ flutter run     # If you are using the iOS platform, please use a real device.
 ```
 
 ### Issues :bookmark_tabs:
