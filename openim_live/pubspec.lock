@@ -608,9 +608,10 @@ packages:
   flutter_openim_sdk:
     dependency: "direct main"
     description:
-      path: "../../../sdk/open_im_sdk_flutter"
-      relative: true
-    source: path
+      name: flutter_openim_sdk
+      sha256: "5766c3d50985d7ca851e6064570c4d41557a3edaebf7b431f699660f0c1aae5b"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.8.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive

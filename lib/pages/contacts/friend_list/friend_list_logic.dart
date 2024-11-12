@@ -44,7 +44,7 @@ class FriendListLogic extends GetxController {
   }
 
   _getFriendList() async {
-    List<PublicUserInfo> list = [];
+    List<FriendInfo> list = [];
     for (int i = 0;; i++) {
       final temp = await OpenIM.iMManager.friendshipManager.getFriendListPage(
         offset: _offset,
