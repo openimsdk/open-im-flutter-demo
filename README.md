@@ -34,7 +34,7 @@ A OpenIM flutter demo, only support android and ios.
 
 ## Dev Setup 🛠️
 1. Android Studio/VsCode
-2. Flutter version 3.22.3
+2. Flutter version 3.24.5
 
 ## Build 🚀
 

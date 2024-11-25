@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:flutter_new_badger/flutter_new_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart' as im;
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
@@ -19,7 +19,6 @@ import 'push_controller.dart';
 
 class AppController extends GetxController with UpgradeManger {
   var isRunningBackground = false;
-  var isAppBadgeSupported = false;
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -31,12 +30,6 @@ class AppController extends GetxController with UpgradeManger {
     requestAlertPermission: false,
     requestBadgePermission: false,
     requestSoundPermission: false,
-    onDidReceiveLocalNotification: (
-      int id,
-      String? title,
-      String? body,
-      String? payload,
-    ) async {},
   );
 
   RTCBridge? rtcBridge = PackageBridge.rtcBridge;
@@ -75,7 +68,7 @@ class AppController extends GetxController with UpgradeManger {
       initializationSettings,
       onDidReceiveNotificationResponse: (notificationResponse) {},
     );
-    isAppBadgeSupported = await FlutterAppBadger.isAppBadgeSupported();
+
     super.onInit();
   }
 
@@ -131,21 +124,19 @@ class AppController extends GetxController with UpgradeManger {
   }
 
   void showBadge(count) {
-    if (isAppBadgeSupported) {
-      OpenIM.iMManager.messageManager.setAppBadge(count);
+    OpenIM.iMManager.messageManager.setAppBadge(count);
 
-      if (count == 0) {
-        removeBadge();
-        PushController.resetBadge();
-      } else {
-        FlutterAppBadger.updateBadgeCount(count);
-        PushController.setBadge(count);
-      }
+    if (count == 0) {
+      removeBadge();
+      PushController.resetBadge();
+    } else {
+      FlutterNewBadger.setBadge(count);
+      PushController.setBadge(count);
     }
   }
 
   void removeBadge() {
-    FlutterAppBadger.removeBadge();
+    FlutterNewBadger.removeBadge();
   }
 
   @override

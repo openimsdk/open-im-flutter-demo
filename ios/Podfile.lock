@@ -65,11 +65,11 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - flutter_native_splash (0.0.1):
+  - flutter_native_splash (2.4.3):
     - Flutter
   - flutter_openim_sdk (0.0.1):
     - Flutter
-    - OpenIMSDKCore (= 3.8.1)
+    - OpenIMSDKCore (= 3.8.2)
   - flutter_webrtc (0.11.3):
     - Flutter
     - WebRTC-SDK (= 125.6422.04)
@@ -109,10 +109,10 @@ PODS:
     - GoogleUtilities/Privacy
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
-  - GTCommonSDK (3.1.5.0):
+  - GTCommonSDK (3.1.7.0):
     - ZXSDK
   - GTMSessionFetcher/Core (2.3.0)
-  - GTSDK (3.0.6.2):
+  - GTSDK (3.0.8.0):
     - GTCommonSDK (> 3.0.9.0)
   - image_cropper (0.0.4):
     - Flutter
@@ -175,7 +175,7 @@ PODS:
   - nanopb/encode (2.30910.0)
   - open_filex (0.0.2):
     - Flutter
-  - OpenIMSDKCore (3.8.1)
+  - OpenIMSDKCore (3.8.2)
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter
@@ -190,12 +190,11 @@ PODS:
   - PromisesObjC (2.4.0)
   - record_darwin (1.0.0):
     - Flutter
-    - FlutterMacOS
   - scan (0.0.1):
     - Flutter
-  - SDWebImage (5.19.7):
-    - SDWebImage/Core (= 5.19.7)
-  - SDWebImage/Core (5.19.7)
+  - SDWebImage (5.20.0):
+    - SDWebImage/Core (= 5.20.0)
+  - SDWebImage/Core (5.20.0)
   - SDWebImageWebPCoder (0.14.6):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
@@ -207,7 +206,7 @@ PODS:
   - sound_mode (0.0.1):
     - Flutter
     - Mute (~> 0.6.0)
-  - sqflite (0.0.3):
+  - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
   - SwiftyGif (5.4.5)
@@ -262,7 +261,7 @@ DEPENDENCIES:
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sound_mode (from `.symlinks/plugins/sound_mode/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
   - video_compress (from `.symlinks/plugins/video_compress/ios`)
@@ -370,8 +369,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sound_mode:
     :path: ".symlinks/plugins/sound_mode/ios"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   vibration:
@@ -387,7 +386,7 @@ SPEC CHECKSUMS:
   app_installer: 4301996bd8f3c6f75776416b8885a6d92928306f
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
-  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
+  connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
@@ -398,9 +397,9 @@ SPEC CHECKSUMS:
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
   flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
-  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
-  flutter_openim_sdk: 698f1610b9aeb9b5305f62b8b448267834bf1a8d
+  flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
+  flutter_native_splash: e8a1e01082d97a8099d973f919f57904c925008a
+  flutter_openim_sdk: 77bdd08fb8dda1644a0c150b8ba7324f11b32404
   flutter_webrtc: 75b868e4f9e817c7a9a42ca4b6169063de4eec9f
   getuiflut: 8628ba2b64a738a847a07d2b67e0ac305778e2ee
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
@@ -408,9 +407,9 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
-  GTCommonSDK: 02831526860276875f9fc582d15905b7c4d937ae
+  GTCommonSDK: d3299839818ffc2629bf587e096256a7cd0f0dcc
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
-  GTSDK: eda61918dbb9f3ccb0f175af252771154db8dc63
+  GTSDK: daf97f3b9d5586fff8307f1b7312b30c8d2860c7
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
@@ -428,21 +427,21 @@ SPEC CHECKSUMS:
   Mute: 20135a96076f140cc82bfc8b810e2d6150d8ec7e
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
-  OpenIMSDKCore: b113c0f6aab579a711ffed444e4974cc43b6ba96
+  OpenIMSDKCore: aaffd63079a874d9272b8b962598723cb8128d32
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   photo_manager: ff695c7a1dd5bc379974953a2b5c0a293f7c4c8a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  record_darwin: df0a677188e5fed18472550298e675f19ddaffbe
+  record_darwin: 3b1a8e7d5c0cbf45ad6165b4d83a6ca643d929c3
   scan: aea35bb4aa59ccc8839c576a18cd57c7d492cc86
-  SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
+  SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
   sensors_plus: 18a9b346c43e157da17d2c8e99def703f9efb9d8
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sound_mode: ef0072f20e7306c1c371984a443156e39be092d5
-  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
+  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
