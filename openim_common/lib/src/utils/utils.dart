@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:android_path_provider/android_path_provider.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:azlistview/azlistview.dart';
 import 'package:collection/collection.dart';
 import 'package:common_utils/common_utils.dart';
@@ -278,7 +278,7 @@ class IMUtils {
     String? externalStorageDirPath;
     if (Platform.isAndroid) {
       try {
-        externalStorageDirPath = await AndroidPathProvider.downloadsPath;
+        externalStorageDirPath = await PathProviderPlatform.instance.getDownloadsPath();
       } catch (err, st) {
         Logger.print('failed to get downloads path: $err, $st');
         final directory = await getExternalStorageDirectory();

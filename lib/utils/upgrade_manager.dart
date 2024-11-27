@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app_installer/app_installer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -50,7 +49,6 @@ mixin UpgradeManger {
             subject.add(count / total);
             notificationService.createNotification(100, ((count / total) * 100).toInt(), 0, 'Downloading');
             if (count == total) {
-              AppInstaller.installApk(path);
             }
           },
         ).catchError((s, t) {
