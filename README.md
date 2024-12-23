@@ -26,11 +26,7 @@ A OpenIM flutter demo, only support android and ios.
 - This is a [`Flutter`](https://flutter.dev/) project.
 - App is built with [open-im-sdk-flutter](https://github.com/openimsdk/open-im-sdk-flutter) library.
 
-## Official demo use
 
-- Download the experience app
-
-  ![Android](https://www.pgyer.com/app/qrcode/IM-FCER)
 
 ## Dev Setup 🛠️
 1. Android Studio/VsCode
