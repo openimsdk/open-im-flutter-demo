@@ -167,4 +167,4 @@ Check out our [user case studies](https://github.com/OpenIMSDK/community/blob/ma
 
 ## License :page_facing_up:
 
-This repository is licensed under the GNU Affero General Public License version 3 (AGPL-3.0) and is subject to the following additional terms. Please refer to [here](./LICENSE) for details.
+This repository is licensed under the GNU Affero General Public License version 3 (AGPL-3.0) and is subject to the following additional terms. Commercial use is not permitted. Please refer to [here]((./LICENSE)) for details.
