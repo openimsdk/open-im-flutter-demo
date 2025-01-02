@@ -37,7 +37,7 @@ class CreateGroupLogic extends GetxController {
   }
 
   completeCreation() async {
-    if (allList.length > 2) {
+    if (allList.length > 1) {
       var info = await LoadingView.singleton.wrap(
         asyncFunction: () => OpenIM.iMManager.groupManager.createGroup(
           groupInfo: GroupInfo(
@@ -46,10 +46,7 @@ class CreateGroupLogic extends GetxController {
             faceURL: faceURL.value,
             groupType: GroupType.work,
           ),
-          memberUserIDs: allList
-              .where((e) => e.userID != OpenIM.iMManager.userID)
-              .map((e) => e.userID!)
-              .toList(),
+          memberUserIDs: allList.where((e) => e.userID != OpenIM.iMManager.userID).map((e) => e.userID!).toList(),
         ),
       );
       conversationLogic.toChat(

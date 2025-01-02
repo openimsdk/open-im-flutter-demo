@@ -1,0 +1,13 @@
+flutter_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "launcher_icon/app-icon.png"
+
+
+
+#  flutter pub get
+#  flutter pub run flutter_launcher_icons:main -f <your config file name here>
+
+#  flutter pub get
+#  flutter pub run flutter_launcher_icons:main

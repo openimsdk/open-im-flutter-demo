@@ -111,11 +111,9 @@ class ForwardHintDialog extends StatelessWidget {
     Key? key,
     required this.title,
     this.checkedList = const [],
-    this.controller,
   }) : super(key: key);
   final String title;
   final List<dynamic> checkedList;
-  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +133,7 @@ class ForwardHintDialog extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                (list.length == 1 ? StrRes.sentTo : StrRes.sentSeparatelyTo)
-                    .toText
+                (list.length == 1 ? StrRes.sentTo : StrRes.sentSeparatelyTo).toText
                   ..style = Styles.ts_0C1C33_17sp_medium,
                 5.verticalSpace,
                 list.length == 1
@@ -147,15 +144,18 @@ class ForwardHintDialog extends StatelessWidget {
                             text: list.first['nickname'],
                           ),
                           10.horizontalSpace,
-                          (list.first['nickname'] ?? '').toText
-                            ..style = Styles.ts_0C1C33_17sp,
+                          Expanded(
+                            child: (list.first['nickname'] ?? '').toText
+                              ..style = Styles.ts_0C1C33_17sp
+                              ..maxLines = 1
+                              ..overflow = TextOverflow.ellipsis,
+                          ),
                         ],
                       )
                     : ConstrainedBox(
                         constraints: BoxConstraints(maxHeight: 120.h),
                         child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 5,
                             crossAxisSpacing: 10.w,
                             mainAxisSpacing: 0,
@@ -183,29 +183,6 @@ class ForwardHintDialog extends StatelessWidget {
                   ..style = Styles.ts_8E9AB0_14sp
                   ..maxLines = 1
                   ..overflow = TextOverflow.ellipsis,
-                10.verticalSpace,
-                Container(
-                  height: 38.h,
-                  decoration: BoxDecoration(
-                    color: Styles.c_E8EAEF,
-                    borderRadius: BorderRadius.circular(6.r),
-                  ),
-                  alignment: Alignment.centerLeft,
-                  child: TextField(
-                    style: Styles.ts_0C1C33_14sp,
-                    controller: controller,
-                    decoration: InputDecoration(
-                      hintText: StrRes.leaveMessage,
-                      hintStyle: Styles.ts_8E9AB0_14sp,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 7.h,
-                      ),
-                      isDense: true,
-                    ),
-                  ),
-                ),
                 16.verticalSpace,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

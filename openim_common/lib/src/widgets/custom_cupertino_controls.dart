@@ -51,7 +51,6 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
 
   late VideoPlayerController controller;
 
-  // We know that _chewieController is set in didChangeDependencies
   ChewieController get chewieController => _chewieController!;
   ChewieController? _chewieController;
 
@@ -94,7 +93,10 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
             children: [
               if (_displayBufferingIndicator)
                 const Center(
-                  child: CupertinoActivityIndicator(),
+                  child: CupertinoActivityIndicator(
+                    color: Colors.white,
+                    radius: 15,
+                  ),
                 )
               else
                 _buildHitArea(),
@@ -271,15 +273,15 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
                       )
                     : Row(
                         children: <Widget>[
-                          // _buildSkipBack(iconColor, barHeight),
                           _buildPlayPause(controller, iconColor, barHeight),
-                          // _buildSkipForward(iconColor, barHeight),
                           _buildPosition(iconColor),
                           _buildProgressBar(),
                           _buildRemaining(iconColor),
                           _buildSubtitleToggle(iconColor, barHeight),
-                          if (chewieController.allowPlaybackSpeedChanging) _buildSpeedButton(controller, iconColor, barHeight),
-                          if (chewieController.additionalOptions != null && chewieController.additionalOptions!(context).isNotEmpty)
+                          if (chewieController.allowPlaybackSpeedChanging)
+                            _buildSpeedButton(controller, iconColor, barHeight),
+                          if (chewieController.additionalOptions != null &&
+                              chewieController.additionalOptions!(context).isNotEmpty)
                             _buildOptionsButton(iconColor, barHeight),
                         ],
                       ),
@@ -325,7 +327,9 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
               color: backgroundColor,
               child: Center(
                 child: Icon(
-                  chewieController.isFullScreen ? CupertinoIcons.arrow_down_right_arrow_up_left : CupertinoIcons.arrow_up_left_arrow_down_right,
+                  chewieController.isFullScreen
+                      ? CupertinoIcons.arrow_down_right_arrow_up_left
+                      : CupertinoIcons.arrow_up_left_arrow_down_right,
                   color: iconColor,
                   size: 16,
                 ),
@@ -458,7 +462,6 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
   }
 
   Widget _buildSubtitleToggle(Color iconColor, double barHeight) {
-    //if don't have subtitle hiden button
     if (chewieController.subtitle?.isEmpty ?? true) {
       return const SizedBox();
     }
@@ -603,15 +606,6 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
               barHeight,
               buttonPadding,
             ),
-          // const Spacer(),
-          // if (chewieController.allowMuting)
-          //   _buildMuteButton(
-          //     controller,
-          //     backgroundColor,
-          //     iconColor,
-          //     barHeight,
-          //     buttonPadding,
-          //   ),
         ],
       ),
     );
@@ -754,8 +748,9 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
   }
 
   void _startHideTimer() {
-    final hideControlsTimer =
-        chewieController.hideControlsTimer.isNegative ? ChewieController.defaultHideControlsTimer : chewieController.hideControlsTimer;
+    final hideControlsTimer = chewieController.hideControlsTimer.isNegative
+        ? ChewieController.defaultHideControlsTimer
+        : chewieController.hideControlsTimer;
     _hideTimer = Timer(hideControlsTimer, () {
       setState(() {
         notifier.hideStuff = true;
@@ -773,7 +768,6 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls> with 
   void _updateState() {
     if (!mounted) return;
 
-    // display the progress bar indicator only after the buffering delay if it has been set
     if (chewieController.progressIndicatorDelay != null) {
       if (controller.value.isBuffering) {
         _bufferingDisplayTimer ??= Timer(

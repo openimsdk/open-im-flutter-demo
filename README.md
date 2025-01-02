@@ -1,60 +1,192 @@
 <p align="center">
-    <a href="https://www.openim.io">
-        <img src="./openim-logo.gif" width="60%" height="30%"/>
+    <a href="https://openim.io">
+        <img src="./docs/images/logo.jpg" width="60%" height="30%"/>
     </a>
 </p>
 
-# OpenIM Flutter Demo 💬💻
+# OpenIM Electron 💬💻
 
 <p>
-  <a href="https://doc.openim.io/">OpenIM Docs</a>
+  <a href="https://docs.openim.io/">OpenIM Docs</a>
   •
   <a href="https://github.com/openimsdk/open-im-server">OpenIM Server</a>
   •
-  <a href="https://github.com/openimsdk/openim-sdk-core">openim-sdk-core</a>
+  <a href="https://github.com/openimsdk/openim-sdk-js-wasm">openim-sdk-wasm</a>
   •
-  <a href="https://github.com/openimsdk/open-im-sdk-flutter">open-im-sdk-flutter</a>
-
+  <a href="https://github.com/openimsdk/openim-sdk-electron">openim-sdk-electron</a>
+  •
+  <a href="https://github.com/openimsdk/openim-sdk-core">openim-sdk-core</a>
 </p>
 
-<br>
+OpenIM provides an open-source Instant Messaging (IM) SDK for developers, serving as an alternative solution to cloud services like Twilio and Sendbird. With OpenIM, developers can build secure and reliable IM applications similar to WeChat, Zoom, and Slack.
 
-A OpenIM flutter demo, only support android and ios.
+This repository is based on the open-source version of the OpenIM SDK, offering an Electron-based IM application. You can use this application as a reference implementation of the OpenIM SDK. It references both `@openim/electron-client-sdk` and `@openim/wasm-client-sdk`, which are the Electron and Web versions of the SDK, respectively. This enables the creation of both PC Web applications and desktop applications (Windows, macOS, Linux).
 
-## Tech Stack 🛠️
+<p align="center">
+   <img src="./docs/images/preview1.jpeg" alt="Preview" width="32%"/>
+   <span style="display: inline-block; width: 16px;"></span>
+   <img src="./docs/images/preview2.jpeg" alt="Preview" width="32%"/>
+</p>
 
-- This is a [`Flutter`](https://flutter.dev/) project.
-- App is built with [open-im-sdk-flutter](https://github.com/openimsdk/open-im-sdk-flutter) library.
+## License :page_facing_up:
 
+This repository is licensed under the GNU Affero General Public License Version 3 (AGPL-3.0) and is subject to additional terms. **Commercial use is prohibited**. For more details, see [here](./LICENSE).
 
+## Development Environment
 
-## Dev Setup 🛠️
-1. Android Studio/VsCode
-2. Flutter version 3.24.5
+Before you start development, ensure that the following software is installed on your system:
+
+- **Operating System**: macOS 14.6 or later
+- **Flutter**: Version 3.24.5 ([Installation Guide](https://docs.flutter.dev/get-started/install))
+- **Git**: For version control
+
+Additionally, make sure you have [deployed](https://docs.openim.io/zh-Hans/guides/gettingStarted/dockerCompose) the latest version of the OpenIM Server. After deployment, you can compile the project and connect it to your server for testing.
+
+## Supported Platforms
+
+This application supports the following platforms:
+
+| Platform      | Version               | Status |
+| ------------- | --------------------- | ------ |
+| **iOS**       | 13.0 and above        | ✅     |
+| **Android**   | minSdkVersion 24      | ✅     |
+
+### Notes
+
+- **Flutter**: Ensure your version meets the requirements to avoid dependency issues.
+
+## Quick Start
+
+Follow the steps below to set up your local development environment:
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/openimsdk/open-im-flutter-demo.git
+   cd open-im-flutter-demo
+   ```
+
+2. Install dependencies
+
+   ```bash
+   flutter clean
+   flutter pub get
+   ```
+
+3. Modify the configuration
+
+     > If you have not changed the default server ports, update only the [_host](https://github.com/openimsdk/open-im-flutter-demo/blob/a309f25fdbc143e49d5ca852171ce57970871c85/openim_common/lib/src/config.dart#L59) to your server IP.
+
+   ```dart
+   static const _host = "your-server-ip/domain";
+   ```
+
+4. Run the application using `flutter run` from the terminal or through your IDE.
+
+5. Start developing and testing! 🎉
+
+## Audio/Video Calls
+
+The open-source version supports one-to-one audio and video calls. You need to first deploy and configure the [server](https://github.com/openimsdk/chat/blob/main/HOW_TO_SETUP_LIVEKIT_SERVER.md). For multi-party audio/video calls or video conferencing, please contact us at [contact@openim.io](mailto:contact@openim.io).
 
 ## Build 🚀
 
-1. Git clone https://github.com/OpenIMSDK/Open-IM-Flutter-Demo.git
-2. Modify the server address in the [config.dart](https://github.com/openimsdk/open-im-flutter-demo/blob/main/openim_common/lib/src/config.dart) file to the server address built by yourself
+> This project allows building separate iOS and Android applications with some differences in the process.
 
-```dart
-  static const _host = "your-server-ip/domain";
-```
-3. Please replace the IM SDK version
-```dart
-// openim_common/pubspec.yaml
-// openim_live/pubspec.yaml
-// pubspec.yaml
+   - iOS:
+     ```bash
+     flutter build ipa
+     ```
+   - Android:
+     ```bash
+     flutter build apk
+     ```
 
-  flutter_openim_sdk: lastest
-```
-4. Get dependencies and perform compilation operations.
-```dash
- $ flutter pub get
- $ flutter run     # If you are using the iOS platform, please use a real device.
-```
+1. The build artifacts will be located in the `build` directory.
 
-### Issues :bookmark_tabs:
+## Features
+
+### Description
+
+| Feature Module             | Feature                                                                          | Status |
+| -------------------------- | -------------------------------------------------------------------------------- | ------ |
+| **Account Features**       | Phone number registration \ Email registration \ Verification code login         | ✅     |
+|                            | View \ Edit personal information                                                 | ✅     |
+|                            | Multi-language settings                                                          | ✅     |
+|                            | Change password \ Forgot password                                                | ✅     |
+| **Friend Features**        | Find \ Apply \ Search \ Add \ Delete friends                                     | ✅     |
+|                            | Accept \ Reject friend requests                                                  | ✅     |
+|                            | Friend notes                                                                     | ✅     |
+|                            | Allow friend requests or not                                                     | ✅     |
+|                            | Friend list \ Friend data real-time syncing                                      | ✅     |
+| **Blocklist**              | Restrict messages                                                                | ✅     |
+|                            | Real-time syncing of blocklist                                                   | ✅     |
+|                            | Add \ Remove from blocklist                                                      | ✅     |
+| **Group Features**         | Create \ Dismiss groups                                                          | ✅     |
+|                            | Apply to join \ Invite to join \ Leave group \ Remove members                    | ✅     |
+|                            | Group name / Avatar changes / Group data updates (notifications, real-time sync) | ✅     |
+|                            | Invite members to group                                                          | ✅     |
+|                            | Transfer group ownership                                                         | ✅     |
+|                            | Group owner or admin approve join requests                                       | ✅     |
+|                            | Search group members                                                             | ✅     |
+| **Message Features**       | Offline messages                                                                 | ✅     |
+|                            | Roaming messages                                                                 | ✅     |
+|                            | Multi-end messages                                                               | ✅     |
+|                            | Message history                                                                  | ✅     |
+|                            | Message deletion                                                                 | ✅     |
+|                            | Clear messages                                                                   | ✅     |
+|                            | Copy messages                                                                    | ✅     |
+|                            | Typing indicator in single chat                                                  | ✅     |
+|                            | Do Not Disturb for new messages                                                  | ✅     |
+|                            | Clear chat history                                                               | ✅     |
+|                            | New members can view group chat history                                          | ✅     |
+|                            | New message reminders                                                            | ✅     |
+|                            | Text messages                                                                    | ✅     |
+|                            | Image messages                                                                   | ✅     |
+|                            | Video messages                                                                   | ✅     |
+|                            | Emoji messages                                                                   | ✅     |
+|                            | File messages                                                                    | ✅     |
+|                            | Voice messages                                                                   | ✅     |
+|                            | Contact card messages                                                            | ✅     |
+|                            | Location messages                                                                | ✅     |
+|                            | Custom messages                                                                  | ✅     |
+| **Conversation**           | Pin conversation                                                                 | ✅     |
+|                            | Mark conversation as read                                                        | ✅     |
+|                            | Mute conversation                                                                | ✅     |
+| **REST API**               | Authentication management                                                        | ✅     |
+|                            | User management                                                                  | ✅     |
+|                            | Relationship chain management                                                    | ✅     |
+|                            | Group management                                                                 | ✅     |
+|                            | Conversation management                                                          | ✅     |
+|                            | Message management                                                               | ✅     |
+| **Webhook**                | Group callbacks                                                                  | ✅     |
+|                            | Message callbacks                                                                | ✅     |
+|                            | Push callbacks                                                                   | ✅     |
+|                            | Relationship callbacks                                                           | ✅     |
+|                            | User callbacks                                                                   | ✅     |
+| **Capacity & Performance** | 10,000 friends                                                                   | ✅     |
+|                            | 100,000-member supergroup                                                        | ✅     |
+|                            | Second-level syncing                                                             | ✅     |
+|                            | Cluster deployment                                                               | ✅     |
+|                            | Multi-device kick-out strategy                                                   |        |
+| **Online Status**          | No mutual kick-out across all platforms                                          | ✅     |
+|                            | Each platform can only log in with one device                                    | ✅     |
+|                            | PC, Mobile, Pad, Web, Mini Program each can log in with one device               | ✅     |
+|                            | PC not mutually kicked, only one device total for other platforms                | ✅     |
+| **Audio/Video Call**       | One-to-one audio and video calls                                                 | ✅     |
+| **File Storage**           | Supports private Minio deployment                                                | ✅     |
+|                            | Supports public cloud services COS, OSS, Kodo, S3                                | ✅     |
+| **Push**                   | Real-time online message push                                                    | ✅     |
+|                            | Offline message push, supports Getui, Firebase                                   | ✅     |
+
+For more advanced features, audio/video calls, or video conferences, please contact us at [contact@openim.io](mailto:contact@openim.io).
+
+## Join Our Community :busts_in_silhouette:
+
+- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q)
+- :eyes: [Join our WeChat group](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
+
+## FAQ
 
 ##### 1. Does it support multiple languages?
 
@@ -117,50 +249,3 @@ A: Please set the CPU architecture to arm64, and then operate as follows
 ##### 7. What is the minimum version number for ios to run?
 
 A: 13.0
-
-#### 8. Some developers encountered the following problems:
-```
-Could not build the precompiled application for the device.
-Error (Xcode): Signing for "TOCropViewController-TOCropViewControllerBundle" requires a development team. Select a development team
-in the Signing & Capabilities editor.
-
-Error (Xcode): Signing for "DKImagePickerController-DKImagePickerController" requires a development team. Select a development team
-in the Signing & Capabilities editor.
-
-Error (Xcode): Signing for "DKPhotoGallery-DKPhotoGallery" requires a development team. Select a development team in the Signing &
-Capabilities editor.
-```
-Add the following code to Podfile:
-```ruby
-post_install do |installer|
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
-        config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
-        config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"      end
-   end
-end
-```
-
-## Community :busts_in_silhouette:
-
-- 📚 [OpenIM Community](https://github.com/OpenIMSDK/community)
-- 💕 [OpenIM Interest Group](https://github.com/Openim-sigs)
-- 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-2ijy1ys1f-O0aEDCr7ExRZ7mwsHAVg9A)
-- :eyes: [Join our wechat (微信群)](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
-
-## Community Meetings :calendar:
-
-We want anyone to get involved in our community and contributing code, we offer gifts and rewards, and we welcome you to join us every Thursday night.
-
-Our conference is in the [OpenIM Slack](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q) 🎯, then you can search the Open-IM-Server pipeline to join
-
-We take notes of each [biweekly meeting](https://github.com/orgs/OpenIMSDK/discussions/categories/meeting) in [GitHub discussions](https://github.com/openimsdk/open-im-server/discussions/categories/meeting), Our historical meeting notes, as well as replays of the meetings are available at [Google Docs :bookmark_tabs:](https://docs.google.com/document/d/1nx8MDpuG74NASx081JcCpxPgDITNTpIIos0DS6Vr9GU/edit?usp=sharing).
-
-## Who are using OpenIM :eyes:
-
-Check out our [user case studies](https://github.com/OpenIMSDK/community/blob/main/ADOPTERS.md) page for a list of the project users. Don't hesitate to leave a [📝comment](https://github.com/openimsdk/open-im-server/issues/379) and share your use case.
-
-## License :page_facing_up:
-
-This repository is licensed under the GNU Affero General Public License version 3 (AGPL-3.0) and is subject to the following additional terms. Commercial use is not permitted. Please refer to [here](./LICENSE) for details.

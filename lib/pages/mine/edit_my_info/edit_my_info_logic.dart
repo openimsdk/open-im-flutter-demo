@@ -17,6 +17,7 @@ class EditMyInfoLogic extends GetxController {
   final imLogic = Get.find<IMController>();
   late TextEditingController inputCtrl;
   late EditAttr editAttr;
+  late int maxLength;
   String? title;
   String? defaultValue;
   TextInputType? keyboardType;
@@ -24,6 +25,7 @@ class EditMyInfoLogic extends GetxController {
   @override
   void onInit() {
     editAttr = Get.arguments['editAttr'];
+    maxLength = Get.arguments['maxLength'] ?? 16;
     _initAttr();
     inputCtrl = TextEditingController(text: defaultValue);
     super.onInit();
@@ -76,6 +78,10 @@ class EditMyInfoLogic extends GetxController {
         val?.phoneNumber = value;
       });
     } else if (editAttr == EditAttr.email) {
+      if (defaultValue?.isNotEmpty == true && value.isEmpty) {
+        IMViews.showToast(StrRes.plsEnterEmail);
+        return;
+      }
       await LoadingView.singleton.wrap(
         asyncFunction: () => Apis.updateUserInfo(
           userID: OpenIM.iMManager.userID,

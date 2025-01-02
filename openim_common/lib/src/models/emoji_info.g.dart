@@ -34,8 +34,5 @@ class EmojiInfoAdapter extends TypeAdapter<EmojiInfo> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EmojiInfoAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is EmojiInfoAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

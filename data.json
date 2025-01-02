@@ -1,0 +1,52 @@
+{
+  errCode: 0,
+  errMsg: "",
+  data: {
+    userFullInfoList: [
+      {
+        userID: "2380124277",
+        password: "",
+        account: "11002",
+        phoneNumber: "",
+        areaCode: "",
+        nickname: "林玟书",
+        englishName: "",
+        faceURL: "",
+        gender: 1,
+        mobileAreaCode: "+86",
+        mobile: "",
+        telephone: "",
+        level: 1,
+        birth: 288316800000,
+        email: "",
+        order: 0,
+        status: 0,
+        allowAddFriend: 1,
+        allowBeep: 1,
+        allowVibration: 1,
+        forbidden: 0,
+        station: "",
+        departmentList: [
+          {
+            departmentID: "936609157",
+            departmentFaceURL: "",
+            departmentName: "前端",
+            departmentParentID: "1852915335",
+            departmentOrder: 0,
+            departmentDepartmentType: 0,
+            departmentRelatedGroupID: "",
+            departmentCreateTime: 1678095053014,
+            memberOrder: 0,
+            memberPosition: "IOS",
+            memberLeader: 0,
+            memberStatus: 0,
+            memberEntryTime: 0,
+            memberTerminationTime: 0,
+            memberCreateTime: 1678095467228
+          }
+        ]
+      }
+    ],
+    totalNumber: 1
+  }
+}

@@ -30,6 +30,16 @@ class FriendSetupPage extends StatelessWidget {
             showRightArrow: true,
             onTap: logic.setFriendRemark,
           ),
+          _buildItemView(
+            label: StrRes.recommendToFriend,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(6.r),
+              bottomRight: Radius.circular(6.r),
+            ),
+            showRightArrow: true,
+            onTap: logic.recommendToFriend,
+          ),
+          10.verticalSpace,
           Obx(() => _buildItemView(
                 label: StrRes.addToBlacklist,
                 showSwitchButton: true,

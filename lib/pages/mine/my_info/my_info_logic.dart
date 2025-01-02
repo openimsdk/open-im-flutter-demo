@@ -1,6 +1,7 @@
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
+import 'package:openim/pages/login/login_logic.dart';
 import 'package:openim/pages/mine/edit_my_info/edit_my_info_logic.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim_common/openim_common.dart';
@@ -9,13 +10,7 @@ import '../../../core/controller/im_controller.dart';
 
 class MyInfoLogic extends GetxController {
   final imLogic = Get.find<IMController>();
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  _onChangedSefInfo(UserInfo userInfo) {}
+  final loginType = LoginType.fromRawValue(DataSp.getLoginType());
 
   void editMyName() => AppNavigator.startEditMyInfo();
 
@@ -31,19 +26,17 @@ class MyInfoLogic extends GetxController {
         attr: EditAttr.mobile,
       );
 
-  void editEmail() => AppNavigator.startEditMyInfo(
-        attr: EditAttr.email,
-    maxLength: 30
-      );
+  void editEmail() => AppNavigator.startEditMyInfo(attr: EditAttr.email, maxLength: 30);
 
   void openPhotoSheet() {
     IMViews.openPhotoSheet(
         onData: (path, url) async {
           if (url != null) {
             LoadingView.singleton.wrap(
-              asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, faceURL: url).then((value) => imLogic.userInfo.update((val) {
-                    val?.faceURL = url;
-                  })),
+              asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, faceURL: url)
+                  .then((value) => imLogic.userInfo.update((val) {
+                        val?.faceURL = url;
+                      })),
             );
           }
         },
@@ -88,9 +81,10 @@ class MyInfoLogic extends GetxController {
 
   void _updateGender(int gender) {
     LoadingView.singleton.wrap(
-      asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, gender: gender).then((value) => imLogic.userInfo.update((val) {
-            val?.gender = gender;
-          })),
+      asyncFunction: () => Apis.updateUserInfo(userID: OpenIM.iMManager.userID, gender: gender)
+          .then((value) => imLogic.userInfo.update((val) {
+                val?.gender = gender;
+              })),
     );
   }
 
@@ -113,7 +107,6 @@ class MyInfoLogic extends GetxController {
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
 

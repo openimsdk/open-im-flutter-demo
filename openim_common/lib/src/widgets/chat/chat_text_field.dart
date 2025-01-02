@@ -5,28 +5,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
 class ChatTextField extends StatelessWidget {
-  final AtTextCallback? atCallback;
-  final Map<String, String> allAtMap;
   final FocusNode? focusNode;
   final TextEditingController? controller;
   final String? hintText;
 
   final TextStyle? style;
   final TextStyle? atStyle;
-  final List<TextInputFormatter>? inputFormatters;
   final bool enabled;
   final TextAlign textAlign;
 
   const ChatTextField({
     Key? key,
-    this.allAtMap = const {},
-    this.atCallback,
     this.focusNode,
     this.controller,
     this.hintText,
     this.style,
     this.atStyle,
-    this.inputFormatters,
     this.enabled = true,
     this.textAlign = TextAlign.start,
   }) : super(key: key);
@@ -35,11 +29,6 @@ class ChatTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExtendedTextField(
       style: style,
-      specialTextSpanBuilder: AtSpecialTextSpanBuilder(
-        atCallback: atCallback,
-        allAtMap: allAtMap,
-        atStyle: atStyle,
-      ),
       focusNode: focusNode,
       controller: controller,
       keyboardType: TextInputType.multiline,
@@ -58,35 +47,6 @@ class ChatTextField extends StatelessWidget {
           vertical: 8.h,
         ),
       ),
-      inputFormatters: inputFormatters,
     );
-  }
-}
-
-class AtTextInputFormatter extends TextInputFormatter {
-  final String? Function()? onTap;
-
-  AtTextInputFormatter(this.onTap);
-
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    int end = newValue.selection.end;
-    int start = oldValue.selection.baseOffset;
-    if (oldValue.text.length <= newValue.text.length) {
-      var newChar = newValue.text.substring(start, end);
-      if (newChar == '@') {
-        var result = onTap?.call();
-        if (result != null) {
-          var v1 = newValue.text.replaceRange(start, end, result);
-          var offset = start + result.length;
-          return TextEditingValue(
-            text: v1,
-            selection: TextSelection.collapsed(offset: offset),
-          );
-        }
-      }
-    }
-    return newValue;
   }
 }

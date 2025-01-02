@@ -15,7 +15,7 @@ class GroupRequestsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TitleBar.back(title: StrRes.newGroup),
+      appBar: TitleBar.back(title: StrRes.newGroupRequest),
       backgroundColor: Styles.c_F8F9FA,
       body: Obx(() => ListView.builder(
             padding: EdgeInsets.only(top: 10.h),
@@ -102,11 +102,10 @@ class GroupRequestsPage extends StatelessWidget {
                       if (null != IMUtils.emptyStrToNull(info.reqMsg))
                         Padding(
                           padding: EdgeInsets.only(top: 4.h),
-                          child:
-                              sprintf(StrRes.applyReason, [info.reqMsg!]).toText
-                                ..style = Styles.ts_8E9AB0_14sp
-                                ..maxLines = 1
-                                ..overflow = TextOverflow.ellipsis,
+                          child: sprintf(StrRes.applyReason, [info.reqMsg!]).toText
+                            ..style = Styles.ts_8E9AB0_14sp
+                            ..maxLines = 1
+                            ..overflow = TextOverflow.ellipsis,
                         ),
                     ],
                   ),
@@ -114,13 +113,13 @@ class GroupRequestsPage extends StatelessWidget {
               ],
             ),
           ),
-          if (isISendRequest)
+          if (/*info.handleResult == 0 && */ isISendRequest)
             ImageRes.sendRequests.toImage
               ..width = 20.w
               ..height = 20.h,
           if (info.handleResult == 0 && !isISendRequest)
             Button(
-              text: StrRes.accept,
+              text: StrRes.lookOver,
               textStyle: Styles.ts_FFFFFF_14sp,
               height: 28.h,
               padding: EdgeInsets.symmetric(horizontal: 13.w),
@@ -128,10 +127,8 @@ class GroupRequestsPage extends StatelessWidget {
             ),
           if (info.handleResult == 0 && isISendRequest)
             StrRes.waitingForVerification.toText..style = Styles.ts_8E9AB0_14sp,
-          if (info.handleResult == -1)
-            StrRes.rejected.toText..style = Styles.ts_8E9AB0_14sp,
-          if (info.handleResult == 1)
-            StrRes.approved.toText..style = Styles.ts_8E9AB0_14sp,
+          if (info.handleResult == -1) StrRes.rejected.toText..style = Styles.ts_8E9AB0_14sp,
+          if (info.handleResult == 1) StrRes.approved.toText..style = Styles.ts_8E9AB0_14sp,
         ],
       ),
     );

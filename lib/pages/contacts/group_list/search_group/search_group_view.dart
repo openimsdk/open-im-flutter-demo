@@ -28,8 +28,7 @@ class SearchGroupPage extends StatelessWidget {
             ? _emptyListView
             : ListView.builder(
                 itemCount: logic.resultList.length,
-                itemBuilder: (_, index) =>
-                    _buildItemView(logic.resultList[index]),
+                itemBuilder: (_, index) => _buildItemView(logic.resultList[index]),
               )),
       ),
     );
@@ -60,8 +59,7 @@ class SearchGroupPage extends StatelessWidget {
                       style: Styles.ts_0C1C33_17sp,
                       keyStyle: Styles.ts_0089FF_17sp,
                     ),
-                    sprintf(StrRes.nPerson, [info.memberCount]).toText
-                      ..style = Styles.ts_8E9AB0_14sp,
+                    sprintf(StrRes.nPerson, [info.memberCount]).toText..style = Styles.ts_8E9AB0_14sp,
                   ],
                 ),
               ],

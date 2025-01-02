@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -17,14 +18,14 @@ class UpgradeViewV2 extends StatefulWidget {
   final PublishSubject? subject;
 
   const UpgradeViewV2({
-    Key? key,
+    super.key,
     this.onLater,
     this.onIgnore,
     required this.onNow,
     required this.upgradeInfo,
     required this.packageInfo,
     this.subject,
-  }) : super(key: key);
+  });
 
   @override
   State<UpgradeViewV2> createState() => _UpgradeViewV2State();
@@ -90,8 +91,8 @@ class _UpgradeViewV2State extends State<UpgradeViewV2> {
               ),
               Text(
                 sprintf(StrRes.upgradeVersion, [
-                  widget.upgradeInfo.buildVersion,
-                  widget.packageInfo.version
+                  '${widget.upgradeInfo.buildVersion!} + ${widget.upgradeInfo.buildVersionNo!}',
+                  '${widget.packageInfo.version} + ${widget.packageInfo.buildNumber}'
                 ]),
                 style: TextStyle(
                   fontSize: 14.sp,
@@ -149,6 +150,20 @@ class _UpgradeViewV2State extends State<UpgradeViewV2> {
                       onTap: _startDownload,
                     )
                   ],
+                ),
+              if (_showProgress)
+                SizedBox(
+                  height: 44.h,
+                  child: Center(
+                    child: LinearPercentIndicator(
+                      lineHeight: 20.h,
+                      percent: _progress,
+                      center: "${(_progress * 100).toInt()}%".toText..style = TextStyle(fontSize: 12.sp),
+                      linearStrokeCap: LinearStrokeCap.roundAll,
+                      backgroundColor: Colors.grey.withOpacity(0.5),
+                      progressColor: Colors.blueAccent,
+                    ),
+                  ),
                 ),
             ],
           ),

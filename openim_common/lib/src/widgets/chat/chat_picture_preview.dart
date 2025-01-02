@@ -14,15 +14,16 @@ class ChatPicturePreview extends StatelessWidget {
   })  : controller = images.length > 1 ? ExtendedPageController(initialPage: currentIndex, pageSpacing: 50) : null,
         super(key: key);
   final int currentIndex;
-  final List<String> images;
+  final List<MediaSource> images;
   final String? heroTag;
   final Function()? onTap;
   final Function(String url)? onLongPress;
   final ExtendedPageController? controller;
-
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
   @override
   Widget build(BuildContext context) {
     return ExtendedImageSlidePage(
+      key: slidePagekey,
       slideAxis: SlideAxis.vertical,
       slidePageBackgroundHandler: (offset, pageSize) => defaultSlidePageBackgroundHandler(
         color: Colors.black,
@@ -34,7 +35,7 @@ class ChatPicturePreview extends StatelessWidget {
         onTap: onTap ?? () => Get.back(),
         onLongPress: () {
           final index = controller?.page?.round() ?? 0;
-          onLongPress?.call(images[index]);
+          onLongPress?.call(images[index].url!);
         },
         child: _childView,
       ),
@@ -54,8 +55,8 @@ class ChatPicturePreview extends StatelessWidget {
         },
       );
 
-  Widget _networkGestureImage(String url) => ExtendedImage.network(
-        url,
+  Widget _networkGestureImage(MediaSource source) => ExtendedImage.network(
+        source.thumbnail,
         fit: BoxFit.contain,
         mode: ExtendedImageMode.gesture,
         clearMemoryCacheWhenDispose: true,
@@ -75,9 +76,13 @@ class ChatPicturePreview extends StatelessWidget {
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               {
+                if (source.url?.isVideoFileName == true) {
+                  return null;
+                }
                 final ImageChunkEvent? loadingProgress = state.loadingProgress;
-                final double? progress =
-                    loadingProgress?.expectedTotalBytes != null ? loadingProgress!.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null;
+                final double? progress = loadingProgress?.expectedTotalBytes != null
+                    ? loadingProgress!.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                    : null;
 
                 return SizedBox(
                   width: 15.0,
@@ -92,7 +97,17 @@ class ChatPicturePreview extends StatelessWidget {
                 );
               }
             case LoadState.completed:
-              return null;
+              final url = source.url;
+              if (url?.isVideoFileName == true) {
+                return Center(
+                    child: ChatVideoPlayerView(
+                  url: url,
+                  coverUrl: source.thumbnail,
+                ));
+              }
+              return Center(
+                child: ExtendedImage.network(url!),
+              );
             case LoadState.failed:
               state.imageProvider.evict();
               return ImageRes.pictureError.toImage;

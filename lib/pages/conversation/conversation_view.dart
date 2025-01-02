@@ -5,9 +5,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:openim/core/controller/im_controller.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'conversation_logic.dart';
@@ -50,7 +49,7 @@ class ConversationPage extends StatelessWidget {
                           ..overflow = TextOverflow.ellipsis,
                       ),
                     10.horizontalSpace,
-                    if (null != logic.imSdkStatus)
+                    if (null != logic.imSdkStatus && (!logic.reInstall || logic.isFailedSdkStatus))
                       Flexible(
                           child: SyncStatusView(
                         isFailed: logic.isFailedSdkStatus,
@@ -63,26 +62,13 @@ class ConversationPage extends StatelessWidget {
             children: [
               Expanded(
                 child: SlidableAutoCloseBehavior(
-                  child: SmartRefresher(
-                    controller: logic.refreshController,
-                    header: IMViews.buildHeader(),
-                    footer: IMViews.buildFooter(),
-                    enablePullUp: true,
-                    enablePullDown: true,
-                    onRefresh: logic.onRefresh,
-                    onLoading: logic.onLoading,
-                    child: ListView.builder(
-                      itemCount: logic.list.length,
-                      controller: logic.scrollController,
-                      itemBuilder: (_, index) => AutoScrollTag(
-                        key: ValueKey(index),
-                        controller: logic.scrollController,
-                        index: index,
-                        child: _buildConversationItemView(
-                          logic.list.elementAt(index),
-                        ),
-                      ),
+                  child: ScrollablePositionedList.builder(
+                    itemScrollController: logic.itemScrollController,
+                    itemBuilder: (_, index) => _buildConversationItemView(
+                      logic.list.elementAt(index),
                     ),
+                    itemCount: logic.list.length,
+                    itemPositionsListener: logic.itemPositionsListener,
                   ),
                 ),
               ),
@@ -131,17 +117,21 @@ class ConversationPage extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                height: 68.h,
+                height: 68,
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
                   children: [
-                    AvatarView(
-                      width: 48.w,
-                      height: 48.h,
-                      text: logic.getShowName(info),
-                      url: info.faceURL,
-                      isGroup: logic.isGroupChat(info),
-                      textStyle: Styles.ts_FFFFFF_14sp_medium,
+                    Stack(
+                      children: [
+                        AvatarView(
+                          width: 48.w,
+                          height: 48.h,
+                          text: logic.getShowName(info),
+                          url: info.faceURL,
+                          isGroup: logic.isGroupChat(info),
+                          textStyle: Styles.ts_FFFFFF_14sp_medium,
+                        ),
+                      ],
                     ),
                     12.horizontalSpace,
                     Expanded(
@@ -167,7 +157,6 @@ class ConversationPage extends StatelessWidget {
                               MatchTextView(
                                 text: logic.getContent(info),
                                 textStyle: Styles.ts_8E9AB0_14sp,
-                                allAtMap: logic.getAtUserMap(info),
                                 prefixSpan: TextSpan(
                                   text: '',
                                   children: [
@@ -184,12 +173,6 @@ class ConversationPage extends StatelessWidget {
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                patterns: <MatchPattern>[
-                                  MatchPattern(
-                                    type: PatternType.at,
-                                    style: Styles.ts_8E9AB0_14sp,
-                                  ),
-                                ],
                               ),
                               const Spacer(),
                               if (logic.isNotDisturb(info))

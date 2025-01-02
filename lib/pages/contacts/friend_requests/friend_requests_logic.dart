@@ -67,11 +67,9 @@ class FriendRequestsLogic extends GetxController {
     applicationList.assignAll(allList);
   }
 
-  bool isISendRequest(FriendApplicationInfo info) =>
-      info.fromUserID == OpenIM.iMManager.userID;
+  bool isISendRequest(FriendApplicationInfo info) => info.fromUserID == OpenIM.iMManager.userID;
 
-  void acceptFriendApplication(FriendApplicationInfo info) =>
-      AppNavigator.startProcessFriendRequests(
+  void acceptFriendApplication(FriendApplicationInfo info) => AppNavigator.startProcessFriendRequests(
         applicationInfo: info,
       );
 

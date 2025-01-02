@@ -14,8 +14,6 @@ class DownloadManager {
   static const partialExtension = ".partial";
   static const tempExtension = ".temp";
 
-  // var tasks = StreamController<DownloadTask>();
-
   static final DownloadManager _dm = new DownloadManager._internal();
 
   DownloadManager._internal();
@@ -24,16 +22,13 @@ class DownloadManager {
     return _dm;
   }
 
-  void Function(int, int) createCallback(url, int partialFileLength) =>
-      (int received, int total) {
-        getDownload(url)?.progress.value =
-            (received + partialFileLength) / (total + partialFileLength);
+  void Function(int, int) createCallback(url, int partialFileLength) => (int received, int total) {
+        getDownload(url)?.progress.value = (received + partialFileLength) / (total + partialFileLength);
 
         if (total == -1) {}
       };
 
-  Future<void> download(String url, String savePath, cancelToken,
-      {forceDownload = false}) async {
+  Future<void> download(String url, String savePath, cancelToken, {forceDownload = false}) async {
     late String partialFilePath;
     late File partialFile;
     try {
@@ -86,9 +81,7 @@ class DownloadManager {
         }
       } else {
         var response = await dio.download(url, partialFilePath,
-            onReceiveProgress: createCallback(url, 0),
-            cancelToken: cancelToken,
-            deleteOnError: false);
+            onReceiveProgress: createCallback(url, 0), cancelToken: cancelToken, deleteOnError: false);
 
         if (response.statusCode == HttpStatus.ok) {
           await partialFile.rename(savePath);
@@ -98,9 +91,7 @@ class DownloadManager {
     } catch (e) {
       var task = getDownload(url)!;
 
-
-      if (task.status.value != DownloadStatus.canceled &&
-          task.status.value != DownloadStatus.paused) {
+      if (task.status.value != DownloadStatus.canceled && task.status.value != DownloadStatus.paused) {
         setStatus(task, DownloadStatus.failed);
 
         if (_queue.isNotEmpty) {
@@ -122,16 +113,12 @@ class DownloadManager {
     }
   }
 
-  void disposeNotifiers(DownloadTask task) {
-    // task.status.dispose();
-    // task.progress.dispose();
-  }
+  void disposeNotifiers(DownloadTask task) {}
 
   void setStatus(DownloadTask? task, DownloadStatus status) {
     if (task != null) {
       task.status.value = status;
 
-      // tasks.add(task);
       if (status.isCompleted) {
         disposeNotifiers(task);
       }
@@ -145,9 +132,7 @@ class DownloadManager {
       }
 
       var isDirectory = await Directory(savedDir).exists();
-      var downloadFilename = isDirectory
-          ? savedDir + Platform.pathSeparator + getFileNameFromUrl(url)
-          : savedDir;
+      var downloadFilename = isDirectory ? savedDir + Platform.pathSeparator + getFileNameFromUrl(url) : savedDir;
 
       return _addDownloadRequest(DownloadRequest(url, downloadFilename));
     }
@@ -160,7 +145,6 @@ class DownloadManager {
     if (_cache[downloadRequest.url] != null) {
       if (!_cache[downloadRequest.url]!.status.value.isCompleted &&
           _cache[downloadRequest.url]!.request == downloadRequest) {
-        // Do nothing
         return _cache[downloadRequest.url]!;
       } else {
         _queue.remove(_cache[downloadRequest.url]);
@@ -215,13 +199,11 @@ class DownloadManager {
     _cache.remove(url);
   }
 
-  // Do not immediately call getDownload After addDownload, rather use the returned DownloadTask from addDownload
   DownloadTask? getDownload(String url) {
     return _cache[url];
   }
 
-  Future<DownloadStatus> whenDownloadComplete(String url,
-      {Duration timeout = const Duration(hours: 2)}) async {
+  Future<DownloadStatus> whenDownloadComplete(String url, {Duration timeout = const Duration(hours: 2)}) async {
     DownloadTask? task = getDownload(url);
 
     if (task != null) {
@@ -235,7 +217,6 @@ class DownloadManager {
     return _cache.values.toList();
   }
 
-  // Batch Download Mechanism
   Future<void> addBatchDownloads(List<String> urls, String savedDir) async {
     urls.forEach((url) {
       addDownload(url, savedDir);
@@ -368,14 +349,12 @@ class DownloadManager {
     while (_queue.isNotEmpty) {
       var currentRequest = _queue.removeFirst();
 
-      download(
-          currentRequest.url, currentRequest.path, currentRequest.cancelToken);
+      download(currentRequest.url, currentRequest.path, currentRequest.cancelToken);
 
       await Future.delayed(Duration(milliseconds: 500), null);
     }
   }
 
-  /// This function is used for get file name with extension from url
   String getFileNameFromUrl(String url) {
     return url.split('/').last;
   }

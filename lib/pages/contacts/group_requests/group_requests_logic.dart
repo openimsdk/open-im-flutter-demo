@@ -23,6 +23,9 @@ class GroupRequestsLogic extends GetxController {
 
   @override
   void onInit() {
+    imLogic.groupApplicationChangedSubject.listen((info) {
+      getApplicationList();
+    });
     super.onInit();
   }
 
@@ -99,7 +102,7 @@ class GroupRequestsLogic extends GetxController {
       if (inviterList.isNotEmpty) {
         await OpenIM.iMManager.userManager
             .getUsersInfo(userIDList: inviterList)
-            .then((list) => userInfoList.assignAll(list.map((e) => e.simpleUserInfo)));
+            .then((list) => userInfoList.assignAll(list.map((e) => e.simpleUserInfo).toList()));
       }
 
       return allList;
@@ -118,23 +121,17 @@ class GroupRequestsLogic extends GetxController {
     });
   }
 
-  String getGroupName(GroupApplicationInfo info) =>
-      info.groupName ?? groupList[info.groupID]?.groupName ?? '';
+  String getGroupName(GroupApplicationInfo info) => info.groupName ?? groupList[info.groupID]?.groupName ?? '';
 
   String getInviterNickname(GroupApplicationInfo info) =>
-      (getMemberInfo(info.inviterUserID!)?.nickname) ??
-      (getUserInfo(info.inviterUserID!)?.nickname) ??
-      '-';
+      (getMemberInfo(info.inviterUserID!)?.nickname) ?? (getUserInfo(info.inviterUserID!)?.nickname) ?? '-';
 
-  GroupMembersInfo? getMemberInfo(inviterUserID) =>
-      memberList.firstWhereOrNull((e) => e.userID == inviterUserID);
+  GroupMembersInfo? getMemberInfo(inviterUserID) => memberList.firstWhereOrNull((e) => e.userID == inviterUserID);
 
-  UserInfo? getUserInfo(inviterUserID) =>
-      userInfoList.firstWhereOrNull((e) => e.userID == inviterUserID);
+  UserInfo? getUserInfo(inviterUserID) => userInfoList.firstWhereOrNull((e) => e.userID == inviterUserID);
 
   void handle(GroupApplicationInfo info) async {
-    var result =
-        await AppNavigator.startProcessGroupRequests(applicationInfo: info);
+    var result = await AppNavigator.startProcessGroupRequests(applicationInfo: info);
     if (result is int) {
       info.handleResult = result;
       list.refresh();

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:openim/pages/contacts/group_profile_panel/group_profile_panel_logic.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:sprintf/sprintf.dart';
 
 enum SearchType {
@@ -127,5 +127,27 @@ class AddContactsBySearchLogic extends GetxController {
         joinGroupMethod: JoinGroupMethod.search,
       );
     }
+  }
+
+  String getShowTitle(info) {
+    if (!isSearchUser) {
+      return sprintf(StrRes.searchGroupNicknameIs, [getShowName(info)]);
+    }
+
+    UserFullInfo userFullInfo = info;
+    String? tips, content;
+    if (int.tryParse(searchKey) != null) {
+      if (searchKey.length == 11) {
+        tips = StrRes.phoneNumber;
+        content = userFullInfo.phoneNumber ?? searchKey;
+      } else {
+        tips = StrRes.userID;
+        content = userFullInfo.userID;
+      }
+    } else {
+      tips = StrRes.searchNicknameIs;
+      content = getShowName(info);
+    }
+    return "$tips:$content";
   }
 }

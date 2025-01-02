@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ChatPictureView extends StatefulWidget {
   const ChatPictureView({
     Key? key,
     required this.message,
     required this.isISend,
-    this.sendProgressStream,
   }) : super(key: key);
-  final Stream<MsgStreamEv<int>>? sendProgressStream;
   final bool isISend;
   final Message message;
 
@@ -36,8 +35,10 @@ class _ChatPictureViewState extends State<ChatPictureView> {
   void initState() {
     final picture = _message.pictureElem;
     _sourcePath = picture?.sourcePath;
-    _sourceUrl = picture?.sourcePicture?.url;
-    _snapshotUrl = picture?.snapshotPicture?.url;
+
+    _sourceUrl = picture?.bigPicture?.url;
+    final snap = picture?.snapshotPicture?.url;
+    _snapshotUrl = snap?.adjustThumbnailAbsoluteString(960);
 
     var w = picture?.sourcePicture?.width?.toDouble() ?? 1.0;
     var h = picture?.sourcePicture?.height?.toDouble() ?? 1.0;
@@ -56,23 +57,42 @@ class _ChatPictureViewState extends State<ChatPictureView> {
       _trulyHeight = _trulyWidth;
     }
 
-    _createChildView();
+    if (Platform.isIOS) {
+      if (_sourcePath?.contains('/Library/Caches/') == true) {
+        getApplicationCacheDirectory().then((value) {
+          final path = _sourcePath!.split('/Library/Caches').last;
+          _sourcePath = value.path + path;
+          _createChildView();
+        });
+      } else {
+        _createChildView();
+      }
+    } else {
+      _createChildView();
+    }
     super.initState();
   }
 
   Future<bool> _checkingPath() async {
-    final valid = IMUtils.isNotNullEmptyStr(_sourcePath) &&
-        await Permissions.checkStorage() &&
-        await File(_sourcePath!).exists();
+    var valid = IMUtils.isNotNullEmptyStr(_sourcePath);
+    if (!valid) {
+      return false;
+    }
+    if (Platform.isIOS) {
+      final exist = await File(_sourcePath!).exists();
+      valid = valid && exist;
+    } else {
+      valid = valid && File(_sourcePath!).existsSync();
+    }
     _message.exMap['validPath_$_sourcePath'] = valid;
+
     return valid;
   }
 
   bool? get isValidPath => _message.exMap['validPath_$_sourcePath'];
 
   _createChildView() async {
-    if (widget.isISend &&
-        (isValidPath == true || isValidPath == null && await _checkingPath())) {
+    if (widget.isISend && (isValidPath == true || isValidPath == null && await _checkingPath())) {
       _child = _buildPathPicture(path: _sourcePath!);
     } else if (IMUtils.isNotNullEmptyStr(_snapshotUrl)) {
       _child = _buildUrlPicture(url: _snapshotUrl!);
@@ -99,14 +119,6 @@ class _ChatPictureViewState extends State<ChatPictureView> {
             height: _trulyHeight,
             width: _trulyWidth,
             fit: BoxFit.fitWidth,
-          ),
-          ChatProgressView(
-            height: _trulyHeight,
-            width: _trulyWidth,
-            id: _message.clientMsgID!,
-            stream: widget.sendProgressStream,
-            isISend: widget.isISend,
-            type: ProgressType.picture,
           ),
         ],
       );

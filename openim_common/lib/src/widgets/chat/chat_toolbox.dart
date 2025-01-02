@@ -1,25 +1,25 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
 class ChatToolBox extends StatelessWidget {
   const ChatToolBox({
-    Key? key,
+    super.key,
     this.onTapAlbum,
     this.onTapCall,
     this.onTapCamera,
     this.onTapCard,
     this.onTapFile,
     this.onTapLocation,
-  }) : super(key: key);
+    this.onTapDirectionalMessage,
+  });
   final Function()? onTapAlbum;
   final Function()? onTapCamera;
   final Function()? onTapCall;
   final Function()? onTapFile;
   final Function()? onTapCard;
   final Function()? onTapLocation;
+  final VoidCallback? onTapDirectionalMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -27,24 +27,40 @@ class ChatToolBox extends StatelessWidget {
       ToolboxItemInfo(
         text: StrRes.toolboxAlbum,
         icon: ImageRes.toolboxAlbum,
-        onTap: () {
-          if (Platform.isAndroid) {
-            Permissions.storage(onTapAlbum);
-          } else {
-            Permissions.photos(onTapAlbum);
-          }
-        },
+        onTap: () => Permissions.photos(onTapAlbum),
       ),
       ToolboxItemInfo(
         text: StrRes.toolboxCamera,
         icon: ImageRes.toolboxCamera,
-        onTap: () => Permissions.camera(onTapCamera),
+        onTap: () => Permissions.cameraAndMicrophone(onTapCamera),
+      ),
+      if (onTapCall != null)
+        ToolboxItemInfo(
+          text: StrRes.toolboxCall,
+          icon: ImageRes.toolboxCall,
+          onTap: () => Permissions.cameraAndMicrophone(onTapCall),
+        ),
+      ToolboxItemInfo(
+        text: StrRes.toolboxFile,
+        icon: ImageRes.toolboxFile,
+        onTap: () => Permissions.storage(onTapFile),
       ),
       ToolboxItemInfo(
-        text: StrRes.toolboxCall,
-        icon: ImageRes.toolboxCall,
-        onTap: onTapCall,
-      )
+        text: StrRes.toolboxCard,
+        icon: ImageRes.toolboxCard,
+        onTap: onTapCard,
+      ),
+      ToolboxItemInfo(
+        text: StrRes.toolboxLocation,
+        icon: ImageRes.toolboxLocation,
+        onTap: () => Permissions.location(onTapLocation),
+      ),
+      if (onTapDirectionalMessage != null)
+        ToolboxItemInfo(
+          text: StrRes.toolboxDirectionalMessage,
+          icon: ImageRes.toolboxDirectionalMessage,
+          onTap: onTapDirectionalMessage,
+        ),
     ];
 
     return Container(

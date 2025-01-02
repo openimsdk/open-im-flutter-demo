@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.openim.live.alert.flutter_openim_live_alert">
+
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+
+</manifest>

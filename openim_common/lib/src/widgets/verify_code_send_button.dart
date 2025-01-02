@@ -96,8 +96,7 @@ class _VerifyCodeSendButtonState extends State<VerifyCodeSendButton> {
                 if (start) _restart();
               });
             })
-          : (sprintf(StrRes.verificationCodeTimingReminder, [_seconds]).toText
-            ..style = Styles.ts_8E9AB0_12sp));
+          : (sprintf(StrRes.verificationCodeTimingReminder, [_seconds]).toText..style = Styles.ts_8E9AB0_12sp));
 
   bool get _isEnabled => _seconds == 0;
 }

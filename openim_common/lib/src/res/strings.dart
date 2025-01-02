@@ -22,6 +22,7 @@ class StrRes {
   static String get welcome => 'welcome'.tr;
 
   static String get phoneNumber => 'phoneNumber'.tr;
+  static String get userID => 'userID'.tr;
 
   static String get plsEnterPhoneNumber => 'plsEnterPhoneNumber'.tr;
 
@@ -32,6 +33,8 @@ class StrRes {
   static String get account => 'account'.tr;
 
   static String get plsEnterAccount => 'plsEnterAccount'.tr;
+
+  static String get plsEnterEmail => 'plsEnterEmail'.tr;
 
   static String get forgetPassword => 'forgetPassword'.tr;
 
@@ -71,6 +74,8 @@ class StrRes {
 
   static String get plsEnterRightPhone => 'plsEnterRightPhone'.tr;
 
+  static String get plsEnterRightPhoneOrEmail => 'plsEnterRightPhoneOrEmail'.tr;
+
   static String get enterVerificationCode => 'enterVerificationCode'.tr;
 
   static String get setPassword => 'setPassword'.tr;
@@ -91,6 +96,8 @@ class StrRes {
 
   static String get passwordLogin => 'passwordLogin'.tr;
 
+  static String get through => 'through'.tr;
+
   static String get home => 'home'.tr;
 
   static String get contacts => 'contacts'.tr;
@@ -104,6 +111,8 @@ class StrRes {
   static String get everyone => 'everyone'.tr;
 
   static String get you => 'you'.tr;
+
+  static String get someoneMentionYou => 'someoneMentionYou'.tr;
 
   static String get groupAc => 'groupAc'.tr;
 
@@ -136,6 +145,8 @@ class StrRes {
   static String get openPrivateChatNtf => 'openPrivateChatNtf'.tr;
 
   static String get closePrivateChatNtf => 'closePrivateChatNtf'.tr;
+
+  static String get meetingEnableVideo => 'meetingEnableVideo'.tr;
 
   static String get memberInfoChangedNtf => 'memberInfoChangedNtf'.tr;
 
@@ -215,6 +226,8 @@ class StrRes {
 
   static String get upgradeNow => 'upgradeNow'.tr;
 
+  static String get upgradePermissionTips => 'upgradePermissionTips'.tr;
+
   static String get inviteYouCall => 'inviteYouCall'.tr;
 
   static String get rejectCall => 'rejectCall'.tr;
@@ -255,6 +268,8 @@ class StrRes {
 
   static String get toolboxLocation => 'toolboxLocation'.tr;
 
+  static String get toolboxDirectionalMessage => 'toolboxDirectionalMessage'.tr;
+
   static String get send => 'send'.tr;
 
   static String get holdTalk => 'holdTalk'.tr;
@@ -276,6 +291,8 @@ class StrRes {
   static String get callTimeout => 'callTimeout'.tr;
 
   static String get rejected => 'rejected'.tr;
+
+  static String get networkAnomaly => 'networkAnomaly'.tr;
 
   static String get forwardMaxCountHint => 'forwardMaxCountHint'.tr;
 
@@ -378,6 +395,8 @@ class StrRes {
   static String get newFriend => 'newFriend'.tr;
 
   static String get newGroup => 'newGroup'.tr;
+
+  static String get newGroupRequest => 'newGroupRequest'.tr;
 
   static String get myFriend => 'myFriend'.tr;
 
@@ -603,6 +622,8 @@ class StrRes {
 
   static String get setChatBackground => 'setChatBackground'.tr;
 
+  static String get setDefaultBackground => 'setDefaultBackground'.tr;
+
   static String get fontSize => 'fontSize'.tr;
 
   static String get little => 'little'.tr;
@@ -660,6 +681,10 @@ class StrRes {
   static String get notAllAddMemberToBeFriend => 'notAllAddMemberToBeFriend'.tr;
 
   static String get transferGroupOwnerRight => 'transferGroupOwnerRight'.tr;
+
+  static String get plsEnterRightEmail => 'plsEnterRightEmail'.tr;
+
+  static String get plsEnterRightAccount => 'plsEnterRightAccount'.tr;
 
   static String get groupName => 'groupName'.tr;
 
@@ -791,6 +816,8 @@ class StrRes {
 
   static String get selectAssetsFromAlbum => 'selectAssetsFromAlbum'.tr;
 
+  static String get selectAssetsFirst => 'selectAssetsFirst'.tr;
+
   static String get whoCanWatch => 'whoCanWatch'.tr;
 
   static String get remindWhoToWatch => 'remindWhoToWatch'.tr;
@@ -818,10 +845,12 @@ class StrRes {
   static String get message => 'message'.tr;
 
   static String get commentedYou => 'commentedYou'.tr;
+  static String get commentedWho => 'commentedWho'.tr;
 
   static String get likedYou => 'likedYou'.tr;
 
   static String get mentionedYou => 'mentionedYou'.tr;
+  static String get mentionedWho => 'mentionedWho'.tr;
 
   static String get replied => 'replied'.tr;
 
@@ -866,6 +895,10 @@ class StrRes {
   static String get calling => 'calling'.tr;
 
   static String get nPeopleCalling => 'nPeopleCalling'.tr;
+
+  static String get busyVideoCallHint => 'busyVideoCallHint'.tr;
+
+  static String get inviterBusyVideoCallHint => 'inviterBusyVideoCallHint'.tr;
 
   static String get whoInvitedVoiceCallHint => 'whoInvitedVoiceCallHint'.tr;
 
@@ -1039,7 +1072,91 @@ class StrRes {
 
   static String get gifNotSupported => 'gifNotSupported'.tr;
 
-  static String get otherCallHandle => 'otherCallHandle'.tr;
+  static String get lookOver => 'lookOver'.tr;
 
+  static String get groupRequestHandled => 'groupRequestHandled'.tr;
+
+  static String get burnAfterReadingDescription => 'burnAfterReadingDescription'.tr;
+
+  static String get periodicallyDeleteMessage => 'periodicallyDeleteMessage'.tr;
+
+  static String get periodicallyDeleteMessageDescription => 'periodicallyDeleteMessageDescription'.tr;
+
+  static String get nDay => 'nDay'.tr;
+
+  static String get nWeek => 'nWeek'.tr;
+
+  static String get nMonth => 'nMonth'.tr;
+
+  static String get talkTooShort => 'talkTooShort'.tr;
+
+  static String get quoteContentBeRevoked => 'quoteContentBeRevoked'.tr;
+
+  static String get tapTooShort => 'tapTooShort'.tr;
+  static String get createGroupTips => 'createGroupTips'.tr;
+  static String get likedWho => 'likedWho'.tr;
+  static String get otherCallHandle => 'otherCallHandle'.tr;
+  static String get uploadErrorLog => 'uploadErrorLog'.tr;
+  static String get uploaded => 'uploaded'.tr;
+  static String get uploadLogWithLine => 'uploadLogWithLine'.tr;
+  static String get setLines => 'setLines'.tr;
+
+  static String get sdkApiAddress => 'sdkApiAddress'.tr;
+  static String get sdkWsAddress => 'sdkWsAddress'.tr;
+  static String get appAddress => 'appAddress'.tr;
+  static String get serverAddress => 'serverAddress'.tr;
+  static String get switchToIP => 'switchToIP'.tr;
+  static String get switchToDomain => 'switchToDomain'.tr;
+  static String get serverSettingTips => 'serverSettingTips'.tr;
+  static String get logLevel => 'logLevel'.tr;
   static String get callFail => 'callFail'.tr;
+  static String get searchByPhoneAndUid => 'search_by_phone_and_uid'.tr;
+  static String get specialMessage => 'special_message'.tr;
+  static String get editGroupName => 'edit_group_name'.tr;
+  static String get editGroupTips => 'edit_group_tips'.tr;
+  static String get tokenInvalid => 'tokenInvalid'.tr;
+  static String get supportsTypeHint => 'supportsTypeHint'.tr;
+  static String get permissionDeniedTitle => 'permissionDeniedTitle'.tr;
+  static String get permissionDeniedHint => 'permissionDeniedHint'.tr;
+  static String get camera => 'camera'.tr;
+  static String get gallery => 'gallery'.tr;
+  static String get notification => 'notification'.tr;
+  static String get externalStorage => 'externalStorage'.tr;
+  static String get monday => 'monday'.tr;
+  static String get tuesday => 'tuesday'.tr;
+  static String get wednesday => 'wednesday'.tr;
+  static String get thursday => 'thursday'.tr;
+  static String get friday => 'friday'.tr;
+  static String get saturday => 'saturday'.tr;
+  static String get sunday => 'sunday'.tr;
+  static String get participantRemovedHit => 'participantRemovedHit'.tr;
+  static String get hasBeenSet => 'hasBeenSet'.tr;
+  static String get lockMeeting => 'lockMeeting'.tr;
+  static String get lockMeetingHint => 'lockMeetingHint'.tr;
+  static String get voiceMotivation => 'voiceMotivation'.tr;
+  static String get voiceMotivationHint => 'voiceMotivationHint'.tr;
+  static String get meetingIsLocked => 'meetingIsLocked'.tr;
+  static String get today => 'today'.tr;
+  static String get meetingIsEnded => 'meetingIsEnded'.tr;
+  static String get oneXnViews => 'oneXnViews'.tr;
+  static String get twoXtwoViews => 'twoXtwoViews'.tr;
+  static String get threeXthreeViews => 'threeXthreeViews'.tr;
+  static String get appointNewHost => 'appointNewHost'.tr;
+  static String get appointNewHostHint => 'appointNewHostHint'.tr;
+  static String get gridView => 'gridView'.tr;
+  static String get gridViewHint => 'gridViewHint'.tr;
+  static String get requestXDoHint => 'requestXDoHint'.tr;
+  static String get keepClose => 'keepClose'.tr;
+  static String get cancelMeetingConfirmHit => 'cancelMeetingConfirmHit'.tr;
+  static String get iKnew => 'iKnew'.tr;
+  static String get assignAndLeave => 'assignAndLeave'.tr;
+  static String get muteAllHint => 'muteAllHint'.tr;
+  static String get inProgressByTerminalHint => 'inProgressByTerminalHint'.tr;
+  static String get restore => 'restore'.tr;
+  static String get done => 'done'.tr;
+  static String get networkNotStable => 'networkNotStable'.tr;
+  static String get otherNetworkNotStableHint => 'otherNetworkNotStableHint'.tr;
+  static String get callingInterruption => 'callingInterruption'.tr;
+  static String get meeting => 'meeting'.tr;
+  static String get directedTo => 'directedTo'.tr;
 }

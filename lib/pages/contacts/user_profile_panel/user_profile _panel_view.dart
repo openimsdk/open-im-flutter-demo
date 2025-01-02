@@ -36,25 +36,9 @@ class UserProfilePanelPage extends StatelessWidget {
                   children: [
                     _buildBaseInfoView(),
                     if (logic.isGroupMemberPage) _buildEnterGroupMethodView(),
-                    if (logic.iAmOwner.value && logic.groupMembersInfo != null)
-                      _buildItemView(
-                        label: StrRes.setAsAdmin,
-                        showSwitchButton: true,
-                        switchOn: logic.hasAdminPermission.value,
-                        onChanged: (_) => logic.toggleAdmin(),
-                      ),
-                    if (logic.iHasMutePermissions.value && logic.groupMembersInfo != null)
-                      _buildItemView(
-                        label: StrRes.setMute,
-                        value: IMUtils.emptyStrToNull(logic.mutedTime.value),
-                        onTap: logic.setMute,
-                        showRightArrow: true,
-                        addMargin: true,
-                      ),
-                    // DeptItemView.userProfilesPanel(
-                    //   userID: logic.userInfo.value.userID,
-                    // ),
-                    if (logic.isFriendship || logic.isMyself || logic.isGroupMemberPage && !logic.notAllowLookGroupMemberProfiles.value)
+                    if (logic.isFriendship ||
+                        logic.isMyself ||
+                        logic.isGroupMemberPage && !logic.notAllowLookGroupMemberProfiles.value)
                       _buildItemView(
                         label: StrRes.personalInfo,
                         showRightArrow: true,
@@ -110,7 +94,9 @@ class UserProfilePanelPage extends StatelessWidget {
             if (!logic.isMyself &&
                 logic.isAllowAddFriend &&
                 !logic.isFriendship &&
-                (!logic.isGroupMemberPage || logic.isGroupMemberPage && !logic.notAllowAddGroupMemberFriend.value))
+                (!logic.isGroupMemberPage ||
+                    logic.forceCanAdd == true ||
+                    logic.isGroupMemberPage && !logic.notAllowAddGroupMemberFriend.value))
               Material(
                 child: Ink(
                   decoration: BoxDecoration(

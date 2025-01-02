@@ -4,23 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class Styles {
   Styles._();
 
-  static Color c_0089FF = const Color(0xFF0089FF);
-  static Color c_0C1C33 = const Color(0xFF0C1C33);
-  static Color c_8E9AB0 = const Color(0xFF8E9AB0);
-  static Color c_E8EAEF = const Color(0xFFE8EAEF);
-  static Color c_FF381F = const Color(0xFFFF381F);
-  static Color c_FFFFFF = const Color(0xFFFFFFFF);
-  static Color c_18E875 = const Color(0xFF18E875);
-  static Color c_F0F2F6 = const Color(0xFFF0F2F6);
-  static Color c_000000 = const Color(0xFF000000);
+  static Color c_0089FF = const Color(0xFF0089FF); // 主题色
+  static Color c_0C1C33 = const Color(0xFF0C1C33); // 黑色字体
+  static Color c_8E9AB0 = const Color(0xFF8E9AB0); // 说明文字
+  static Color c_E8EAEF = const Color(0xFFE8EAEF); // 分割线
+  static Color c_FF381F = const Color(0xFFFF381F); // 警告色
+  static Color c_FFFFFF = const Color(0xFFFFFFFF); // 警告色
+  static Color c_18E875 = const Color(0xFF18E875); // 在线
+  static Color c_F0F2F6 = const Color(0xFFF0F2F6); // 聊天页底部
+  static Color c_000000 = const Color(0xFF000000); //
   static Color c_92B3E0 = const Color(0xFF92B3E0);
-  static Color c_F2F8FF = const Color(0xFFF2F8FF);
-  static Color c_F8F9FA = const Color(0xFFF8F9FA);
+  static Color c_F2F8FF = const Color(0xFFF2F8FF); // 同步成功背景色
+  static Color c_F8F9FA = const Color(0xFFF8F9FA); // 默认背景
   static Color c_6085B1 = const Color(0xFF6085B1);
-  static Color c_FFB300 = const Color(0xFFFFB300);
-  static Color c_FFE1DD = const Color(0xFFFFE1DD);
+  static Color c_FFB300 = const Color(0xFFFFB300); // 会议状态
+  static Color c_FFE1DD = const Color(0xFFFFE1DD); // 同步失败背景色
+  static Color c_707070 = const Color(0xFF707070);
 
-  static Color c_92B3E0_opacity50 = c_92B3E0.withOpacity(.5);
+  static Color c_92B3E0_opacity50 = c_92B3E0.withOpacity(.5); // 气泡背景
   static Color c_E8EAEF_opacity50 = c_E8EAEF.withOpacity(.5);
   static Color c_F4F5F7 = const Color(0xFFF4F5F7);
   static Color c_CCE7FE = const Color(0xFFCCE7FE);
@@ -214,6 +215,11 @@ class Styles {
   static TextStyle ts_0089FF_16sp = TextStyle(
     color: c_0089FF,
     fontSize: 16.sp,
+  );
+  static TextStyle ts_0089FF_16sp_medium = TextStyle(
+    color: c_0089FF,
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w500,
   );
   static TextStyle ts_0089FF_17sp = TextStyle(
     color: c_0089FF,

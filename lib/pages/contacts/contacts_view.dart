@@ -29,7 +29,7 @@ class ContactsPage extends StatelessWidget {
               ),
               _buildItemView(
                 assetsName: ImageRes.newGroup,
-                label: StrRes.newGroup,
+                label: StrRes.newGroupRequest,
                 count: logic.groupApplicationCount,
                 onTap: logic.newGroup,
               ),
@@ -44,7 +44,6 @@ class ContactsPage extends StatelessWidget {
                 label: StrRes.myGroup,
                 onTap: logic.myGroup,
               ),
-              10.verticalSpace,
             ],
           ),
         ),

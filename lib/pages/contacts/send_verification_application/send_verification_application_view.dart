@@ -15,9 +15,7 @@ class SendVerificationApplicationPage extends StatelessWidget {
     return TouchCloseSoftKeyboard(
       child: Scaffold(
         appBar: TitleBar.back(
-          title: logic.isEnterGroup
-              ? StrRes.groupVerification
-              : StrRes.friendVerification,
+          title: logic.isEnterGroup ? StrRes.groupVerification : StrRes.friendVerification,
           right: StrRes.send.toText
             ..style = Styles.ts_0C1C33_17sp
             ..onTap = logic.send,
@@ -29,10 +27,7 @@ class SendVerificationApplicationPage extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
-                child: (logic.isEnterGroup
-                        ? StrRes.sendEnterGroupApplication
-                        : StrRes.sendToBeFriendApplication)
-                    .toText
+                child: (logic.isEnterGroup ? StrRes.sendEnterGroupApplication : StrRes.sendToBeFriendApplication).toText
                   ..style = Styles.ts_8E9AB0_14sp,
               ),
               Container(

@@ -15,26 +15,28 @@ class MatchTextView extends StatelessWidget {
   final int? maxLines;
   final double textScaleFactor;
 
-  final Map<String, String> allAtMap;
   final List<MatchPattern> patterns;
   final TextModel model;
   final Function(String? text)? onVisibleTrulyText;
+  final bool isSupportCopy;
+  final FocusNode? copyFocusNode;
 
-  const MatchTextView({
-    Key? key,
-    required this.text,
-    this.allAtMap = const <String, String>{},
-    this.prefixSpan,
-    this.patterns = const <MatchPattern>[],
-    this.textAlign = TextAlign.left,
-    this.overflow = TextOverflow.clip,
-    this.textStyle,
-    this.matchTextStyle,
-    this.maxLines,
-    this.textScaleFactor = 1.0,
-    this.model = TextModel.match,
-    this.onVisibleTrulyText,
-  }) : super(key: key);
+  const MatchTextView(
+      {Key? key,
+      required this.text,
+      this.prefixSpan,
+      this.patterns = const <MatchPattern>[],
+      this.textAlign = TextAlign.left,
+      this.overflow = TextOverflow.clip,
+      this.textStyle,
+      this.matchTextStyle,
+      this.maxLines,
+      this.textScaleFactor = 1.0,
+      this.model = TextModel.match,
+      this.onVisibleTrulyText,
+      this.isSupportCopy = false,
+      this.copyFocusNode})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,16 +53,16 @@ class MatchTextView extends StatelessWidget {
     final textSpan = TextSpan(children: children);
     onVisibleTrulyText?.call(textSpan.toPlainText());
 
-    return Container(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      child: RichText(
-        textAlign: textAlign,
-        overflow: overflow,
-        maxLines: maxLines,
-        textScaleFactor: textScaleFactor,
-        text: textSpan,
-      ),
+    var text = Text.rich(
+      textSpan,
+      textAlign: textAlign,
+      overflow: overflow,
+      maxLines: maxLines,
+      textScaler: TextScaler.linear(textScaleFactor),
     );
+    return Container(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: isSupportCopy ? SelectionArea(focusNode: copyFocusNode, child: text) : text);
   }
 
   _normalModel(List<InlineSpan> children) {
@@ -71,10 +73,7 @@ class MatchTextView extends StatelessWidget {
     final mappingMap = <String, MatchPattern>{};
 
     for (var e in patterns) {
-      if (e.type == PatternType.at) {
-        mappingMap[regexAt] = e;
-        mappingMap[regexAtAll] = MatchPattern(type: PatternType.atAll);
-      } else if (e.type == PatternType.email) {
+      if (e.type == PatternType.email) {
         mappingMap[regexEmail] = e;
       } else if (e.type == PatternType.mobile) {
         mappingMap[regexMobile] = e;
@@ -87,11 +86,7 @@ class MatchTextView extends StatelessWidget {
       }
     }
 
-    var regexEmoji = emojiFaces.keys
-        .toList()
-        .join('|')
-        .replaceAll('[', '\\[')
-        .replaceAll(']', '\\]');
+    var regexEmoji = emojiFaces.keys.toList().join('|').replaceAll('[', '\\[').replaceAll(']', '\\]');
 
     mappingMap[regexEmoji] = MatchPattern(type: PatternType.email);
 
@@ -116,43 +111,14 @@ class MatchTextView extends StatelessWidget {
               return '';
             })];
         if (mapping != null) {
-          if (mapping.type == PatternType.at) {
-            String userID = matchText.replaceFirst("@", "").trim();
-            if (allAtMap.containsKey(userID)) {
-              matchText = '@${allAtMap[userID]} ';
-              inlineSpan = TextSpan(
-                text: matchText,
-                style: mapping.style ?? matchTextStyle ?? textStyle,
-                recognizer: mapping.onTap == null
-                    ? null
-                    : (TapGestureRecognizer()
-                      ..onTap = () => mapping.onTap!(
-                          _getUrl(userID, mapping.type), mapping.type)),
-              );
-            } else {
-              inlineSpan = TextSpan(text: matchText, style: textStyle);
-            }
-          } else if (mapping.type == PatternType.atAll) {
-            matchText = '@${StrRes.everyone} ';
-            inlineSpan = TextSpan(
-              text: matchText,
-              style: mapping.style ?? matchTextStyle ?? textStyle,
-            );
-          }
-          /* else if (mapping.type == PatternType.EMOJI) {
-            inlineSpan = ImageSpan();
-          } */
-          else {
-            inlineSpan = TextSpan(
-              text: matchText,
-              style: mapping.style ?? matchTextStyle ?? textStyle,
-              recognizer: mapping.onTap == null
-                  ? null
-                  : (TapGestureRecognizer()
-                    ..onTap = () => mapping.onTap!(
-                        _getUrl(matchText, mapping.type), mapping.type)),
-            );
-          }
+          inlineSpan = TextSpan(
+            text: matchText.split('').join('\u200B'),
+            style: mapping.style ?? matchTextStyle ?? textStyle,
+            recognizer: mapping.onTap == null
+                ? null
+                : (TapGestureRecognizer()
+                  ..onTap = () => mapping.onTap!(_getUrl(matchText, mapping.type), mapping.type)),
+          );
         } else {
           inlineSpan = TextSpan(text: matchText, style: textStyle);
         }
@@ -160,7 +126,7 @@ class MatchTextView extends StatelessWidget {
         return '';
       },
       onNonMatch: (text) {
-        children.add(TextSpan(text: text.fixAutoLines(), style: textStyle));
+        children.add(TextSpan(text: text, style: textStyle));
         return '';
       },
     );
@@ -197,16 +163,12 @@ class MatchPattern {
   MatchPattern({required this.type, this.pattern, this.style, this.onTap});
 }
 
-enum PatternType { at, atAll, email, mobile, tel, url, emoji, custom }
-
-const regexAt = r"(@\d+\s)";
-
-const regexAtAll = r'@AtAllTag ';
+enum PatternType { email, mobile, tel, url, emoji, custom }
 
 const regexEmail = r"\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b";
 
 const regexUrl =
-    r"[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:._\+-~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:_\+.~#?&\/\/=]*)";
+    r"((http|https):\/\/)(([a-zA-Z0-9@:._\+-~#=]{2,256}\.[a-z]{2,6})|(\d{1,3}(\.\d{1,3}){3}))(:\d+)?(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?";
 
 const String regexMobile =
     '^(\\+?86)?((13[0-9])|(14[57])|(15[0-35-9])|(16[2567])|(17[01235-8])|(18[0-9])|(19[1589]))\\d{8}\$';

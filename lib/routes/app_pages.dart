@@ -3,9 +3,13 @@ import 'package:get/get.dart';
 import '../pages/chat/chat_binding.dart';
 import '../pages/chat/chat_setup/chat_setup_binding.dart';
 import '../pages/chat/chat_setup/chat_setup_view.dart';
+import '../pages/chat/chat_setup/favorite_manage/favorite_manage_binding.dart';
+import '../pages/chat/chat_setup/favorite_manage/favorite_manage_view.dart';
 import '../pages/chat/chat_view.dart';
 import '../pages/chat/group_setup/edit_name/edit_name_binding.dart';
 import '../pages/chat/group_setup/edit_name/edit_name_view.dart';
+import '../pages/chat/group_setup/group_manage/group_manage_binding.dart';
+import '../pages/chat/group_setup/group_manage/group_manage_view.dart';
 import '../pages/chat/group_setup/group_member_list/group_member_list_binding.dart';
 import '../pages/chat/group_setup/group_member_list/group_member_list_view.dart';
 import '../pages/chat/group_setup/group_member_list/search_group_member/search_group_member_binding.dart';
@@ -14,6 +18,8 @@ import '../pages/chat/group_setup/group_qrcode/group_qrcode_binding.dart';
 import '../pages/chat/group_setup/group_qrcode/group_qrcode_view.dart';
 import '../pages/chat/group_setup/group_setup_binding.dart';
 import '../pages/chat/group_setup/group_setup_view.dart';
+import '../pages/chat/oa_notification/oa_notification_binding.dart';
+import '../pages/chat/oa_notification/oa_notification_view.dart';
 import '../pages/contacts/add_by_search/add_by_search_binding.dart';
 import '../pages/contacts/add_by_search/add_by_search_view.dart';
 import '../pages/contacts/add_method/add_method_binding.dart';
@@ -60,6 +66,12 @@ import '../pages/contacts/user_profile_panel/set_remark/set_remark_binding.dart'
 import '../pages/contacts/user_profile_panel/set_remark/set_remark_view.dart';
 import '../pages/contacts/user_profile_panel/user_profile _panel_binding.dart';
 import '../pages/contacts/user_profile_panel/user_profile _panel_view.dart';
+import '../pages/forget_password/forget_password_binding.dart';
+import '../pages/forget_password/forget_password_view.dart';
+import '../pages/forget_password/reset_password/reset_password_binding.dart';
+import '../pages/forget_password/reset_password/reset_password_view.dart';
+import '../pages/global_search/global_search_binding.dart';
+import '../pages/global_search/global_search_view.dart';
 import '../pages/home/home_binding.dart';
 import '../pages/home/home_view.dart';
 import '../pages/login/login_binding.dart';
@@ -70,12 +82,18 @@ import '../pages/mine/account_setup/account_setup_binding.dart';
 import '../pages/mine/account_setup/account_setup_view.dart';
 import '../pages/mine/blacklist/blacklist_binding.dart';
 import '../pages/mine/blacklist/blacklist_view.dart';
+import '../pages/mine/change_pwd/change_pwd_binding.dart';
+import '../pages/mine/change_pwd/change_pwd_view.dart';
 import '../pages/mine/edit_my_info/edit_my_info_binding.dart';
 import '../pages/mine/edit_my_info/edit_my_info_view.dart';
+import '../pages/mine/language_setup/language_setup_binding.dart';
+import '../pages/mine/language_setup/language_setup_view.dart';
 import '../pages/mine/my_info/my_info_binding.dart';
 import '../pages/mine/my_info/my_info_view.dart';
 import '../pages/mine/my_qrcode/my_qrcode_binding.dart';
 import '../pages/mine/my_qrcode/my_qrcode_view.dart';
+import '../pages/mine/unlock_setup/unlock_setup_binding.dart';
+import '../pages/mine/unlock_setup/unlock_setup_view.dart';
 import '../pages/register/register_binding.dart';
 import '../pages/register/register_view.dart';
 import '../pages/register/set_password/set_password_binding.dart';
@@ -95,6 +113,7 @@ class AppPages {
     required GetPageBuilder page,
     Bindings? binding,
     bool preventDuplicates = true,
+    bool popGesture = true,
   }) =>
       GetPage(
         name: name,
@@ -102,7 +121,7 @@ class AppPages {
         binding: binding,
         preventDuplicates: preventDuplicates,
         transition: Transition.cupertino,
-        popGesture: true,
+        popGesture: popGesture,
       );
 
   static final routes = <GetPage>[
@@ -136,6 +155,12 @@ class AppPages {
       name: AppRoutes.chatSetup,
       page: () => ChatSetupPage(),
       binding: ChatSetupBinding(),
+      popGesture: false,
+    ),
+    _pageBuilder(
+      name: AppRoutes.favoriteManage,
+      page: () => FavoriteManagePage(),
+      binding: FavoriteManageBinding(),
     ),
     _pageBuilder(
       name: AppRoutes.addContactsMethod,
@@ -198,6 +223,21 @@ class AppPages {
       binding: BlacklistBinding(),
     ),
     _pageBuilder(
+      name: AppRoutes.languageSetup,
+      page: () => LanguageSetupPage(),
+      binding: LanguageSetupBinding(),
+    ),
+    _pageBuilder(
+      name: AppRoutes.unlockSetup,
+      page: () => UnlockSetupPage(),
+      binding: UnlockSetupBinding(),
+    ),
+    _pageBuilder(
+      name: AppRoutes.changePassword,
+      page: () => ChangePwdPage(),
+      binding: ChangePwdBinding(),
+    ),
+    _pageBuilder(
       name: AppRoutes.aboutUs,
       page: () => AboutUsPage(),
       binding: AboutUsBinding(),
@@ -206,6 +246,11 @@ class AppPages {
       name: AppRoutes.groupChatSetup,
       page: () => GroupSetupPage(),
       binding: GroupSetupBinding(),
+    ),
+    _pageBuilder(
+      name: AppRoutes.groupManage,
+      page: () => GroupManagePage(),
+      binding: GroupManageBinding(),
     ),
     _pageBuilder(
       name: AppRoutes.editGroupName,
@@ -303,6 +348,11 @@ class AppPages {
       binding: CreateGroupBinding(),
     ),
     _pageBuilder(
+      name: AppRoutes.globalSearch,
+      page: () => GlobalSearchPage(),
+      binding: GlobalSearchBinding(),
+    ),
+    _pageBuilder(
       name: AppRoutes.register,
       page: () => RegisterPage(),
       binding: RegisterBinding(),
@@ -321,6 +371,21 @@ class AppPages {
       name: AppRoutes.setSelfInfo,
       page: () => SetSelfInfoPage(),
       binding: SetSelfInfoBinding(),
+    ),
+    _pageBuilder(
+      name: AppRoutes.forgetPassword,
+      page: () => ForgetPasswordPage(),
+      binding: ForgetPasswordBinding(),
+    ),
+    _pageBuilder(
+      name: AppRoutes.resetPassword,
+      page: () => ResetPasswordPage(),
+      binding: ResetPasswordBinding(),
+    ),
+    _pageBuilder(
+      name: AppRoutes.oaNotificationList,
+      page: () => OANotificationPage(),
+      binding: OANotificationBinding(),
     ),
   ];
 }

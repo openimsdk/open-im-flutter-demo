@@ -174,8 +174,6 @@ class _RichTextInputBoxState extends State<RichTextInputBox> {
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: ChatTextField(
-          allAtMap: const {},
-          atCallback: (showText, actualText) {},
           controller: widget.controller,
           focusNode: widget.focusNode,
           style: Styles.ts_0C1C33_17sp,

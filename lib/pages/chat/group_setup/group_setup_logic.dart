@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
-import 'package:openim/pages/chat/group_setup/edit_name/edit_name_logic.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../core/controller/app_controller.dart';
 import '../../../core/controller/im_controller.dart';
@@ -14,6 +15,7 @@ import '../../../routes/app_navigator.dart';
 import '../../contacts/select_contacts/select_contacts_logic.dart';
 import '../../conversation/conversation_logic.dart';
 import '../chat_logic.dart';
+import 'edit_name/edit_name_logic.dart';
 import 'group_member_list/group_member_list_logic.dart';
 
 class GroupSetupLogic extends GetxController {
@@ -26,19 +28,51 @@ class GroupSetupLogic extends GetxController {
   late Rx<ConversationInfo> conversationInfo;
   late Rx<GroupInfo> groupInfo;
   late Rx<GroupMembersInfo> myGroupMembersInfo;
+  late StreamSubscription _guSub;
   late StreamSubscription _mASub;
   late StreamSubscription _mISub;
   late StreamSubscription _mDSub;
+  late StreamSubscription _ccSub;
   late StreamSubscription _jasSub;
   late StreamSubscription _jdsSub;
   final lock = Lock();
   final isJoinedGroup = false.obs;
+  final avatar = Rx<File?>(null);
 
   @override
-  void onInit() {
-    conversationInfo = Rx(Get.arguments['conversationInfo']);
+  void onInit() async {
+    if (Get.arguments['conversationInfo'] != null) {
+      conversationInfo = Rx(Get.arguments['conversationInfo']);
+    } else {
+      final temp = await OpenIM.iMManager.conversationManager.getOneConversation(
+          sourceID: chatLogic.conversationInfo.isGroupChat
+              ? chatLogic.conversationInfo.groupID!
+              : chatLogic.conversationInfo.userID!,
+          sessionType: chatLogic.conversationInfo.conversationType!);
+      conversationInfo = Rx(temp);
+    }
     groupInfo = Rx(_defaultGroupInfo);
     myGroupMembersInfo = Rx(_defaultMemberInfo);
+
+    _ccSub = imLogic.conversationChangedSubject.listen((newList) {
+      final newValue =
+          newList.firstWhereOrNull((element) => element.conversationID == conversationInfo.value.conversationID);
+      if (newValue != null) {
+        conversationInfo.update((val) {
+          val?.isPinned = newValue.isPinned;
+
+          val?.recvMsgOpt = newValue.recvMsgOpt;
+          val?.isMsgDestruct = newValue.isMsgDestruct;
+          val?.msgDestructTime = newValue.msgDestructTime;
+        });
+      }
+    });
+
+    _guSub = imLogic.groupInfoUpdatedSubject.listen((value) {
+      if (value.groupID == groupInfo.value.groupID) {
+        _updateGroupInfo(value);
+      }
+    });
 
     _jasSub = imLogic.joinedGroupAddedSubject.listen((value) {
       if (value.groupID == groupInfo.value.groupID) {
@@ -60,6 +94,21 @@ class GroupSetupLogic extends GetxController {
           val?.roleLevel = e.roleLevel;
         });
       }
+      if (e.groupID == groupInfo.value.groupID && e.userID == groupInfo.value.ownerUserID) {
+        var index = memberList.indexWhere((element) => element.userID == groupInfo.value.ownerUserID);
+        if (index == -1) {
+          memberList.insert(0, e);
+        } else if (index != 0) {
+          memberList.insert(0, memberList.removeAt(index));
+        }
+      }
+      memberList.sort((a, b) {
+        if (b.roleLevel != a.roleLevel) {
+          return b.roleLevel!.compareTo(a.roleLevel!);
+        } else {
+          return b.joinTime!.compareTo(a.joinTime!);
+        }
+      });
     });
     _mASub = imLogic.memberAddedSubject.listen((e) async {
       if (e.groupID == groupInfo.value.groupID) {
@@ -91,8 +140,10 @@ class GroupSetupLogic extends GetxController {
 
   @override
   void onClose() {
+    _guSub.cancel();
     _mASub.cancel();
     _mDSub.cancel();
+    _ccSub.cancel();
     _mISub.cancel();
     _jdsSub.cancel();
     _jasSub.cancel();
@@ -115,11 +166,9 @@ class GroupSetupLogic extends GetxController {
 
   bool get isAdmin => myGroupMembersInfo.value.roleLevel == GroupRoleLevel.admin;
 
-  bool get isOwner => groupInfo.value.ownerUserID == OpenIM.iMManager.userID;
-
-  bool get isPinned => conversationInfo.value.isPinned == true;
-
   bool get isNotDisturb => conversationInfo.value.recvMsgOpt != 0;
+
+  bool get isOwner => groupInfo.value.ownerUserID == OpenIM.iMManager.userID;
 
   String get conversationID => conversationInfo.value.conversationID;
 
@@ -189,21 +238,31 @@ class GroupSetupLogic extends GetxController {
     });
   }
 
-  void modifyGroupAvatar() {
-    IMViews.openPhotoSheet(
-      onData: (path, url) async {
-        if (url != null) {
-          await _modifyGroupInfo(faceUrl: url);
-          groupInfo.update((val) {
-            val?.faceURL = url;
-          });
-        }
-      },
+  void modifyGroupAvatar() async {
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+      Get.context!,
+      pickerConfig: const AssetPickerConfig(maxAssets: 1, requestType: RequestType.image),
     );
+    if (assets != null) {
+      final file = await assets.first.file;
+      final result = await IMViews.uCropPic(file!.path);
+
+      final path = result['path'];
+      final url = result['url'];
+
+      if (url != null) {
+        avatar.value = File(path);
+        await _modifyGroupInfo(faceUrl: url);
+        groupInfo.update((val) {
+          val?.faceURL = url;
+        });
+      }
+    }
   }
 
-  void modifyGroupName() => AppNavigator.startEditGroupName(
+  void modifyGroupName(String? faceUrl) => AppNavigator.startEditGroupName(
         type: EditNameType.groupNickname,
+        faceUrl: faceUrl,
       );
 
   _modifyGroupInfo({
@@ -211,19 +270,25 @@ class GroupSetupLogic extends GetxController {
     String? notification,
     String? introduction,
     String? faceUrl,
-  }) async {
-    final g =
-        GroupInfo(groupID: groupInfo.value.groupID, groupName: groupName, notification: notification, introduction: introduction, faceURL: faceUrl);
-    await OpenIM.iMManager.groupManager.setGroupInfo(
-      g,
-    );
-  }
+  }) =>
+      OpenIM.iMManager.groupManager.setGroupInfo(GroupInfo(
+        groupID: groupInfo.value.groupID,
+        groupName: groupName,
+        notification: notification,
+        introduction: introduction,
+        faceURL: faceUrl,
+      ));
 
   void viewGroupQrcode() => AppNavigator.startGroupQrcode();
 
   void viewGroupMembers() => AppNavigator.startGroupMemberList(
         groupInfo: groupInfo.value,
       );
+
+  void groupManage() => AppNavigator.startGroupManage(
+        groupInfo: groupInfo.value,
+      );
+
   void _removeConversation() async {
     await OpenIM.iMManager.conversationManager.deleteConversationAndDeleteAllMsg(
       conversationID: conversationInfo.value.conversationID,
@@ -301,7 +366,29 @@ class GroupSetupLogic extends GetxController {
     }
   }
 
-  void addMember() async {
+  void toggleNotDisturb() {
+    LoadingView.singleton.wrap(
+        asyncFunction: () => OpenIM.iMManager.conversationManager.setConversationRecvMessageOpt(
+              conversationID: conversationID,
+              status: !isNotDisturb ? 2 : 0,
+            ));
+  }
+
+  void clearChatHistory() async {
+    var confirm = await Get.dialog(CustomDialog(
+      title: StrRes.confirmClearChatHistory,
+      rightText: StrRes.clearAll,
+    ));
+    if (confirm == true) {
+      await OpenIM.iMManager.conversationManager.clearConversationAndDeleteAllMsg(
+        conversationID: conversationID,
+      );
+      chatLogic.clearAllMessage();
+      IMViews.showToast(StrRes.clearSuccessfully);
+    }
+  }
+
+  addMember() async {
     final result = await AppNavigator.startSelectContacts(
       action: SelAction.addMember,
       groupID: groupInfo.value.groupID,
@@ -309,31 +396,35 @@ class GroupSetupLogic extends GetxController {
 
     final list = IMUtils.convertSelectContactsResultToUserID(result);
     if (list is List<String>) {
-      await LoadingView.singleton.wrap(
-        asyncFunction: () => OpenIM.iMManager.groupManager.inviteUserToGroup(
-          groupID: groupInfo.value.groupID,
-          userIDList: list,
-          reason: 'Come on baby',
-        ),
-      );
+      try {
+        await LoadingView.singleton.wrap(
+          asyncFunction: () => OpenIM.iMManager.groupManager.inviteUserToGroup(
+            groupID: groupInfo.value.groupID,
+            userIDList: list,
+            reason: 'Come on baby',
+          ),
+        );
+      } catch (_) {}
       getGroupMembers();
     }
   }
 
-  void removeMember() async {
+  removeMember() async {
     final list = await AppNavigator.startGroupMemberList(
       groupInfo: groupInfo.value,
       opType: GroupMemberOpType.del,
     );
     if (list is List<GroupMembersInfo>) {
       var removeUidList = list.map((e) => e.userID!).toList();
-      await LoadingView.singleton.wrap(
-        asyncFunction: () => OpenIM.iMManager.groupManager.kickGroupMember(
-          groupID: groupInfo.value.groupID,
-          userIDList: removeUidList,
-          reason: 'Get out baby',
-        ),
-      );
+      try {
+        await LoadingView.singleton.wrap(
+          asyncFunction: () => OpenIM.iMManager.groupManager.kickGroupMember(
+            groupID: groupInfo.value.groupID,
+            userIDList: removeUidList,
+            reason: 'Get out baby',
+          ),
+        );
+      } catch (_) {}
       getGroupMembers();
     }
   }

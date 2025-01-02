@@ -8,7 +8,8 @@ import '../../core/controller/im_controller.dart';
 import '../home/home_logic.dart';
 import 'select_contacts/select_contacts_logic.dart';
 
-class ContactsLogic extends GetxController implements ViewUserProfileBridge, SelectContactsBridge, ScanBridge {
+class ContactsLogic extends GetxController
+    implements ViewUserProfileBridge, SelectContactsBridge, ScanBridge {
   final imLogic = Get.find<IMController>();
   final homeLogic = Get.find<HomeLogic>();
 
@@ -58,7 +59,7 @@ class ContactsLogic extends GetxController implements ViewUserProfileBridge, Sel
     String? ex,
   }) =>
       AppNavigator.startSelectContacts(
-        action: type == 0 ? SelAction.whoCanWatch : (type == 1 ? SelAction.remindWhoToWatch : SelAction.meeting),
+        action: SelAction.values[type],
         defaultCheckedIDList: defaultCheckedIDList,
         checkedList: checkedList,
         excludeIDList: excludeIDList,
@@ -68,7 +69,8 @@ class ContactsLogic extends GetxController implements ViewUserProfileBridge, Sel
       );
 
   @override
-  viewUserProfile(String userID, String? nickname, String? faceURL, [String? groupID]) => AppNavigator.startUserProfilePane(
+  viewUserProfile(String userID, String? nickname, String? faceURL, [String? groupID]) =>
+      AppNavigator.startUserProfilePane(
         userID: userID,
         nickname: nickname,
         faceURL: faceURL,

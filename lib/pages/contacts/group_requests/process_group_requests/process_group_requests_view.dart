@@ -37,8 +37,7 @@ class ProcessGroupRequestsPage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    (logic.applicationInfo.nickname ?? '').toText
-                      ..style = Styles.ts_0C1C33_17sp,
+                    (logic.applicationInfo.nickname ?? '').toText..style = Styles.ts_0C1C33_17sp,
                     RichText(
                       text: TextSpan(
                         text: StrRes.applyJoin,
@@ -74,8 +73,7 @@ class ProcessGroupRequestsPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      (logic.applicationInfo.reqMsg ?? '').toText
-                        ..style = Styles.ts_0C1C33_17sp,
+                      (logic.applicationInfo.reqMsg ?? '').toText..style = Styles.ts_0C1C33_17sp,
                     ],
                   ),
                 ),
@@ -83,8 +81,7 @@ class ProcessGroupRequestsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                sprintf(StrRes.sourceFrom, [logic.sourceFrom]).toText
-                  ..style = Styles.ts_8E9AB0_14sp
+                sprintf(StrRes.sourceFrom, [logic.sourceFrom]).toText..style = Styles.ts_8E9AB0_14sp
               ],
             ),
             12.verticalSpace,

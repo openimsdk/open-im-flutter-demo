@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,8 +38,7 @@ class WaterMarkBgView extends StatelessWidget {
         alignment: Alignment.center,
         fit: StackFit.expand,
         children: [
-          if (path?.isNotEmpty == true)
-            Image.file(File(path!), fit: BoxFit.cover),
+          if (path?.isNotEmpty == true) Image.file(File(path!), fit: BoxFit.cover),
           if (text.isNotEmpty) _buildWaterMarkTextView(context: context),
           Column(
             children: [
@@ -69,7 +69,11 @@ class WaterMarkBgView extends StatelessWidget {
   }
 
   Widget _buildWaterMarkTextView({required BuildContext context}) {
-    var style = textStyle ?? Styles.ts_8E9AB0_opacity50_17sp;
+    var style = textStyle ??
+        TextStyle(
+          color: Color(0x707070).withOpacity(0.25),
+          fontSize: 16.sp,
+        );
     double screenW = MediaQuery.of(context).size.width;
     double screenH = MediaQuery.of(context).size.height;
     var size = _textSize(text, style);
@@ -84,35 +88,33 @@ class WaterMarkBgView extends StatelessWidget {
 
     List<Widget> children = List.filled(
       columnCount * rowCount,
-      Text(
-        text,
-        style: style,
-        textAlign: TextAlign.center,
-        maxLines: 1,
-      ),
+      Transform.rotate(
+          angle: -15 * pi / 180,
+          child: Text(
+            text,
+            style: style,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+          )),
     );
-    return Transform(
-      transform: Matrix4.skewY(-0.6),
+    return ClipRect(
       child: OverflowBox(
-        maxWidth: maxW,
-        maxHeight: maxH,
-        alignment: Alignment.center,
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          spacing: 50.w,
-          runSpacing: 100.h,
-          children: children,
-        ),
-      ),
+          maxWidth: maxW,
+          maxHeight: maxH,
+          alignment: Alignment.center,
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            spacing: 40.w,
+            runSpacing: 70.h,
+            children: children,
+          )),
     );
   }
 
   Size _textSize(String text, TextStyle style) {
-    final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: style),
-        maxLines: 1,
-        textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: double.infinity);
+    final TextPainter textPainter =
+        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)
+          ..layout(minWidth: 0, maxWidth: double.infinity);
     return textPainter.size;
   }
 }

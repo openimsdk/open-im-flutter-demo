@@ -3,6 +3,7 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'group_list_logic.dart';
@@ -38,9 +39,7 @@ class GroupListPage extends StatelessWidget {
           ),
           Expanded(
             child: Obx(
-              () => logic.index.value == 0
-                  ? _buildICreatedListView()
-                  : _buildIJoinedListView(),
+              () => logic.index.value == 0 ? _buildICreatedListView() : _buildIJoinedListView(),
             ),
           ),
         ],
@@ -48,14 +47,36 @@ class GroupListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildICreatedListView() => ListView.builder(
-        itemCount: logic.iCreatedList.length,
-        itemBuilder: (_, index) => _buildItemView(logic.iCreatedList[index]),
+  Widget _buildICreatedListView() => SmartRefresher(
+        key: logic.iCreateGlobalKey,
+        controller: logic.iCreateRefreshController,
+        header: IMViews.buildHeader(30),
+        footer: IMViews.buildFooter(),
+        enablePullUp: true,
+        enablePullDown: true,
+        onRefresh: logic.iCreatedInitial,
+        onLoading: logic.iCreatedLoadMore,
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: logic.iCreatedList.length,
+          itemBuilder: (_, index) => _buildItemView(logic.iCreatedList[index]),
+        ),
       );
 
-  Widget _buildIJoinedListView() => ListView.builder(
-        itemCount: logic.iJoinedList.length,
-        itemBuilder: (_, index) => _buildItemView(logic.iJoinedList[index]),
+  Widget _buildIJoinedListView() => SmartRefresher(
+        key: logic.iJoinGlobalKey,
+        controller: logic.iJoinRefreshController,
+        header: IMViews.buildHeader(30),
+        footer: IMViews.buildFooter(),
+        enablePullUp: true,
+        enablePullDown: true,
+        onRefresh: logic.iJoinedInitial,
+        onLoading: logic.iJoinedLoadMore,
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: logic.iJoinedList.length,
+          itemBuilder: (_, index) => _buildItemView(logic.iJoinedList[index]),
+        ),
       );
 
   Widget _buildItemView(GroupInfo info) => Ink(
@@ -77,10 +98,8 @@ class GroupListPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    (info.groupName ?? '').toText
-                      ..style = Styles.ts_0C1C33_17sp,
-                    sprintf(StrRes.nPerson, [info.memberCount]).toText
-                      ..style = Styles.ts_8E9AB0_14sp,
+                    (info.groupName ?? '').toText..style = Styles.ts_0C1C33_17sp,
+                    sprintf(StrRes.nPerson, [info.memberCount]).toText..style = Styles.ts_8E9AB0_14sp,
                   ],
                 ),
               ],

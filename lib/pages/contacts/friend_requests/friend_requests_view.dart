@@ -65,13 +65,13 @@ class FriendRequestsPage extends StatelessWidget {
               ],
             ),
           ),
-          if (isISendRequest)
+          if (/*info.isWaitingHandle && */ isISendRequest)
             ImageRes.sendRequests.toImage
               ..width = 20.w
               ..height = 20.h,
           if (info.isWaitingHandle && !isISendRequest)
             Button(
-              text: StrRes.accept,
+              text: StrRes.lookOver,
               textStyle: Styles.ts_FFFFFF_14sp,
               onTap: () => logic.acceptFriendApplication(info),
               height: 28.h,

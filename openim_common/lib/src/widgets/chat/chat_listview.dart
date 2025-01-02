@@ -125,13 +125,9 @@ class _CustomChatListViewState extends State<CustomChatListView> {
 
   bool _topHasMore = true;
 
-  bool get _isBottom =>
-      widget.scrollController!.offset ==
-      widget.scrollController!.position.maxScrollExtent;
+  bool get _isBottom => widget.scrollController!.offset == widget.scrollController!.position.maxScrollExtent;
 
-  bool get _isTop =>
-      widget.scrollController!.offset ==
-      widget.scrollController!.position.minScrollExtent;
+  bool get _isTop => widget.scrollController!.offset == widget.scrollController!.position.minScrollExtent;
 
   @override
   void initState() {
@@ -195,8 +191,7 @@ class _CustomChatListViewState extends State<CustomChatListView> {
       controller: widget.scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
-        if (_topHasMore && widget.enabledTopLoad)
-          SliverToBoxAdapter(child: _buildLoadMoreView()),
+        if (_topHasMore && widget.enabledTopLoad) SliverToBoxAdapter(child: _buildLoadMoreView()),
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (_, index) {
@@ -204,8 +199,7 @@ class _CustomChatListViewState extends State<CustomChatListView> {
                 context,
                 index,
                 widget.controller.topList.length - index - 1,
-                widget.controller.topList
-                    .elementAt(widget.controller.topList.length - 1 - index),
+                widget.controller.topList.elementAt(widget.controller.topList.length - 1 - index),
               );
             },
             childCount: widget.controller.topList.length,
@@ -225,8 +219,7 @@ class _CustomChatListViewState extends State<CustomChatListView> {
             childCount: widget.controller.bottomList.length,
           ),
         ),
-        if (_bottomHasMore && widget.enabledBottomLoad)
-          SliverToBoxAdapter(child: _buildLoadMoreView()),
+        if (_bottomHasMore && widget.enabledBottomLoad) SliverToBoxAdapter(child: _buildLoadMoreView()),
       ],
     );
   }
@@ -268,8 +261,7 @@ class _ChatListViewState extends State<ChatListView> {
   bool _scrollToBottomLoadMore = true;
   bool _scrollToTopLoadMore = true;
 
-  bool get _isBottom =>
-      widget.controller!.offset >= widget.controller!.position.maxScrollExtent;
+  bool get _isBottom => widget.controller!.offset >= widget.controller!.position.maxScrollExtent;
 
   bool get _isTop => widget.controller!.offset <= 0;
 
@@ -346,14 +338,10 @@ class _ChatListViewState extends State<ChatListView> {
   Widget _wrapLoadMoreItem(int index) {
     final child = widget.itemBuilder(context, index);
     if (index == widget.itemCount! - 1) {
-      return _scrollToBottomLoadMore
-          ? Column(children: [loadMoreView, child])
-          : child;
+      return _scrollToBottomLoadMore ? Column(children: [loadMoreView, child]) : child;
     }
     if (index == 0 && widget.enabledScrollTopLoad) {
-      return _scrollToTopLoadMore
-          ? Column(children: [child, loadMoreView])
-          : child;
+      return _scrollToTopLoadMore ? Column(children: [child, loadMoreView]) : child;
     }
     return child;
   }
@@ -388,9 +376,7 @@ class PositionRetainedScrollPhysics extends ClampingScrollPhysics {
 
     final diff = newPosition.maxScrollExtent - oldPosition.maxScrollExtent;
 
-    if (oldPosition.pixels > oldPosition.minScrollExtent &&
-        diff > 0 &&
-        shouldRetain) {
+    if (oldPosition.pixels > oldPosition.minScrollExtent && diff > 0 && shouldRetain) {
       return position + diff;
     } else {
       return position;

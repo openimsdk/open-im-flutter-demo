@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="cn.rentsoft.flutter.openim.consumer">
+    package="cn.rentsoft.flutter.openim.business">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -34,6 +35,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
 
     <uses-permission
         android:name="android.permission.BLUETOOTH"
@@ -53,6 +56,11 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
+    
     <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
         <intent>
@@ -70,12 +78,12 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="OpenM(3)"
+        android:label="F-DEMO"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
-            android:name="cn.rentsoft.flutter.openim.consumer.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
@@ -136,22 +144,17 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
-        <provider
-            android:name="com.pichillilorenzo.flutter_inappwebview.InAppWebViewFileProvider"
-            android:authorities="${applicationId}.flutter_inappwebview.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+        <!-- <provider android:name="com.pichillilorenzo.flutter_inappwebview_android.InAppWebViewFileProvider" 
+                android:authorities="${applicationId}.flutter_inappwebview_android.fileprovider" 
+                android:exported="false" android:grantUriPermissions="true"> 
+                <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/provider_paths" /> 
+        </provider> -->
 
 
-        <service
-            android:name="de.julianassmann.flutter_background.IsolateHolderService"
-            android:enabled="true"
-            android:exported="false"
+        <service android:name="de.julianassmann.flutter_background.IsolateHolderService"
             android:foregroundServiceType="mediaProjection"
-            tools:targetApi="q" />
+            tools:targetApi="q"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 </manifest>

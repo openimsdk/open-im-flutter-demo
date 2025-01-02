@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
@@ -7,7 +8,6 @@ import 'edit_my_info_logic.dart';
 
 class EditMyInfoPage extends StatelessWidget {
   final logic = Get.find<EditMyInfoLogic>();
-
   EditMyInfoPage({super.key});
 
   @override
@@ -34,6 +34,7 @@ class EditMyInfoPage extends StatelessWidget {
               style: Styles.ts_0C1C33_17sp,
               autofocus: true,
               keyboardType: logic.keyboardType,
+              inputFormatters: [LengthLimitingTextInputFormatter(logic.maxLength)],
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,

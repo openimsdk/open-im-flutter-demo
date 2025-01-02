@@ -25,8 +25,7 @@ class SearchGroupLogic extends GetxController {
     super.onClose();
   }
 
-  bool get isSearchNotResult =>
-      searchCtrl.text.trim().isNotEmpty && resultList.isEmpty;
+  bool get isSearchNotResult => searchCtrl.text.trim().isNotEmpty && resultList.isEmpty;
 
   _clearInput() {
     final key = searchCtrl.text.trim();
@@ -35,18 +34,12 @@ class SearchGroupLogic extends GetxController {
     }
   }
 
-  search() {
+  search() async {
     var key = searchCtrl.text.trim();
+
+    final result = await OpenIM.iMManager.groupManager.searchGroups(keywordList: [key], isSearchGroupName: true);
     resultList.clear();
-    if (key.isNotEmpty) {
-      for (var element in logic.allList) {
-        if ((element.groupName ?? '')
-            .toUpperCase()
-            .contains(key.toUpperCase())) {
-          resultList.add(element);
-        }
-      }
-    }
+    resultList.addAll(result);
   }
 
   void toGroupChat(GroupInfo info) {

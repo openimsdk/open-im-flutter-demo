@@ -5,10 +5,7 @@ class QrScanBoxPainter extends CustomPainter {
   final bool isForward;
   final Color boxLineColor;
 
-  QrScanBoxPainter(
-      {required this.animationValue,
-      required this.isForward,
-      required this.boxLineColor});
+  QrScanBoxPainter({required this.animationValue, required this.isForward, required this.boxLineColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -40,8 +37,7 @@ class QrScanBoxPainter extends CustomPainter {
 
     path.moveTo(size.width, size.height - 50);
     path.lineTo(size.width, size.height - 12);
-    path.quadraticBezierTo(
-        size.width, size.height, size.width - 12, size.height);
+    path.quadraticBezierTo(size.width, size.height, size.width - 12, size.height);
     path.lineTo(size.width - 50, size.height);
 
     path.moveTo(50, size.height);
@@ -51,8 +47,7 @@ class QrScanBoxPainter extends CustomPainter {
 
     canvas.drawPath(path, borderPaint);
 
-    canvas.clipRRect(const BorderRadius.all(Radius.circular(12))
-        .toRRect(Offset.zero & size));
+    canvas.clipRRect(const BorderRadius.all(Radius.circular(12)).toRRect(Offset.zero & size));
 
     final linePaint = Paint();
     final lineSize = size.height * 0.45;
@@ -86,10 +81,8 @@ class QrScanBoxPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(QrScanBoxPainter oldDelegate) =>
-      animationValue != oldDelegate.animationValue;
+  bool shouldRepaint(QrScanBoxPainter oldDelegate) => animationValue != oldDelegate.animationValue;
 
   @override
-  bool shouldRebuildSemantics(QrScanBoxPainter oldDelegate) =>
-      animationValue != oldDelegate.animationValue;
+  bool shouldRebuildSemantics(QrScanBoxPainter oldDelegate) => animationValue != oldDelegate.animationValue;
 }

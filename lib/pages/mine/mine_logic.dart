@@ -1,15 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:openim/core/im_callback.dart';
+import 'package:openim/pages/home/home_logic.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../../core/controller/im_controller.dart';
-import '../../core/controller/push_controller.dart';
 import '../../routes/app_navigator.dart';
 
 class MineLogic extends GetxController {
   final imLogic = Get.find<IMController>();
-  final pushLogic = Get.find<PushController>();
+
   late StreamSubscription kickedOfflineSub;
 
   void viewMyQrcode() => AppNavigator.startMyQrcode();
@@ -31,7 +33,8 @@ class MineLogic extends GetxController {
         await LoadingView.singleton.wrap(asyncFunction: () async {
           await imLogic.logout();
           await DataSp.removeLoginCertificate();
-          pushLogic.logout();
+          PushController.logout();
+          Get.find<HomeLogic>().conversationsAtFirstPage.clear();
         });
         AppNavigator.startLogin();
       } catch (e) {
@@ -40,18 +43,24 @@ class MineLogic extends GetxController {
     }
   }
 
-  void kickedOffline() async {
-    Get.snackbar(StrRes.accountWarn, StrRes.accountException);
-    PackageBridge.rtcBridge?.dismiss();
+  void kickedOffline({String? tips}) async {
+    if (EasyLoading.isShow) {
+      EasyLoading.dismiss();
+    }
+    Get.snackbar(StrRes.accountWarn, tips ?? StrRes.accountException);
     await DataSp.removeLoginCertificate();
-    pushLogic.logout();
+    PushController.logout();
     AppNavigator.startLogin();
   }
 
   @override
   void onInit() {
     kickedOfflineSub = imLogic.onKickedOfflineSubject.listen((value) {
-      kickedOffline();
+      if (value == KickoffType.userTokenInvalid) {
+        kickedOffline(tips: StrRes.tokenInvalid);
+      } else {
+        kickedOffline();
+      }
     });
     super.onInit();
   }

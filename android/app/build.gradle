@@ -21,6 +21,9 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+subprojects { afterEvaluate { android { compileSdkVersion 34 } } }
+
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -36,7 +39,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "cn.rentsoft.flutter.openim.consumer"
+        applicationId "io.openim.flutter.demo"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 24
@@ -106,8 +109,53 @@ android {
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
-                outputFileName = "OpenIM_${versionName}(${versionCode})_${buildType.name}_${buildTime()}.apk"
+                outputFileName = "F-DEMO_${versionName}(${versionCode})_${buildType.name}_${buildTime()}.apk"
             }
+    }
+
+    packagingOptions {
+      // other options here
+
+      /* Fix for ffmpeg-kit-react-native START */
+        pickFirst 'lib/arm64-v8a/libgojni.so'
+        pickFirst 'lib/armeabi-v7a/libgojni.so'
+        pickFirst 'lib/x86/libgojni.so'
+        pickFirst 'lib/x86_64/libgojni.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libavcodec.so'
+        pickFirst 'lib/arm64-v8a/libavformat.so'
+        pickFirst 'lib/arm64-v8a/libavutil.so'
+        pickFirst 'lib/arm64-v8a/libswscale.so'
+        pickFirst 'lib/arm64-v8a/libavdevice.so'
+        pickFirst 'lib/arm64-v8a/libavfilter.so'
+        pickFirst 'lib/arm64-v8a/libffmpegkit.so'
+        pickFirst 'lib/arm64-v8a/libffmpegkit_abidetect.so'
+        pickFirst 'lib/arm64-v8a/libswresample.so'
+        pickFirst 'lib/arm64-v8a/libswscale.so'
+        pickFirst 'lib/x86/libavcodec.so'
+        pickFirst 'lib/x86/libavformat.so'
+        pickFirst 'lib/x86/libavutil.so'
+        pickFirst 'lib/x86/libswscale.so'
+        pickFirst 'lib/x86/libavdevice.so'
+        pickFirst 'lib/x86/libavfilter.so'
+        pickFirst 'lib/x86/libffmpegkit.so'
+        pickFirst 'lib/x86/libffmpegkit_abidetect.so'
+        pickFirst 'lib/x86/libswresample.so'
+        pickFirst 'lib/x86/libswscale.so'
+        pickFirst 'lib/x86_64/libavcodec.so'
+        pickFirst 'lib/x86_64/libavformat.so'
+        pickFirst 'lib/x86_64/libavutil.so'
+        pickFirst 'lib/x86_64/libswscale.so'
+        pickFirst 'lib/x86_64/libavdevice.so'
+        pickFirst 'lib/x86_64/libavfilter.so'
+        pickFirst 'lib/x86_64/libffmpegkit.so'
+        pickFirst 'lib/x86_64/libffmpegkit_abidetect.so'
+        pickFirst 'lib/x86_64/libswresample.so'
+        pickFirst 'lib/x86_64/libswscale.so'
+      /* Fix for ffmpeg-kit-react-native END */
     }
 }
 
@@ -117,22 +165,26 @@ flutter {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    // 个推
+    implementation 'com.getui:gtsdk:3.3.7.0'  //个推SDK
+    implementation 'com.getui:gtc:3.2.16.0'  //个推核心组件
+    // 根据所需厂商选择集成
     implementation 'com.huawei.hms:push:6.12.0.300'
-    implementation 'com.getui.opt:hwp:3.1.0'   // huawei
-    implementation 'com.getui.opt:xmp:3.2.0'   // mi
+    implementation 'com.getui.opt:hwp:3.1.0'   // 华为
+    implementation 'com.getui.opt:xmp:3.2.0'   // 小米
     implementation('com.assist-v3:oppo:3.1.0') {
         exclude group: 'commons-codec'
     }   // oppo
     implementation 'com.assist-v3:vivo:3.1.0'  // vivo
-    implementation 'com.getui.opt:mzp:3.2.0'   // meizu
-    implementation 'com.getui.opt:ups:3.0.3'   // ups，ups
-    implementation 'com.getui.opt:honor:3.2.0' // honor
+    implementation 'com.getui.opt:mzp:3.2.0'   // 魅族
+    implementation 'com.getui.opt:ups:3.0.3'   // ups，ups目前支持坚果，索尼，海信手机
+    implementation 'com.getui.opt:honor:3.2.0' // 荣耀
 
-    implementation 'com.android.support:multidex:2.0.1' //enter the latest multidex version
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation platform("com.google.firebase:firebase-bom:33.7.0")
+    implementation "com.google.firebase:firebase-messaging" // FCM
 }
-
-//apply plugin: 'com.huawei.agconnect'
-//apply plugin: 'com.google.gms.google-services'
 
 static def buildTime() {
     return new Date().format("MMddHHmm", TimeZone.getTimeZone("GMT+08:00"))

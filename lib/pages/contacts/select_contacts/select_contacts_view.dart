@@ -54,8 +54,7 @@ class SelectContactsPage extends StatelessWidget {
                           height: 29.h,
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: StrRes.recentConversations.toText
-                            ..style = Styles.ts_8E9AB0_12sp,
+                          child: StrRes.recentConversations.toText..style = Styles.ts_8E9AB0_12sp,
                         ),
                       ),
                     SliverFixedExtentList(
@@ -171,8 +170,7 @@ class CheckedConfirmView extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          sprintf(StrRes.selectedPeopleCount,
-                              [logic.checkedList.length]).toText
+                          sprintf(StrRes.selectedPeopleCount, [logic.checkedList.length]).toText
                             ..style = Styles.ts_0089FF_14sp,
                           ImageRes.expandUpArrow.toImage
                             ..width = 24.w
@@ -231,8 +229,7 @@ class SelectedContactsListView extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    sprintf(StrRes.selectedPeopleCount,
-                        [logic.checkedList.length]).toText
+                    sprintf(StrRes.selectedPeopleCount, [logic.checkedList.length]).toText
                       ..style = Styles.ts_0C1C33_17sp_medium,
                     const Spacer(),
                     GestureDetector(
@@ -241,8 +238,7 @@ class SelectedContactsListView extends StatelessWidget {
                       child: Container(
                         height: 52.h,
                         alignment: Alignment.center,
-                        child: StrRes.confirm.toText
-                          ..style = Styles.ts_0089FF_17sp,
+                        child: StrRes.confirm.toText..style = Styles.ts_0089FF_17sp,
                       ),
                     ),
                   ],
@@ -269,9 +265,13 @@ class SelectedContactsListView extends StatelessWidget {
     faceURL = SelectContactsLogic.parseFaceURL(info);
     if (info is ConversationInfo) {
       isGroup = !info.isSingleChat;
-    }else
-    if (info is GroupInfo) {
+    } else if (info is GroupInfo) {
       isGroup = true;
+      name = info.groupName;
+      faceURL = info.faceURL;
+    } else if (info is UserInfo) {
+      name = info.nickname;
+      faceURL = info.faceURL;
     }
     return Container(
       height: 64.h,

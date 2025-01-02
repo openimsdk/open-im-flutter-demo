@@ -47,7 +47,7 @@ class ImageUtil {
         borderRadius: borderRadius,
         cacheWidth: _calculateCacheWidth(width, cacheWidth, lowMemory),
         cacheHeight: _calculateCacheHeight(height, cacheHeight, lowMemory),
-        cache: true,
+        cacheRawData: true,
         clearMemoryCacheWhenDispose: clearMemoryCacheWhenDispose,
         handleLoadingProgress: true,
         clearMemoryCacheIfFailed: true,
@@ -56,11 +56,9 @@ class ImageUtil {
             case LoadState.loading:
               {
                 final ImageChunkEvent? loadingProgress = state.loadingProgress;
-                final double? progress =
-                    loadingProgress?.expectedTotalBytes != null
-                        ? loadingProgress!.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null;
+                final double? progress = loadingProgress?.expectedTotalBytes != null
+                    ? loadingProgress!.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                    : null;
 
                 return SizedBox(
                   width: 15.0,
@@ -114,16 +112,15 @@ class ImageUtil {
         cacheHeight: _calculateCacheHeight(height, cacheHeight, lowMemory),
         clearMemoryCacheWhenDispose: clearMemoryCacheWhenDispose,
         clearMemoryCacheIfFailed: true,
+        cacheRawData: true,
         loadStateChanged: (ExtendedImageState state) {
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               {
                 final ImageChunkEvent? loadingProgress = state.loadingProgress;
-                final double? progress =
-                    loadingProgress?.expectedTotalBytes != null
-                        ? loadingProgress!.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null;
+                final double? progress = loadingProgress?.expectedTotalBytes != null
+                    ? loadingProgress!.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                    : null;
 
                 return SizedBox(
                   width: 15.0,

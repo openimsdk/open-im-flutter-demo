@@ -182,6 +182,9 @@ class ImageRes {
   static const toolboxCard1 = "$_dir/ic_toolbox_card1.webp";
   static const toolboxFile1 = "$_dir/ic_toolbox_file1.webp";
   static const toolboxLocation1 = "$_dir/ic_toolbox_location1.webp";
+  static const toolboxDirectionalMessage = "$_dir/ic_toolbox_directional_message.webp";
   static const tagIcon = "$_dir/ic_tag_icon.webp";
   static const momentsIcon = "$_dir/ic_moments.webp";
+  static const forwardIcon = '$_dir/ic_forward_icon.webp';
+  static const saveIcon = '$_dir/ic_save_icon.webp';
 }

@@ -13,12 +13,13 @@ class DataSp {
   static const _language = "language";
   static const _groupApplication = "%s_groupApplication";
   static const _friendApplication = "%s_friendApplication";
-  static const _enabledVibration = 'enabledVibration';
-  static const _enabledRing = 'enabledRing';
+
   static const _screenPassword = '%s_screenPassword';
   static const _enabledBiometric = '%s_enabledBiometric';
   static const _chatFontSizeFactor = '%s_chatFontSizeFactor';
-  static const _chatBackground = '%s_chatBackground';
+  static const _chatBackground = '%s_chatBackground_%s';
+  static const _loginType = 'loginType';
+  static const _meetingInProgress = '%_meetingInProgress';
 
   DataSp._();
 
@@ -26,8 +27,8 @@ class DataSp {
     await SpUtil().init();
   }
 
-  static String getKey(String key) {
-    return sprintf(key, [OpenIM.iMManager.userID]);
+  static String getKey(String key, {String key2 = ""}) {
+    return sprintf(key, [OpenIM.iMManager.userID, key2]);
   }
 
   static String? get imToken => getLoginCertificate()?.imToken;
@@ -45,8 +46,7 @@ class DataSp {
   }
 
   static LoginCertificate? getLoginCertificate() {
-    return SpUtil()
-        .getObj(_loginCertificate, (v) => LoginCertificate.fromJson(v.cast()));
+    return SpUtil().getObj(_loginCertificate, (v) => LoginCertificate.fromJson(v.cast()));
   }
 
   static Future<bool>? removeLoginCertificate() {
@@ -98,13 +98,11 @@ class DataSp {
     return SpUtil().getInt(_language);
   }
 
-  static Future<bool>? putHaveReadUnHandleGroupApplication(
-      List<String> idList) {
+  static Future<bool>? putHaveReadUnHandleGroupApplication(List<String> idList) {
     return SpUtil().putStringList(getKey(_groupApplication), idList);
   }
 
-  static Future<bool>? putHaveReadUnHandleFriendApplication(
-      List<String> idList) {
+  static Future<bool>? putHaveReadUnHandleFriendApplication(List<String> idList) {
     return SpUtil().putStringList(getKey(_friendApplication), idList);
   }
 
@@ -151,15 +149,37 @@ class DataSp {
     )!;
   }
 
-  static Future<bool>? putChatBackground(String path) {
-    return SpUtil().putString(getKey(_chatBackground), path);
+  static Future<bool>? putChatBackground(String toUid, String path) {
+    return SpUtil().putString(getKey(_chatBackground, key2: toUid), path);
   }
 
-  static String? getChatBackground() {
-    return SpUtil().getString(getKey(_chatBackground));
+  static String? getChatBackground(String toUid) {
+    return SpUtil().getString(getKey(_chatBackground, key2: toUid));
   }
 
-  static Future<bool>? clearChatBackground() {
-    return SpUtil().remove(getKey(_chatBackground));
+  static Future<bool>? clearChatBackground(String toUid) {
+    return SpUtil().remove(getKey(_chatBackground, key2: toUid));
+  }
+
+  static Future<bool>? putLoginType(int type) {
+    return SpUtil().putInt(_loginType, type);
+  }
+
+  static int getLoginType() {
+    return SpUtil().getInt(_loginType) ?? 0;
+  }
+
+  static Future<bool>? putMeetingInProgress(String meetingID) {
+    return SpUtil().putString(getKey(_meetingInProgress), meetingID);
+  }
+
+  static String? getMeetingInProgress() {
+    return SpUtil().getString(
+      getKey(_meetingInProgress),
+    );
+  }
+
+  static Future<bool>? removeMeetingInProgress() {
+    return SpUtil().remove(getKey(_meetingInProgress));
   }
 }

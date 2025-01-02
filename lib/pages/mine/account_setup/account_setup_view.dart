@@ -18,25 +18,72 @@ class AccountSetupPage extends StatelessWidget {
         title: StrRes.accountSetup,
       ),
       backgroundColor: Styles.c_F8F9FA,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            10.verticalSpace,
-            _buildItemView(
-              label: StrRes.blacklist,
-              onTap: logic.blacklist,
-              showRightArrow: true,
+      body: Obx(() => SingleChildScrollView(
+            child: Column(
+              children: [
+                10.verticalSpace,
+                _buildItemView(
+                  label: StrRes.notDisturbMode,
+                  switchOn: logic.isGlobalNotDisturb,
+                  onChanged: (_) => logic.toggleNotDisturbMode(),
+                  showSwitchButton: true,
+                  isTopRadius: true,
+                ),
+                _buildItemView(
+                  label: StrRes.allowRing,
+                  switchOn: logic.isAllowBeep,
+                  onChanged: (_) => logic.toggleBeep(),
+                  showSwitchButton: true,
+                ),
+                _buildItemView(
+                  label: StrRes.allowVibrate,
+                  switchOn: logic.isAllowVibration,
+                  onChanged: (_) => logic.toggleVibration(),
+                  showSwitchButton: true,
+                  isBottomRadius: true,
+                ),
+                10.verticalSpace,
+                _buildItemView(
+                  label: StrRes.forbidAddMeToFriend,
+                  switchOn: !logic.isAllowAddFriend,
+                  onChanged: (_) => logic.toggleForbidAddMeToFriend(),
+                  showSwitchButton: true,
+                  isTopRadius: true,
+                ),
+                _buildItemView(
+                  label: StrRes.blacklist,
+                  onTap: logic.blacklist,
+                  showRightArrow: true,
+                ),
+                _buildItemView(
+                  label: StrRes.languageSetup,
+                  value: logic.curLanguage.value,
+                  onTap: logic.languageSetting,
+                  showRightArrow: true,
+                  isBottomRadius: true,
+                ),
+                10.verticalSpace,
+                _buildItemView(
+                  label: StrRes.unlockSettings,
+                  onTap: logic.unlockSetup,
+                  showRightArrow: true,
+                  isTopRadius: true,
+                ),
+                _buildItemView(
+                  label: StrRes.changePassword,
+                  showRightArrow: true,
+                  onTap: logic.changePwd,
+                ),
+                _buildItemView(
+                  label: StrRes.clearChatHistory,
+                  textStyle: Styles.ts_FF381F_17sp,
+                  onTap: logic.clearChatHistory,
+                  showRightArrow: true,
+                  isBottomRadius: true,
+                ),
+              ],
             ),
-            _buildItemView(
-              label: StrRes.clearChatHistory,
-              textStyle: Styles.ts_FF381F_17sp,
-              onTap: logic.clearChatHistory,
-              showRightArrow: true,
-              isBottomRadius: true,
-            ),
-          ],
-        ),
-      ),
+          )),
     );
   }
 

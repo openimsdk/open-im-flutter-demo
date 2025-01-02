@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
-import 'package:openim_common/openim_common.dart';
+import 'package:openim_common/openim_common.dart' hide UserInfo;
 
 class TagNotification {
   String? id;
@@ -11,24 +11,12 @@ class TagNotification {
   int? sendTime;
   String? content;
 
-  TagNotification(
-      {this.id,
-      this.tags,
-      this.users,
-      this.groups,
-      this.content,
-      this.sendTime});
+  TagNotification({this.id, this.tags, this.users, this.groups, this.content, this.sendTime});
 
   TagNotification.fromJson(Map<String, dynamic> json) {
-    tags = null != json['tags']
-        ? (json['tags'] as List).map((e) => TagInfo.fromJson(e)).toList()
-        : null;
-    users = null != json['users']
-        ? (json['users'] as List).map((e) => UserInfo.fromJson(e)).toList()
-        : null;
-    groups = null != json['groups']
-        ? (json['groups'] as List).map((e) => GroupInfo.fromJson(e)).toList()
-        : null;
+    tags = null != json['tags'] ? (json['tags'] as List).map((e) => TagInfo.fromJson(e)).toList() : null;
+    users = null != json['users'] ? (json['users'] as List).map((e) => UserInfo.fromJson(e)).toList() : null;
+    groups = null != json['groups'] ? (json['groups'] as List).map((e) => GroupInfo.fromJson(e)).toList() : null;
     sendTime = json['sendTime'];
     content = json['content'];
     id = json['id'];

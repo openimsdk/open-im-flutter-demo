@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:scan/scan.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import 'qr_scan_box.dart';
 
@@ -20,9 +21,10 @@ class QrcodeView extends StatefulWidget {
 
 class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
   final _picker = ImagePicker();
-  MobileScannerController controller = MobileScannerController();
-
+  Barcode? result;
+  QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
   AnimationController? _animationController;
   Timer? _timer;
   var scanArea = 300.w;
@@ -33,6 +35,15 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    }
+    controller!.resumeCamera();
+  }
+
+  @override
   void initState() {
     _initAnimation();
     super.initState();
@@ -40,7 +51,7 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    controller.dispose();
+    controller?.dispose();
     _clearAnimation();
     super.dispose();
   }
@@ -89,7 +100,7 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
       backgroundColor: Colors.black,
       body: Stack(
         children: <Widget>[
-          _buildQrView(),
+          _buildQrView(context),
           _scanOverlay(),
           _buildBackView(),
           _buildTools(),
@@ -123,27 +134,26 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
                 ),
               ),
               GestureDetector(
-                  onTap: () => controller.toggleTorch(),
-                  child: Container(
-                    width: 80.w,
-                    height: 80.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(40.r)),
-                      border: Border.all(color: Colors.white30, width: 12.w),
-                    ),
-                    alignment: Alignment.center,
-                    child: ValueListenableBuilder(
-                      valueListenable: controller.torchState,
-                      builder: (context, state, child) {
-                        switch (state as TorchState) {
-                          case TorchState.off:
-                            return flashClose;
-                          case TorchState.on:
-                            return flashOpen;
-                        }
-                      },
-                    ),
-                  )),
+                onTap: () async {
+                  await controller?.toggleFlash();
+                  setState(() {});
+                },
+                child: Container(
+                  width: 80.w,
+                  height: 80.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(40.r)),
+                    border: Border.all(color: Colors.white30, width: 12.w),
+                  ),
+                  alignment: Alignment.center,
+                  child: FutureBuilder(
+                    future: controller?.getFlashStatus(),
+                    builder: (context, snapshot) {
+                      return snapshot.data == true ? flashOpen : flashClose;
+                    },
+                  ),
+                ),
+              ),
               SizedBox(width: 45.w, height: 45.h),
             ],
           ),
@@ -192,37 +202,60 @@ class _QrcodeViewState extends State<QrcodeView> with TickerProviderStateMixin {
         ),
       );
 
-  Widget _buildQrView() {
-    return MobileScanner(
-      // fit: BoxFit.contain,
-      controller: controller,
-      onDetect: (capture) {
-        final barcodes = capture.barcodes;
-        if (barcodes.isNotEmpty) {
-          _parse(barcodes.first.displayValue);
-        }
-      },
+  Widget _buildQrView(BuildContext context) {
+    return QRView(
+      key: qrKey,
+      onQRViewCreated: _onQRViewCreated,
+      overlay: QrScannerOverlayShape(
+        borderColor: Colors.white,
+        borderRadius: 12.r,
+        borderLength: 0,
+        borderWidth: 0,
+        cutOutBottomOffset: cutOutBottomOffset,
+        cutOutSize: scanArea,
+      ),
+      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    setState(() {
+      this.controller = controller;
+    });
+
+    if (Platform.isAndroid) {
+      controller.resumeCamera();
+    }
+
+    controller.scannedDataStream.asBroadcastStream().listen((scanData) {
+      if (!mounted) return;
+
+      _parse(scanData.code);
+    });
+  }
+
+  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+    if (!p) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('no Permission')),
+      );
+    }
   }
 
   void _parse(String? result) async {
     if (null != result) {
-      controller.stop();
+      controller?.pauseCamera();
       if (result.startsWith(Config.friendScheme)) {
         var userID = result.substring(Config.friendScheme.length);
         PackageBridge.scanBridge?.scanOutUserID(userID);
-        // AppNavigator.startFriendInfoFromScan(info: UserInfo(userID: uid));
       } else if (result.startsWith(Config.groupScheme)) {
         var groupID = result.substring(Config.groupScheme.length);
         PackageBridge.scanBridge?.scanOutGroupID(groupID);
-        // AppNavigator.startSearchAddGroupFromScan(info: GroupInfo(groupID: gid));
       } else if (IMUtils.isUrlValid(result)) {
         final uri = Uri.parse(Uri.encodeFull(result));
         if (!await launchUrl(uri)) {
-          // throw Exception('Could not launch $uri');
           IMViews.showToast('无法识别!');
-          // controller?.resumeCamera();
-          controller.start();
+          controller?.resumeCamera();
         }
       } else {
         Get.back(result: result);

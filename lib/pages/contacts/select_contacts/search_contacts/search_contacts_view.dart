@@ -29,8 +29,7 @@ class SelectContactsFromSearchPage extends StatelessWidget {
             ? _emptyListView
             : ListView.builder(
                 itemCount: logic.resultList.length,
-                itemBuilder: (_, index) =>
-                    _buildItemView(logic.resultList.elementAt(index)),
+                itemBuilder: (_, index) => _buildItemView(logic.resultList.elementAt(index)),
               )),
       ),
     );

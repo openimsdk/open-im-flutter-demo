@@ -14,8 +14,8 @@ class ProcessFriendRequestsLogic extends GetxController {
   void acceptFriendApplication() async {
     LoadingView.singleton
         .wrap(
-            asyncFunction: () => OpenIM.iMManager.friendshipManager
-                .acceptFriendApplication(userID: applicationInfo.fromUserID!))
+            asyncFunction: () =>
+                OpenIM.iMManager.friendshipManager.acceptFriendApplication(userID: applicationInfo.fromUserID!))
         .then(_addSuccessfully)
         .catchError((_) => IMViews.showToast(StrRes.addFailed));
   }
@@ -23,8 +23,8 @@ class ProcessFriendRequestsLogic extends GetxController {
   void refuseFriendApplication() async {
     LoadingView.singleton
         .wrap(
-            asyncFunction: () => OpenIM.iMManager.friendshipManager
-                .refuseFriendApplication(userID: applicationInfo.fromUserID!))
+            asyncFunction: () =>
+                OpenIM.iMManager.friendshipManager.refuseFriendApplication(userID: applicationInfo.fromUserID!))
         .then(_rejectSuccessfully)
         .catchError((_) => IMViews.showToast(StrRes.rejectFailed));
   }

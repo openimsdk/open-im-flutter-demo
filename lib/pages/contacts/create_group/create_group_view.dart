@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
@@ -71,6 +72,7 @@ class CreateGroupPage extends StatelessWidget {
                     style: Styles.ts_0C1C33_17sp,
                     autofocus: true,
                     controller: logic.nameCtrl,
+                    inputFormatters: [LengthLimitingTextInputFormatter(16)],
                     decoration: InputDecoration(
                       hintStyle: Styles.ts_8E9AB0_17sp,
                       hintText: StrRes.plsEnterGroupNameHint,
@@ -96,8 +98,7 @@ class CreateGroupPage extends StatelessWidget {
                 children: [
                   StrRes.groupMember.toText..style = Styles.ts_8E9AB0_17sp,
                   const Spacer(),
-                  sprintf(StrRes.nPerson, [logic.allList.length]).toText
-                    ..style = Styles.ts_8E9AB0_17sp,
+                  sprintf(StrRes.nPerson, [logic.allList.length]).toText..style = Styles.ts_8E9AB0_17sp,
                 ],
               ),
             ),
@@ -130,28 +131,8 @@ class CreateGroupPage extends StatelessWidget {
                         ..overflow = TextOverflow.ellipsis,
                     ],
                   ),
-                  addButton: () => GestureDetector(
-                    onTap: logic.opMember,
-                    child: Column(
-                      children: [
-                        ImageRes.addMember.toImage
-                          ..width = 48.w
-                          ..height = 48.h,
-                        StrRes.addMember.toText..style = Styles.ts_8E9AB0_10sp,
-                      ],
-                    ),
-                  ),
-                  delButton: () => GestureDetector(
-                    onTap: () => logic.opMember(isDel: true),
-                    child: Column(
-                      children: [
-                        ImageRes.delMember.toImage
-                          ..width = 48.w
-                          ..height = 48.h,
-                        StrRes.delMember.toText..style = Styles.ts_8E9AB0_10sp,
-                      ],
-                    ),
-                  ),
+                  addButton: () => const SizedBox.shrink(),
+                  delButton: () => const SizedBox.shrink(),
                 );
               },
             ),

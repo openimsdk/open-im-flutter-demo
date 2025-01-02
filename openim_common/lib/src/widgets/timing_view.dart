@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
 class TimingView extends StatefulWidget {
@@ -48,10 +47,6 @@ class _TimingViewState extends State<TimingView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 2.h, right: 4.w),
-      child: '$_sec s'.toText..style = Styles.ts_0089FF_12sp,
-    );
-  }
+  Widget build(BuildContext context) =>
+      '$_sec s'.toText..style = Styles.ts_0089FF_12sp;
 }

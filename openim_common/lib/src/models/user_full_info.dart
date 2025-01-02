@@ -89,9 +89,11 @@ class UserFullInfo {
     station = json['station'];
     ex = json['ex'];
     globalRecvMsgOpt = json['globalRecvMsgOpt'];
-    isFriendship = json['isFriendship'] ?? true;
+    isFriendship = json['isFriendship'] ?? false;
     isBlacklist = json['isBlacklist'] ?? false;
-    departmentList = json['departmentList'] == null ? null : (json['departmentList'] as List).map((e) => DepartmentInfo.fromJson(e)).toList();
+    departmentList = json['departmentList'] == null
+        ? null
+        : (json['departmentList'] as List).map((e) => DepartmentInfo.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {

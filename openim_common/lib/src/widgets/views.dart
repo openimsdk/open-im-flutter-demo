@@ -8,13 +8,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
+import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:uuid/uuid.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 class IMViews {
   IMViews._();
@@ -29,26 +32,23 @@ class IMViews {
     }
   }
 
-  static Widget buildHeader() => WaterDropMaterialHeader(
+  static Widget buildHeader([double distance = 60]) => WaterDropMaterialHeader(
         backgroundColor: Styles.c_0089FF,
+        distance: distance,
       );
 
   static Widget buildFooter() => CustomFooter(
         builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            // body = Text("pull up load");
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.loading) {
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            // body = Text("Load Failed!Click retry!");
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.canLoading) {
-            // body = Text("release to load more");
             body = const CupertinoActivityIndicator();
           } else {
-            // body = Text("No more Data");
             body = const SizedBox();
           }
           return SizedBox(
@@ -80,7 +80,6 @@ class IMViews {
           ),
         ],
       ),
-      // barrierColor: Colors.transparent,
     );
   }
 
@@ -104,7 +103,6 @@ class IMViews {
           ),
         ],
       ),
-      // barrierColor: Colors.transparent,
     );
   }
 
@@ -116,6 +114,18 @@ class IMViews {
       bool fromCamera = true,
       List<SheetItem> items = const [],
       int quality = 80}) {
+    bool allowSendImageTypeHelper(String? mimeType) {
+      final result = mimeType?.contains('png') == true || mimeType?.contains('jpeg') == true;
+
+      return result;
+    }
+
+    Future<bool> allowSendImageType(AssetEntity entity) async {
+      final mimeType = await entity.mimeTypeAsync;
+
+      return allowSendImageTypeHelper(mimeType);
+    }
+
     Get.bottomSheet(
       BottomSheetView(
         items: [
@@ -123,39 +133,52 @@ class IMViews {
           if (fromGallery)
             SheetItem(
               label: StrRes.toolboxAlbum,
-              onTap: () {
-                Permissions.storage(() async {
-                  final XFile? image = await _picker.pickImage(
-                    source: ImageSource.gallery,
-                  );
-                  if (null != image?.path) {
-                    var map = await _uCropPic(
-                      image!.path,
-                      crop: crop,
-                      toUrl: toUrl,
-                    );
-                    onData?.call(map['path'], map['url']);
-                  }
-                });
+              onTap: () async {
+                final List<AssetEntity>? assets = await AssetPicker.pickAssets(Get.context!,
+                    pickerConfig: AssetPickerConfig(
+                        requestType: RequestType.image,
+                        maxAssets: 1,
+                        selectPredicate: (_, entity, isSelected) async {
+                          if (await allowSendImageType(entity)) {
+                            return true;
+                          }
+
+                          IMViews.showToast(StrRes.supportsTypeHint);
+
+                          return false;
+                        }));
+                final file = await assets?.firstOrNull?.file;
+
+                if (file?.path != null) {
+                  final map = await uCropPic(file!.path, crop: crop, toUrl: toUrl, quality: quality);
+                  onData?.call(map['path'], map['url']);
+                }
               },
             ),
           if (fromCamera)
             SheetItem(
               label: StrRes.toolboxCamera,
-              onTap: () {
-                Permissions.camera(() async {
-                  final XFile? image = await _picker.pickImage(
-                    source: ImageSource.camera,
-                  );
-                  if (null != image?.path) {
-                    var map = await _uCropPic(
-                      image!.path,
-                      crop: crop,
-                      toUrl: toUrl,
-                    );
-                    onData?.call(map['path'], map['url']);
-                  }
-                });
+              onTap: () async {
+                final AssetEntity? entity = await CameraPicker.pickFromCamera(
+                  Get.context!,
+                  locale: Get.locale,
+                  pickerConfig: CameraPickerConfig(
+                    enableAudio: true,
+                    enableRecording: true,
+                    enableScaledPreview: false,
+                    maximumRecordingDuration: 60.seconds,
+                    onMinimumRecordDurationNotMet: () {
+                      IMViews.showToast(StrRes.tapTooShort);
+                    },
+                  ),
+                );
+
+                final file = await entity?.file;
+
+                if (file?.path != null) {
+                  final map = await uCropPic(file!.path, crop: crop, toUrl: toUrl, quality: quality);
+                  onData?.call(map['path'], map['url']);
+                }
               },
             ),
         ],
@@ -163,18 +186,17 @@ class IMViews {
     );
   }
 
-  static Future<Map<String, dynamic>> _uCropPic(
+  static Future<Map<String, dynamic>> uCropPic(
     String path, {
     bool crop = true,
     bool toUrl = true,
+    int quality = 80,
   }) async {
     CroppedFile? cropFile;
     String? url;
     if (crop && !path.endsWith('.gif')) {
       cropFile = await IMUtils.uCrop(path);
       if (cropFile == null) {
-        // 放弃选择
-        // return {'path': cropFile?.path ?? path, 'url': url};
         return {'path': null, 'url': null};
       }
     }
@@ -184,7 +206,7 @@ class IMViews {
       if (null != cropFile) {
         Logger.print('-----------crop path: ${cropFile.path}');
         result = await LoadingView.singleton.wrap(asyncFunction: () async {
-          final image = await IMUtils.compressImageAndGetFile(File(cropFile!.path));
+          final image = await IMUtils.compressImageAndGetFile(File(cropFile!.path), quality: quality);
 
           return OpenIM.iMManager.uploadFile(
             id: putID,
@@ -195,7 +217,7 @@ class IMViews {
       } else {
         Logger.print('-----------source path: $path');
         result = await LoadingView.singleton.wrap(asyncFunction: () async {
-          final image = await IMUtils.compressImageAndGetFile(File(path));
+          final image = await IMUtils.compressImageAndGetFile(File(path), quality: quality);
 
           return OpenIM.iMManager.uploadFile(
             id: putID,
@@ -266,21 +288,6 @@ class IMViews {
       return TextSpan(text: weekday, style: Styles.ts_0C1C33_17sp_medium);
     }
 
-    // if (DateUtil.yearIsEqualByMs(ms, locTimeMs)) {
-    //   final date = IMUtils.formatDateMs(ms, format: 'MM月dd');
-    //   final one = date.split('月')[0];
-    //   final two = date.split('月')[1];
-    //   return TextSpan(
-    //     text: two,
-    //     style: Styles.ts_0C1C33_17sp_medium,
-    //     children: [
-    //       TextSpan(
-    //         text: '\n$one${languageCode == 'zh' ? '月' : ''}',
-    //         style: Styles.ts_0C1C33_12sp_medium,
-    //       ),
-    //     ],
-    //   );
-    // }
     final date = IMUtils.formatDateMs(ms, format: 'MM月dd');
     final one = date.split('月')[0];
     final two = date.split('月')[1];
@@ -306,16 +313,12 @@ class IMViews {
         backgroundColor: Colors.white,
         textStyle: TextStyle(fontSize: 16.sp, color: Colors.blueGrey),
         bottomSheetHeight: 500.h,
-        // Optional. Country list modal height
-        //Optional. Sets the border radius for the bottomsheet.
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(8.0.r),
           topRight: Radius.circular(8.0.r),
         ),
-        //Optional. Styles the search field.
         inputDecoration: InputDecoration(
           labelText: StrRes.search,
-          // hintText: 'Start typing to search',
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -329,5 +332,55 @@ class IMViews {
       },
     );
     return completer.future;
+  }
+
+  static void showSinglePicker({
+    required String title,
+    required String description,
+    required dynamic pickerData,
+    bool isArray = false,
+    List<int>? selected,
+    Function(List<int> indexList, List valueList)? onConfirm,
+  }) {
+    Picker(
+      adapter: PickerDataAdapter<String>(
+        pickerData: pickerData,
+        isArray: isArray,
+      ),
+      changeToFirst: true,
+      hideHeader: false,
+      containerColor: Styles.c_0089FF,
+      textStyle: Styles.ts_0C1C33_17sp,
+      selectedTextStyle: Styles.ts_0C1C33_17sp,
+      itemExtent: 45.h,
+      cancelTextStyle: Styles.ts_0C1C33_17sp,
+      confirmTextStyle: Styles.ts_0089FF_17sp,
+      cancelText: StrRes.cancel,
+      confirmText: StrRes.confirm,
+      selecteds: selected,
+      builderHeader: (_) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(bottom: 7.h),
+            child: title.toText..style = Styles.ts_0C1C33_17sp,
+          ),
+          description.toText..style = Styles.ts_8E9AB0_14sp,
+        ],
+      ),
+      selectionOverlay: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: BorderDirectional(
+            bottom: BorderSide(color: Styles.c_E8EAEF, width: 1),
+            top: BorderSide(color: Styles.c_E8EAEF, width: 1),
+          ),
+        ),
+      ),
+      onConfirm: (Picker picker, List value) {
+        onConfirm?.call(picker.selecteds, picker.getSelectedValues());
+      },
+    ).showDialog(Get.context!);
   }
 }

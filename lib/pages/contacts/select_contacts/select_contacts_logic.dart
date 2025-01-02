@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
+import 'package:openim/pages/conversation/conversation_logic.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -16,22 +17,12 @@ enum SelAction {
   addMember,
 
   recommend,
-
-  createTag,
-
-  whoCanWatch,
-
-  remindWhoToWatch,
-
-  meeting,
-
-  notificationIssued,
 }
 
-class SelectContactsLogic extends GetxController {
-  final checkedList = <String, dynamic>{}.obs;
-  final defaultCheckedIDList = <String>{}.obs;
-  List<String>? excludeIDList;
+class SelectContactsLogic extends GetxController implements OrganizationMultiSelBridge {
+  final checkedList = <String, dynamic>{}.obs; // 已经选中的
+  final defaultCheckedIDList = <String>{}.obs; // 默认选中，且不能修改
+  List<String>? excludeIDList; // 剔除某些数据
   late SelAction action;
   late bool openSelectedSheet;
   String? groupID;
@@ -48,12 +39,14 @@ class SelectContactsLogic extends GetxController {
     checkedList.addAll(Get.arguments['checkedList'] ?? {});
     openSelectedSheet = Get.arguments['openSelectedSheet'];
     ex = Get.arguments['ex'];
+    PackageBridge.organizationBridge = this;
     super.onInit();
   }
 
   @override
   void onClose() {
     inputCtrl.dispose();
+    PackageBridge.organizationBridge = null;
     super.onClose();
   }
 
@@ -67,38 +60,27 @@ class SelectContactsLogic extends GetxController {
   @override
   bool get isMultiModel => action != SelAction.carte;
 
-  bool get hiddenGroup =>
-      action == SelAction.carte ||
-      action == SelAction.crateGroup ||
-      action == SelAction.addMember ||
-      action == SelAction.createTag ||
-      action == SelAction.remindWhoToWatch;
+  bool get hiddenGroup => action == SelAction.carte || action == SelAction.crateGroup || action == SelAction.addMember;
 
   bool get hiddenConversations =>
-      action == SelAction.carte ||
-      action == SelAction.crateGroup ||
-      action == SelAction.addMember ||
-      action == SelAction.createTag ||
-      action == SelAction.whoCanWatch ||
-      action == SelAction.remindWhoToWatch;
-
-  bool get hiddenOrganization => action == SelAction.whoCanWatch || action == SelAction.remindWhoToWatch;
-
-  bool get hiddenTagGroup =>
-      action == SelAction.forward ||
-      action == SelAction.carte ||
-      action == SelAction.crateGroup ||
-      action == SelAction.addMember ||
-      action == SelAction.recommend ||
-      action == SelAction.createTag ||
-      action == SelAction.whoCanWatch ||
-      action == SelAction.remindWhoToWatch ||
-      action == SelAction.meeting;
+      action == SelAction.carte || action == SelAction.crateGroup || action == SelAction.addMember;
 
   _queryConversationList() async {
     if (!hiddenConversations) {
-      final list = await OpenIM.iMManager.conversationManager.getConversationListSplit(count: 10);
-      conversationList.addAll(list);
+      final cons = Get.find<ConversationLogic>().list;
+
+      final futures = cons.map((con) async {
+        if (con.isGroupChat) {
+          final result = await OpenIM.iMManager.groupManager.isJoinedGroup(groupID: con.groupID!);
+          return result ? con : null;
+        }
+        return con.conversationType == ConversationType.notification ? null : con;
+      }).toList();
+
+      final results = await Future.wait(futures);
+      final filteredCons = results.where((con) => con != null).cast<ConversationInfo>().toList();
+
+      conversationList.addAll(filteredCons);
     }
   }
 
@@ -202,8 +184,6 @@ class SelectContactsLogic extends GetxController {
     }
   }
 
-  selectFromOrganization() async {}
-
   void selectFromSearch() async {
     final result = await AppNavigator.startSelectContactsFromSearch();
     if (null != result) {
@@ -211,19 +191,22 @@ class SelectContactsLogic extends GetxController {
     }
   }
 
-  selectTagGroup() async {}
+  selectTagGroup() async {
+    final result = await await AppNavigator.startSelectContactsFromTag();
+    if (null != result) {
+      Get.back(result: result);
+    }
+  }
 
   confirmSelectedList() async {
     if (action == SelAction.forward || action == SelAction.recommend) {
       final sure = await Get.dialog(ForwardHintDialog(
         title: ex ?? '',
         checkedList: checkedList.values.toList(),
-        controller: inputCtrl,
       ));
       if (sure == true) {
         Get.back(result: {
           "checkedList": checkedList.values,
-          "customEx": inputCtrl.text.trim(),
         });
       }
     } else {
@@ -231,7 +214,7 @@ class SelectContactsLogic extends GetxController {
     }
   }
 
-  confirmSelectedItem(ISUserInfo info) async {
+  confirmSelectedItem(dynamic info) async {
     if (action == SelAction.carte) {
       final sure = await Get.dialog(CustomDialog(
         title: StrRes.sendCarteConfirmHint,
@@ -242,7 +225,7 @@ class SelectContactsLogic extends GetxController {
     }
   }
 
-  bool get enabledConfirmButton => checkedList.isNotEmpty || action == SelAction.remindWhoToWatch;
+  bool get enabledConfirmButton => checkedList.isNotEmpty;
 
   @override
   Widget get checkedConfirmView => isMultiModel ? CheckedConfirmView() : const SizedBox();

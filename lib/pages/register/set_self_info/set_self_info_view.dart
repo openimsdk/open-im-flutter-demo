@@ -16,8 +16,7 @@ class SetSelfInfoPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            StrRes.plsCompleteInfo.toText
-              ..style = Styles.ts_0089FF_22sp_semibold,
+            StrRes.plsCompleteInfo.toText..style = Styles.ts_0089FF_22sp_semibold,
             _buildInputItemView(
               label: StrRes.nickname,
               controller: logic.nicknameCtrl,
@@ -61,8 +60,7 @@ class SetSelfInfoPage extends StatelessWidget {
             children: [
               label.toText..style = Styles.ts_8E9AB0_17sp,
               const Spacer(),
-              if (null != value && !isAvatar)
-                value.toText..style = Styles.ts_0C1C33_17sp,
+              if (null != value && !isAvatar) value.toText..style = Styles.ts_0C1C33_17sp,
               if (isAvatar)
                 AvatarView(
                   width: 42.w,

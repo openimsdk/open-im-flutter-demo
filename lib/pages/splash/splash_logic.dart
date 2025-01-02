@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
+import 'package:openim/pages/conversation/conversation_logic.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../../core/controller/im_controller.dart';
-import '../../core/controller/push_controller.dart';
 import '../../routes/app_navigator.dart';
 
 class SplashLogic extends GetxController {
@@ -35,9 +36,17 @@ class SplashLogic extends GetxController {
       Logger.print('---------login---------- userID: $userID, token: $token');
       await imLogic.login(userID!, token!);
       Logger.print('---------im login success-------');
-      pushLogic.login(userID!);
+      PushController.login(
+        userID!,
+        onTokenRefresh: (token) {
+          OpenIM.iMManager.updateFcmToken(
+              fcmToken: token, expireTime: DateTime.now().add(Duration(days: 90)).millisecondsSinceEpoch);
+        },
+      );
       Logger.print('---------push login success----');
-      AppNavigator.startSplashToMain(isAutoLogin: true);
+      final result = await ConversationLogic.getConversationFirstPage();
+
+      AppNavigator.startSplashToMain(isAutoLogin: true, conversations: result);
     } catch (e, s) {
       IMViews.showToast('$e $s');
       await DataSp.removeLoginCertificate();

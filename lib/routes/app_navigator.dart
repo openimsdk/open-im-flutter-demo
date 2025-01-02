@@ -21,17 +21,17 @@ class AppNavigator {
     Get.until((route) => Get.currentRoute == AppRoutes.login);
   }
 
-  static void startMain({bool isAutoLogin = false}) {
+  static void startMain({bool isAutoLogin = false, List<ConversationInfo>? conversations}) {
     Get.offAllNamed(
       AppRoutes.home,
-      arguments: {'isAutoLogin': isAutoLogin},
+      arguments: {'isAutoLogin': isAutoLogin, 'conversations': conversations},
     );
   }
 
-  static void startSplashToMain({bool isAutoLogin = false}) {
+  static void startSplashToMain({bool isAutoLogin = false, List<ConversationInfo>? conversations}) {
     Get.offAndToNamed(
       AppRoutes.home,
-      arguments: {'isAutoLogin': isAutoLogin},
+      arguments: {'isAutoLogin': isAutoLogin, 'conversations': conversations},
     );
   }
 
@@ -39,7 +39,9 @@ class AppNavigator {
     Get.until((route) => Get.currentRoute == AppRoutes.home);
   }
 
-  static startOANtfList({required ConversationInfo info}) {}
+  static startOANtfList({required ConversationInfo info}) {
+    return Get.toNamed(AppRoutes.oaNotificationList, arguments: info);
+  }
 
   static Future<T?>? startChat<T>({
     required ConversationInfo conversationInfo,
@@ -80,8 +82,7 @@ class AppNavigator {
         popGesture: true,
       ));
 
-  static startAddContactsBySearch({required SearchType searchType}) =>
-      Get.toNamed(
+  static startAddContactsBySearch({required SearchType searchType}) => Get.toNamed(
         AppRoutes.addContactsBySearch,
         arguments: {"searchType": searchType},
       );
@@ -93,6 +94,7 @@ class AppNavigator {
     String? faceURL,
     bool offAllWhenDelFriend = false,
     bool offAndToNamed = false,
+    bool forceCanAdd = false,
   }) {
     GetTags.createUserProfileTag();
 
@@ -102,6 +104,7 @@ class AppNavigator {
       'nickname': nickname,
       'faceURL': faceURL,
       'offAllWhenDelFriend': offAllWhenDelFriend,
+      'forceCanAdd': forceCanAdd,
     };
 
     return offAndToNamed
@@ -127,8 +130,7 @@ class AppNavigator {
         'userID': userID,
       });
 
-  static startSetFriendRemark() =>
-      Get.toNamed(AppRoutes.setFriendRemark, arguments: {});
+  static startSetFriendRemark() => Get.toNamed(AppRoutes.setFriendRemark, arguments: {});
 
   static startSendVerificationApplication({
     String? userID,
@@ -156,15 +158,6 @@ class AppNavigator {
               'groupID': groupID,
             });
 
-  static startSetMuteForGroupMember({
-    required String groupID,
-    required String userID,
-  }) =>
-      Get.toNamed(AppRoutes.setMuteForGroupMember, arguments: {
-        'groupID': groupID,
-        'userID': userID,
-      });
-
   static startMyInfo() => Get.toNamed(AppRoutes.myInfo);
 
   static startEditMyInfo({EditAttr attr = EditAttr.nickname, int? maxLength}) =>
@@ -189,33 +182,6 @@ class AppNavigator {
         'conversationInfo': conversationInfo,
       });
 
-  static startSetBackgroundImage() => Get.offAndToNamed(AppRoutes.setBackgroundImage);
-
-  static startSetFontSize() => Get.toNamed(AppRoutes.setFontSize);
-
-  static startSearchChatHistory({
-    required ConversationInfo conversationInfo,
-  }) =>
-      Get.toNamed(AppRoutes.searchChatHistory, arguments: {
-        'conversationInfo': conversationInfo,
-      });
-
-  static startSearchChatHistoryFile({
-    required ConversationInfo conversationInfo,
-  }) =>
-      Get.toNamed(AppRoutes.searchChatHistoryFile, arguments: {
-        'conversationInfo': conversationInfo,
-      });
-
-  static startPreviewChatHistory({
-    required ConversationInfo conversationInfo,
-    required Message message,
-  }) =>
-      Get.toNamed(AppRoutes.previewChatHistory, arguments: {
-        'conversationInfo': conversationInfo,
-        'message': message,
-      });
-
   static startGroupChatSetup({
     required ConversationInfo conversationInfo,
   }) =>
@@ -230,21 +196,17 @@ class AppNavigator {
         'groupInfo': groupInfo,
       });
 
-  static startEditGroupName({
-    required EditNameType type,
-  }) =>
+  static startEditGroupName({required EditNameType type, String? faceUrl}) =>
       Get.toNamed(AppRoutes.editGroupName, arguments: {
         'type': type,
+        'faceUrl': faceUrl,
       });
-
-  static startEditGroupAnnouncement({required String groupID}) =>
-      Get.toNamed(AppRoutes.editGroupAnnouncement, arguments: groupID);
 
   static Future<T?>? startGroupMemberList<T>({
     required GroupInfo groupInfo,
     GroupMemberOpType opType = GroupMemberOpType.view,
   }) =>
-      Get.toNamed(AppRoutes.groupMemberList, arguments: {
+      Get.toNamed(AppRoutes.groupMemberList, preventDuplicates: false, arguments: {
         'groupInfo': groupInfo,
         'opType': opType,
       });
@@ -282,9 +244,6 @@ class AppNavigator {
 
   static startGroupList() => Get.toNamed(AppRoutes.groupList);
 
-  static startGroupReadList({required Message message}) =>
-      Get.toNamed(AppRoutes.groupReadList, arguments: {"message": message});
-
   static startSearchFriend() => Get.toNamed(AppRoutes.searchFriend);
 
   static startSearchGroup() => Get.toNamed(AppRoutes.searchGroup);
@@ -308,20 +267,15 @@ class AppNavigator {
         'ex': ex,
       });
 
-  static startSelectContactsFromFriends() =>
-      Get.toNamed(AppRoutes.selectContactsFromFriends);
+  static startSelectContactsFromFriends() => Get.toNamed(AppRoutes.selectContactsFromFriends);
 
-  static startSelectContactsFromGroup() =>
-      Get.toNamed(AppRoutes.selectContactsFromGroup);
+  static startSelectContactsFromGroup() => Get.toNamed(AppRoutes.selectContactsFromGroup);
 
-  static startSelectContactsFromSearchFriends() =>
-      Get.toNamed(AppRoutes.selectContactsFromSearchFriends);
+  static startSelectContactsFromSearchFriends() => Get.toNamed(AppRoutes.selectContactsFromSearchFriends);
 
-  static startSelectContactsFromSearchGroup() =>
-      Get.toNamed(AppRoutes.selectContactsFromSearchGroup);
+  static startSelectContactsFromSearchGroup() => Get.toNamed(AppRoutes.selectContactsFromSearchGroup);
 
-  static startSelectContactsFromSearch() =>
-      Get.toNamed(AppRoutes.selectContactsFromSearch);
+  static startSelectContactsFromSearch() => Get.toNamed(AppRoutes.selectContactsFromSearch);
 
   static startCreateGroup({
     List<UserInfo> defaultCheckedList = const [],
@@ -334,10 +288,7 @@ class AppNavigator {
     if (list is List<UserInfo>) {
       return Get.toNamed(
         AppRoutes.createGroup,
-        arguments: {
-          'checkedList': list,
-          'defaultCheckedList': defaultCheckedList
-        },
+        arguments: {'checkedList': list, 'defaultCheckedList': defaultCheckedList},
       );
     }
     return null;
@@ -354,25 +305,26 @@ class AppNavigator {
         'defaultSearchKey': defaultSearchKey,
       });
 
-  static startCallRecords() => Get.toNamed(AppRoutes.callRecords);
-
   static startRegister() => Get.toNamed(AppRoutes.register);
 
   static void startVerifyPhone({
-    required String phoneNumber,
+    String? phoneNumber,
+    String? email,
     required String areaCode,
     required int usedFor,
     String? invitationCode,
   }) =>
       Get.toNamed(AppRoutes.verifyPhone, arguments: {
         'phoneNumber': phoneNumber,
+        'email': email,
         'areaCode': areaCode,
         'usedFor': usedFor,
-        'invitationCode': invitationCode
+        'invitationCode': invitationCode,
       });
 
   static void startSetPassword({
-    required String phoneNumber,
+    String? phoneNumber,
+    String? email,
     required String areaCode,
     required int usedFor,
     required String verificationCode,
@@ -380,6 +332,7 @@ class AppNavigator {
   }) =>
       Get.toNamed(AppRoutes.setPassword, arguments: {
         'phoneNumber': phoneNumber,
+        'email': email,
         'areaCode': areaCode,
         'usedFor': usedFor,
         'verificationCode': verificationCode,
@@ -387,7 +340,9 @@ class AppNavigator {
       });
 
   static void startSetSelfInfo({
-    required String phoneNumber,
+    String? phoneNumber,
+    String? email,
+    String? account,
     required String areaCode,
     required password,
     required int usedFor,
@@ -396,10 +351,32 @@ class AppNavigator {
   }) =>
       Get.toNamed(AppRoutes.setSelfInfo, arguments: {
         'phoneNumber': phoneNumber,
+        'email': email,
+        'account': account,
         'areaCode': areaCode,
         'password': password,
         'usedFor': usedFor,
         'verificationCode': verificationCode,
         'invitationCode': invitationCode
       });
+
+  static startForgetPassword() => Get.toNamed(AppRoutes.forgetPassword);
+
+  static void startResetPassword({
+    String? phoneNumber,
+    String? email,
+    String? account,
+    required String areaCode,
+    required String verificationCode,
+  }) =>
+      Get.toNamed(AppRoutes.resetPassword, arguments: {
+        'phoneNumber': phoneNumber,
+        'email': email,
+        'account': account,
+        'areaCode': areaCode,
+        'usedFor': 2,
+        'verificationCode': verificationCode,
+      });
+
+  static startSelectContactsFromTag() => Get.toNamed(AppRoutes.selectContactsFromTag);
 }

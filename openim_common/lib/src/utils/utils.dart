@@ -8,27 +8,41 @@ import 'package:collection/collection.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dart_date/dart_date.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit_config.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background/flutter_background.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:mime/mime.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:openim_common/src/utils/multi_thread_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:uri_to_file/uri_to_file.dart';
-import 'package:video_compress/video_compress.dart';
+import 'package:intl/intl.dart' hide TextDirection;
+import 'package:flutter/foundation.dart';
 
 class IntervalDo {
   DateTime? last;
   Timer? lastTimer;
 
-  //call---milliseconds---call
   void run({required Function() fuc, int milliseconds = 0}) {
     DateTime now = DateTime.now();
     if (null == last || now.difference(last ?? now).inMilliseconds > milliseconds) {
@@ -37,7 +51,6 @@ class IntervalDo {
     }
   }
 
-  //---milliseconds----milliseconds....---call  在milliseconds时连续的调用会被丢弃并重置milliseconds的时间，milliseconds后才会call
   void drop({required Function() fun, int milliseconds = 0}) {
     lastTimer?.cancel();
     lastTimer = null;
@@ -51,10 +64,6 @@ class IntervalDo {
 
 class IMUtils {
   IMUtils._();
-
-  static final passwordRegExp = RegExp(
-    r'^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,20}$',
-  );
 
   static Future<CroppedFile?> uCrop(String path) {
     return ImageCropper().cropImage(
@@ -140,7 +149,7 @@ class IMUtils {
 
   static saveMediaToGallery(String mimeType, String cachePath) async {
     if (mimeType.contains('video') || mimeType.contains('image')) {
-      await ImageGallerySaver.saveFile(cachePath);
+      await ImageGallerySaverPlus.saveFile(cachePath);
     }
   }
 
@@ -153,30 +162,89 @@ class IMUtils {
     return exp.hasMatch(mobile);
   }
 
-  static bool isMobile(String areaCode, String mobile) => (areaCode == '+86' || areaCode == '86') ? isChinaMobile(mobile) : true;
+  static bool isMobile(String areaCode, String mobile) =>
+      (areaCode == '+86' || areaCode == '86') ? isChinaMobile(mobile) : true;
 
   static Future<File> getVideoThumbnail(File file) async {
-    final thumbnailFile = await VideoCompress.getFileThumbnail(
-      file.path,
-      quality: 20,
-      position: 1,
-    );
-    return thumbnailFile;
+    final path = file.path;
+    final names = path.substring(path.lastIndexOf("/") + 1).split('.');
+    final name = '${names.first}.png';
+    final directory = await createTempDir(dir: 'video');
+    final targetPath = '$directory/$name';
+
+    final String ffmpegCommand = '-i $path -ss 0 -vframes 1 -q:v 15 -y $targetPath';
+    final session = await FFmpegKit.execute(ffmpegCommand);
+
+    final state = FFmpegKitConfig.sessionStateToString(await session.getState());
+    final returnCode = await session.getReturnCode();
+
+    if (state == SessionState.failed || !ReturnCode.isSuccess(returnCode)) {
+      Logger().printError(info: "Command failed. Please check output for the details.");
+    }
+
+    session.cancel();
+
+    return File(targetPath);
   }
 
   static Future<File?> compressVideoAndGetFile(File file) async {
-    var mediaInfo = await VideoCompress.compressVideo(
-      file.path,
-      quality: VideoQuality.DefaultQuality,
-      deleteOrigin: false,
-    );
-    return mediaInfo?.file;
+    final path = file.path;
+    final name = path.substring(path.lastIndexOf("/") + 1);
+    final directory = await createTempDir(dir: 'video');
+    final targetPath = '$directory/$name';
+
+    final output = await FFprobeKit.getMediaInformation(path);
+    final streams = output.getMediaInformation()?.getStreams();
+    final isH264 = streams?.any((element) => element.getCodec()?.contains('h264') == true) ?? false;
+    final size = output.getMediaInformation()?.getSize() ?? '0';
+    output.cancel();
+
+    final audioStream = streams?.firstWhereOrNull((e) => e.getType()?.contains('audio') == true);
+    final isAAC = audioStream?.getCodec()?.toLowerCase() != 'aac';
+
+    String ffmpegCommand =
+        '-i $path -preset ultrafast -tune fastdecode -threads:v 16 -threads:a 1 -c:a aac -strict -2 -crf 20 -c:v libx264 -y '
+        '$targetPath';
+
+    if (File(targetPath).existsSync() && isH264) {
+      if (isAAC) {
+        return File(targetPath);
+      } else {
+        ffmpegCommand = '-i $path -c:v copy -c:a aac -q:a 2 -threads 4 $targetPath';
+      }
+    }
+
+    if (int.parse(size) < 1024 * 1024 * 1024 && isH264) {
+      if (isAAC) {
+        file.copySync(targetPath);
+
+        return File(targetPath);
+      } else {
+        ffmpegCommand = '-i $path -c:v copy -c:a aac -q:a 2 -threads 4 $targetPath';
+      }
+    }
+
+    final session = await FFmpegKit.execute(ffmpegCommand);
+
+    final state = await session.getState();
+    final returnCode = await session.getReturnCode();
+
+    if (state == SessionState.failed || !ReturnCode.isSuccess(returnCode)) {
+      Logger().printError(info: "Command failed. Please check output for the details.");
+      file.copySync(targetPath);
+
+      return File(targetPath);
+    }
+
+    session.cancel();
+
+    return File(targetPath);
   }
 
-  static Future<File?> compressImageAndGetFile(File file) async {
+  static Future<File?> compressImageAndGetFile(File file, {int quality = 80}) async {
     var path = file.path;
-    var name = path.substring(path.lastIndexOf("/") + 1);
-    var targetPath = await createTempFile(name: name, dir: 'pic');
+    var name = path.substring(path.lastIndexOf("/") + 1).toLowerCase();
+
     if (name.endsWith('.gif')) {
       return file;
     }
@@ -192,14 +260,21 @@ class IMUtils {
       format = CompressFormat.webp;
     }
 
-    var result = await FlutterImageCompress.compressAndGetFile(
+    var targetDirectory = await getTempDirectory(name);
+
+    if (file.path == targetDirectory.path) {
+      targetDirectory = await getTempDirectory('compressed-$name');
+    }
+
+    final result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
-      targetPath,
-      quality: 90,
-      minWidth: 480,
-      minHeight: 800,
+      targetDirectory.path,
+      quality: quality,
+      minWidth: 1280,
+      minHeight: 720,
       format: format,
     );
+
     return result != null ? File(result.path) : file;
   }
 
@@ -218,12 +293,19 @@ class IMUtils {
   static Future<String> createTempDir({
     required String dir,
   }) async {
-    final storage = (Platform.isIOS ? await getApplicationCacheDirectory() : await getExternalStorageDirectory());
-    Directory directory = Directory('${storage!.path}/$dir');
+    Directory directory = await getTempDirectory(dir);
+
     if (!(await directory.exists())) {
       directory.create(recursive: true);
     }
     return directory.path;
+  }
+
+  static Future<Directory> getTempDirectory(String dir) async {
+    final storage = await getApplicationCacheDirectory();
+    Directory directory = Directory('${storage.path}/$dir');
+
+    return directory;
   }
 
   static int compareVersion(String val1, String val2) {
@@ -324,27 +406,55 @@ class IMUtils {
   }
 
   static String getChatTimeline(int ms, [String formatToday = 'HH:mm']) {
-    final locTimeMs = DateTime.now().millisecondsSinceEpoch;
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(ms);
     final languageCode = Get.locale?.languageCode ?? 'zh';
-    final isZH = languageCode == 'zh';
+    final isChinese = languageCode == 'zh';
+    final now = DateTime.now();
+    final formatter = DateFormat(formatToday);
 
-    if (DateUtil.isToday(ms, locMs: locTimeMs)) {
-      return formatDateMs(ms, format: formatToday);
+    if (isSameDay(dateTime, now)) {
+      return formatter.format(
+        dateTime,
+      );
     }
 
-    if (DateUtil.isYesterdayByMs(ms, locTimeMs)) {
-      return '${isZH ? '昨天' : 'Yesterday'} ${formatDateMs(ms, format: 'HH:mm')}';
+    final yesterday = now.subtract(Duration(days: 1));
+
+    if (isSameDay(dateTime, yesterday)) {
+      return isChinese ? '昨天 ${formatter.format(dateTime)}' : 'Yesterday ${formatter.format(dateTime)}';
     }
 
-    if (DateUtil.isWeek(ms, locMs: locTimeMs)) {
-      return '${DateUtil.getWeekdayByMs(ms, languageCode: languageCode)} ${formatDateMs(ms, format: 'HH:mm')}';
+    if (isSameWeek(dateTime, now)) {
+      final weekDay = DateFormat('EEEE').format(dateTime);
+      final weekDayChinese = {
+        'Monday': StrRes.monday,
+        'Tuesday': StrRes.tuesday,
+        'Wednesday': StrRes.wednesday,
+        'Thursday': StrRes.thursday,
+        'Friday': StrRes.friday,
+        'Saturday': StrRes.saturday,
+        'Sunday': StrRes.sunday,
+      };
+      return '${isChinese ? weekDayChinese[weekDay]! : weekDay} ${formatter.format(dateTime)}';
     }
 
-    if (DateUtil.yearIsEqualByMs(ms, locTimeMs)) {
-      return formatDateMs(ms, format: isZH ? 'MM月dd HH:mm' : 'MM/dd HH:mm');
+    if (dateTime.year == now.year) {
+      final dateFormat = isChinese ? 'MM月dd HH:mm' : 'MM/dd HH:mm';
+      return DateFormat(dateFormat).format(dateTime);
     }
 
-    return formatDateMs(ms, format: isZH ? 'yyyy年MM月dd' : 'yyyy/MM/dd');
+    final dateFormat = isChinese ? 'yyyy年MM月dd HH:mm' : 'yyyy/MM/dd HH:mm';
+    return DateFormat(dateFormat).format(dateTime);
+  }
+
+  static bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+  }
+
+  static bool isSameWeek(DateTime date1, DateTime date2) {
+    final weekStart = date2.subtract(Duration(days: date2.weekday - 1));
+    final weekEnd = weekStart.add(Duration(days: 6));
+    return date1.isAfter(weekStart.subtract(Duration(days: 1))) && date1.isBefore(weekEnd.add(Duration(days: 1)));
   }
 
   static String getCallTimeline(int milliseconds) {
@@ -456,8 +566,9 @@ class IMUtils {
     int maxLines = 1,
     double maxWidth = double.infinity,
   }) {
-    final TextPainter textPainter = TextPainter(text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: maxWidth);
+    final TextPainter textPainter =
+        TextPainter(text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr)
+          ..layout(minWidth: 0, maxWidth: maxWidth);
     return textPainter.size;
   }
 
@@ -581,7 +692,8 @@ class IMUtils {
 
               final label = StrRes.muteMemberNtf;
               final c = ntf.mutedSeconds;
-              text = sprintf(label, [getGroupMemberShowName(ntf.mutedUser!), getGroupMemberShowName(ntf.opUser!), mutedTime(c!)]);
+              text = sprintf(
+                  label, [getGroupMemberShowName(ntf.mutedUser!), getGroupMemberShowName(ntf.opUser!), mutedTime(c!)]);
             }
             break;
           case MessageType.groupMemberCancelMutedNotification:
@@ -635,7 +747,7 @@ class IMUtils {
             break;
           case MessageType.groupInfoSetNameNotification:
             final ntf = GroupNotification.fromJson(map);
-            text = sprintf(StrRes.whoModifyGroupName, [getGroupMemberShowName(ntf.opUser!)]);
+            text = sprintf(StrRes.whoModifyGroupName, [getGroupMemberShowName(ntf.opUser!), ntf.group?.groupName]);
             break;
         }
       }
@@ -737,13 +849,6 @@ class IMUtils {
           var customType = map['customType'];
           var customData = map['data'];
           switch (customType) {
-            case CustomMessageType.callingAccept:
-            case CustomMessageType.callingHungup:
-            case CustomMessageType.callingCancel:
-            case CustomMessageType.callingReject:
-              var type = map['data']['mediaType'];
-              content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
-              break;
             case CustomMessageType.call:
               var type = map['data']['type'];
               content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
@@ -810,17 +915,6 @@ class IMUtils {
             var map = json.decode(data!);
             var customType = map['customType'];
             switch (customType) {
-              case CustomMessageType.callingAccept:
-              case CustomMessageType.callingHungup:
-              case CustomMessageType.callingCancel:
-              case CustomMessageType.callingReject:
-                var type = map['data']['mediaType'];
-                final content = '[${type == 'video' ? StrRes.callVideo : StrRes.callVoice}]';
-                return {
-                  'viewType': CustomMessageType.call,
-                  'type': type,
-                  'content': content,
-                };
               case CustomMessageType.call:
                 {
                   final duration = map['data']['duration'];
@@ -846,6 +940,9 @@ class IMUtils {
                       break;
                     case 'timeout':
                       content = StrRes.callTimeout;
+                      break;
+                    case 'networkError':
+                      content = StrRes.networkAnomaly;
                       break;
                     default:
                       break;
@@ -890,12 +987,14 @@ class IMUtils {
     final mapping = <String, String>{};
     try {
       if (message.contentType == MessageType.atText) {
-        var list = message.atTextElem!.atUsersInfo;
-        list?.forEach((e) {
-          final userID = e.atUserID!;
-          final groupNickname = newMapping[userID] ?? e.groupNickname ?? e.atUserID!;
+        final atUserIDs = message.atTextElem!.atUserList!;
+        final atUserInfos = message.atTextElem!.atUsersInfo!;
+
+        for (final userID in atUserIDs) {
+          final groupNickname =
+              (newMapping[userID] ?? atUserInfos.firstWhere((e) => e.atUserID == userID).groupNickname) ?? userID;
           mapping[userID] = getAtNickname(userID, groupNickname);
-        });
+        }
       }
     } catch (_) {}
     return mapping;
@@ -906,7 +1005,7 @@ class IMUtils {
   }
 
   static void previewUrlPicture(
-    List<String> urls, {
+    List<MediaSource> sources, {
     int currentIndex = 0,
     String? heroTag,
   }) =>
@@ -915,30 +1014,364 @@ class IMUtils {
           onTap: () => Get.back(),
           child: ChatPicturePreview(
             currentIndex: currentIndex,
-            images: urls,
+            images: sources,
             heroTag: heroTag,
             onLongPress: (url) {
               IMViews.openDownloadSheet(
                 url,
-                onDownload: () => HttpUtil.saveUrlPicture(url),
+                onDownload: () => saveImage(context, url),
               );
             },
           ),
         ),
       ));
 
+  /*Get.to(
+        () => ChatPicturePreview(
+          currentIndex: currentIndex,
+          images: urls,
+
+          heroTag: urls.elementAt(currentIndex),
+          onLongPress: (url) {
+            IMViews.openDownloadSheet(
+              url,
+              onDownload: () => HttpUtil.saveUrlPicture(url),
+            );
+          },
+        ),
+
+        transition: Transition.cupertino,
+
+
+      );*/
+
+  static void previewCustomFace(Message message) {
+    final face = message.faceElem;
+    final map = json.decode(face!.data!);
+    final urls = <String>[map['url']];
+
+    Get.to(
+      () => ChatFacePreview(url: map['url']),
+      popGesture: true,
+      transition: Transition.cupertino,
+    );
+  }
+
+  static void previewPicture(
+    Message message, {
+    List<Message> allList = const [],
+  }) {
+    if (allList.isEmpty) {
+      previewUrlPicture(
+        [
+          MediaSource(
+              url: message.pictureElem!.sourcePicture!.url!, thumbnail: message.pictureElem!.snapshotPicture!.url!)
+        ],
+        currentIndex: 0,
+      );
+    } else {
+      final picList = allList
+          .where((element) => element.contentType == MessageType.picture || element.contentType == MessageType.video)
+          .toList();
+      final index = picList.indexOf(message);
+      final urls = picList.map((e) {
+        if (e.contentType == MessageType.picture) {
+          return MediaSource(url: e.pictureElem!.sourcePicture!.url!, thumbnail: e.pictureElem!.snapshotPicture!.url!);
+        } else {
+          return MediaSource(url: e.videoElem!.videoUrl!, thumbnail: e.videoElem!.snapshotUrl!);
+        }
+      }).toList();
+      previewUrlPicture(urls, currentIndex: index == -1 ? 0 : index);
+    }
+  }
+
+  static void previewVideo(Message message) {
+    navigator!.push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return ChatVideoPlayerView(
+            path: message.videoElem?.videoPath,
+            url: message.videoElem?.videoUrl,
+            coverUrl: message.videoElem?.snapshotUrl,
+            heroTag: null,
+            onDownload: (url, file) {
+              if (file != null) {
+                HttpUtil.saveFileToGallerySaver(file);
+              } else {
+                HttpUtil.saveUrlVideo(url!);
+              }
+            },
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeOut;
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          final offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        opaque: false));
+  }
+
+  static void previewFile(Message message) async {
+    final fileElem = message.fileElem;
+    if (null != fileElem) {
+      final sourcePath = fileElem.filePath;
+      final url = fileElem.sourceUrl;
+      final fileName = fileElem.fileName;
+      final fileSize = fileElem.fileSize;
+      final nameAndExt = fileName?.split('.');
+      final name = nameAndExt?.first;
+      final ext = nameAndExt?.last;
+
+      final dir = await getDownloadFileDir();
+
+      var cachePath = '$dir/${name}_${message.clientMsgID}.$ext';
+
+      final isExitSourcePath = await isExitFile(sourcePath);
+
+      final isExitCachePath = await isExitFile(cachePath);
+
+      Logger.print('isExitSourcePath:$isExitSourcePath, isExitCachePath:$isExitCachePath, cachePath:$cachePath');
+
+      final isExitNetwork = isUrlValid(url);
+      String? availablePath;
+      if (isExitSourcePath) {
+        availablePath = sourcePath;
+      } else if (isExitCachePath) {
+        availablePath = cachePath;
+      }
+      final isAvailableFileSize =
+          isExitSourcePath || isExitCachePath ? (await File(availablePath!).length() == fileSize) : false;
+      Logger.print('previewFile isAvailableFileSize: $isAvailableFileSize   isExitNetwork: $isExitNetwork');
+      if (isAvailableFileSize) {
+        String? mimeType = lookupMimeType(fileName ?? '');
+        if (null != mimeType && allowVideoType(mimeType)) {
+          previewVideo(Message()
+            ..clientMsgID = message.clientMsgID
+            ..contentType = MessageType.video
+            ..videoElem = VideoElem(videoPath: availablePath, videoUrl: url));
+        } else if (null != mimeType && mimeType.contains('image')) {
+          previewPicture(Message()
+            ..clientMsgID = message.clientMsgID
+            ..contentType = MessageType.picture
+            ..pictureElem = PictureElem(sourcePath: availablePath, sourcePicture: PictureInfo(url: url)));
+        } else {
+          openFileByOtherApp(availablePath);
+        }
+      } else {
+        if (isExitNetwork) {
+          if (Get.isRegistered<DownloadController>()) {
+            final controller = Get.find<DownloadController>();
+            controller.clickFileMessage(url!, cachePath);
+          }
+        }
+      }
+    }
+  }
+
+  static Future previewMediaFile(
+      {required BuildContext context,
+      required Message message,
+      bool muted = false,
+      bool Function(int)? onAutoPlay,
+      ValueChanged<int>? onPageChanged,
+      bool onlySave = false,
+      ValueChanged<OperateType>? onOperate}) {
+    void saveVideo(BuildContext ctx, String url, {int? length}) async {
+      final cachedVideoControllerService = CachedVideoControllerService(DefaultCacheManager());
+      final cached = await cachedVideoControllerService.getCacheFile(url);
+
+      if (cached != null) {
+        LoadingView.singleton.show();
+        await HttpUtil.saveFileToGallerySaver(
+          cached,
+          name: url.split('/').last,
+        );
+        LoadingView.singleton.dismiss();
+      } else {
+        LoadingView.singleton.show();
+
+        final downloader = MultiThreadDownloader(url: url, fileName: url.split('/').last, length: length);
+
+        callback(EasyLoadingStatus status) {
+          if (status == EasyLoadingStatus.dismiss) {
+            downloader.cancel();
+            EasyLoading.removeCallback(callback);
+            EasyLoading.dismiss();
+          }
+        }
+
+        EasyLoading.addStatusCallback(callback);
+
+        final filePath = await downloader.start();
+
+        if (filePath != null) {
+          HttpUtil.saveFileToGallerySaver(
+            File(filePath),
+            name: url.split('/').last,
+            showTaost: LoadingView.singleton.isProgressVisible,
+          );
+        }
+        EasyLoading.removeCallback(callback);
+        EasyLoading.dismiss();
+      }
+    }
+
+    void showBottomBar(int index) {
+      if (onOperate == null && !onlySave) {
+        return;
+      }
+
+      PhotoBrowserBottomBar.show(
+        context,
+        onlySave: onlySave,
+        onPressedButton: (type) async {
+          final msg = message;
+          switch (type) {
+            case OperateType.save:
+              if (msg.videoElem != null) {
+                saveVideo(context, msg.videoElem!.videoUrl!, length: msg.videoElem!.videoSize);
+              } else {
+                final url = msg.pictureElem?.sourcePicture?.url;
+                if (url?.isNotEmpty == true) {
+                  saveImage(context, url!);
+                }
+              }
+              break;
+            case OperateType.forward:
+              onOperate?.call(type);
+              break;
+          }
+        },
+      );
+    }
+
+    final sources = message.isVideoType
+        ? MediaSource(
+            url: message.videoElem?.videoUrl,
+            thumbnail: message.videoElem!.snapshotUrl?.adjustThumbnailAbsoluteString(960) ?? '',
+            file: File(message.videoElem!.videoPath!),
+            tag: message.clientMsgID,
+            isVideo: true,
+          )
+        : MediaSource(
+            url: message.pictureElem?.sourcePicture?.url,
+            thumbnail: message.pictureElem!.snapshotPicture?.url?.adjustThumbnailAbsoluteString(960) ?? '',
+            file: File(message.pictureElem!.sourcePath!),
+            tag: message.clientMsgID,
+          );
+
+    final mb = MediaBrowser(
+      sources: [sources],
+      initialIndex: 0,
+      onAutoPlay: (index) => onAutoPlay != null ? onAutoPlay(index) : false,
+      muted: muted,
+      onSave: (index) {
+        final msg = message;
+        final url = msg.videoElem?.videoUrl;
+
+        if (url != null) {
+          saveVideo(context, url, length: msg.videoElem!.videoSize);
+        }
+      },
+      onLongPress: (index) {
+        showBottomBar(index);
+      },
+    );
+    return Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return mb;
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
+  }
+
+  static void saveImage(BuildContext ctx, String url) async {
+    EasyLoading.show(dismissOnTap: true);
+    final imageFile = await getCachedImageFile(url);
+
+    if (imageFile != null) {
+      await HttpUtil.saveFileToGallerySaver(
+        imageFile,
+        name: url.split('/').last,
+      );
+
+      EasyLoading.dismiss();
+    } else {
+      HttpUtil.saveUrlPicture(url, onCompletion: () {
+        EasyLoading.dismiss();
+      });
+    }
+  }
+
+  static openFileByOtherApp(String path) async {
+    OpenResult result = await OpenFilex.open(path);
+    if (result.type == ResultType.noAppToOpen) {
+      IMViews.showToast("没有可支持的应用");
+    } else if (result.type == ResultType.permissionDenied) {
+      IMViews.showToast("无权限访问");
+    } else if (result.type == ResultType.fileNotFound) {
+      IMViews.showToast("文件已失效");
+    }
+  }
+
+  static void previewLocation(Message message) {
+    var location = message.locationElem;
+    Map detail = json.decode(location!.description!);
+    Logger.print('previewLocation ${location.latitude}  ${location.longitude}');
+    Get.to(
+      () => MapView(
+        latitude: location.latitude!,
+        longitude: location.longitude!,
+        address1: detail['name'],
+        address2: detail['addr'],
+      ),
+      transition: Transition.cupertino,
+      popGesture: true,
+    );
+  }
+
+  static void previewCarteMessage(
+    Message message,
+    Function(UserInfo userInfo)? onViewUserInfo,
+  ) =>
+      onViewUserInfo?.call(UserInfo.fromJson(message.cardElem!.toJson()));
+
   static void parseClickEvent(
     Message message, {
-    List<Message> messageList = const [],
     Function(UserInfo userInfo)? onViewUserInfo,
+    Function(Message msg)? meetingItemClick,
+    VoidCallback? onForward,
   }) async {
-    if (message.contentType == MessageType.picture) {
-    } else if (message.contentType == MessageType.video) {
+    if (message.contentType == MessageType.picture || message.contentType == MessageType.video) {
+      previewMediaFile(
+        context: Get.context!,
+        message: message,
+        onOperate: (value) {
+          if (value == OperateType.forward) {
+            onForward?.call();
+          }
+        },
+      );
     } else if (message.contentType == MessageType.file) {
+      previewFile(message);
     } else if (message.contentType == MessageType.card) {
-    } else if (message.contentType == MessageType.merger) {
+      previewCarteMessage(message, onViewUserInfo);
     } else if (message.contentType == MessageType.location) {
-    } else if (message.contentType == MessageType.customFace) {}
+      previewLocation(message);
+    } else if (message.contentType == MessageType.customFace) {
+      previewCustomFace(message);
+    }
   }
 
   static Future<bool> isExitFile(String? path) async {
@@ -1005,13 +1438,36 @@ class IMUtils {
     }
   }
 
+  static bool allowImageType(String? mimeType) {
+    final result = mimeType?.contains('png') == true ||
+        mimeType?.contains('jpeg') == true ||
+        mimeType?.contains('gif') == true ||
+        mimeType?.contains('bmp') == true ||
+        mimeType?.contains('webp') == true ||
+        mimeType?.contains('heic') == true;
+
+    return result;
+  }
+
+  static bool allowVideoType(String? mimeType) {
+    final result = mimeType?.contains('mp4') == true ||
+        mimeType?.contains('3gpp') == true ||
+        mimeType?.contains('webm') == true ||
+        mimeType?.contains('x-msvideo') == true ||
+        mimeType?.contains('quicktime') == true;
+
+    return result;
+  }
+
   static String fileIcon(String fileName) {
     var mimeType = lookupMimeType(fileName) ?? '';
     if (mimeType == 'application/pdf') {
       return ImageRes.filePdf;
-    } else if (mimeType == 'application/msword' || mimeType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    } else if (mimeType == 'application/msword' ||
+        mimeType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
       return ImageRes.fileWord;
-    } else if (mimeType == 'application/vnd.ms-excel' || mimeType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    } else if (mimeType == 'application/vnd.ms-excel' ||
+        mimeType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       return ImageRes.fileExcel;
     } else if (mimeType == 'application/vnd.ms-powerpoint') {
       return ImageRes.filePpt;
@@ -1019,7 +1475,15 @@ class IMUtils {
     } else if (mimeType == 'application/zip' || mimeType == 'application/x-rar-compressed') {
       return ImageRes.fileZip;
     }
-
+    /*else if (mimeType.startsWith('audio/')) {
+      return FontAwesomeIcons.solidFileAudio;
+    } else if (mimeType.startsWith('video/')) {
+      return FontAwesomeIcons.solidFileVideo;
+    } else if (mimeType.startsWith('image/')) {
+      return FontAwesomeIcons.solidFileImage;
+    } else if (mimeType == 'text/plain') {
+      return FontAwesomeIcons.solidFileCode;
+    }*/
     return ImageRes.fileUnknown;
   }
 
@@ -1040,7 +1504,7 @@ class IMUtils {
           checkedList.add(UserInfo.fromJson(value.toJson()));
         } else if (value is UserInfo) {
           checkedList.add(value);
-        }
+        } 
       }
       return checkedList;
     }
@@ -1054,7 +1518,7 @@ class IMUtils {
       for (final value in values) {
         if (value is UserInfo || value is FriendInfo || value is UserFullInfo || value is ISUserInfo) {
           checkedList.add(value.userID!);
-        }
+        } 
       }
       return checkedList;
     }
@@ -1067,7 +1531,7 @@ class IMUtils {
     for (var item in checkedList) {
       if (item is ConversationInfo) {
         checkedMap[item.isSingleChat ? item.userID! : item.groupID!] = item;
-      } else if (item is UserInfo || item is UserFullInfo || item is ISUserInfo) {
+      } else if (item is UserInfo || item is UserFullInfo || item is ISUserInfo || item is FriendInfo) {
         checkedMap[item.userID!] = item;
       } else if (item is GroupInfo) {
         checkedMap[item.groupID] = item;
@@ -1081,23 +1545,24 @@ class IMUtils {
   static List<Map<String, String?>> convertCheckedListToForwardObj(List<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
-      if (item is UserInfo || item is UserFullInfo || item is ISUserInfo) {
+      if (item is UserInfo || item is UserFullInfo || item is ISUserInfo || item is FriendInfo) {
         map.add({'nickname': item.nickname, 'faceURL': item.faceURL});
       } else if (item is GroupInfo) {
         map.add({'nickname': item.groupName, 'faceURL': item.faceURL});
       } else if (item is ConversationInfo) {
         map.add({'nickname': item.showName, 'faceURL': item.faceURL});
-      }
+      } 
     }
     return map;
   }
 
   static String? convertCheckedToUserID(dynamic info) {
-    if (info is UserInfo || info is UserFullInfo || info is ISUserInfo) {
+    if (info is UserInfo || info is UserFullInfo || info is ISUserInfo || info is FriendInfo) {
       return info.userID;
     } else if (info is ConversationInfo) {
       return info.userID;
     }
+
     return null;
   }
 
@@ -1106,20 +1571,22 @@ class IMUtils {
       return info.groupID;
     } else if (info is ConversationInfo) {
       return info.groupID;
-    }
+    } 
+    
     return null;
   }
 
   static List<Map<String, String?>> convertCheckedListToShare(Iterable<dynamic> checkedList) {
     final map = <Map<String, String?>>[];
     for (var item in checkedList) {
-      if (item is UserInfo || item is UserFullInfo || item is ISUserInfo) {
+      if (item is UserInfo || item is UserFullInfo || item is ISUserInfo || item is FriendInfo) {
         map.add({'userID': item.userID, 'groupID': null});
       } else if (item is GroupInfo) {
         map.add({'userID': null, 'groupID': item.groupID});
       } else if (item is ConversationInfo) {
         map.add({'userID': item.userID, 'groupID': item.groupID});
-      }
+      } 
+      
     }
     return map;
   }
@@ -1148,24 +1615,36 @@ class IMUtils {
     return formatDateMs(ms, format: isZH ? 'yyyy年MM月dd' : 'yyyy/MM/dd');
   }
 
+  static Future<bool> checkingBiometric(LocalAuthentication auth) => auth.authenticate(
+        localizedReason: 'Scan your fingerprint (or face or other) to authenticate.',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+        ),
+        authMessages: <AuthMessages>[
+          const AndroidAuthMessages(
+            cancelButton: 'No, thanks',
+            biometricNotRecognized: 'Biometric not recognized. Try again.',
+            biometricHint: 'Verify identity',
+            biometricSuccess: 'Success',
+            biometricRequiredTitle: 'Authentication required',
+            goToSettingsDescription:
+                "No biometric authentication is set up on your device. Go to Settings > Security to add biometric authentication.",
+            goToSettingsButton: 'Go to settings',
+            deviceCredentialsRequiredTitle: 'Device credentials required',
+            deviceCredentialsSetupDescription: 'Device credentials required',
+            signInTitle: 'Authentication required',
+          ),
+          const IOSAuthMessages(
+            cancelButton: 'No, thanks',
+            goToSettingsButton: 'Go to settings',
+            goToSettingsDescription:
+                'No biometric authentication is set up on your device. Please enable Touch ID or Face ID on your phone.',
+            lockOut: 'Biometric authentication is disabled. Please lock and unlock your screen to enable it.',
+          ),
+        ],
+      );
+
   static String safeTrim(String text) {
-    String pattern = '(${[regexAt, regexAtAll].join('|')})';
-    RegExp regex = RegExp(pattern);
-    Iterable<Match> matches = regex.allMatches(text);
-    int? start;
-    int? end;
-    for (Match match in matches) {
-      String? matchText = match.group(0);
-      start ??= match.start;
-      end = match.end;
-      Logger.print("Matched: $matchText  start: $start  end: $end");
-    }
-    if (null != start && null != end) {
-      final startStr = text.substring(0, start).trimLeft();
-      final middleStr = text.substring(start, end);
-      final endStr = text.substring(end).trimRight();
-      return '$startStr$middleStr$endStr';
-    }
     return text.trim();
   }
 
@@ -1184,9 +1663,43 @@ class IMUtils {
     return isZh ? 'MM月dd日 HH时mm分' : 'MM/dd HH:mm';
   }
 
-  static bool isValidPassword(String password) => passwordRegExp.hasMatch(password);
+  static bool isValidPassword(String password) => RegExp(
+        r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\S]{6,20}$',
+      ).hasMatch(password);
 
   static TextInputFormatter getPasswordFormatter() => FilteringTextInputFormatter.allow(
-        RegExp(r'[a-zA-Z0-9@#$%^&+=!.]'),
+        RegExp(r'[a-zA-Z0-9\S]'),
       );
+
+  static Future requestBackgroundPermission({required String title, required String text, bool isRetry = false}) async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+    try {
+      bool hasPermissions = await FlutterBackground.hasPermissions;
+      if (!isRetry) {
+        hasPermissions = await FlutterBackground.initialize(
+            androidConfig: FlutterBackgroundAndroidConfig(
+                notificationTitle: title,
+                notificationText: text,
+                notificationImportance: AndroidNotificationImportance.normal,
+                notificationIcon: const AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
+                shouldRequestBatteryOptimizationsOff: false));
+      }
+      if (hasPermissions && !FlutterBackground.isBackgroundExecutionEnabled) {
+        await FlutterBackground.enableBackgroundExecution();
+      }
+    } catch (e) {
+      if (!isRetry) {
+        return await Future<void>.delayed(
+            const Duration(seconds: 1), () => requestBackgroundPermission(title: title, text: text, isRetry: true));
+      }
+    }
+  }
+}
+
+extension PlatformExt on Platform {
+  static bool get isMobile => Platform.isIOS || Platform.isAndroid;
+
+  static bool get isDesktop => Platform.isLinux || Platform.isMacOS || Platform.isWindows;
 }

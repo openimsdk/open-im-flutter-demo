@@ -30,8 +30,7 @@ class SelectContactsFromSearchGroupPage extends StatelessWidget {
             ? _emptyListView
             : ListView.builder(
                 itemCount: logic.resultList.length,
-                itemBuilder: (_, index) =>
-                    _buildItemView(logic.resultList[index]),
+                itemBuilder: (_, index) => _buildItemView(logic.resultList[index]),
               )),
       ),
     );
@@ -42,7 +41,9 @@ class SelectContactsFromSearchGroupPage extends StatelessWidget {
           height: 64.h,
           color: Styles.c_FFFFFF,
           child: InkWell(
-            onTap: () => selectContactsLogic.onTap(info),
+            onTap: () {
+              selectContactsLogic.toggleChecked(info);
+            },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
@@ -73,8 +74,7 @@ class SelectContactsFromSearchGroupPage extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        sprintf(StrRes.nPerson, [info.memberCount]).toText
-                          ..style = Styles.ts_8E9AB0_14sp,
+                        sprintf(StrRes.nPerson, [info.memberCount]).toText..style = Styles.ts_8E9AB0_14sp,
                       ],
                     ),
                   ),

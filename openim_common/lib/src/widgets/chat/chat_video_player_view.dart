@@ -31,16 +31,24 @@ class CachedVideoControllerService extends VideoControllerService {
       Logger.print('[VideoControllerService]: Saving video to cache');
       unawaited(_cacheManager.downloadFile(videoUrl));
 
-      return VideoPlayerController.network(videoUrl);
+      return VideoPlayerController.networkUrl(Uri.parse(videoUrl),
+          videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+          httpHeaders: Platform.isAndroid
+              ? {}
+              : {
+                  'AVURLAssetOutOfBandMIMETypeKey': 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
+                });
     } else {
       Logger.print('[VideoControllerService]: Loading video from cache');
-      return VideoPlayerController.file(file);
+      return VideoPlayerController.file(
+        file,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     }
   }
 
   @override
   Future<File?> getCacheFile(String videoUrl) async {
-    // TODO: implement getCacheFile
     final fileInfo = await _cacheManager.getFileFromCache(videoUrl);
 
     return fileInfo?.file;
@@ -49,16 +57,16 @@ class CachedVideoControllerService extends VideoControllerService {
 
 class ChatVideoPlayerView extends StatefulWidget {
   const ChatVideoPlayerView({
-    Key? key,
+    super.key,
     this.path,
     this.url,
     this.coverUrl,
     this.file,
     this.heroTag,
-    this.oDownload,
+    this.onDownload,
     this.autoPlay = true,
     this.muted = false,
-  }) : super(key: key);
+  });
   final String? path;
   final String? url;
   final File? file;
@@ -66,7 +74,7 @@ class ChatVideoPlayerView extends StatefulWidget {
   final String? heroTag;
   final bool autoPlay;
   final bool muted;
-  final Function(String? url)? oDownload;
+  final Function(String? url, File? file)? onDownload;
 
   @override
   State<ChatVideoPlayerView> createState() => _ChatVideoPlayerViewState();
@@ -86,9 +94,14 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> with SingleTi
 
   @override
   void dispose() {
-    _chewieController?.pause();
-    _videoPlayerController.dispose();
-    _chewieController?.dispose();
+    Logger.print('[ChatVideoPlayerView]: dispose');
+
+    () async {
+      await _chewieController?.pause();
+      await _videoPlayerController.pause();
+      await _videoPlayerController.dispose();
+      _chewieController?.dispose();
+    }();
     super.dispose();
   }
 
@@ -107,7 +120,10 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> with SingleTi
     }
 
     if (null != file && file.existsSync()) {
-      _videoPlayerController = VideoPlayerController.file(file);
+      _videoPlayerController = VideoPlayerController.file(
+        file,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     } else {
       _videoPlayerController = await _cachedVideoControllerService.getVideo(_url!);
     }
@@ -129,21 +145,29 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> with SingleTi
       allowPlaybackSpeedChanging: false,
       showControlsOnInitialize: true,
       customControls: CustomCupertinoControls(backgroundColor: Colors.black.withOpacity(0.7), iconColor: Colors.white),
-      // hideControlsTimer: const Duration(seconds: 1),
       optionsTranslation: OptionsTranslation(
         playbackSpeedButtonText: StrRes.playSpeed,
         cancelButtonText: StrRes.cancel,
       ),
       additionalOptions: (context) => [
         OptionItem(
-          onTap: () {
-            widget.oDownload?.call(widget.url);
+          onTap: () async {
+            final file = await _cachedVideoControllerService.getCacheFile(widget.url!);
+            widget.onDownload?.call(widget.url, file);
             Get.back();
           },
           iconData: Icons.download_outlined,
           title: StrRes.download,
         ),
       ],
+      errorBuilder: (context, errorMessage) {
+        return Center(
+          child: Text(
+            errorMessage,
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      },
     );
   }
 
@@ -166,10 +190,10 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> with SingleTi
     );
   }
 
-  Widget _buildCoverView(BuildContext context) => Stack(
-        alignment: Alignment.center,
-        children: [
-          if (null != widget.coverUrl)
+  Widget _buildCoverView(BuildContext context) => null != widget.coverUrl
+      ? Stack(
+          alignment: Alignment.center,
+          children: [
             Center(
               child: ImageUtil.networkImage(
                   url: widget.coverUrl!,
@@ -178,13 +202,15 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView> with SingleTi
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.fitWidth),
             ),
-          const Center(
-            child: CupertinoActivityIndicator(
-              color: Colors.white,
+            const Center(
+              child: CupertinoActivityIndicator(
+                color: Colors.white,
+                radius: 15,
+              ),
             ),
-          ),
-        ],
-      );
+          ],
+        )
+      : Container();
 
   String? get _path => widget.path;
 

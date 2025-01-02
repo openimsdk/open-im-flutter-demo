@@ -58,7 +58,6 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
       {super.key,
       String? statusStr,
       bool isFailed = false,
-      Function()? onClickCallBtn,
       Function()? onScan,
       Function()? onAddFriend,
       Function()? onAddGroup,
@@ -230,7 +229,6 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   TitleBar.contacts({
     super.key,
     this.showUnderline = false,
-    Function()? onClickSearch,
     Function()? onClickAddContacts,
   })  : height = 44.h,
         backgroundColor = Styles.c_FFFFFF,
@@ -238,10 +236,6 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
         left = StrRes.contacts.toText..style = Styles.ts_0C1C33_20sp_semibold,
         right = Row(
           children: [
-            ImageRes.searchBlack.toImage
-              ..width = 28.w
-              ..height = 28.h
-              ..onTap = onClickSearch,
             16.horizontalSpace,
             ImageRes.addContacts.toImage
               ..width = 28.w

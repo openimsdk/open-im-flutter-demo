@@ -16,23 +16,26 @@ class UpgradeInfoV2 {
   String? buildIcon;
   String? buildFileKey;
   String? buildFileSize;
+  String? appURl;
 
-  UpgradeInfoV2(
-      {this.buildBuildVersion,
-      this.forceUpdateVersion,
-      this.forceUpdateVersionNo,
-      this.needForceUpdate,
-      this.downloadURL,
-      this.buildHaveNewVersion,
-      this.buildVersionNo,
-      this.buildVersion,
-      this.buildUpdateDescription,
-      this.appKey,
-      this.buildKey,
-      this.buildName,
-      this.buildIcon,
-      this.buildFileKey,
-      this.buildFileSize});
+  UpgradeInfoV2({
+    this.buildBuildVersion,
+    this.forceUpdateVersion,
+    this.forceUpdateVersionNo,
+    this.needForceUpdate,
+    this.downloadURL,
+    this.buildHaveNewVersion,
+    this.buildVersionNo,
+    this.buildVersion,
+    this.buildUpdateDescription,
+    this.appKey,
+    this.buildKey,
+    this.buildName,
+    this.buildIcon,
+    this.buildFileKey,
+    this.buildFileSize,
+    this.appURl,
+  });
 
   UpgradeInfoV2.fromJson(Map<String, dynamic> json) {
     buildBuildVersion = json['buildBuildVersion'];
@@ -50,6 +53,7 @@ class UpgradeInfoV2 {
     buildIcon = json['buildIcon'];
     buildFileKey = json['buildFileKey'];
     buildFileSize = json['buildFileSize'];
+    appURl = json['appURl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +73,8 @@ class UpgradeInfoV2 {
     data['buildIcon'] = buildIcon;
     data['buildFileKey'] = buildFileKey;
     data['buildFileSize'] = buildFileSize;
+    data['appURl'] = appURl;
+
     return data;
   }
 

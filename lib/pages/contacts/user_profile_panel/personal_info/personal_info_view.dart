@@ -17,50 +17,55 @@ class PersonalInfoPage extends StatelessWidget {
         title: StrRes.personalInfo,
       ),
       backgroundColor: Styles.c_F8F9FA,
-      body: Obx(() => SingleChildScrollView(
-            child: Column(
+      body: SingleChildScrollView(
+          child: Obx(
+        () => Column(
+          children: [
+            10.verticalSpace,
+            _buildCornerBgView(
               children: [
-                10.verticalSpace,
-                _buildCornerBgView(
-                  children: [
-                    _buildItemView(
-                      label: StrRes.avatar,
-                      isAvatar: true,
-                      value: logic.nickname,
-                      url: logic.faceURL,
-                    ),
-                    _buildItemView(
-                      label: StrRes.name,
-                      value: logic.nickname,
-                    ),
-                    _buildItemView(
-                      label: StrRes.gender,
-                      value: logic.isMale ? StrRes.man : StrRes.woman,
-                    ),
-                    _buildItemView(
-                      label: StrRes.birthDay,
-                      value: logic.birth,
-                    ),
-                  ],
+                _buildItemView(
+                  label: StrRes.avatar,
+                  isAvatar: true,
+                  value: logic.nickname,
+                  url: logic.faceURL,
                 ),
-                10.verticalSpace,
-                _buildCornerBgView(
-                  children: [
-                    _buildItemView(
-                      label: StrRes.mobile,
-                      value: logic.phoneNumber,
-                      onTap: logic.clickPhoneNumber,
-                    ),
-                    _buildItemView(
-                      label: StrRes.email,
-                      value: logic.email,
-                      onTap: logic.clickEmail,
-                    ),
-                  ],
+                _buildItemView(
+                  label: StrRes.name,
+                  value: logic.nickname,
+                ),
+                _buildItemView(
+                  label: StrRes.gender,
+                  value: logic.isMale ? StrRes.man : StrRes.woman,
+                ),
+                _buildItemView(
+                  label: StrRes.englishName,
+                  value: logic.englishName,
+                ),
+                _buildItemView(
+                  label: StrRes.birthDay,
+                  value: logic.birth,
                 ),
               ],
             ),
-          )),
+            10.verticalSpace,
+            _buildCornerBgView(
+              children: [
+                _buildItemView(
+                  label: StrRes.mobile,
+                  value: logic.phoneNumber,
+                  onTap: logic.clickPhoneNumber,
+                ),
+                _buildItemView(
+                  label: StrRes.email,
+                  value: logic.email,
+                  onTap: logic.clickEmail,
+                ),
+              ],
+            ),
+          ],
+        ),
+      )),
     );
   }
 
@@ -95,8 +100,7 @@ class PersonalInfoPage extends StatelessWidget {
             children: [
               label.toText..style = Styles.ts_0C1C33_17sp,
               const Spacer(),
-              if (null != value && !isAvatar)
-                value.toText..style = Styles.ts_0C1C33_17sp,
+              if (null != value && !isAvatar) value.toText..style = Styles.ts_0C1C33_17sp,
               if (isAvatar)
                 AvatarView(
                   width: 32.w,

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class AvatarView extends StatelessWidget {
     this.height,
     this.onTap,
     this.url,
+    this.file,
     this.builder,
     this.text,
     this.textStyle,
@@ -32,6 +34,7 @@ class AvatarView extends StatelessWidget {
   final Function()? onTap;
   final Function()? onLongPress;
   final String? url;
+  final File? file;
   final CustomAvatarBuilder? builder;
   final bool isCircle;
   final BorderRadius? borderRadius;
@@ -66,11 +69,10 @@ class AvatarView extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: onTap ??
           ((enabledPreview && isUrlValid)
-              ? () => IMUtils.previewUrlPicture([url!])
+              ? () => IMUtils.previewUrlPicture([MediaSource(thumbnail: url!, url: url)])
               : null),
       onLongPress: onLongPress,
-      child: builder?.call() ??
-          (nineGridUrl.isNotEmpty ? _nineGridAvatar() : _normalAvatar()),
+      child: builder?.call() ?? (nineGridUrl.isNotEmpty ? _nineGridAvatar() : _normalAvatar()),
     );
     return Hero(
       tag: tag,
@@ -96,9 +98,7 @@ class AvatarView extends StatelessWidget {
         child: null == _showName
             ? (showDefaultAvatar
                 ? FaIcon(
-                    isGroup
-                        ? FontAwesomeIcons.userGroup
-                        : FontAwesomeIcons.solidUser,
+                    isGroup ? FontAwesomeIcons.userGroup : FontAwesomeIcons.solidUser,
                     color: Colors.white,
                     size: _avatarSize / 2,
                   )
@@ -106,15 +106,17 @@ class AvatarView extends StatelessWidget {
             : Text(_showName!, style: _textStyle),
       );
 
-  Widget _networkImageAvatar() => ImageUtil.networkImage(
-        url: url!,
-        width: _avatarSize,
-        height: _avatarSize,
-        fit: BoxFit.cover,
-        lowMemory: lowMemory,
-        loadProgress: false,
-        errorWidget: _textAvatar(),
-      );
+  Widget _networkImageAvatar() => file != null
+      ? ImageUtil.fileImage(file: file!)
+      : ImageUtil.networkImage(
+          url: url!,
+          width: _avatarSize,
+          height: _avatarSize,
+          fit: BoxFit.cover,
+          lowMemory: lowMemory,
+          loadProgress: false,
+          errorWidget: _textAvatar(),
+        );
 
   Widget _nineGridAvatar() => Container(
         width: _avatarSize,
@@ -234,4 +236,36 @@ class AvatarView extends StatelessWidget {
       children: list,
     );
   }
+}
+
+class RedDotView extends StatelessWidget {
+  const RedDotView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 8,
+        height: 8,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Styles.c_FF381F,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0x26C61B4A),
+              offset: Offset(1.15.w, 1.15.h),
+              blurRadius: 57.58.r,
+            ),
+            BoxShadow(
+              color: const Color(0x1AC61B4A),
+              offset: Offset(2.3.w, 2.3.h),
+              blurRadius: 11.52.r,
+            ),
+            BoxShadow(
+              color: const Color(0x0DC61B4A),
+              offset: Offset(4.61.w, 4.61.h),
+              blurRadius: 17.28.r,
+            ),
+          ],
+        ),
+      );
 }

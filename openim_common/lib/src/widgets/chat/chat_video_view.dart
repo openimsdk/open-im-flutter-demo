@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ChatVideoView extends StatefulWidget {
   const ChatVideoView({
     Key? key,
     required this.message,
     required this.isISend,
-    this.sendProgressStream,
   }) : super(key: key);
   final bool isISend;
-  final Stream<MsgStreamEv<int>>? sendProgressStream;
   final Message message;
 
   @override
@@ -31,7 +30,7 @@ class _ChatVideoViewState extends State<ChatVideoView> {
   @override
   void initState() {
     final video = _message.videoElem;
-    _snapshotUrl = video?.snapshotUrl;
+    _snapshotUrl = video?.snapshotUrl?.adjustThumbnailAbsoluteString(960);
     _snapshotPath = video?.snapshotPath;
 
     var w = video?.snapshotWidth?.toDouble() ?? 1.0;
@@ -40,23 +39,42 @@ class _ChatVideoViewState extends State<ChatVideoView> {
     _trulyWidth = pictureWidth;
     _trulyHeight = _trulyWidth * h / w;
 
-    _createThumbView();
+    if (Platform.isIOS) {
+      if (_snapshotPath?.contains('/Library/Caches/') == true) {
+        getApplicationCacheDirectory().then((value) {
+          final path = _snapshotPath!.split('/Library/Caches').last;
+          _snapshotPath = value.path + path;
+          _createThumbView();
+        });
+      } else {
+        _createThumbView();
+      }
+    } else {
+      _createThumbView();
+    }
     super.initState();
   }
 
   Future<bool> _checkingPath() async {
-    final valid = IMUtils.isNotNullEmptyStr(_snapshotPath) &&
-        await Permissions.checkStorage() &&
-        await File(_snapshotPath!).exists();
+    var valid = IMUtils.isNotNullEmptyStr(_snapshotPath);
+    if (!valid) {
+      return false;
+    }
+    if (Platform.isIOS) {
+      final exist = File(_snapshotPath!).existsSync();
+      valid = valid && exist;
+    } else {
+      valid = valid && File(_snapshotPath!).existsSync();
+    }
     _message.exMap['validPath_$_snapshotPath'] = valid;
+
     return valid;
   }
 
   bool? get isValidPath => _message.exMap['validPath_$_snapshotPath'];
 
   _createThumbView() async {
-    if (widget.isISend &&
-        (isValidPath == true || isValidPath == null && await _checkingPath())) {
+    if (widget.isISend && (isValidPath == true || isValidPath == null && await _checkingPath())) {
       _child = ImageUtil.fileImage(
         file: File(_snapshotPath!),
         height: _trulyHeight,
@@ -90,21 +108,11 @@ class _ChatVideoViewState extends State<ChatVideoView> {
               ImageRes.videoPause.toImage
                 ..width = 40.w
                 ..height = 40.h,
-              ChatProgressView(
-                height: _trulyHeight,
-                width: _trulyWidth,
-                id: _message.clientMsgID!,
-                stream: widget.sendProgressStream,
-                isISend: widget.isISend,
-                type: ProgressType.video,
-              ),
               if (null != _message.videoElem?.duration)
                 Positioned(
                   bottom: 2.h,
                   right: 3.w,
-                  child:
-                      IMUtils.seconds2HMS(_message.videoElem!.duration!).toText
-                        ..style = Styles.ts_FFFFFF_12sp,
+                  child: IMUtils.seconds2HMS(_message.videoElem!.duration!).toText..style = Styles.ts_FFFFFF_12sp,
                 ),
             ],
           ),

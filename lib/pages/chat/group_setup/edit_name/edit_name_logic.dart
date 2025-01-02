@@ -13,10 +13,12 @@ class EditGroupNameLogic extends GetxController {
   final groupSetupLogic = Get.find<GroupSetupLogic>();
   late TextEditingController inputCtrl;
   late EditNameType type;
+  String? faceUrl;
 
   @override
   void onInit() {
     type = Get.arguments['type'];
+    faceUrl = Get.arguments['faceUrl'];
     inputCtrl = TextEditingController(
       text: type == EditNameType.groupNickname ? groupSetupLogic.groupInfo.value.groupName : groupSetupLogic.myGroupMembersInfo.value.nickname,
     );
@@ -32,6 +34,9 @@ class EditGroupNameLogic extends GetxController {
   String? get title => type == EditNameType.myGroupMemberNickname ? StrRes.myGroupMemberNickname : StrRes.groupName;
 
   void save() async {
+    if (inputCtrl.text.trim().length > 16) {
+      return IMViews.showToast(StrRes.createGroupTips);
+    }
     await LoadingView.singleton.wrap(asyncFunction: () async {
       if (type == EditNameType.groupNickname) {
         await OpenIM.iMManager.groupManager

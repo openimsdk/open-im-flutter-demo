@@ -16,7 +16,6 @@ class FriendListLogic extends GetxController {
   late StreamSubscription addSub;
   late StreamSubscription infoChangedSub;
 
-  int _offset = 0;
   int _count = 10000;
 
   @override
@@ -47,17 +46,17 @@ class FriendListLogic extends GetxController {
     List<FriendInfo> list = [];
     for (int i = 0;; i++) {
       final temp = await OpenIM.iMManager.friendshipManager.getFriendListPage(
-        offset: _offset,
+        offset: list.length,
         count: _count,
         filterBlack: true,
       );
+      list.addAll(temp);
 
-      if (temp.isEmpty) {
+      if (temp.length < _count) {
         break;
       }
-      _offset += temp.length;
+
       _count = 1000;
-      list.addAll(temp);
     }
 
     final result = list.map((e) {
@@ -95,14 +94,9 @@ class FriendListLogic extends GetxController {
     final info = ISUserInfo.fromJson(json);
     friendList.add(IMUtils.setAzPinyinAndTag(info) as ISUserInfo);
 
-    // A-Z sort.
     SuspensionUtil.sortListBySuspensionTag(friendList);
 
-    // show sus tag.
     SuspensionUtil.setShowSuspensionStatus(friendList);
-    // IMUtil.convertToAZList(friendList);
-
-    // friendList.refresh();
   }
 
   void viewFriendInfo(ISUserInfo info) => AppNavigator.startUserProfilePane(

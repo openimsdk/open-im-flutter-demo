@@ -31,8 +31,32 @@ class InputBox extends StatefulWidget {
     this.formatHintText,
     this.margin,
     this.inputFormatters,
+    this.keyBoardType,
   })  : obscureText = false,
         type = InputBoxType.phone,
+        arrowColor = null,
+        clearBtnColor = null,
+        onSendVerificationCode = null;
+
+  InputBox.account({
+    super.key,
+    required this.label,
+    required this.code,
+    this.onAreaCode,
+    this.controller,
+    this.focusNode,
+    this.labelStyle,
+    this.textStyle,
+    this.codeStyle,
+    this.hintStyle,
+    this.formatHintStyle,
+    this.hintText,
+    this.formatHintText,
+    this.margin,
+    this.inputFormatters,
+    this.keyBoardType,
+  })  : obscureText = false,
+        type = InputBoxType.account,
         arrowColor = null,
         clearBtnColor = null,
         onSendVerificationCode = null;
@@ -50,6 +74,7 @@ class InputBox extends StatefulWidget {
     this.formatHintText,
     this.margin,
     this.inputFormatters,
+    this.keyBoardType,
   })  : obscureText = true,
         type = InputBoxType.password,
         codeStyle = null,
@@ -73,6 +98,7 @@ class InputBox extends StatefulWidget {
     this.formatHintText,
     this.margin,
     this.inputFormatters,
+    this.keyBoardType,
   })  : obscureText = false,
         type = InputBoxType.verificationCode,
         code = '',
@@ -94,6 +120,7 @@ class InputBox extends StatefulWidget {
     this.formatHintText,
     this.margin,
     this.inputFormatters,
+    this.keyBoardType,
   })  : obscureText = false,
         type = InputBoxType.invitationCode,
         code = '',
@@ -124,6 +151,7 @@ class InputBox extends StatefulWidget {
     this.onSendVerificationCode,
     this.margin,
     this.inputFormatters,
+    this.keyBoardType,
   }) : super(key: key);
   final TextStyle? labelStyle;
   final TextStyle? textStyle;
@@ -144,6 +172,7 @@ class InputBox extends StatefulWidget {
   final Future<bool> Function()? onSendVerificationCode;
   final EdgeInsetsGeometry? margin;
   final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyBoardType;
 
   @override
   State<InputBox> createState() => _InputBoxState();
@@ -195,7 +224,7 @@ class _InputBoxState extends State<InputBox> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (widget.type == InputBoxType.phone) _areaCodeView,
+                if (widget.type == InputBoxType.phone || widget.onAreaCode != null) _areaCodeView,
                 _textField,
                 _clearBtn,
                 _eyeBtn,
@@ -209,8 +238,7 @@ class _InputBoxState extends State<InputBox> {
           if (null != widget.formatHintText)
             Padding(
               padding: EdgeInsets.only(top: 5.h),
-              child: widget.formatHintText!.toText
-                ..style = (widget.formatHintStyle ?? Styles.ts_8E9AB0_12sp),
+              child: widget.formatHintText!.toText..style = (widget.formatHintStyle ?? Styles.ts_8E9AB0_12sp),
             ),
         ],
       ),
@@ -223,11 +251,11 @@ class _InputBoxState extends State<InputBox> {
           keyboardType: _textInputType,
           textInputAction: TextInputAction.next,
           style: widget.textStyle ?? Styles.ts_0C1C33_17sp,
-          autofocus: true,
+          autofocus: false,
           obscureText: _obscureText,
+          focusNode: widget.focusNode,
           inputFormatters: [
-            if (widget.type == InputBoxType.phone ||
-                widget.type == InputBoxType.verificationCode)
+            if (widget.type == InputBoxType.phone || widget.type == InputBoxType.verificationCode)
               FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
             if (null != widget.inputFormatters) ...widget.inputFormatters!,
           ],
@@ -286,15 +314,16 @@ class _InputBoxState extends State<InputBox> {
         child: GestureDetector(
           onTap: _toggleEye,
           behavior: HitTestBehavior.translucent,
-          child: (_obscureText
-              ? ImageRes.eyeClose.toImage
-              : ImageRes.eyeOpen.toImage)
+          child: (_obscureText ? ImageRes.eyeClose.toImage : ImageRes.eyeOpen.toImage)
             ..width = 24.w
             ..height = 24.h,
         ),
       );
 
   TextInputType? get _textInputType {
+    if (widget.keyBoardType != null) {
+      return widget.keyBoardType;
+    }
     TextInputType? keyboardType;
     switch (widget.type) {
       case InputBoxType.phone:
@@ -324,7 +353,7 @@ class VerifyCodedButton extends StatefulWidget {
 
   const VerifyCodedButton({
     Key? key,
-    this.seconds = 300,
+    this.seconds = 60,
     required this.onTapCallback,
   }) : super(key: key);
 
@@ -386,14 +415,13 @@ class _VerifyCodedButtonState extends State<VerifyCodedButton> {
   bool get _isEnabled => _seconds == 0 || _firstTime;
 
   @override
-  Widget build(BuildContext context) =>
-      (_isEnabled ? StrRes.sendVerificationCode : '${_seconds}S').toText
-        ..style = Styles.ts_0089FF_17sp
-        ..onTap = () {
-          if (_isEnabled) {
-            widget.onTapCallback?.call().then((start) {
-              if (start) _restart();
-            });
-          }
-        };
+  Widget build(BuildContext context) => (_isEnabled ? StrRes.sendVerificationCode : '${_seconds}S').toText
+    ..style = Styles.ts_0089FF_17sp
+    ..onTap = () {
+      if (_isEnabled) {
+        widget.onTapCallback?.call().then((start) {
+          if (start) _restart();
+        });
+      }
+    };
 }

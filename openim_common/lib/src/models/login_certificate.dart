@@ -2,8 +2,8 @@ import 'dart:convert';
 
 class LoginCertificate {
   String userID;
-  String imToken;
-  String chatToken;
+  String imToken; // im的
+  String chatToken; // 业务服务器的
 
   LoginCertificate.fromJson(Map<String, dynamic> map)
       : userID = map["userID"] ?? '',

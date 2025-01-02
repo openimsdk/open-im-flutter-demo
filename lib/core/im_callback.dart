@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
@@ -13,6 +15,13 @@ enum IMSdkStatus {
   synchronizing,
   syncEnded,
   syncFailed,
+  syncProgress,
+}
+
+enum KickoffType {
+  kickedOffline,
+  userTokenInvalid,
+  userTokenExpired,
 }
 
 mixin IMCallback {
@@ -22,15 +31,17 @@ mixin IMCallback {
 
   Function(List<ReadReceiptInfo> list)? onRecvC2CReadReceipt;
 
-  Function(List<ReadReceiptInfo> list)? onRecvGroupReadReceipt;
-
   Function(Message msg)? onRecvNewMessage;
+
+  Function(Message msg)? onRecvOfflineMessage;
 
   Function(String msgId, int progress)? onMsgSendProgress;
 
   Function(BlacklistInfo u)? onBlacklistAdd;
 
   Function(BlacklistInfo u)? onBlacklistDeleted;
+
+  Function(int current, int size)? onUploadProgress;
 
   final conversationAddedSubject = BehaviorSubject<List<ConversationInfo>>();
 
@@ -44,9 +55,11 @@ mixin IMCallback {
 
   final friendDelSubject = BehaviorSubject<FriendInfo>();
 
-  final friendInfoChangedSubject = BehaviorSubject<FriendInfo>();
+  final friendInfoChangedSubject = PublishSubject<FriendInfo>();
 
   final selfInfoUpdatedSubject = BehaviorSubject<UserInfo>();
+
+  final userStatusChangedSubject = BehaviorSubject<UserStatusInfo>();
 
   final groupInfoUpdatedSubject = BehaviorSubject<GroupInfo>();
 
@@ -64,20 +77,37 @@ mixin IMCallback {
 
   final joinedGroupAddedSubject = BehaviorSubject<GroupInfo>();
 
-  final onKickedOfflineSubject = PublishSubject();
+  final onKickedOfflineSubject = PublishSubject<KickoffType>();
 
-  final imSdkStatusSubject = BehaviorSubject<IMSdkStatus>();
+  final imSdkStatusSubject = ReplaySubject<({IMSdkStatus status, bool reInstall, int? progress})>();
 
-  void imSdkStatus(IMSdkStatus status) {
-    imSdkStatusSubject.add(status);
+  final imSdkStatusPublishSubject = PublishSubject<({IMSdkStatus status, bool reInstall, int? progress})>();
+
+  final inputStateChangedSubject = PublishSubject<InputStatusChangedData>();
+
+  void imSdkStatus(IMSdkStatus status, {bool reInstall = false, int? progress}) {
+    imSdkStatusSubject.add((status: status, reInstall: reInstall, progress: progress));
+    imSdkStatusPublishSubject.add((status: status, reInstall: reInstall, progress: progress));
   }
 
   void kickedOffline() {
-    onKickedOfflineSubject.add("");
+    onKickedOfflineSubject.add(KickoffType.kickedOffline);
+  }
+
+  void userTokenInvalid() {
+    onKickedOfflineSubject.add(KickoffType.userTokenInvalid);
   }
 
   void selfInfoUpdated(UserInfo u) {
     selfInfoUpdatedSubject.addSafely(u);
+  }
+
+  void userStausChanged(UserStatusInfo u) {
+    userStatusChangedSubject.addSafely(u);
+  }
+
+  void uploadLogsProgress(int current, int size) {
+    onUploadProgress?.call(current, size);
   }
 
   void recvMessageRevoked(RevokedInfo info) {
@@ -88,16 +118,18 @@ mixin IMCallback {
     onRecvC2CReadReceipt?.call(list);
   }
 
-  void recvGroupMessageReadReceipt(List<ReadReceiptInfo> list) {
-    onRecvGroupReadReceipt?.call(list);
-  }
-
   void recvNewMessage(Message msg) {
-    initLogic.showNotification(msg, showNotification: false);
+    initLogic.showNotification(msg);
     onRecvNewMessage?.call(msg);
   }
 
-  void recvCustomBusinessMessage(String s) {}
+  void recvOfflineMessage(Message msg) {
+    initLogic.showNotification(msg);
+    onRecvOfflineMessage?.call(msg);
+  }
+
+  void recvCustomBusinessMessage(String s) {
+  }
 
   void progressCallback(String msgId, int progress) {
     onMsgSendProgress?.call(msgId, progress);
@@ -192,6 +224,10 @@ mixin IMCallback {
     unreadMsgCountEventSubject.addSafely(count);
   }
 
+  void inputStateChanged(InputStatusChangedData status) {
+    inputStateChangedSubject.addSafely(status);
+  }
+
   void close() {
     initializedSubject.close();
     friendApplicationChangedSubject.close();
@@ -208,6 +244,7 @@ mixin IMCallback {
     onKickedOfflineSubject.close();
     groupApplicationChangedSubject.close();
     imSdkStatusSubject.close();
+    imSdkStatusPublishSubject.close();
     joinedGroupDeletedSubject.close();
     joinedGroupAddedSubject.close();
   }

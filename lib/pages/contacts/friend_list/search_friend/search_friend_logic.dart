@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -34,15 +35,14 @@ class SearchFriendLogic extends GetxController {
     }
   }
 
-  search() {
+  search() async {
     var key = searchCtrl.text.trim();
     resultList.clear();
     if (key.isNotEmpty) {
-      for (var element in logic.friendList) {
-        if (element.showName.toUpperCase().contains(key.toUpperCase())) {
-          resultList.add(element);
-        }
-      }
+      final result = await OpenIM.iMManager.friendshipManager
+          .searchFriends(keywordList: [key], isSearchNickname: true, isSearchRemark: true, isSearchUserID: true);
+      final users = result.map((e) => ISUserInfo.fromJson(e.toJson())).toList();
+      resultList.addAll(users);
     }
   }
 

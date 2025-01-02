@@ -11,14 +11,17 @@ class VerifyPhoneLogic extends GetxController {
   final codeErrorCtrl = StreamController<ErrorAnimationType>();
   final codeEditCtrl = TextEditingController();
   final enabled = false.obs;
-  late String phoneNumber;
+  String? phoneNumber;
+  String? email;
   late String areaCode;
   late int usedFor;
   String? invitationCode;
 
+  String get account => phoneNumber?.isNotEmpty == true ? (areaCode + phoneNumber!) : email!;
   @override
   void onInit() {
     phoneNumber = Get.arguments['phoneNumber'];
+    email = Get.arguments['email'];
     areaCode = Get.arguments['areaCode'];
     usedFor = Get.arguments['usedFor'];
     invitationCode = Get.arguments['invitationCode'];
@@ -44,16 +47,15 @@ class VerifyPhoneLogic extends GetxController {
       asyncFunction: () => Apis.requestVerificationCode(
             areaCode: areaCode,
             phoneNumber: phoneNumber,
-            email: null,
+            email: email,
             usedFor: usedFor,
             invitationCode: invitationCode,
           ));
 
-  Future checkVerificationCode(String verificationCode) =>
-      Apis.checkVerificationCode(
+  Future checkVerificationCode(String verificationCode) => Apis.checkVerificationCode(
         areaCode: areaCode,
         phoneNumber: phoneNumber,
-        email: null,
+        email: email,
         verificationCode: verificationCode,
         usedFor: usedFor,
         invitationCode: invitationCode,
@@ -67,6 +69,7 @@ class VerifyPhoneLogic extends GetxController {
       AppNavigator.startSetPassword(
         areaCode: areaCode,
         phoneNumber: phoneNumber,
+        email: email,
         verificationCode: value,
         usedFor: usedFor,
         invitationCode: invitationCode,

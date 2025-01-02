@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
@@ -14,7 +16,7 @@ class BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 66.h,
+      height: 56.h,
       decoration: BoxDecoration(
         color: Styles.c_FFFFFF,
         border: BorderDirectional(
@@ -35,12 +37,10 @@ class BottomBar extends StatelessWidget {
     );
   }
 
-  Widget _buildItemView({required int i, required BottomBarItem item}) =>
-      Expanded(
-        child: Listener(
-          onPointerDown: (_) {
-            if (item.onClick != null) item.onClick!(i);
-          },
+  Widget _buildItemView({required int i, required BottomBarItem item}) => Expanded(
+        child: GestureDetector(
+          onDoubleTap: () => item.onDoubleClick?.call(i),
+          onTapDown: (_) => item.onClick?.call(i),
           child: Container(
             color: Styles.c_FFFFFF,
             child: Column(
@@ -49,9 +49,7 @@ class BottomBar extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    (i == index
-                        ? item.selectedImgRes.toImage
-                        : item.unselectedImgRes.toImage)
+                    (i == index ? item.selectedImgRes.toImage : item.unselectedImgRes.toImage)
                       ..width = item.imgWidth
                       ..height = item.imgHeight,
                     Positioned(
@@ -68,12 +66,46 @@ class BottomBar extends StatelessWidget {
                 item.label.toText
                   ..style = i == index
                       ? (item.selectedStyle ?? Styles.ts_0089FF_10sp_semibold)
-                      : (item.unselectedStyle ??
-                          Styles.ts_8E9AB0_10sp_semibold),
+                      : (item.unselectedStyle ?? Styles.ts_8E9AB0_10sp_semibold),
               ],
             ),
           ),
         ),
+        /*child: InkWell(
+          onTap: () {
+            if (item.onClick != null) item.onClick!(i);
+          },
+          onDoubleTap: () => item.onDoubleClick?.call(i),
+
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  (i == index
+                      ? item.selectedImgRes.toImage
+                      : item.unselectedImgRes.toImage)
+                    ..width = item.imgWidth
+                    ..height = item.imgHeight,
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Transform.translate(
+                      offset: const Offset(2, -2),
+                      child: UnreadCountView(count: item.count ?? 0),
+                    ),
+                  ),
+                ],
+              ),
+              4.verticalSpace,
+              item.label.toText
+                ..style = i == index
+                    ? (item.selectedStyle ?? Styles.ts_0089FF_10sp_semibold)
+                    : (item.unselectedStyle ?? Styles.ts_8E9AB0_10sp_semibold),
+            ],
+          ),
+        ),*/
       );
 }
 

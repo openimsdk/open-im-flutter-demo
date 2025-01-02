@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
@@ -33,6 +34,7 @@ class SetFriendRemarkPage extends StatelessWidget {
               controller: logic.inputCtrl,
               style: Styles.ts_0C1C33_17sp,
               autofocus: true,
+              inputFormatters: [LengthLimitingTextInputFormatter(16)],
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,

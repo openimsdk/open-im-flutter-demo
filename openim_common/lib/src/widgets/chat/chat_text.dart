@@ -6,7 +6,6 @@ class ChatText extends StatelessWidget {
     Key? key,
     this.isISend = false,
     required this.text,
-    this.allAtMap = const <String, String>{},
     this.prefixSpan,
     this.patterns = const <MatchPattern>[],
     this.textAlign = TextAlign.left,
@@ -25,7 +24,6 @@ class ChatText extends StatelessWidget {
   final TextOverflow overflow;
   final int? maxLines;
   final double textScaleFactor;
-  final Map<String, String> allAtMap;
   final List<MatchPattern> patterns;
   final TextModel model;
   final Function(String? text)? onVisibleTrulyText;
@@ -40,7 +38,6 @@ class ChatText extends StatelessWidget {
         textAlign: textAlign,
         overflow: overflow,
         textScaleFactor: textScaleFactor,
-        allAtMap: allAtMap,
         patterns: patterns,
         model: model,
         maxLines: maxLines,

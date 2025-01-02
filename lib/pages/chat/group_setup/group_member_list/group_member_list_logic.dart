@@ -2,14 +2,16 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../../../../core/controller/im_controller.dart';
+import '../group_setup_logic.dart';
 
 enum GroupMemberOpType {
   view,
@@ -21,10 +23,12 @@ enum GroupMemberOpType {
 
 class GroupMemberListLogic extends GetxController {
   final imLogic = Get.find<IMController>();
+  final groupSetupLogic = Get.find<GroupSetupLogic>();
   final controller = RefreshController();
   final memberList = <GroupMembersInfo>[].obs;
   final checkedList = <GroupMembersInfo>[].obs;
-  final count = 500;
+  final poController = CustomPopupMenuController();
+  int count = 500;
   final myGroupMemberLevel = 1.obs;
   late GroupInfo groupInfo;
   late GroupMemberOpType opType;
@@ -74,10 +78,10 @@ class GroupMemberListLogic extends GetxController {
         member.roleLevel = e.roleLevel;
       }
       memberList.sort((a, b) {
-        if (a.roleLevel == b.roleLevel) {
-          return a.joinTime! > b.joinTime! ? -1 : 1;
+        if (b.roleLevel != a.roleLevel) {
+          return b.roleLevel!.compareTo(a.roleLevel!);
         } else {
-          return a.roleLevel! > b.roleLevel! ? -1 : 1;
+          return b.joinTime!.compareTo(a.joinTime!);
         }
       });
     }
@@ -93,20 +97,27 @@ class GroupMemberListLogic extends GetxController {
       if (null != myInfo) {
         myGroupMemberLevel.value = myInfo.roleLevel ?? 1;
       }
-      onLoad();
+      await onLoad();
     });
   }
 
-  Future<List<GroupMembersInfo>> _getGroupMembers() => OpenIM.iMManager.groupManager.getGroupMemberList(
-        groupID: groupInfo.groupID,
-        count: count,
-        offset: memberList.length,
-        filter: isDelMember ? (isOwner ? 4 : (isAdmin ? 3 : 0)) : 0,
-      );
+  Future<List<GroupMembersInfo>> _getGroupMembers() {
+    final result = OpenIM.iMManager.groupManager.getGroupMemberList(
+      groupID: groupInfo.groupID,
+      count: count,
+      offset: memberList.length,
+      filter: isDelMember ? (isOwner ? 4 : (isAdmin ? 3 : 0)) : 0,
+    );
+
+    count = 100;
+
+    return result;
+  }
 
   onLoad() async {
     final list = await _getGroupMembers();
     memberList.addAll(list);
+
     if (list.length < count) {
       controller.loadNoData();
     } else {
@@ -152,20 +163,23 @@ class GroupMemberListLogic extends GetxController {
         faceURL: membersInfo.faceURL,
       );
 
-  void addOrDelMember() async {
-    final index = await Get.bottomSheet(
-      BottomSheetView(
-        items: [
-          SheetItem(label: StrRes.addMember, result: 0),
-          if (isOwnerOrAdmin)
-            SheetItem(
-              label: StrRes.delMember,
-              result: 1,
-              textStyle: Styles.ts_FF381F_17sp,
-            ),
-        ],
-      ),
-    );
+  void addMember() async {
+    poController.hideMenu();
+    await groupSetupLogic.addMember();
+    refreshData();
+  }
+
+  void refreshData() {
+    LoadingView.singleton.wrap(asyncFunction: () async {
+      memberList.clear();
+      await onLoad();
+    });
+  }
+
+  void delMember() async {
+    poController.hideMenu();
+    await groupSetupLogic.removeMember();
+    refreshData();
   }
 
   void search() async {

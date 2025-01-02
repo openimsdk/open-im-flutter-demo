@@ -38,9 +38,7 @@ class Button extends StatelessWidget {
         child: Ink(
           height: height ?? 44.h,
           decoration: BoxDecoration(
-            color: enabled
-                ? enabledColor ?? Styles.c_0089FF
-                : disabledColor ?? Styles.c_0089FF_opacity50,
+            color: enabled ? enabledColor ?? Styles.c_0089FF : disabledColor ?? Styles.c_0089FF_opacity50,
             borderRadius: BorderRadius.circular(radius ?? 4.r),
           ),
           child: InkWell(

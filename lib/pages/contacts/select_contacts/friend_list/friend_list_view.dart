@@ -41,9 +41,9 @@ class SelectContactsFromFriendsPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Obx(() => Padding(
-                              padding: EdgeInsets.only(right: 10.w),
-                              child: ChatRadio(checked: logic.isSelectAll),
-                            )),
+                          padding: EdgeInsets.only(right: 10.w),
+                          child: ChatRadio(checked: logic.isSelectAll),
+                        )),
                         10.horizontalSpace,
                         StrRes.selectAll.toText..style = Styles.ts_0C1C33_17sp,
                       ],
@@ -54,7 +54,7 @@ class SelectContactsFromFriendsPage extends StatelessWidget {
             ),
           Flexible(
             child: Obx(
-              () => WrapAzListView<ISUserInfo>(
+                  () => WrapAzListView<ISUserInfo>(
                 data: logic.friendList,
                 itemCount: logic.friendList.length,
                 itemBuilder: (_, data, index) => _buildItemView(data),
@@ -69,33 +69,33 @@ class SelectContactsFromFriendsPage extends StatelessWidget {
 
   Widget _buildItemView(ISUserInfo info) {
     Widget buildChild() => Ink(
-          height: 64.h,
-          color: Styles.c_FFFFFF,
-          child: InkWell(
-            onTap: selectContactsLogic.onTap(info),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                children: [
-                  if (selectContactsLogic.isMultiModel)
-                    Padding(
-                      padding: EdgeInsets.only(right: 10.w),
-                      child: ChatRadio(
-                        checked: selectContactsLogic.isChecked(info),
-                        enabled: !selectContactsLogic.isDefaultChecked(info),
-                      ),
-                    ),
-                  AvatarView(
-                    url: info.faceURL,
-                    text: info.showName,
+      height: 64.h,
+      color: Styles.c_FFFFFF,
+      child: InkWell(
+        onTap: selectContactsLogic.onTap(info),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Row(
+            children: [
+              if (selectContactsLogic.isMultiModel)
+                Padding(
+                  padding: EdgeInsets.only(right: 10.w),
+                  child: ChatRadio(
+                    checked: selectContactsLogic.isChecked(info),
+                    enabled: !selectContactsLogic.isDefaultChecked(info),
                   ),
-                  10.horizontalSpace,
-                  info.showName.toText..style = Styles.ts_0C1C33_17sp,
-                ],
+                ),
+              AvatarView(
+                url: info.faceURL,
+                text: info.showName,
               ),
-            ),
+              10.horizontalSpace,
+              info.showName.toText..style = Styles.ts_0C1C33_17sp,
+            ],
           ),
-        );
+        ),
+      ),
+    );
     return selectContactsLogic.isMultiModel ? Obx(buildChild) : buildChild();
   }
 }

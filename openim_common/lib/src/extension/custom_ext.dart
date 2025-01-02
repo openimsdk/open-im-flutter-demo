@@ -44,6 +44,24 @@ extension StrExt on String {
   String fixAutoLines() {
     return Characters(this).join('\u{200B}');
   }
+
+  String get thumbnailAbsoluteString {
+    final host = split('?').first;
+    final isGif = host.split('.').last.toLowerCase() == 'gif';
+    if (isGif) {
+      return host;
+    }
+    return '$host?height=640&width=360&type=image';
+  }
+
+  String adjustThumbnailAbsoluteString(int size) {
+    final host = split('?').first;
+    final isGif = host.split('.').last.toLowerCase() == 'gif';
+    if (isGif) {
+      return host;
+    }
+    return '$host?height=$size&width=$size&type=image';
+  }
 }
 
 class LottieView extends StatelessWidget {
@@ -72,16 +90,17 @@ class LottieView extends StatelessWidget {
 }
 
 class TextView extends StatelessWidget {
-  TextView({
-    Key? key,
-    required this.data,
-    this.style,
-    this.textAlign,
-    this.overflow,
-    this.textScaleFactor,
-    this.maxLines,
-    this.onTap,
-  }) : super(key: key);
+  TextView(
+      {Key? key,
+      required this.data,
+      this.style,
+      this.textAlign,
+      this.overflow,
+      this.textScaleFactor,
+      this.maxLines,
+      this.onTap,
+      this.wordEllipsis = true})
+      : super(key: key);
   final String data;
   TextStyle? style;
   TextAlign? textAlign;
@@ -89,13 +108,14 @@ class TextView extends StatelessWidget {
   double? textScaleFactor;
   int? maxLines;
   Function()? onTap;
+  bool wordEllipsis;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.translucent,
         child: Text(
-          data,
+          wordEllipsis ? data : data.replaceAll('', '\u200B'), //解决Flutter按单词省略
           style: style,
           textAlign: textAlign,
           overflow: overflow,
@@ -143,4 +163,32 @@ class ImageView extends StatelessWidget {
           ),
         ),
       );
+}
+
+extension IntExt on int {
+  int ensureTenDigits() {
+    String numberStr = toString();
+
+    if (numberStr.length == 10) {
+      return this;
+    } else if (numberStr.length > 10) {
+      return int.parse(numberStr.substring(0, 10));
+    } else {
+      return int.parse(numberStr.padLeft(10, '0'));
+    }
+  }
+}
+
+extension StringExt on String {
+  String splitStringEveryNChars({int n = 3, String separator = ' '}) {
+    RegExp regExp = RegExp('.{1,$n}');
+    Iterable<Match> matches = regExp.allMatches(this);
+    List<String> parts = matches.map((match) => match.group(0)!).toList();
+
+    return parts.join(separator);
+  }
+}
+
+extension DateTimeExt on DateTime {
+  int get secondsSinceEpoch => millisecondsSinceEpoch ~/ 1000;
 }

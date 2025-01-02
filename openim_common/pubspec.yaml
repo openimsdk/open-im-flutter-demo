@@ -12,39 +12,36 @@ dependencies:
     sdk: flutter
   flutter_screenutil: ^5.7.0
   get: ^4.6.5
-  dio: ^5.0.2
-  talker_dio_logger: ^2.1.2
+  dio: ^5.7.0
+  talker_dio_logger: ^4.2.3
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   shared_preferences: ^2.0.18
   sprintf: ^7.0.0
   uuid: ^4.2.1
-  path_provider: ^2.1.5
-  path_provider_android: 2.2.12
+  path_provider: ^2.0.13
+  path_provider_android: ^2.2.12
   image_picker: ^1.0.4
-  flutter_easyloading: ^3.0.5
   azlistview: ^2.0.0
   lpinyin: ^2.0.3
   rxdart: ^0.27.7
   permission_handler: ^11.0.1
   wechat_assets_picker:
-  wechat_camera_picker:
+  wechat_camera_picker: 
   extended_image: ^8.2.0
   country_picker: ^2.0.20
-  image_gallery_saver: ^2.0.3
-  file_picker: ^6.1.1
+  image_gallery_saver_plus: ^4.0.0-0.alpha
+  file_picker: ^8.0.6
   open_filex: ^4.3.2
   lottie: ^2.3.0
-  mobile_scanner: ^3.5.2
+  qr_code_scanner_plus: ^2.0.6
   qr_flutter: ^4.0.0
   scan: ^1.6.0
   image_cropper: ^5.0.0
-  package_info_plus: ^4.2.0
+  package_info_plus: ^8.0.2
   search_keyword_text: ^0.0.2
   animated_text_kit: ^4.2.2
-  flutter_local_notifications: ^18.0.1
   crypto: ^3.0.2
-  pull_to_refresh: ^2.0.0
   url_launcher: ^6.1.10
   common_utils: ^2.1.0
   uri_to_file: ^1.0.0
@@ -56,38 +53,56 @@ dependencies:
   dart_date: ^1.1.1
   video_compress: ^3.1.2
   just_audio: ^0.9.31
-  flutter_inappwebview: ^5.7.2+3
+  webview_flutter: ^4.10.0
   vibration: ^1.7.6
   scroll_to_index: ^3.0.1
-  flutter_screen_lock: ^9.0.1
-  local_auth:
+  flutter_screen_lock: 9.1.1
+  local_auth: ^2.2.0
   gesture_password_widget: ^2.0.1
   sound_mode: ^2.0.2
-  device_info_plus: ^9.1.0
+  device_info_plus: ^10.1.2
   visibility_detector: ^0.4.0+2
-  extended_text_field: 16.0.0
-  extended_text: 13.0.2
+  extended_text_field: ^16.0.0
+  extended_text: ^13.0.2
   animate_do: ^3.0.2
-  emoji_picker_flutter: ^1.5.2
+  emoji_picker_flutter: ^3.0.0
   should_rebuild: ^1.0.1
+  record: ^5.1.1
   mime: ^1.0.4
   flutter_keyboard_visibility: ^5.4.0
   rotated_corner_decoration: ^2.1.0
   chewie: ^1.4.0
-  video_player: ^2.6.0
+  video_player: ^2.9.1
   flutter_cache_manager: ^3.3.0
-  syncfusion_flutter_core: 25.2.7
-  syncfusion_flutter_sliders: 25.2.7
+  syncfusion_flutter_core: ^25.2.7
+  syncfusion_flutter_sliders: ^25.2.7
   flutter_map: ^6.0.1
+  ffmpeg_kit_flutter_full_gpl: 6.0.3
+  pull_to_refresh_new: ^2.0.5
+  geolocator: ^12.0.0
+  fixnum: ^1.1.0
+  protobuf: ^3.0.0
+  intl: ^0.19.0
+  focus_detector_v2:
+  flutter_background: ^1.3.0
+  media_kit: ^1.1.11 # Primary package.
+  media_kit_video: ^1.2.5 # For video rendering.
+  media_kit_libs_video: ^1.0.5 # Native video dependencies.
+  firebase_core: ^3.9.0
+  firebase_messaging: ^15.1.6
+  getuiflut: ^0.2.32
+  google_api_availability: ^5.0.0
+  
+  flutter_easyloading: 
+    git:
+      url: https://github.com/std-s/flutter_easyloading.git
+      ref: 56db1b3
 
   flutter_download_manager:
     path: ../local_plugin/flutter_download_manager
-  flutter_openim_sdk: 3.8.2
 
-dependency_overrides:
-  wechat_assets_picker: ^8.9.0-dev.1
-  photo_manager: ^3.0.0-dev.2
-
+  flutter_picker_plus: ^1.1.3
+  flutter_openim_sdk: ^3.8.2+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
