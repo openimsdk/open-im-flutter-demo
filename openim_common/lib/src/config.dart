@@ -60,7 +60,7 @@ class Config {
   static const friendScheme = "io.openim.app/addFriend/";
   static const groupScheme = "io.openim.app/joinGroup/";
 
-  static const _host = "your-server-ip/domain";
+  static const _host = "your-server-ip or your-domain";
 
   static const _ipRegex = '((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)';
 
@@ -71,7 +71,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       ip = server['serverIP'];
-      Logger.print('缓存serverIP: $ip');
     }
     return ip ?? _host;
   }
@@ -81,7 +80,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['chatTokenUrl'];
-      Logger.print('缓存chatTokenUrl: $url');
     }
     return url ?? (_isIP ? "http://$_host:10009" : "https://$_host/chat");
   }
@@ -91,7 +89,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['authUrl'];
-      Logger.print('缓存authUrl: $url');
     }
     return url ?? (_isIP ? "http://$_host:10008" : "https://$_host/chat");
   }
@@ -101,7 +98,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['apiUrl'];
-      Logger.print('缓存apiUrl: $url');
     }
     return url ?? (_isIP ? 'http://$_host:10002' : "https://$_host/api");
   }
@@ -111,7 +107,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       url = server['wsUrl'];
-      Logger.print('缓存wsUrl: $url');
     }
     return url ?? (_isIP ? "ws://$_host:10001" : "wss://$_host/msg_gateway");
   }
@@ -121,7 +116,6 @@ class Config {
     var server = DataSp.getServerConfig();
     if (null != server) {
       level = server['logLevel'];
-      Logger.print('logLevel: $level');
     }
     return level == null ? 5 : int.parse(level);
   }
