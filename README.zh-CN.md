@@ -19,7 +19,7 @@
 </p>
 OpenIM 为开发者提供开源即时通讯 SDK，作为 Twilio、Sendbird 等云服务的替代方案。借助 OpenIM，开发者可以构建安全可靠的即时通讯应用，如 WeChat、Zoom、Slack 等。
 
-本仓库基于开源版 OpenIM SDK 开发，提供了一款基于 Electron 的即时通讯应用。您可以使用此应用程序作为 OpenIM SDK 的参考实现。
+本仓库基于开源版 OpenIM SDK 开发，提供了一款基于 Flutter 的即时通讯应用。您可以使用此应用程序作为 OpenIM SDK 的参考实现。
 
 <p align="center">
     <img src="./docs/images/preveiw1.zh-CN.jpeg" alt="预览图" width="32%"/>
