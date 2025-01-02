@@ -4,7 +4,7 @@
     </a>
 </p>
 
-# OpenIM Electron 💬💻
+# OpenIM Flutter 💬💻
 
 <p>
   <a href="https://docs.openim.io/">OpenIM Docs</a>
