@@ -39,6 +39,8 @@ mixin OpenIMLive {
 
   final backgroundSubject = PublishSubject<bool>();
 
+  final insertSignalingMessageSubject = PublishSubject<CallEvent>();
+
   Function(SignalingMessageEvent)? onSignalingMessage;
   final roomParticipantDisconnectedSubject = PublishSubject<RoomCallingInfo>();
   final roomParticipantConnectedSubject = PublishSubject<RoomCallingInfo>();
@@ -134,17 +136,20 @@ mixin OpenIMLive {
               onRoomDisconnected: () => onRoomDisconnected(event.data),
             );
           } else if (event.state == CallState.beRejected) {
+            insertSignalingMessageSubject.add(event);
             _stopSound();
           } else if (event.state == CallState.beHangup) {
             _stopSound();
           } else if (event.state == CallState.beCanceled) {
-            if (_isRunningBackground) {}
+            insertSignalingMessageSubject.add(event);
             _stopSound();
           } else if (event.state == CallState.beAccepted) {
             _stopSound();
           } else if (event.state == CallState.otherReject || event.state == CallState.otherAccepted) {
             _stopSound();
           } else if (event.state == CallState.timeout) {
+            insertSignalingMessageSubject.add(event);
+
             _stopSound();
             final sessionType = event.data.invitation!.sessionType;
 
@@ -155,7 +160,15 @@ mixin OpenIMLive {
         },
       );
 
-  _insertSignalingMessageListener() {}
+  _insertSignalingMessageListener() {
+    insertSignalingMessageSubject.listen((value) {
+      _insertMessage(
+        state: value.state,
+        signalingInfo: value.data,
+        duration: value.fields ?? 0,
+      );
+    });
+  }
 
   call({
     required CallObj callObj,
@@ -266,6 +279,8 @@ mixin OpenIMLive {
 
   onTapReject(SignalingInfo signaling) async {
     _stopSound();
+    insertSignalingMessageSubject.add(CallEvent(CallState.reject, signaling));
+
     final data = {'customType': CustomMessageType.callingReject, 'data': signaling.invitation!.toJson()};
     final message = await OpenIM.iMManager.messageManager
         .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
@@ -278,6 +293,8 @@ mixin OpenIMLive {
 
   onTapCancel(SignalingInfo signaling) async {
     _stopSound();
+    insertSignalingMessageSubject.add(CallEvent(CallState.cancel, signaling));
+
     final data = {'customType': CustomMessageType.callingCancel, 'data': signaling.invitation!.toJson()};
     final message = await OpenIM.iMManager.messageManager
         .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
@@ -315,11 +332,17 @@ mixin OpenIMLive {
           .sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID, isOnlineOnly: true);
     }
     _stopSound();
+
+    insertSignalingMessageSubject.add(CallEvent(
+      CallState.hangup,
+      signaling,
+      fields: duration,
+    ));
   }
 
   onBusyLine() {
     _stopSound();
-    IMViews.showToast('用户正忙，请稍后再试！');
+    IMViews.showToast(StrRes.busyVideoCallHint);
   }
 
   onJoin() {}
@@ -362,11 +385,44 @@ mixin OpenIMLive {
     }
   }
 
-  void _recordCall({
+  void _insertMessage({
     required CallState state,
-    required SignalingInfo signaling,
+    required SignalingInfo signalingInfo,
     int duration = 0,
-  }) async {}
+  }) async {
+    (() async {
+      var invitation = signalingInfo.invitation;
+      var mediaType = invitation!.mediaType;
+      var inviterUserID = invitation.inviterUserID;
+      var inviteeUserID = invitation.inviteeUserIDList!.first;
+      var groupID = invitation.groupID;
+      Logger.print(
+          'end calling and insert message state:${state.name}, mediaType:$mediaType, inviterUserID:$inviterUserID, inviteeUserID:$inviteeUserID, groupID:$groupID, duration:$duration',
+          functionName: '_insertMessage');
+      var message = await OpenIM.iMManager.messageManager.createCallMessage(
+        state: state.name,
+        type: mediaType!,
+        duration: duration,
+      );
+
+      String? receiverID;
+      if (inviterUserID != OpenIM.iMManager.userID) {
+        receiverID = inviterUserID;
+      } else {
+        receiverID = inviteeUserID;
+      }
+
+      var msg = await OpenIM.iMManager.messageManager.insertSingleMessageToLocalStorage(
+        receiverID: inviteeUserID,
+        senderID: inviterUserID,
+        message: message
+          ..status = 2
+          ..isRead = true,
+      );
+
+      onSignalingMessage?.call(SignalingMessageEvent(msg, 1, receiverID, null));
+    })();
+  }
 }
 
 class SignalingMessageEvent {
@@ -385,4 +441,24 @@ class SignalingMessageEvent {
   bool get isSingleChat => sessionType == ConversationType.single;
 
   bool get isGroupChat => sessionType == ConversationType.group || sessionType == ConversationType.superGroup;
+}
+
+extension MessageMangerExt on MessageManager {
+  Future<Message> createCallMessage({
+    required String type,
+    required String state,
+    int? duration,
+  }) =>
+      createCustomMessage(
+        data: json.encode({
+          "customType": CustomMessageType.call,
+          "data": {
+            'duration': duration,
+            'state': state,
+            'type': type,
+          },
+        }),
+        extension: '',
+        description: '',
+      );
 }

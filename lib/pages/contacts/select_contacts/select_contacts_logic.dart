@@ -39,14 +39,12 @@ class SelectContactsLogic extends GetxController implements OrganizationMultiSel
     checkedList.addAll(Get.arguments['checkedList'] ?? {});
     openSelectedSheet = Get.arguments['openSelectedSheet'];
     ex = Get.arguments['ex'];
-    PackageBridge.organizationBridge = this;
     super.onInit();
   }
 
   @override
   void onClose() {
     inputCtrl.dispose();
-    PackageBridge.organizationBridge = null;
     super.onClose();
   }
 
@@ -91,8 +89,6 @@ class SelectContactsLogic extends GetxController implements OrganizationMultiSel
       return e.groupID;
     } else if (e is UserInfo || e is FriendInfo || e is UserFullInfo) {
       return e.userID;
-    } else if (e is TagInfo) {
-      return e.tagID;
     } else {
       return null;
     }
@@ -105,8 +101,6 @@ class SelectContactsLogic extends GetxController implements OrganizationMultiSel
       return e.groupName;
     } else if (e is UserInfo || e is FriendInfo || e is UserFullInfo) {
       return e.nickname;
-    } else if (e is TagInfo) {
-      return e.tagName;
     } else {
       return null;
     }

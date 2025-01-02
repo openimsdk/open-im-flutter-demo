@@ -96,6 +96,7 @@ class ChatLogic extends SuperController {
 
   late StreamSubscription connectionSub;
   final syncStatus = IMSdkStatus.syncEnded.obs;
+  int? lastMinSeq;
 
   final showCallingMember = false.obs;
 
@@ -111,8 +112,6 @@ class ChatLogic extends SuperController {
   final _pageSize = 40;
 
   RTCBridge? get rtcBridge => PackageBridge.rtcBridge;
-
-  late StreamSubscription<bool> isInGroupSub;
 
   bool get rtcIsBusy => rtcBridge?.hasConnection == true;
 
@@ -355,6 +354,13 @@ class ChatLogic extends SuperController {
       _lastCursorIndex = inputCtrl.selection.start;
       focusNodeChanged(focusNode.hasFocus);
     });
+
+    imLogic.onSignalingMessage = (value) {
+      if (value.userID == userID) {
+        messageList.add(value.message);
+        scrollBottom();
+      }
+    };
 
     imLogic.inputStateChangedSubject.listen((value) {
       if (value.conversationID == conversationInfo.conversationID && value.userID == userID) {
@@ -1071,7 +1077,6 @@ class ChatLogic extends SuperController {
     joinedGroupDeletedSub.cancel();
     connectionSub.cancel();
 
-    isInGroupSub.cancel();
     _debounce?.cancel();
     super.onClose();
   }
@@ -1707,28 +1712,30 @@ class ChatLogic extends SuperController {
     }
   }
 
-  Future<AdvancedMessage> _fetchHistoryMessages() {
+  Future<AdvancedMessage> _requestHistoryMessage() {
     Logger.print(
-        '_fetchHistoryMessages: is first load: $_isFirstLoad, last client id: ${_isFirstLoad ? null : messageList.firstOrNull?.clientMsgID}');
+        '==========_requestHistoryMessage: is first load: $_isFirstLoad, last min seq: $lastMinSeq, last client id: ${_isFirstLoad ? null : messageList.firstOrNull?.clientMsgID}');
     return OpenIM.iMManager.messageManager.getAdvancedHistoryMessageList(
       conversationID: conversationInfo.conversationID,
       count: _pageSize,
       startMsg: _isFirstLoad ? null : messageList.firstOrNull,
+      lastMinSeq: _isFirstLoad ? null : lastMinSeq,
     );
   }
 
   Future<bool> onScrollToBottomLoad() async {
     late List<Message> list;
-    final result = await _fetchHistoryMessages();
+    final result = await _requestHistoryMessage();
     if (result.messageList == null || result.messageList!.isEmpty) {
       _getGroupInfoAfterLoadMessage();
 
       return false;
     }
     list = result.messageList!;
+    lastMinSeq = result.lastMinSeq;
     if (_isFirstLoad) {
       _isFirstLoad = false;
-
+      // remove the message that has been timed down
       list.removeWhere((msg) => _isBeDeleteMessage(msg));
       messageList.assignAll(list);
       scrollBottom();
@@ -1738,23 +1745,35 @@ class ChatLogic extends SuperController {
       list.removeWhere((msg) => _isBeDeleteMessage(msg));
       messageList.insertAll(0, list);
     }
+    var list2Count = 0;
+    // There is currently a bug on the server side. If the number obtained once is less than one page, get it again.
+    if (list.isNotEmpty && list.length < _pageSize) {
+      final result = await _requestHistoryMessage();
+      if (result.messageList?.isNotEmpty == true) {
+        final list2 = result.messageList!;
+        lastMinSeq = result.lastMinSeq;
+        list2.removeWhere((msg) => _isBeDeleteMessage(msg));
+        list2Count = list2.length;
+        messageList.insertAll(0, list2);
+      }
+    }
 
-    return result.isEnd != true;
+    return list.length + list2Count >= _pageSize;
   }
 
   Future<void> _loadHistoryForSyncEnd() async {
     final result = await OpenIM.iMManager.messageManager.getAdvancedHistoryMessageList(
       conversationID: conversationInfo.conversationID,
-      count: messageList.length < _pageSize ? _pageSize : messageList.length,
+      count: messageList.isEmpty ? _pageSize : messageList.length,
       startMsg: null,
+      lastMinSeq: null,
     );
     if (result.messageList == null || result.messageList!.isEmpty) return;
     final list = result.messageList!;
+    lastMinSeq = result.lastMinSeq;
     list.removeWhere((msg) => _isBeDeleteMessage(msg));
-
-    final offset = scrollController.offset;
     messageList.assignAll(list);
-    scrollController.jumpTo(offset);
+    scrollBottom();
   }
 
   bool _isBeDeleteMessage(Message message) {

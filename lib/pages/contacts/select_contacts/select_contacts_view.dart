@@ -272,18 +272,13 @@ class SelectedContactsListView extends StatelessWidget {
     } else if (info is UserInfo) {
       name = info.nickname;
       faceURL = info.faceURL;
-    }
+    } 
     return Container(
       height: 64.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       color: Styles.c_FFFFFF,
       child: Row(
         children: [
-          if (info is TagInfo)
-            ImageRes.tagGroup.toImage
-              ..width = 44.w
-              ..height = 44.h
-          else
             AvatarView(url: faceURL, text: name, isGroup: isGroup),
           10.horizontalSpace,
           Expanded(

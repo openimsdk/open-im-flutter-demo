@@ -128,8 +128,7 @@ mixin IMCallback {
     onRecvOfflineMessage?.call(msg);
   }
 
-  void recvCustomBusinessMessage(String s) {
-  }
+  void recvCustomBusinessMessage(String s) {}
 
   void progressCallback(String msgId, int progress) {
     onMsgSendProgress?.call(msgId, progress);

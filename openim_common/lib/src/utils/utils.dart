@@ -1504,7 +1504,7 @@ class IMUtils {
           checkedList.add(UserInfo.fromJson(value.toJson()));
         } else if (value is UserInfo) {
           checkedList.add(value);
-        } 
+        }
       }
       return checkedList;
     }
@@ -1518,7 +1518,7 @@ class IMUtils {
       for (final value in values) {
         if (value is UserInfo || value is FriendInfo || value is UserFullInfo || value is ISUserInfo) {
           checkedList.add(value.userID!);
-        } 
+        }
       }
       return checkedList;
     }
@@ -1535,8 +1535,6 @@ class IMUtils {
         checkedMap[item.userID!] = item;
       } else if (item is GroupInfo) {
         checkedMap[item.groupID] = item;
-      } else if (item is TagInfo) {
-        checkedMap[item.tagID!] = item;
       }
     }
     return checkedMap;
@@ -1551,7 +1549,7 @@ class IMUtils {
         map.add({'nickname': item.groupName, 'faceURL': item.faceURL});
       } else if (item is ConversationInfo) {
         map.add({'nickname': item.showName, 'faceURL': item.faceURL});
-      } 
+      }
     }
     return map;
   }
@@ -1571,7 +1569,7 @@ class IMUtils {
       return info.groupID;
     } else if (info is ConversationInfo) {
       return info.groupID;
-    } 
+    }
     
     return null;
   }
@@ -1585,8 +1583,7 @@ class IMUtils {
         map.add({'userID': null, 'groupID': item.groupID});
       } else if (item is ConversationInfo) {
         map.add({'userID': item.userID, 'groupID': item.groupID});
-      } 
-      
+      }
     }
     return map;
   }
