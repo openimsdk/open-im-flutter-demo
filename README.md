@@ -76,7 +76,7 @@ Follow the steps below to set up your local development environment:
      > If you have not changed the default server ports, update only the [_host](https://github.com/openimsdk/open-im-flutter-demo/blob/a309f25fdbc143e49d5ca852171ce57970871c85/openim_common/lib/src/config.dart#L59) to your server IP.
 
    ```dart
-   static const _host = "your-server-ip/domain";
+   static const _host = "your-server-ip or your-domain";
    ```
 
 4. Run the application using `flutter run` from the terminal or through your IDE.
