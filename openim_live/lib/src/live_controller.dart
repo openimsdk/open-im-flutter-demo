@@ -235,9 +235,13 @@ mixin OpenIMLive {
 
   Future<SignalingCertificate> onDialSingle(SignalingInfo signaling) async {
     final data = {'customType': CustomMessageType.callingInvite, 'data': signaling.invitation!.toJson()};
-    final message = await OpenIM.iMManager.messageManager.createCustomMessage(data: jsonEncode(data), extension: '', description: '');
-    OpenIM.iMManager.messageManager
-        .sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: signaling.invitation!.inviteeUserIDList!.first);
+    final message = await OpenIM.iMManager.messageManager
+        .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
+    OpenIM.iMManager.messageManager.sendMessage(
+        message: message,
+        offlinePushInfo: OfflinePushInfo(),
+        userID: signaling.invitation!.inviteeUserIDList!.first,
+        isOnlineOnly: true);
     final certificate = await Apis.getTokenForRTC(signaling.invitation!.roomID!, OpenIM.iMManager.userID);
 
     return certificate;
@@ -248,8 +252,13 @@ mixin OpenIMLive {
     _autoPickup = false;
     _stopSound();
     final data = {'customType': CustomMessageType.callingAccept, 'data': signaling.invitation!.toJson()};
-    final message = await OpenIM.iMManager.messageManager.createCustomMessage(data: jsonEncode(data), extension: '', description: '');
-    OpenIM.iMManager.messageManager.sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: signaling.invitation!.inviterUserID);
+    final message = await OpenIM.iMManager.messageManager
+        .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
+    OpenIM.iMManager.messageManager.sendMessage(
+        message: message,
+        offlinePushInfo: OfflinePushInfo(),
+        userID: signaling.invitation!.inviterUserID,
+        isOnlineOnly: true);
     final certificate = await Apis.getTokenForRTC(signaling.invitation!.roomID!, OpenIM.iMManager.userID);
 
     return certificate;
@@ -258,29 +267,38 @@ mixin OpenIMLive {
   onTapReject(SignalingInfo signaling) async {
     _stopSound();
     final data = {'customType': CustomMessageType.callingReject, 'data': signaling.invitation!.toJson()};
-    final message = await OpenIM.iMManager.messageManager.createCustomMessage(data: jsonEncode(data), extension: '', description: '');
+    final message = await OpenIM.iMManager.messageManager
+        .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
     final recvUserID = signaling.invitation!.inviterUserID == OpenIM.iMManager.userID
         ? signaling.invitation!.inviteeUserIDList!.first
         : signaling.invitation!.inviterUserID;
-    return OpenIM.iMManager.messageManager.sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID);
+    return OpenIM.iMManager.messageManager
+        .sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID, isOnlineOnly: true);
   }
 
   onTapCancel(SignalingInfo signaling) async {
     _stopSound();
     final data = {'customType': CustomMessageType.callingCancel, 'data': signaling.invitation!.toJson()};
-    final message = await OpenIM.iMManager.messageManager.createCustomMessage(data: jsonEncode(data), extension: '', description: '');
+    final message = await OpenIM.iMManager.messageManager
+        .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
     final recvUserID = signaling.invitation!.inviterUserID == OpenIM.iMManager.userID
         ? signaling.invitation!.inviteeUserIDList!.first
         : signaling.invitation!.inviterUserID;
-    OpenIM.iMManager.messageManager.sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID);
+    OpenIM.iMManager.messageManager
+        .sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID, isOnlineOnly: true);
     return true;
   }
 
   onTimeoutCancelled(SignalingInfo signaling) async {
     final data = {'customType': CustomMessageType.callingCancel, 'data': signaling.invitation!.toJson()};
-    final message = await OpenIM.iMManager.messageManager.createCustomMessage(data: jsonEncode(data), extension: '', description: '');
+    final message = await OpenIM.iMManager.messageManager
+        .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
 
-    OpenIM.iMManager.messageManager.sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: signaling.invitation!.inviterUserID);
+    OpenIM.iMManager.messageManager.sendMessage(
+        message: message,
+        offlinePushInfo: OfflinePushInfo(),
+        userID: signaling.invitation!.inviterUserID,
+        isOnlineOnly: true);
 
     return true;
   }
@@ -288,11 +306,13 @@ mixin OpenIMLive {
   onTapHangup(SignalingInfo signaling, int duration, bool isPositive) async {
     if (isPositive) {
       final data = {'customType': CustomMessageType.callingHungup, 'data': signaling.invitation!.toJson()};
-      final message = await OpenIM.iMManager.messageManager.createCustomMessage(data: jsonEncode(data), extension: '', description: '');
+      final message = await OpenIM.iMManager.messageManager
+          .createCustomMessage(data: jsonEncode(data), extension: '', description: '');
       final recvUserID = signaling.invitation!.inviterUserID == OpenIM.iMManager.userID
           ? signaling.invitation!.inviteeUserIDList!.first
           : signaling.invitation!.inviterUserID;
-      OpenIM.iMManager.messageManager.sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID);
+      OpenIM.iMManager.messageManager
+          .sendMessage(message: message, offlinePushInfo: OfflinePushInfo(), userID: recvUserID, isOnlineOnly: true);
     }
     _stopSound();
   }
