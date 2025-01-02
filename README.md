@@ -20,7 +20,7 @@
 
 OpenIM provides an open-source Instant Messaging (IM) SDK for developers, serving as an alternative solution to cloud services like Twilio and Sendbird. With OpenIM, developers can build secure and reliable IM applications similar to WeChat, Zoom, and Slack.
 
-This repository is based on the open-source version of the OpenIM SDK, offering an Electron-based IM application. You can use this application as a reference implementation of the OpenIM SDK.
+This repository is based on the open-source version of the OpenIM SDK, offering an Flutter IM application. You can use this application as a reference implementation of the OpenIM SDK.
 
 <p align="center">
    <img src="./docs/images/preview1.jpeg" alt="Preview" width="32%"/>
